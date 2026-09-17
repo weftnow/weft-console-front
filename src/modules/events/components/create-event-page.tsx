@@ -69,7 +69,7 @@ const STAFF = [
 ] as const;
 
 const ORGANIZER = {
-  name: "Nick Bacci",
+  name: "Nick Baci",
   role: "Organizer",
   avatar: "/network/avatars/michael-ross.png",
 };
