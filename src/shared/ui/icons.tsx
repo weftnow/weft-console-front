@@ -106,3 +106,24 @@ export function ImageIcon(props: IconProps) {
 export function EditIcon(props: IconProps) {
   return <IconBase {...props}><path d="M13.5 6.5 17.5 10.5M4 20l4.5-1 10-10a2.8 2.8 0 0 0-4-4l-10 10L4 20Z" /><path d="m13 6 4 4" /></IconBase>;
 }
+export function BriefcaseIcon(props: IconProps) {
+  return <IconBase {...props}><rect x="3" y="7.5" width="18" height="13" rx="2.6" /><path d="M8.7 7.5V5.9A2.4 2.4 0 0 1 11.1 3.5h1.8a2.4 2.4 0 0 1 2.4 2.4v1.6" /><path d="M3 12.6h18M10.4 12.6v2.1h3.2v-2.1" /></IconBase>;
+}
+export function TargetIcon(props: IconProps) {
+  return <IconBase {...props}><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r=".6" fill="currentColor" /></IconBase>;
+}
+export function ClipboardIcon(props: IconProps) {
+  return <IconBase {...props}><rect x="4.5" y="4.5" width="15" height="16" rx="2.6" /><path d="M9 4.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4.5v1.2H9V4.5Z" /><path d="M8.5 11.5h7M8.5 15.5h4.5" /></IconBase>;
+}
+export function SendIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M20.5 3.5 10.8 13.2" /><path d="M20.5 3.5 14.3 20.5l-3.5-7.3-7.3-3.5 17-6.2Z" /></IconBase>;
+}
+export function ExternalLinkIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M13.5 4.5H19.5V10.5" /><path d="m19.5 4.5-8 8" /><path d="M18 14.5v3.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.5" /></IconBase>;
+}
+export function NoteIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M6 3.5h7.5L19 9v11.5a0 0 0 0 1 0 0H6a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1Z" /><path d="M13.5 3.5V9H19" /><path d="M8.5 13.5h7M8.5 16.5h4.5" /></IconBase>;
+}
+export function FilterIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M3.5 5.5h17l-6.6 7.7v5.5l-3.8 2v-7.5L3.5 5.5Z" /></IconBase>;
+}
