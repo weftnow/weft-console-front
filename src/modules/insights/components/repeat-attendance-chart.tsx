@@ -2,7 +2,7 @@
 
 import { RadialBar, RadialBarChart } from "recharts";
 
-import { ChartContainer, type ChartConfig } from "../../../shared/ui/chart";
+import { ChartContainer, type ChartConfig } from "@/shared/ui/chart";
 
 const chartConfig = {
   returning: {
