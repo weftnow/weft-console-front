@@ -15,9 +15,9 @@ import {
   ShieldIcon,
   StarIcon,
   TrendIcon,
-} from "../../../shared/ui/icons";
-import { Surface } from "../../../shared/ui/surface";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+} from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import {
   organizerOverviewData,
   type CityTheme,

@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 const overview = readFileSync(
-  new URL("../modules/insights/components/organizer-overview.tsx", import.meta.url),
+  new URL("../src/modules/insights/components/organizer-overview.tsx", import.meta.url),
   "utf8",
 );
 const repeatChart = readFileSync(
-  new URL("../modules/insights/components/repeat-attendance-chart.tsx", import.meta.url),
+  new URL("../src/modules/insights/components/repeat-attendance-chart.tsx", import.meta.url),
   "utf8",
 );
 
