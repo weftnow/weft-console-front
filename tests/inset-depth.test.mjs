@@ -24,12 +24,10 @@ test("recommendation pairs center profiles and the connector with readable card 
   assert.match(css, /\.recommendation-reason p\s*\{[^}]*font-size:\s*10px/s);
 });
 
-test("network page scopes its warm-white inset surface without changing the shared inset", () => {
-  assert.match(
-    css,
-    /\.network-main\s*\{[^}]*--weft-surface-inset:\s*#f7f6f3/s,
-  );
-  assert.match(css, /--weft-surface-inset:\s*#efede8/);
+test("every page shares the single root inset surface and shadow tokens", () => {
+  assert.match(css, /:root\s*\{[^}]*--weft-surface-inset:\s*#f3f1ec/s);
+  assert.doesNotMatch(css, /\.(network-main|people-main|person-panel|partner-main)\s*\{[^}]*--weft-surface-inset:/s);
+  assert.doesNotMatch(css, /\.(network-main|people-main|person-panel|partner-main)\s*\{[^}]*--weft-shadow-inset[a-z-]*:/s);
   assert.match(
     css,
     /\.recommendation-card\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
@@ -52,25 +50,31 @@ test("network page scopes its warm-white inset surface without changing the shar
   );
 });
 
-test("network page inset shadows layer visible depth without washing out their centers", () => {
-  const networkRule = css.match(/\.network-main\s*\{([^}]*)\}/s)?.[1] ?? "";
-  const recipes = new Map([
-    ["--weft-shadow-inset", [6, 14]],
-    ["--weft-shadow-inset-deep", [10, 18]],
-    ["--weft-shadow-inset-compact", [5, 11]],
-    ["--weft-shadow-inset-track", [3]],
-  ]);
+test("inset shadows are non-directional ceramic cuts: crisp edge, soft even shade, no light source", () => {
+  const rootRule = css.match(/:root\s*\{([^}]*)\}/s)?.[1] ?? "";
+  const tokens = [
+    "--weft-shadow-inset",
+    "--weft-shadow-inset-deep",
+    "--weft-shadow-inset-compact",
+    "--weft-shadow-inset-track",
+    "--weft-shadow-pressed",
+  ];
 
-  for (const [token, expectedBlurs] of recipes) {
-    const tokenPattern = new RegExp(`${token}:([\\s\\S]*?);`);
-    const value = networkRule.match(tokenPattern)?.[1] ?? "";
-    const blurs = [...value.matchAll(/inset\s+0\s+0\s+(\d+)px/g)]
-      .map((match) => Number(match[1]))
-      .filter(Boolean);
-
-    assert.ok(value, `${token} must be defined on the Network page`);
-    assert.deepEqual(blurs, expectedBlurs, `${token} must use its calibrated depth falloff`);
-    assert.match(value, /inset\s+0\s+0\s+0\s+1px/, `${token} must retain a crisp inner edge`);
+  for (const token of tokens) {
+    const value = rootRule.match(new RegExp(`${token}:([\\s\\S]*?);`))?.[1] ?? "";
+    assert.ok(value, `${token} must be defined at :root`);
+    const layers = value.split(",\n").map((layer) => layer.trim());
+    for (const layer of layers) {
+      assert.match(layer, /^(inset )?0 0 /, `${token} must not offset any layer (no simulated light): ${layer}`);
+      const isOuterRim = /^0 0 .*255,\s*255,\s*255/.test(layer);
+      if (isOuterRim) continue;
+      assert.match(layer, /^inset /, `${token} may only paint outside the cut with the white rim: ${layer}`);
+      const alpha = Number(layer.match(/rgba\([^)]*,\s*([\d.]+)\)/)?.[1]);
+      assert.ok(alpha <= 0.24, `${token} shade must stay below .24, got ${alpha}`);
+    }
+    assert.match(value, /inset\s+0\s+0\s+0\s+1px/, `${token} must retain a faint inner edge`);
+    assert.doesNotMatch(value, /inset[^,]*255,\s*255,\s*255/, `${token} must not paint an inner highlight`);
+    assert.match(value, /\n\s*0 0 0 1px rgba\(255, 255, 255/, `${token} must carry the outer white rim`);
   }
 
   assert.match(
@@ -126,14 +130,14 @@ test("repeat attendance chart renders its track as a separate recessed surface",
 });
 
 test("inset surfaces read as matte ceramic cuts rather than glossy overlays", () => {
-  assert.match(css, /--weft-surface-inset:\s*#efede8/);
+  assert.match(css, /--weft-surface-inset:\s*#f3f1ec/);
   assert.match(
     css,
-    /--weft-shadow-inset:\s*inset 7px 7px 16px rgba\(86, 74, 60, 0\.18\),\s*inset -7px -7px 16px rgba\(255, 255, 255, 0\.3\)/s,
+    /--weft-shadow-inset:\s*inset 0 0 4px rgba\(86, 74, 60, 0\.22\),\s*inset 0 0 16px rgba\(86, 74, 60, 0\.12\),\s*inset 0 0 0 1px rgba\(87, 78, 67, 0\.06\)/s,
   );
   assert.match(
     css,
-    /--weft-shadow-inset-deep:\s*inset 12px 12px 28px rgba\(86, 74, 60, 0\.18\),\s*inset -12px -12px 28px rgba\(255, 255, 255, 0\.3\)/s,
+    /--weft-shadow-inset-deep:\s*inset 0 0 5px rgba\(86, 74, 60, 0\.22\),\s*inset 0 0 26px rgba\(86, 74, 60, 0\.13\),\s*inset 0 0 0 1px rgba\(87, 78, 67, 0\.06\)/s,
   );
   assert.match(
     css,
