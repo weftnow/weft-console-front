@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 
 type TactileButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconOnly?: boolean;
-  variant?: "neutral" | "accent" | "ghost";
+  variant?: "neutral" | "accent" | "ghost" | "primary" | "graphite";
 };
 
 export function TactileButton({
