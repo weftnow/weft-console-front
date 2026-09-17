@@ -146,10 +146,10 @@ function formatDateRange(start: string, end: string) {
 
 /** Every column the importer reads, plus one example row per guest type. */
 const CSV_TEMPLATE = [
-  "First Name,Last Name,Email,Company,Position,LinkedIn,Profile Type,Guest Type",
-  "Ada,Whitfield,ada.whitfield@example.com,Northline Labs,Founder & CEO,linkedin.com/in/ada-whitfield,Founders,VIP",
-  "Tomas,Okonkwo,tomas.okonkwo@example.com,Arbor Peak Capital,Partner,linkedin.com/in/tomas-okonkwo,Investors,Attendee",
-  "Mira,Lindqvist,mira.lindqvist@example.com,Ardent Global Bank,Head of Sponsorships,linkedin.com/in/mira-lindqvist,Sponsors,Sponsor",
+  "First Name,Last Name,Email,Phone,Company,Position,LinkedIn,Profile Type,Guest Type",
+  "Ada,Whitfield,ada.whitfield@example.com,+1 702 555 0101,Northline Labs,Founder & CEO,linkedin.com/in/ada-whitfield,Founders,VIP",
+  "Tomas,Okonkwo,tomas.okonkwo@example.com,+1 415 555 0102,Arbor Peak Capital,Partner,linkedin.com/in/tomas-okonkwo,Investors,Attendee",
+  "Mira,Lindqvist,mira.lindqvist@example.com,+1 212 555 0103,Ardent Global Bank,Head of Sponsorships,linkedin.com/in/mira-lindqvist,Sponsors,Sponsor",
 ].join("\n");
 
 function downloadCsvTemplate() {
@@ -287,6 +287,7 @@ export function CreateEventPage() {
     guestType: "Attendee",
     lastName: "",
     linkedin: "",
+    phone: "",
     position: "",
     profileType: "",
     source: "manual",
@@ -435,6 +436,7 @@ export function CreateEventPage() {
       guestType: "Attendee",
       lastName: "",
       linkedin: "",
+      phone: "",
       position: "",
       profileType: "",
       source: "manual",
@@ -864,7 +866,7 @@ export function CreateEventPage() {
                     <div className="csv-requirements">
                       <strong>CSV requirements</strong>
                       <p>Required: first name, last name, email</p>
-                      <p>Optional: company, position, LinkedIn, profile type, guest type</p>
+                      <p>Optional: phone, company, position, LinkedIn, profile type, guest type</p>
                       <p>Guest type accepts Attendee, VIP, or Sponsor.</p>
                       <button className="template-action" onClick={downloadCsvTemplate} type="button">
                         <UploadIcon className="rotate-180" height="15" width="15" /> Download template
@@ -882,6 +884,9 @@ export function CreateEventPage() {
                       </FormField>
                       <FormField id="guest-email" label="Email">
                         <input className="event-control" data-filled={Boolean(manualGuest.email)} id="guest-email" onChange={(event) => setManualGuest((current) => ({ ...current, email: event.target.value }))} placeholder="name@company.com" type="email" value={manualGuest.email} />
+                      </FormField>
+                      <FormField id="guest-phone" label="Phone">
+                        <input className="event-control" data-filled={Boolean(manualGuest.phone)} id="guest-phone" onChange={(event) => setManualGuest((current) => ({ ...current, phone: event.target.value }))} placeholder="+1 702 555 0100" type="tel" value={manualGuest.phone} />
                       </FormField>
                       <FormField id="guest-type" label="Guest type">
                         <select className="event-control" data-filled id="guest-type" onChange={(event) => setManualGuest((current) => ({ ...current, guestType: event.target.value as ManualGuest["guestType"] }))} value={manualGuest.guestType}>
