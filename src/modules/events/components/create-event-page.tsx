@@ -36,11 +36,14 @@ import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import {
   createEventId,
+  EVENT_AUDIENCE_OPTIONS,
   EVENT_COVER_PLACEHOLDER_ART,
   type EventGuestRecord,
+  MAX_STORED_GUESTS,
   normalizeCoverImage,
   saveEventRecord,
 } from "../event-record";
+import { GuestCsvError, parseGuestCsv } from "../guest-csv";
 
 const CATEGORY_OPTIONS = [
   "Sports",
@@ -55,19 +58,7 @@ const CATEGORY_OPTIONS = [
   "Media",
 ] as const;
 
-const AUDIENCE_OPTIONS = [
-  "Founders",
-  "Investors",
-  "Family Offices",
-  "Executives",
-  "Brands",
-  "Sponsors",
-  "Creators",
-  "Media",
-  "Athletes",
-  "Government",
-  "Service Providers",
-] as const;
+const AUDIENCE_OPTIONS = EVENT_AUDIENCE_OPTIONS;
 
 const STAFF = [
   { id: "maria", name: "Maria Chen", role: "Lead wefter", avatar: "/network/avatars/sarah-chen.png" },
@@ -100,7 +91,10 @@ type EventForm = {
 type CsvImport = {
   attendees: number;
   file: File;
+  guests: EventGuestRecord[];
+  skipped: number;
   sponsors: number;
+  truncated: boolean;
   vips: number;
 };
 
@@ -150,33 +144,27 @@ function formatDateRange(start: string, end: string) {
   return `${startDate} – ${endDate}`;
 }
 
+/** Every column the importer reads, plus one example row per guest type. */
+const CSV_TEMPLATE = [
+  "First Name,Last Name,Email,Company,Position,LinkedIn,Profile Type,Guest Type",
+  "Ada,Whitfield,ada.whitfield@example.com,Northline Labs,Founder & CEO,linkedin.com/in/ada-whitfield,Founders,VIP",
+  "Tomas,Okonkwo,tomas.okonkwo@example.com,Arbor Peak Capital,Partner,linkedin.com/in/tomas-okonkwo,Investors,Attendee",
+  "Mira,Lindqvist,mira.lindqvist@example.com,Ardent Global Bank,Head of Sponsorships,linkedin.com/in/mira-lindqvist,Sponsors,Sponsor",
+].join("\n");
+
+function downloadCsvTemplate() {
+  const url = URL.createObjectURL(new Blob([CSV_TEMPLATE], { type: "text/csv" }));
+  const link = document.createElement("a");
+  link.download = "weft-attendee-template.csv";
+  link.href = url;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function splitCsvRow(row: string) {
-  const cells: string[] = [];
-  let current = "";
-  let quoted = false;
-
-  for (let index = 0; index < row.length; index += 1) {
-    const character = row[index];
-    if (character === '"' && row[index + 1] === '"' && quoted) {
-      current += '"';
-      index += 1;
-    } else if (character === '"') {
-      quoted = !quoted;
-    } else if (character === "," && !quoted) {
-      cells.push(current.trim());
-      current = "";
-    } else {
-      current += character;
-    }
-  }
-  cells.push(current.trim());
-  return cells;
 }
 
 function FormField({
@@ -300,6 +288,8 @@ export function CreateEventPage() {
     lastName: "",
     linkedin: "",
     position: "",
+    profileType: "",
+    source: "manual",
   });
   const [manualGuests, setManualGuests] = useState<ManualGuest[]>([]);
   const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>([]);
@@ -378,29 +368,30 @@ export function CreateEventPage() {
     }
 
     try {
-      const text = await file.text();
-      const rows = text.split(/\r?\n/).filter((row) => row.trim().length > 0);
-      if (rows.length < 2) {
-        throw new Error("No attendee rows found");
-      }
-      const headers = splitCsvRow(rows[0]).map((header) =>
-        header.toLowerCase().replace(/[\s_-]+/g, ""),
-      );
-      const guestTypeIndex = headers.indexOf("guesttype");
-      const attendeeRows = rows.slice(1);
-      let vips = 0;
-      let sponsors = 0;
-      if (guestTypeIndex >= 0) {
-        attendeeRows.forEach((row) => {
-          const guestType = splitCsvRow(row)[guestTypeIndex]?.toLowerCase();
-          if (guestType === "vip") vips += 1;
-          if (guestType === "sponsor") sponsors += 1;
+      const parsed = parseGuestCsv(await file.text());
+      setCsvImport({
+        attendees: parsed.rows,
+        file,
+        guests: parsed.guests,
+        skipped: parsed.skipped,
+        sponsors: parsed.sponsors,
+        truncated: parsed.truncated,
+        vips: parsed.vips,
+      });
+      if (parsed.truncated) {
+        showToast({
+          detail: `Counts cover all ${parsed.rows.toLocaleString()} rows, but only the first ${MAX_STORED_GUESTS.toLocaleString()} are stored in full.`,
+          title: "Large guest list trimmed",
+          tone: "neutral",
         });
       }
-      setCsvImport({ attendees: attendeeRows.length, file, sponsors, vips });
-    } catch {
+    } catch (error) {
       setCsvImport(null);
-      setCsvError("We could not read attendee rows from this file.");
+      setCsvError(
+        error instanceof GuestCsvError
+          ? `${error.message}. Check that the first row names the columns.`
+          : "We could not read attendee rows from this file.",
+      );
     }
   }
 
@@ -445,6 +436,8 @@ export function CreateEventPage() {
       lastName: "",
       linkedin: "",
       position: "",
+      profileType: "",
+      source: "manual",
     });
   }
 
@@ -485,17 +478,18 @@ export function CreateEventPage() {
     const expectedAttendees = form.attendees ? Number(form.attendees) : null;
 
     try {
-      saveEventRecord({
+      const { droppedGuests } = saveEventRecord({
         attendees: {
+          guests: [...csvImport?.guests ?? [], ...manualGuests],
           imported: csvImport
             ? {
                 attendees: csvImport.attendees,
                 fileName: csvImport.file.name,
                 sponsors: csvImport.sponsors,
+                storedGuests: csvImport.guests.length,
                 vips: csvImport.vips,
               }
             : null,
-          manual: manualGuests,
         },
         categories: form.categories,
         city: form.city,
@@ -519,6 +513,13 @@ export function CreateEventPage() {
         updatedAt: now,
         venue: form.venue,
       });
+      if (droppedGuests) {
+        showToast({
+          detail: "Attendee totals were kept, but the guest rows did not fit in browser storage. Remove the cover image or a past event, then re-import.",
+          title: "Guest list could not be stored",
+          tone: "neutral",
+        });
+      }
       router.push(`/events/${id}`);
     } catch {
       setActionState("idle");
@@ -809,10 +810,20 @@ export function CreateEventPage() {
                             </div>
                           </div>
                           <div className="csv-results">
-                            <strong>{csvImport.attendees}<span>attendees</span></strong>
-                            <strong>{csvImport.vips}<span>VIPs</span></strong>
-                            <strong>{csvImport.sponsors}<span>sponsors</span></strong>
+                            <strong>{csvImport.attendees.toLocaleString()}<span>attendees</span></strong>
+                            <strong>{csvImport.vips.toLocaleString()}<span>VIPs</span></strong>
+                            <strong>{csvImport.sponsors.toLocaleString()}<span>sponsors</span></strong>
                           </div>
+                          {csvImport.truncated || csvImport.skipped > 0 ? (
+                            <p className="csv-complete__note">
+                              {csvImport.truncated
+                                ? `Storing the first ${csvImport.guests.length.toLocaleString()} guests in full. `
+                                : ""}
+                              {csvImport.skipped > 0
+                                ? `${csvImport.skipped.toLocaleString()} ${csvImport.skipped === 1 ? "row" : "rows"} skipped for having no name or email.`
+                                : ""}
+                            </p>
+                          ) : null}
                           <div className="upload-actions csv-complete__actions">
                             <button onClick={() => csvInputRef.current?.click()} type="button">Replace file</button>
                             <button
@@ -853,8 +864,9 @@ export function CreateEventPage() {
                     <div className="csv-requirements">
                       <strong>CSV requirements</strong>
                       <p>Required: first name, last name, email</p>
-                      <p>Optional: company, role, LinkedIn, profile type, guest type</p>
-                      <button className="template-action" onClick={() => showToast({ detail: "The demo template includes all supported columns.", title: "Template prepared", tone: "success" })} type="button">
+                      <p>Optional: company, position, LinkedIn, profile type, guest type</p>
+                      <p>Guest type accepts Attendee, VIP, or Sponsor.</p>
+                      <button className="template-action" onClick={downloadCsvTemplate} type="button">
                         <UploadIcon className="rotate-180" height="15" width="15" /> Download template
                       </button>
                     </div>
@@ -886,6 +898,12 @@ export function CreateEventPage() {
                       </FormField>
                       <FormField id="guest-company" label="Company">
                         <input className="event-control" data-filled={Boolean(manualGuest.company)} id="guest-company" onChange={(event) => setManualGuest((current) => ({ ...current, company: event.target.value }))} placeholder="Company name" value={manualGuest.company} />
+                      </FormField>
+                      <FormField id="guest-profile-type" label="Profile type">
+                        <select className="event-control" data-filled={Boolean(manualGuest.profileType)} id="guest-profile-type" onChange={(event) => setManualGuest((current) => ({ ...current, profileType: event.target.value }))} value={manualGuest.profileType}>
+                          <option value="">Not set</option>
+                          {AUDIENCE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
+                        </select>
                       </FormField>
                       <TactileButton className="manual-add-action" onClick={addManualGuest} variant="graphite">
                         <PlusIcon height="15" width="15" /> Add guest

@@ -32,6 +32,7 @@ import {
 } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { AttendeeRoster } from "./attendee-roster";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
   deriveEventMetrics,
@@ -211,7 +212,6 @@ function EventSummary({ event }: { event: EventRecord }) {
 
 function ReadinessCard({ event }: { event: EventRecord }) {
   const metrics = deriveEventMetrics(event);
-  const actualAttendees = (event.attendees.imported?.attendees ?? 0) + event.attendees.manual.length;
   const readiness = [
     {
       detail: "Complete",
@@ -223,7 +223,7 @@ function ReadinessCard({ event }: { event: EventRecord }) {
       label: "Event context",
       ready: Boolean(event.description && event.categories.length),
     },
-    { detail: "Complete", label: "Attendees imported", ready: actualAttendees > 0 },
+    { detail: "Complete", label: "Attendees imported", ready: metrics.attendees > 0 },
     { detail: "Complete", label: "Staff assigned", ready: metrics.staff > 0 },
     { detail: "Default configuration", label: "Kami ready", ready: true },
   ];
@@ -275,7 +275,7 @@ function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: 
 }
 
 function RecentActivity({ event }: { event: EventRecord }) {
-  const actualAttendees = (event.attendees.imported?.attendees ?? 0) + event.attendees.manual.length;
+  const actualAttendees = deriveEventMetrics(event).attendees;
   const activities: { detail: string; icon: Icon; label: string; timestamp: string }[] = [];
 
   if (actualAttendees > 0) {
@@ -462,6 +462,10 @@ export function EventDetailPage({ eventId, initialTab }: { eventId: string; init
                   <KamiCard eventId={event.id} onSelect={setActiveTab} />
                 </aside>
               </div>
+            </div>
+          ) : activeTab === "attendees" ? (
+            <div className="event-detail-tab-content" key={activeTab}>
+              <AttendeeRoster event={event} />
             </div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>

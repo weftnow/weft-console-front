@@ -1,4 +1,9 @@
+import { SEEDED_EVENT_GUESTS } from "./seed-guests";
+
 export type EventGuestType = "Attendee" | "VIP" | "Sponsor";
+
+/** How a guest reached the roster: a CSV import or the manual entry form. */
+export type EventGuestSource = "csv" | "manual";
 
 export interface EventGuestRecord {
   company: string;
@@ -8,6 +13,9 @@ export interface EventGuestRecord {
   lastName: string;
   linkedin: string;
   position: string;
+  /** Audience segment, e.g. "Founders". Empty when the import omitted it. */
+  profileType: string;
+  source: EventGuestSource;
 }
 
 export interface EventStaffRecord {
@@ -18,16 +26,20 @@ export interface EventStaffRecord {
 }
 
 export interface EventAttendeeImport {
+  /** Total data rows in the imported file, even if not all were stored. */
   attendees: number;
   fileName: string;
   sponsors: number;
+  /** Rows actually kept on the record; below `attendees` when truncated. */
+  storedGuests: number;
   vips: number;
 }
 
 export interface EventRecord {
   attendees: {
     imported: EventAttendeeImport | null;
-    manual: EventGuestRecord[];
+    /** Imported and manually added guests in one roster; see `source`. */
+    guests: EventGuestRecord[];
   };
   categories: string[];
   city: string;
@@ -55,10 +67,38 @@ export interface EventMetrics {
   vips: number;
 }
 
+/**
+ * Audience vocabulary shared by the event-level expected audience, the manual
+ * guest form, and CSV profile-type normalization.
+ */
+export const EVENT_AUDIENCE_OPTIONS = [
+  "Founders",
+  "Investors",
+  "Family Offices",
+  "Executives",
+  "Brands",
+  "Sponsors",
+  "Creators",
+  "Media",
+  "Athletes",
+  "Government",
+  "Service Providers",
+] as const;
+
 export type EventStatus = "upcoming" | "live" | "completed";
 export type EventDetailTab = "overview" | "attendees" | "kami" | "staff" | "insights";
 
 const EVENT_STORAGE_KEY = "weft:events:v1";
+
+/**
+ * Upper bound on guest rows persisted per event. `localStorage` gives us
+ * roughly 5 MB for every Weft event combined, and a normalized cover image is
+ * stored as a data URL on the same record, so an unbounded import would evict
+ * the event it belongs to. At ~220 bytes of JSON per guest this reserves about
+ * 440 KB. Imports beyond the cap keep their aggregate counts and report the
+ * truncation instead of failing.
+ */
+export const MAX_STORED_GUESTS = 2000;
 const EVENT_DETAIL_TABS: EventDetailTab[] = [
   "overview",
   "attendees",
@@ -75,9 +115,10 @@ export const SEEDED_EVENT: EventRecord = {
       attendees: 186,
       fileName: "las-vegas-f1-week-guests.csv",
       sponsors: 7,
+      storedGuests: SEEDED_EVENT_GUESTS.length,
       vips: 23,
     },
-    manual: [],
+    guests: SEEDED_EVENT_GUESTS,
   },
   categories: ["Sports", "Luxury", "Investing", "Technology", "Entertainment"],
   city: "Las Vegas, USA",
@@ -118,6 +159,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function isEventRecord(value: unknown): value is EventRecord {
   if (!isRecord(value) || !isRecord(value.attendees)) return false;
 
+  // `manual` is the pre-roster key; migrateEventRecord folds it into `guests`.
+  const roster = value.attendees.guests ?? value.attendees.manual;
+
   return (
     typeof value.id === "string" &&
     typeof value.name === "string" &&
@@ -129,8 +173,41 @@ function isEventRecord(value: unknown): value is EventRecord {
     Array.isArray(value.categories) &&
     Array.isArray(value.expectedAudience) &&
     Array.isArray(value.staff) &&
-    Array.isArray(value.attendees.manual)
+    Array.isArray(roster)
   );
+}
+
+/**
+ * Bring a stored record up to the current shape. Events saved before the
+ * roster existed keep their guests under `manual` and carry no `profileType`,
+ * `source`, or `storedGuests`, so they would otherwise render an empty table.
+ */
+function migrateEventRecord(event: EventRecord): EventRecord {
+  const attendees = event.attendees as EventRecord["attendees"] & {
+    manual?: EventGuestRecord[];
+  };
+  const roster = attendees.guests ?? attendees.manual ?? [];
+  const guests = roster.map((guest) => ({
+    ...guest,
+    profileType: guest.profileType ?? "",
+    source: guest.source ?? ("manual" as EventGuestSource),
+  }));
+  const imported = event.attendees.imported;
+
+  return {
+    ...event,
+    attendees: {
+      guests,
+      imported: imported
+        ? {
+            ...imported,
+            storedGuests:
+              imported.storedGuests ??
+              guests.filter((guest) => guest.source === "csv").length,
+          }
+        : null,
+    },
+  };
 }
 
 function readStoredEvents(): StoredEvents {
@@ -143,9 +220,9 @@ function readStoredEvents(): StoredEvents {
     if (!isRecord(parsed)) return {};
 
     return Object.fromEntries(
-      Object.entries(parsed).filter((entry): entry is [string, EventRecord] =>
-        isEventRecord(entry[1]),
-      ),
+      Object.entries(parsed)
+        .filter((entry): entry is [string, EventRecord] => isEventRecord(entry[1]))
+        .map(([id, event]) => [id, migrateEventRecord(event)]),
     );
   } catch {
     return {};
@@ -200,11 +277,13 @@ export function createEventId(name: string, existingIds?: string[]) {
 
 export function deriveEventMetrics(event: EventRecord): EventMetrics {
   const imported = event.attendees.imported;
-  const manual = event.attendees.manual;
-  const actualAttendees = (imported?.attendees ?? 0) + manual.length;
+  // Import aggregates already count every row in the file, so only manually
+  // added guests are added on top. Counting the roster instead would undercount
+  // a truncated import and double-count a complete one.
+  const manual = event.attendees.guests.filter((guest) => guest.source === "manual");
 
   return {
-    attendees: actualAttendees,
+    attendees: (imported?.attendees ?? 0) + manual.length,
     attendeesAreExpected: false,
     sponsors:
       (imported?.sponsors ?? 0) + manual.filter((guest) => guest.guestType === "Sponsor").length,
@@ -291,13 +370,48 @@ export async function normalizeCoverImage(file: File) {
   }
 }
 
+function isQuotaError(error: unknown) {
+  return (
+    error instanceof DOMException &&
+    (error.name === "QuotaExceededError" ||
+      error.name === "NS_ERROR_DOM_QUOTA_REACHED")
+  );
+}
+
+/**
+ * Persist an event. A cover image and a large roster share the same storage
+ * budget, so on a quota failure this retries once without the guest rows —
+ * losing row detail is recoverable by re-importing, losing the event is not.
+ */
 export function saveEventRecord(event: EventRecord) {
   if (typeof window === "undefined") {
     throw new Error("Event records can only be saved in the browser");
   }
   const events = readStoredEvents();
-  window.localStorage.setItem(
-    EVENT_STORAGE_KEY,
-    JSON.stringify({ ...events, [event.id]: event }),
-  );
+
+  const write = (candidate: EventRecord) => {
+    window.localStorage.setItem(
+      EVENT_STORAGE_KEY,
+      JSON.stringify({ ...events, [candidate.id]: candidate }),
+    );
+  };
+
+  try {
+    write(event);
+    return { droppedGuests: false };
+  } catch (error) {
+    if (!isQuotaError(error) || event.attendees.guests.length === 0) throw error;
+
+    write({
+      ...event,
+      attendees: {
+        ...event.attendees,
+        guests: [],
+        imported: event.attendees.imported
+          ? { ...event.attendees.imported, storedGuests: 0 }
+          : null,
+      },
+    });
+    return { droppedGuests: true };
+  }
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import test from "node:test";
 import React from "react";
@@ -8,9 +8,23 @@ import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
-function loadModule(path) {
-  const source = readFileSync(new URL(path, import.meta.url), "utf8");
-  const compiled = ts.transpileModule(source, {
+const moduleCache = new Map();
+
+/**
+ * Transpile and evaluate a TypeScript source file. Relative imports are
+ * resolved against the importing file rather than this test, so a module that
+ * pulls in a sibling (event-record -> seed-guests) loads the real thing.
+ */
+function loadModule(path, base = import.meta.url) {
+  const url = new URL(path, base);
+  const resolved = ["", ".ts", ".tsx", "/index.ts"]
+    .map((extension) => new URL(url.href + extension))
+    .find((candidate) => existsSync(candidate));
+
+  if (!resolved) return require(path);
+  if (moduleCache.has(resolved.href)) return moduleCache.get(resolved.href);
+
+  const compiled = ts.transpileModule(readFileSync(resolved, "utf8"), {
     compilerOptions: {
       esModuleInterop: true,
       jsx: ts.JsxEmit.ReactJSX,
@@ -18,9 +32,14 @@ function loadModule(path) {
       target: ts.ScriptTarget.ES2020,
     },
   }).outputText;
+
   const loadedModule = { exports: {} };
+  moduleCache.set(resolved.href, loadedModule.exports);
+  const scopedRequire = (request) =>
+    request.startsWith(".") ? loadModule(request, resolved.href) : require(request);
   const evaluate = new Function("module", "exports", "require", compiled);
-  evaluate(loadedModule, loadedModule.exports, require);
+  evaluate(loadedModule, loadedModule.exports, scopedRequire);
+  moduleCache.set(resolved.href, loadedModule.exports);
   return loadedModule.exports;
 }
 
@@ -53,7 +72,7 @@ function loadCityArtwork() {
 
 function eventWithEstimate(expectedAttendees) {
   return {
-    attendees: { imported: null, manual: [] },
+    attendees: { guests: [], imported: null },
     categories: [],
     city: "Las Vegas, USA",
     coverImage: null,
