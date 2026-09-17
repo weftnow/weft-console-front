@@ -10,10 +10,10 @@ import {
 } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 
-export type ConsoleDestination = "overview" | "network";
+export type ConsoleDestination = "overview" | "events" | "network";
 
 type NavigationItem = {
-  key: ConsoleDestination | "events" | "people" | "outcomes";
+  key: ConsoleDestination | "people" | "outcomes";
   label: string;
   href: string;
   icon: typeof HomeIcon;
@@ -22,7 +22,7 @@ type NavigationItem = {
 
 const navigation: NavigationItem[] = [
   { key: "overview", label: "Overview", href: "/", icon: HomeIcon, supported: true },
-  { key: "events", label: "Events", href: "#events", icon: CalendarIcon, supported: false },
+  { key: "events", label: "Events", href: "/events", icon: CalendarIcon, supported: true },
   { key: "network", label: "Network", href: "/network", icon: NetworkIcon, supported: true },
   { key: "people", label: "People", href: "#people", icon: PeopleIcon, supported: false },
   { key: "outcomes", label: "Outcomes", href: "#outcomes", icon: OutcomesIcon, supported: false },

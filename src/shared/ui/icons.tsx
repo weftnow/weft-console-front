@@ -65,7 +65,19 @@ export function ShieldIcon(props: IconProps) {
   return <IconBase {...props}><path d="M12 3 5 6v5c0 4.7 2.8 8.1 7 10 4.2-1.9 7-5.3 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></IconBase>;
 }
 export function SearchIcon(props: IconProps) {
-  return <IconBase {...props}><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></IconBase>;
+  return <IconBase {...props}><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></IconBase>;
+}
+export function PlusIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M12 5v14M5 12h14" /></IconBase>;
+}
+export function StaffIcon(props: IconProps) {
+  return <IconBase {...props}><circle cx="10" cy="8" r="3.2" /><path d="M4 20v-2c0-2.7 2.7-4.6 6-4.6 1.2 0 2.3.2 3.2.7" /><path d="m15.5 18 1.8 1.8 3.2-4" /></IconBase>;
+}
+export function SortIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M8 4.5v15M4.8 16.3 8 19.5l3.2-3.2" /><path d="M16 19.5v-15M12.8 7.7 16 4.5l3.2 3.2" /></IconBase>;
+}
+export function ArrowLeftIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M19 12H5M10 7l-5 5 5 5" /></IconBase>;
 }
 export function SparklesIcon(props: IconProps) {
   return <IconBase {...props}><path d="M12 2.5c.4 4.1 2.6 6.3 6.7 6.7-4.1.4-6.3 2.6-6.7 6.7-.4-4.1-2.6-6.3-6.7-6.7 4.1-.4 6.3-2.6 6.7-6.7Z" /><path d="M19 15.5c.2 2 1.3 3.1 3.3 3.3-2 .2-3.1 1.3-3.3 3.3-.2-2-1.3-3.1-3.3-3.3 2-.2 3.1-1.3 3.3-3.3ZM5.3 2.5c.1 1.4.9 2.2 2.3 2.3-1.4.1-2.2.9-2.3 2.3-.1-1.4-.9-2.2-2.3-2.3 1.4-.1 2.2-.9 2.3-2.3Z" /></IconBase>;

@@ -1,5 +1,8 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import { CityArtwork } from "@/shared/ui/city-artwork";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { FilterMenu } from "@/shared/ui/filter-menu";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -13,14 +16,9 @@ import {
   StarIcon,
   TrendIcon,
 } from "@/shared/ui/icons";
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
-import {
-  organizerOverviewData,
-  type CityTheme,
-  type MetricIcon,
-} from "../overview-data";
+import { organizerOverviewData, type MetricIcon } from "../overview-data";
 import { ConnectionQualityChart } from "./connection-quality-chart";
 import { RepeatAttendanceChart } from "./repeat-attendance-chart";
 
@@ -34,31 +32,6 @@ function MetricGlyph({ icon }: { icon: MetricIcon }) {
   };
 
   return icons[icon];
-}
-
-function CityArtwork({ className = "", theme }: { className?: string; theme: CityTheme }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`city-art ${className}`.trim()}
-      style={{ "--horizon": theme.horizon, "--sky": theme.sky } as CSSProperties}
-    />
-  );
-}
-
-function FilterMenu({ icon, label, options }: { icon: ReactNode; label: string; options: string[] }) {
-  return (
-    <details className="filter-menu">
-      <summary className="tactile-button filter-trigger">
-        {icon}
-        <span>{label}</span>
-        <ChevronDownIcon height="15" width="15" />
-      </summary>
-      <Surface className="filter-options" depth="floating">
-        {options.map((option) => <button key={option} type="button">{option}</button>)}
-      </Surface>
-    </details>
-  );
 }
 
 function WorldMap() {
@@ -166,7 +139,7 @@ function EventPerformanceTable() {
           <tbody className="table-body-well" data-depth="inset">
             {organizerOverviewData.performance.map((event) => (
               <tr key={event.name}>
-                <td><div className="event-name"><CityArtwork className="mini-city" theme={event.theme} /><span>{event.name}</span></div></td>
+                <td><div className="event-name"><CityArtwork className="mini-city" art={event.theme} /><span>{event.name}</span></div></td>
                 <td>{event.city}</td><td>{event.date}</td><td>{event.attendees}</td><td>{event.introductions}</td>
                 <td><div className="progress-cell"><span>{event.valuable}%</span><span className="progress-track"><span className="progress-fill" style={{ width: `${event.valuable}%` }} /></span></div></td>
                 <td>{event.repeatGuests}%</td><td><ChevronRightIcon height="15" width="15" /></td>
@@ -187,7 +160,7 @@ function UpcomingEvents() {
       <div className="event-card-grid">
         {organizerOverviewData.upcoming.map((event) => (
           <Surface as="article" className="event-card" depth="inset" key={event.city}>
-            <CityArtwork className="city-art--large" theme={event.theme} />
+            <CityArtwork className="city-art--large" art={event.theme} />
             <div className="event-card__body"><h3>{event.city}</h3><p>{event.name}</p><div className="event-meta"><span><CalendarIcon height="13" width="13" />{event.date}</span><span><PeopleIcon height="13" width="13" />{event.registered} registered</span><span><ShieldIcon height="13" width="13" />{event.daysToGo} days to go</span></div></div>
             <TactileButton aria-label={`Open ${event.city}`} iconOnly><ArrowRightIcon height="17" width="17" /></TactileButton>
           </Surface>
@@ -206,7 +179,7 @@ function ClosingSections() {
         <div className="movement-flow">
           {organizerOverviewData.movement.map((location, index) => (
             <div key={location.city} style={{ display: "contents" }}>
-              <Surface className="movement-node" depth="inset"><CityArtwork className="city-art--small" theme={location.theme} /><div><strong>{location.city}</strong><span>{location.detail}</span></div><em><PeopleIcon height="15" width="15" />{location.signal}</em></Surface>
+              <Surface className="movement-node" depth="inset"><CityArtwork className="city-art--small" art={location.theme} /><div><strong>{location.city}</strong><span>{location.detail}</span></div><em><PeopleIcon height="15" width="15" />{location.signal}</em></Surface>
               {index < organizerOverviewData.movement.length - 1 ? <span className="movement-arrow"><ArrowRightIcon height="15" width="15" /></span> : null}
             </div>
           ))}
