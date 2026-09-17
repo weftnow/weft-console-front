@@ -1,8 +1,8 @@
-import { CityArtwork } from "../../../shared/ui/city-artwork";
-import { ArrowRightIcon, OutcomesIcon } from "../../../shared/ui/icons";
-import { ProgressRing } from "../../../shared/ui/progress-ring";
-import { Surface } from "../../../shared/ui/surface";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+import { CityArtwork } from "@/shared/ui/city-artwork";
+import { ArrowRightIcon, OutcomesIcon } from "@/shared/ui/icons";
+import { ProgressRing } from "@/shared/ui/progress-ring";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { eventsData } from "../events-data";
 
 export function RecentlyCompletedPanel() {

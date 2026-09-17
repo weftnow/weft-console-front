@@ -31,7 +31,7 @@ src/
 ├── modules/
 │   ├── events/
 │   ├── attendees/
-│   ├── introductions/
+│   ├── network/
 │   ├── sponsors/
 │   ├── staff/
 │   ├── insights/
@@ -44,7 +44,7 @@ The modules above represent Console business capabilities.
 
 They should evolve as the product domain becomes clearer. Do not create a new module for every page.
 
-## `app/`
+## `src/app/`
 
 Contains Next.js routing and framework integration.
 
@@ -62,7 +62,7 @@ Pages and route handlers should mainly receive framework input, invoke behavior 
 
 Business logic should not live directly in route files.
 
-## `modules/`
+## `src/modules/`
 
 Contains the business capabilities of the Console.
 
@@ -71,8 +71,8 @@ A module should start simple and only contain folders it actually needs.
 Typical structure:
 
 ```text
-modules/
-└── introductions/
+src/modules/
+└── network/
     ├── components/
     ├── hooks/
     ├── queries/
@@ -89,14 +89,14 @@ Contains UI that belongs specifically to the module.
 Examples:
 
 ```text
-introduction-card.tsx
-introduction-list.tsx
+connection-recommendation-card.tsx
+network-explorer.tsx
 introduction-status-badge.tsx
 ```
 
 If a component only makes sense within one business capability, keep it inside that module.
 
-Generic reusable UI belongs in `shared/ui/`.
+Generic reusable UI belongs in `src/shared/ui/`.
 
 ### `hooks/`
 
@@ -105,9 +105,9 @@ Contains reusable React specific behavior owned by the module.
 Examples:
 
 ```text
-use-introduction-filters.ts
-use-complete-introduction.ts
-use-event-attendees.ts
+use-network-filters.ts
+use-connection-recommendations.ts
+use-introduction-status.ts
 ```
 
 Create a hook only when the behavior actually depends on React hooks or React state.
@@ -121,9 +121,9 @@ Contains operations that read module data.
 Examples:
 
 ```text
-get-introduction.ts
-get-pending-introductions.ts
-get-event-attendees.ts
+get-network-overview.ts
+get-connection-recommendations.ts
+get-direct-connections.ts
 ```
 
 Queries should represent reads regardless of whether they are called directly from a Server Component or wrapped by a client side data fetching hook.
@@ -135,9 +135,9 @@ Contains operations that create, update, delete, or otherwise change state.
 Examples:
 
 ```text
-assign-introduction.ts
+plan-introduction.ts
 complete-introduction.ts
-update-event.ts
+update-connection-context.ts
 ```
 
 A mutation represents the operation itself.
@@ -206,14 +206,14 @@ Public barrel files such as `index.ts` are optional.
 
 If used, do not mix client only and server only exports through the same barrel. Prefer explicit imports when they make runtime boundaries clearer.
 
-## `shared/`
+## `src/shared/`
 
 Contains code genuinely reusable across unrelated modules.
 
 Typical structure:
 
 ```text
-shared/
+src/shared/
 ├── ui/
 ├── hooks/
 ├── lib/
@@ -228,18 +228,18 @@ Examples:
 - generic helpers
 - application wide types
 
-Do not move code into `shared/` merely because it is used twice.
+Do not move code into `src/shared/` merely because it is used twice.
 
 Prefer module ownership until the abstraction is clearly cross cutting.
 
-## `infrastructure/`
+## `src/infrastructure/`
 
 Contains technical capabilities that are not owned by one Console business module.
 
 Examples may include:
 
 ```text
-infrastructure/
+src/infrastructure/
 ├── database/
 ├── auth/
 ├── analytics/
@@ -271,12 +271,14 @@ Good:
 ```text
 events
 attendees
-introductions
+network
 sponsors
 staff
 insights
 organizations
 ```
+
+The Network capability owns relationship exploration, connection recommendations, and introduction planning or status. An introduction is a domain operation and outcome within Network rather than a separate top-level capability.
 
 Avoid organizing the application primarily around technical names such as:
 

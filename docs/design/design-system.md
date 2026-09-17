@@ -47,20 +47,20 @@ The design system must respect the project architecture without defining it.
 Reusable visual primitives belong in:
 
 ```text
-shared/ui/
+src/shared/ui/
 ```
 
 Examples:
 
 ```text
-shared/ui/button.tsx
-shared/ui/card.tsx
-shared/ui/surface.tsx
-shared/ui/tactile-button.tsx
-shared/ui/icon-button.tsx
-shared/ui/weft-icon.tsx
-shared/ui/stat.tsx
-shared/ui/filter-control.tsx
+src/shared/ui/button.tsx
+src/shared/ui/card.tsx
+src/shared/ui/surface.tsx
+src/shared/ui/tactile-button.tsx
+src/shared/ui/icon-button.tsx
+src/shared/ui/weft-icon.tsx
+src/shared/ui/stat.tsx
+src/shared/ui/filter-control.tsx
 ```
 
 Components that visually compose a specific product feature stay inside that feature.
@@ -68,11 +68,11 @@ Components that visually compose a specific product feature stay inside that fea
 Example:
 
 ```text
-features/events/components/event-performance-table.tsx
-features/network/components/network-snapshot.tsx
+src/modules/events/components/event-performance-table.tsx
+src/modules/network/components/network-snapshot.tsx
 ```
 
-A component belongs in `shared/ui` only when it is visually reusable and has no dependency on a specific Weft domain.
+A component belongs in `src/shared/ui` only when it is visually reusable and has no dependency on a specific Weft domain.
 
 Do not create a parallel `components/system` or `components/features` hierarchy for the design system.
 
@@ -602,7 +602,7 @@ import { Menu, X } from "lucide"
 Create a shared wrapper in:
 
 ```text
-shared/ui/weft-icon.tsx
+src/shared/ui/weft-icon.tsx
 ```
 
 The wrapper should define:
@@ -952,7 +952,7 @@ Does it encode a design system rule rather than business logic?
 If yes, it may belong in:
 
 ```text
-shared/ui/
+src/shared/ui/
 ```
 
 If the component contains event, network, sponsor, attendee, organizer, or other domain meaning, keep it inside that feature even if it uses shared visual primitives.
@@ -965,7 +965,7 @@ When implementing Weft UI:
 
 1. Start from hierarchy, spacing, and typography before adding depth.
 2. Use shadcn for existing interaction primitives.
-3. Reuse `shared/ui` design primitives before creating a new visual primitive.
+3. Reuse `src/shared/ui` design primitives before creating a new visual primitive.
 4. Keep feature specific visual compositions inside their feature.
 5. Use the defined surface roles instead of arbitrary shadows.
 6. Do not make every card raised.

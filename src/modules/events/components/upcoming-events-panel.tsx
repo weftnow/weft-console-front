@@ -1,12 +1,12 @@
-import { CityArtwork } from "../../../shared/ui/city-artwork";
+import { CityArtwork } from "@/shared/ui/city-artwork";
 import {
   ArrowRightIcon,
   CalendarIcon,
   PeopleIcon,
   StaffIcon,
-} from "../../../shared/ui/icons";
-import { Surface } from "../../../shared/ui/surface";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+} from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { eventsData } from "../events-data";
 
 export function UpcomingEventsPanel() {

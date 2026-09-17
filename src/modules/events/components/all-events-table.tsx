@@ -1,4 +1,4 @@
-import { CityArtwork } from "../../../shared/ui/city-artwork";
+import { CityArtwork } from "@/shared/ui/city-artwork";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -7,9 +7,9 @@ import {
   ChevronRightIcon,
   SearchIcon,
   SortIcon,
-} from "../../../shared/ui/icons";
-import { Surface } from "../../../shared/ui/surface";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+} from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { eventsData, statusLabels, type EventRow } from "../events-data";
 
 function ProgressCell({ value }: { value: number | null }) {

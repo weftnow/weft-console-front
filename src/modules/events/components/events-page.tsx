@@ -1,7 +1,7 @@
-import { ConsoleSidebar } from "../../../shared/ui/console-sidebar";
-import { FilterMenu } from "../../../shared/ui/filter-menu";
-import { PlusIcon, SearchIcon } from "../../../shared/ui/icons";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { FilterMenu } from "@/shared/ui/filter-menu";
+import { PlusIcon, SearchIcon } from "@/shared/ui/icons";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { AllEventsTable } from "./all-events-table";
 import { LiveEventPanel } from "./live-event-panel";
 import { RecentlyCompletedPanel } from "./recently-completed-panel";
@@ -34,7 +34,7 @@ export function EventsPage() {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="Events" />
+        <ConsoleSidebar active="events" />
         <main className="dashboard-main">
           <EventsHeader />
           <div className="content-stack">

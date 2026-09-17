@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-import { CityArtwork } from "../../../shared/ui/city-artwork";
-import { ConsoleSidebar } from "../../../shared/ui/console-sidebar";
-import { FilterMenu } from "../../../shared/ui/filter-menu";
+import { CityArtwork } from "@/shared/ui/city-artwork";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { FilterMenu } from "@/shared/ui/filter-menu";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -15,9 +15,9 @@ import {
   ShieldIcon,
   StarIcon,
   TrendIcon,
-} from "../../../shared/ui/icons";
-import { Surface } from "../../../shared/ui/surface";
-import { TactileButton } from "../../../shared/ui/tactile-button";
+} from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { organizerOverviewData, type MetricIcon } from "../overview-data";
 import { ConnectionQualityChart } from "./connection-quality-chart";
 import { RepeatAttendanceChart } from "./repeat-attendance-chart";
@@ -201,7 +201,7 @@ export function OrganizerOverview() {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="Overview" />
+        <ConsoleSidebar active="overview" />
         <main className="dashboard-main">
           <Topbar />
           <div className="content-stack">

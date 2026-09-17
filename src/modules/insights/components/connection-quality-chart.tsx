@@ -13,7 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "../../../shared/ui/chart";
+} from "@/shared/ui/chart";
 import type { ConnectionPoint } from "../overview-data";
 
 const chartConfig = {

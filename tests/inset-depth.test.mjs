@@ -2,19 +2,94 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 const overview = readFileSync(
-  new URL("../modules/insights/components/organizer-overview.tsx", import.meta.url),
+  new URL("../src/modules/insights/components/organizer-overview.tsx", import.meta.url),
   "utf8",
 );
 const sidebar = readFileSync(
-  new URL("../shared/ui/console-sidebar.tsx", import.meta.url),
+  new URL("../src/shared/ui/console-sidebar.tsx", import.meta.url),
   "utf8",
 );
 const repeatChart = readFileSync(
-  new URL("../modules/insights/components/repeat-attendance-chart.tsx", import.meta.url),
+  new URL("../src/modules/insights/components/repeat-attendance-chart.tsx", import.meta.url),
   "utf8",
 );
+
+test("recommendation pairs center profiles and the connector with readable card text", () => {
+  assert.match(css, /\.recommendation-pair\s*\{[^}]*justify-items:\s*center/s);
+  assert.match(css, /\.recommendation-person\s*\{[^}]*text-align:\s*center/s);
+  assert.match(css, /\.recommendation-person \.network-person__image\s*\{[^}]*margin-inline:\s*auto/s);
+  assert.match(css, /\.recommendation-person h3\s*\{[^}]*font-size:\s*13px/s);
+  assert.match(css, /\.recommendation-reason p\s*\{[^}]*font-size:\s*10px/s);
+});
+
+test("network page scopes its warm-white inset surface without changing the shared inset", () => {
+  assert.match(
+    css,
+    /\.network-main\s*\{[^}]*--weft-surface-inset:\s*#f7f6f3/s,
+  );
+  assert.match(css, /--weft-surface-inset:\s*#efede8/);
+  assert.match(
+    css,
+    /\.recommendation-card\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
+  );
+  assert.match(
+    css,
+    /\.composition-donut::before\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
+  );
+  assert.match(
+    css,
+    /\.introduction-progress\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
+  );
+  assert.match(
+    css,
+    /\.return-rate > span\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
+  );
+  assert.match(
+    css,
+    /\.returning-table tbody\s*\{[^}]*background:\s*var\(--weft-surface-inset\)/s,
+  );
+});
+
+test("network page inset shadows layer visible depth without washing out their centers", () => {
+  const networkRule = css.match(/\.network-main\s*\{([^}]*)\}/s)?.[1] ?? "";
+  const recipes = new Map([
+    ["--weft-shadow-inset", [6, 14]],
+    ["--weft-shadow-inset-deep", [10, 18]],
+    ["--weft-shadow-inset-compact", [5, 11]],
+    ["--weft-shadow-inset-track", [3]],
+  ]);
+
+  for (const [token, expectedBlurs] of recipes) {
+    const tokenPattern = new RegExp(`${token}:([\\s\\S]*?);`);
+    const value = networkRule.match(tokenPattern)?.[1] ?? "";
+    const blurs = [...value.matchAll(/inset\s+0\s+0\s+(\d+)px/g)]
+      .map((match) => Number(match[1]))
+      .filter(Boolean);
+
+    assert.ok(value, `${token} must be defined on the Network page`);
+    assert.deepEqual(blurs, expectedBlurs, `${token} must use its calibrated depth falloff`);
+    assert.match(value, /inset\s+0\s+0\s+0\s+1px/, `${token} must retain a crisp inner edge`);
+  }
+
+  assert.match(
+    css,
+    /\.recommendation-card\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-compact\)/s,
+  );
+  assert.match(
+    css,
+    /\.returning-table tbody\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-deep\)/s,
+  );
+  assert.match(
+    css,
+    /\.introduction-progress\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-track\)/s,
+  );
+  assert.match(
+    css,
+    /\.return-rate > span\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-track\)/s,
+  );
+});
 
 test("selected controls use the shared pressed depth recipe", () => {
   assert.match(css, /\.surface-pressed\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-pressed\)/s);

@@ -1,4 +1,4 @@
-import type { CityArt } from "../../shared/ui/city-artwork";
+import type { CityArt } from "@/shared/ui/city-artwork";
 
 /**
  * Mock data for the Events design implementation.
