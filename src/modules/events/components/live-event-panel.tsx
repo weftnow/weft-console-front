@@ -1,8 +1,9 @@
+import Link from "next/link";
+
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import { ArrowRightIcon, ClockIcon, LinkIcon, PeopleIcon } from "@/shared/ui/icons";
 import { ProgressRing } from "@/shared/ui/progress-ring";
 import { Surface } from "@/shared/ui/surface";
-import { TactileButton } from "@/shared/ui/tactile-button";
 import { eventsData, type LiveEventMetric } from "../events-data";
 
 const glyphs = {
@@ -34,7 +35,7 @@ export function LiveEventPanel() {
 
   return (
     <Surface as="section" className="panel live-panel" depth="raised" aria-labelledby="live-event-title">
-      <CityArtwork art={art} className="city-art--cinematic">
+      <CityArtwork art={art} className="city-art--cinematic" eager>
         <span className="live-badge"><span /> Live</span>
         <span className="city-art__scrim" />
         <span className="city-art__caption">
@@ -50,9 +51,9 @@ export function LiveEventPanel() {
             <h2 className="live-title" id="live-event-title">{name}</h2>
             <p className="live-meta">{dates} &nbsp;•&nbsp; {location}</p>
           </div>
-          <TactileButton className="live-action" variant="graphite">
+          <Link className="tactile-button tactile-button--graphite live-action" href="/events/las-vegas-f1-week">
             Open event <ArrowRightIcon height="16" width="16" />
-          </TactileButton>
+          </Link>
         </div>
         <div className="live-metrics">
           {metrics.map((metric) => <LiveMetric key={metric.label} metric={metric} />)}
