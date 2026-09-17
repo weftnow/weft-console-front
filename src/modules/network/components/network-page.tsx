@@ -1,6 +1,7 @@
 import Image from "next/image";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import { CityArtwork } from "@/shared/ui/city-artwork";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import {
   ArrowRightIcon,
@@ -222,13 +223,7 @@ function IntroductionTypes() {
 }
 
 function EventArtwork({ event }: { event: ReturningEvent }) {
-  return (
-    <div
-      aria-hidden="true"
-      className="city-art returning-event-art"
-      style={{ "--horizon": event.theme.horizon, "--sky": event.theme.sky } as CSSProperties}
-    />
-  );
+  return <CityArtwork art={event.theme} className="returning-event-art" />;
 }
 
 function ReturningAttendees() {

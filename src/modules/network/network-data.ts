@@ -50,8 +50,9 @@ export type ReturningEvent = {
   returningAttendees: number;
   returnRate: number;
   theme: {
-    sky: string;
     horizon: string;
+    image?: string;
+    sky: string;
   };
 };
 
@@ -203,9 +204,9 @@ export const networkPageData = {
     { label: "Brand ↔ Investor", count: 64, progress: 31 },
   ] satisfies IntroductionType[],
   returningEvents: [
-    { name: "Miami Art Week", totalAttendees: 142, returningAttendees: 24, returnRate: 17, theme: { sky: "#4f7fa9", horizon: "#f3a05b" } },
-    { name: "Monaco GP", totalAttendees: 118, returningAttendees: 19, returnRate: 16, theme: { sky: "#497498", horizon: "#e7843d" } },
-    { name: "Las Vegas", totalAttendees: 186, returningAttendees: 28, returnRate: 15, theme: { sky: "#624a70", horizon: "#f07829" } },
-    { name: "Singapore", totalAttendees: 94, returningAttendees: 11, returnRate: 12, theme: { sky: "#376b9d", horizon: "#f0a04a" } },
+    { name: "Miami Art Week", totalAttendees: 142, returningAttendees: 24, returnRate: 17, theme: { sky: "#4f7fa9", horizon: "#f3a05b", image: "/miami.png" } },
+    { name: "Monaco GP", totalAttendees: 118, returningAttendees: 19, returnRate: 16, theme: { sky: "#497498", horizon: "#e7843d", image: "/monaco.png" } },
+    { name: "Las Vegas", totalAttendees: 186, returningAttendees: 28, returnRate: 15, theme: { sky: "#624a70", horizon: "#f07829", image: "/las_vegas.png" } },
+    { name: "Singapore", totalAttendees: 94, returningAttendees: 11, returnRate: 12, theme: { sky: "#376b9d", horizon: "#f0a04a", image: "/singapore.png" } },
   ] satisfies ReturningEvent[],
 };
