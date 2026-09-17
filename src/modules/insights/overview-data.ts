@@ -28,6 +28,7 @@ export interface EventPerformance {
 
 export interface CityTheme {
   horizon: string;
+  image?: string;
   sky: string;
 }
 
@@ -53,6 +54,7 @@ export interface CompletedEvent {
   date: string;
   introductions: number;
   name: string;
+  theme: CityTheme;
   valuable: number;
 }
 
@@ -73,21 +75,21 @@ export const organizerOverviewData = {
     { city: "Las Vegas", date: "Nov 2025", value: 86 },
   ] satisfies ConnectionPoint[],
   performance: [
-    { name: "Miami Art Week", city: "Miami", date: "Sep 12, 2026", attendees: 142, introductions: 93, valuable: 82, repeatGuests: 37, theme: { sky: "#507da9", horizon: "#eb985b" } },
-    { name: "Monaco GP", city: "Monaco", date: "May 24, 2026", attendees: 118, introductions: 81, valuable: 79, repeatGuests: 29, theme: { sky: "#5b7d9a", horizon: "#f0a34a" } },
-    { name: "Bitcoin Week", city: "Las Vegas", date: "Mar 3, 2026", attendees: 164, introductions: 106, valuable: 76, repeatGuests: 33, theme: { sky: "#47342c", horizon: "#d57c24" } },
-    { name: "Abu Dhabi", city: "Abu Dhabi", date: "Jan 18, 2026", attendees: 128, introductions: 77, valuable: 74, repeatGuests: 28, theme: { sky: "#725c8e", horizon: "#ef9259" } },
-    { name: "Singapore", city: "Singapore", date: "Nov 9, 2025", attendees: 94, introductions: 62, valuable: 71, repeatGuests: 26, theme: { sky: "#376caf", horizon: "#f2a14d" } },
+    { name: "Miami Art Week", city: "Miami", date: "Sep 12, 2026", attendees: 142, introductions: 93, valuable: 82, repeatGuests: 37, theme: { sky: "#507da9", horizon: "#eb985b", image: "/miami.png" } },
+    { name: "Monaco GP", city: "Monaco", date: "May 24, 2026", attendees: 118, introductions: 81, valuable: 79, repeatGuests: 29, theme: { sky: "#5b7d9a", horizon: "#f0a34a", image: "/monaco.png" } },
+    { name: "Bitcoin Week", city: "Miami", date: "Mar 3, 2026", attendees: 164, introductions: 106, valuable: 76, repeatGuests: 33, theme: { sky: "#47342c", horizon: "#d57c24", image: "/bitcoin_tech_week.png" } },
+    { name: "Davos", city: "Davos", date: "Jan 18, 2026", attendees: 128, introductions: 77, valuable: 74, repeatGuests: 28, theme: { sky: "#725c8e", horizon: "#ef9259", image: "/davos.png" } },
+    { name: "Singapore", city: "Singapore", date: "Nov 9, 2025", attendees: 94, introductions: 62, valuable: 71, repeatGuests: 26, theme: { sky: "#376caf", horizon: "#f2a14d", image: "/singapore.png" } },
   ] satisfies EventPerformance[],
   upcoming: [
-    { city: "Las Vegas", name: "F1 Week", date: "Nov 19, 2026", registered: 186, daysToGo: 68, theme: { sky: "#635777", horizon: "#ee9a52" } },
-    { city: "Singapore", name: "Innovation Summit", date: "Dec 4, 2026", registered: 94, daysToGo: 83, theme: { sky: "#2f79c3", horizon: "#eb9a4e" } },
-    { city: "Abu Dhabi", name: "Global Gathering", date: "Jan 15, 2027", registered: 71, daysToGo: 125, theme: { sky: "#647cae", horizon: "#e88d61" } },
+    { city: "Las Vegas", name: "F1 Week", date: "Nov 19, 2026", registered: 186, daysToGo: 68, theme: { sky: "#635777", horizon: "#ee9a52", image: "/las_vegas.png" } },
+    { city: "Singapore", name: "Innovation Summit", date: "Dec 4, 2026", registered: 94, daysToGo: 83, theme: { sky: "#2f79c3", horizon: "#eb9a4e", image: "/singapore.png" } },
+    { city: "Davos", name: "Global Gathering", date: "Jan 15, 2027", registered: 71, daysToGo: 125, theme: { sky: "#647cae", horizon: "#e88d61", image: "/davos.png" } },
   ] satisfies UpcomingEvent[],
   movement: [
-    { city: "Miami", detail: "142 attendees", signal: "46 returning", theme: { sky: "#5592c0", horizon: "#d9a36f" } },
-    { city: "Las Vegas", detail: "186 registered", signal: "28 also attended Miami", theme: { sky: "#4b3f75", horizon: "#e88131" } },
-    { city: "Singapore", detail: "94 registered", signal: "17 have attended another event", theme: { sky: "#3289d3", horizon: "#dd8e4d" } },
+    { city: "Miami", detail: "142 attendees", signal: "46 returning", theme: { sky: "#5592c0", horizon: "#d9a36f", image: "/miami.png" } },
+    { city: "Las Vegas", detail: "186 registered", signal: "28 also attended Miami", theme: { sky: "#4b3f75", horizon: "#e88131", image: "/las_vegas.png" } },
+    { city: "Singapore", detail: "94 registered", signal: "17 have attended another event", theme: { sky: "#3289d3", horizon: "#dd8e4d", image: "/singapore.png" } },
   ] satisfies NetworkMovement[],
   completed: {
     name: "Miami Art Week",
@@ -95,6 +97,7 @@ export const organizerOverviewData = {
     date: "Sep 12, 2026",
     attendees: 142,
     introductions: 93,
+    theme: { sky: "#507da9", horizon: "#eb985b", image: "/miami.png" },
     valuable: 82,
   } satisfies CompletedEvent,
 };

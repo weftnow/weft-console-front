@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
@@ -36,20 +37,7 @@ function MetricGlyph({ icon }: { icon: MetricIcon }) {
 
 function WorldMap() {
   return (
-    <svg aria-hidden="true" className="hero-map" viewBox="0 0 620 240">
-      <path className="continent" d="M46 51 82 27l77 2 27 20-8 23-35 3-21 19-10 38-22 16-18-28-4-28-27-16Z" />
-      <path className="continent" d="m158 131 28 8 23 30-6 42-22 23-10-32-21-34Z" />
-      <path className="continent" d="m261 54 36-13 25 9 39-13 90 14 48 25-7 24-34 5-10 19-31-3-24 35-38-11-12 49-22 14-22-41-26-20 4-38-25-26Z" />
-      <path className="continent" d="m487 168 37-12 30 17 4 25-23 15-39-13Z" />
-      <path className="route-shadow" d="M130 105 Q242 18 342 79 Q428 40 477 107" />
-      <path className="route-shadow" d="M147 144 Q240 87 342 79" />
-      <path className="route" d="M130 105 Q242 18 342 79 Q428 40 477 107" />
-      <path className="route" d="M147 144 Q240 87 342 79" />
-      <circle className="node" cx="130" cy="105" r="6" />
-      <circle className="node" cx="147" cy="144" r="6" />
-      <circle className="node" cx="342" cy="79" r="6" />
-      <circle className="node" cx="477" cy="107" r="6" />
-    </svg>
+    <Image alt="" className="hero-map" height={836} loading="eager" sizes="(max-width: 620px) 90vw, 55vw" src="/map.png" width={1881} />
   );
 }
 
@@ -59,7 +47,7 @@ function Topbar() {
       <div className="eyebrow-line">People · Ideas · Opportunities · A stronger tomorrow</div>
       <div className="topbar-actions">
         <FilterMenu icon={<CalendarIcon height="17" width="17" />} label="All time" options={["All time", "This year", "Last 3 events"]} />
-        <FilterMenu icon={<LocationIcon height="17" width="17" />} label="All cities" options={["All cities", "Miami", "Las Vegas", "Singapore"]} />
+        <FilterMenu icon={<LocationIcon height="17" width="17" />} label="All cities" options={["All cities", "Miami", "Las Vegas", "Singapore", "Davos"]} />
         <div className="brand-mini"><span className="brand-mini__disk">W</span><span>WE ARE ONE</span></div>
       </div>
     </header>
@@ -188,7 +176,7 @@ function ClosingSections() {
       <Surface as="article" className="panel" depth="raised">
         <div className="panel-heading"><h2 className="panel-title">Recently completed</h2><TactileButton className="compact-select">View all reports <ChevronDownIcon height="14" width="14" /></TactileButton></div>
         <Surface className="completed-card" depth="inset">
-          <div aria-hidden="true" className="completed-art" />
+          <CityArtwork art={completed.theme} className="completed-art" />
           <div className="completed-copy"><h3>{completed.name}</h3><p>{completed.city} &nbsp;·&nbsp; {completed.date}</p><div className="completed-metrics"><div><strong>{completed.attendees}</strong><span>Attendees</span></div><div><strong>{completed.introductions}</strong><span>Introductions</span></div><div><strong>{completed.valuable}%</strong><span>Valuable</span></div></div></div>
           <ChevronRightIcon height="16" width="16" />
         </Surface>

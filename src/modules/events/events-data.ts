@@ -27,12 +27,12 @@ const peakProfile =
   "polygon(0% 100%,0% 76%,14% 46%,24% 60%,40% 18%,52% 50%,62% 40%,74% 62%,86% 48%,100% 70%,100% 100%)";
 
 const art = {
-  lasVegas: { sky: "#3b3053", horizon: "#f0842c", profile: stripProfile },
-  singapore: { sky: "#2f79c3", horizon: "#eb9a4e", profile: marinaProfile },
-  abuDhabi: { sky: "#647cae", horizon: "#e8b06a", profile: domeProfile },
+  lasVegas: { sky: "#3b3053", horizon: "#f0842c", image: "/las_vegas.png", profile: stripProfile },
+  singapore: { sky: "#2f79c3", horizon: "#eb9a4e", image: "/singapore.png", profile: marinaProfile },
+  davos: { sky: "#647cae", horizon: "#e8b06a", image: "/davos.png", profile: domeProfile },
   aspen: { sky: "#7ea6cd", horizon: "#dfe6ec", profile: peakProfile },
-  miami: { sky: "#507da9", horizon: "#eb985b", profile: beachfrontProfile },
-  monaco: { sky: "#5b7d9a", horizon: "#f0a34a", profile: terraceProfile },
+  miami: { sky: "#507da9", horizon: "#eb985b", image: "/miami.png", profile: beachfrontProfile },
+  monaco: { sky: "#5b7d9a", horizon: "#f0a34a", image: "/monaco.png", profile: terraceProfile },
   austin: { sky: "#4b5f86", horizon: "#ef9a55", profile: towerProfile },
   newYork: { sky: "#566a8a", horizon: "#e79a63" },
 } satisfies Record<string, CityArt>;
@@ -109,13 +109,13 @@ export const eventsData = {
   } satisfies LiveEvent,
   upcoming: [
     { name: "Singapore", date: "Dec 4, 2026", countdown: "In 72 days", registered: 94, staff: 5, art: art.singapore },
-    { name: "Abu Dhabi", date: "Jan 15, 2027", countdown: "In 114 days", registered: 71, staff: 4, art: art.abuDhabi },
+    { name: "Davos", date: "Jan 15, 2027", countdown: "In 114 days", registered: 71, staff: 4, art: art.davos },
     { name: "Aspen", date: "Feb 12, 2027", countdown: "In 150 days", registered: 48, staff: 3, art: art.aspen },
   ] satisfies UpcomingEvent[],
   all: [
     { name: "Las Vegas · F1 Week", city: "Las Vegas", date: "Nov 19, 2026", status: "live", attendees: 186, introductions: 74, valuable: 81, repeatAttendees: 37, art: art.lasVegas },
     { name: "Singapore", city: "Singapore", date: "Dec 4, 2026", status: "upcoming", attendees: 94, introductions: null, valuable: null, repeatAttendees: null, art: art.singapore },
-    { name: "Abu Dhabi", city: "Abu Dhabi", date: "Jan 15, 2027", status: "upcoming", attendees: 71, introductions: null, valuable: null, repeatAttendees: null, art: art.abuDhabi },
+    { name: "Davos", city: "Davos", date: "Jan 15, 2027", status: "upcoming", attendees: 71, introductions: null, valuable: null, repeatAttendees: null, art: art.davos },
     { name: "Aspen", city: "Aspen", date: "Feb 12, 2027", status: "upcoming", attendees: 48, introductions: null, valuable: null, repeatAttendees: null, art: art.aspen },
     { name: "Miami Art Week", city: "Miami", date: "Sep 12, 2026", status: "completed", attendees: 142, introductions: 93, valuable: 82, repeatAttendees: 37, art: art.miami },
     { name: "Monaco GP", city: "Monaco", date: "May 24, 2026", status: "completed", attendees: 118, introductions: 81, valuable: 79, repeatAttendees: 29, art: art.monaco },

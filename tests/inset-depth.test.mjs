@@ -104,6 +104,15 @@ test("filter and selector controls stay opaque and raised", () => {
   assert.doesNotMatch(css, /\.compact-select--selected/);
 });
 
+test("overview select controls align their labels and icons with a stronger label weight", () => {
+  assert.match(css, /\.compact-select\s*\{[^}]*display:\s*inline-flex/s);
+  assert.match(css, /\.compact-select\s*\{[^}]*align-items:\s*center/s);
+  assert.match(css, /\.compact-select\s*\{[^}]*justify-content:\s*center/s);
+  assert.match(css, /\.compact-select\s*\{[^}]*gap:\s*8px/s);
+  assert.match(css, /\.compact-select\s*\{[^}]*font-size:\s*12px/s);
+  assert.match(css, /\.compact-select\s*\{[^}]*font-weight:\s*600/s);
+});
+
 test("contained analytics surfaces use inset depth without raising decorative icons", () => {
   assert.match(overview, /className="metric__icon" depth="inset"/);
   assert.match(overview, /<tbody className="table-body-well" data-depth="inset">/);
