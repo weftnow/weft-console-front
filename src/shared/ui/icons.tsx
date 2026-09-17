@@ -127,3 +127,12 @@ export function NoteIcon(props: IconProps) {
 export function FilterIcon(props: IconProps) {
   return <IconBase {...props}><path d="M3.5 5.5h17l-6.6 7.7v5.5l-3.8 2v-7.5L3.5 5.5Z" /></IconBase>;
 }
+export function DownloadIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M12 4v10.5M8 11l4 4 4-4" /><path d="M5 16.5v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></IconBase>;
+}
+export function PieIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M12 3a9 9 0 1 0 9 9h-9V3Z" /><path d="M15.5 3.9A9 9 0 0 1 20.1 8.5" /></IconBase>;
+}
+export function IdeaIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M9 17.5a5.5 5.5 0 1 1 6 0v1.2a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 18.7v-1.2Z" /><path d="M9.5 17.5h5" /></IconBase>;
+}
