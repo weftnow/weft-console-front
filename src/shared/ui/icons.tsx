@@ -136,3 +136,36 @@ export function PieIcon(props: IconProps) {
 export function IdeaIcon(props: IconProps) {
   return <IconBase {...props}><path d="M9 17.5a5.5 5.5 0 1 1 6 0v1.2a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 18.7v-1.2Z" /><path d="M9.5 17.5h5" /></IconBase>;
 }
+export function MessageIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M20.5 12.4c0 4-3.8 7.2-8.5 7.2a9.8 9.8 0 0 1-2.6-.35L4.5 20.5l1.3-3.5a6.9 6.9 0 0 1-2.3-5c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.2Z" /></IconBase>;
+}
+export function WhatsAppIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M20.5 11.8c0 4.4-3.8 8-8.5 8a9 9 0 0 1-4-.9l-4.5 1.4 1.5-4.1a7.7 7.7 0 0 1-1.5-4.4c0-4.4 3.8-8 8.5-8s8.5 3.6 8.5 8Z" /><path d="M9.3 9c.3-.1.6 0 .8.3l.7 1.2c.1.3.1.6-.1.8l-.4.5c-.1.2-.2.4 0 .7.4.7 1.1 1.3 1.9 1.7.3.1.5.1.7-.1l.5-.5c.2-.2.5-.3.8-.2l1.2.6c.3.2.4.5.3.8a2 2 0 0 1-2.4 1.3 7 7 0 0 1-4.7-4.4A2 2 0 0 1 9.3 9Z" /></IconBase>;
+}
+export function ShareNodesIcon(props: IconProps) {
+  return <IconBase {...props}><circle cx="18" cy="5.8" r="2.6" /><circle cx="6" cy="12" r="2.6" /><circle cx="18" cy="18.2" r="2.6" /><path d="m8.4 10.8 7.3-3.6M8.4 13.2l7.3 3.6" /></IconBase>;
+}
+export function DatabaseIcon(props: IconProps) {
+  return <IconBase {...props}><ellipse cx="12" cy="6.5" rx="7.5" ry="3" /><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11" /><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" /></IconBase>;
+}
+export function EyeIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M2.8 12S6.5 5.8 12 5.8 21.2 12 21.2 12 17.5 18.2 12 18.2 2.8 12 2.8 12Z" /><circle cx="12" cy="12" r="3" /></IconBase>;
+}
+export function PlayIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M8.5 5.6 18 12l-9.5 6.4V5.6Z" /></IconBase>;
+}
+export function RefreshIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6" /><path d="M4 18.5V13h5.5M20 5.5V11h-5.5" /></IconBase>;
+}
+export function SlidersIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M4 7.5h4M13 7.5h7M4 16.5h7M16 16.5h4" /><circle cx="10.5" cy="7.5" r="2.2" /><circle cx="13.5" cy="16.5" r="2.2" /></IconBase>;
+}
+export function UserIcon(props: IconProps) {
+  return <IconBase {...props}><circle cx="12" cy="8" r="3.4" /><path d="M5 20v-1.4c0-2.9 3.1-5 7-5s7 2.1 7 5V20" /></IconBase>;
+}
+export function PhoneIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M8.2 4.5H5.6A2.1 2.1 0 0 0 3.5 6.8c.3 3.5 1.9 6.8 4.4 9.3s5.8 4.1 9.3 4.4a2.1 2.1 0 0 0 2.3-2.1v-2.6l-3.6-1.2-1.7 1.7a13.4 13.4 0 0 1-5.3-5.3l1.7-1.7L8.2 4.5Z" /></IconBase>;
+}
+export function MicIcon(props: IconProps) {
+  return <IconBase {...props}><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" /></IconBase>;
+}

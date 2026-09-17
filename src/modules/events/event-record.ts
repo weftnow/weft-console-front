@@ -12,6 +12,8 @@ export interface EventGuestRecord {
   guestType: EventGuestType;
   lastName: string;
   linkedin: string;
+  /** Contact number Kami calls on. Empty when the import omitted it. */
+  phone: string;
   position: string;
   /** Audience segment, e.g. "Founders". Empty when the import omitted it. */
   profileType: string;
@@ -179,8 +181,9 @@ function isEventRecord(value: unknown): value is EventRecord {
 
 /**
  * Bring a stored record up to the current shape. Events saved before the
- * roster existed keep their guests under `manual` and carry no `profileType`,
- * `source`, or `storedGuests`, so they would otherwise render an empty table.
+ * roster existed keep their guests under `manual` and carry no `phone`,
+ * `profileType`, `source`, or `storedGuests`, so they would otherwise render an
+ * empty table.
  */
 function migrateEventRecord(event: EventRecord): EventRecord {
   const attendees = event.attendees as EventRecord["attendees"] & {
@@ -189,6 +192,7 @@ function migrateEventRecord(event: EventRecord): EventRecord {
   const roster = attendees.guests ?? attendees.manual ?? [];
   const guests = roster.map((guest) => ({
     ...guest,
+    phone: guest.phone ?? "",
     profileType: guest.profileType ?? "",
     source: guest.source ?? ("manual" as EventGuestSource),
   }));

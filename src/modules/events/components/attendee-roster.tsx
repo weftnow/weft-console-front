@@ -108,7 +108,7 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
       if (guestType !== "all" && guest.guestType !== guestType) return false;
       if (profileType !== "all" && guest.profileType !== profileType) return false;
       if (!needle) return true;
-      return [fullName(guest), guest.email, guest.company, guest.position]
+      return [fullName(guest), guest.email, guest.phone, guest.company, guest.position]
         .join(" ")
         .toLowerCase()
         .includes(needle);
@@ -167,7 +167,7 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
                   setQuery(input.target.value);
                   setPage(0);
                 }}
-                placeholder="Search name, company…"
+                placeholder="Search name, company, phone…"
                 type="search"
                 value={query}
               />
@@ -233,6 +233,7 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
               <thead>
                 <tr>
                   <SortableHeader active={sortKey === "name"} direction={direction} onSort={onSort} sortKey="name" />
+                  <th scope="col">Phone</th>
                   <SortableHeader active={sortKey === "company"} direction={direction} onSort={onSort} sortKey="company" />
                   <th scope="col">Position</th>
                   <SortableHeader active={sortKey === "profileType"} direction={direction} onSort={onSort} sortKey="profileType" />
@@ -248,6 +249,15 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
                         <strong>{fullName(guest) || "Unnamed guest"}</strong>
                         <span>{guest.email || "No email"}</span>
                       </div>
+                    </td>
+                    <td>
+                      {guest.phone ? (
+                        <a className="roster-link" href={`tel:${guest.phone.replace(/[^+\d]/g, "")}`}>
+                          {guest.phone}
+                        </a>
+                      ) : (
+                        <span className="table-empty">—</span>
+                      )}
                     </td>
                     <td>{guest.company || <span className="table-empty">—</span>}</td>
                     <td className="cell-muted">{guest.position || <span className="table-empty">—</span>}</td>

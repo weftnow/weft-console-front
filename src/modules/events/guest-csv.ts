@@ -27,6 +27,7 @@ type GuestCsvField =
   | "guestType"
   | "lastName"
   | "linkedin"
+  | "phone"
   | "position"
   | "profileType";
 
@@ -38,6 +39,7 @@ const COLUMN_ALIASES: Record<GuestCsvField, string[]> = {
   guestType: ["guesttype", "guest", "tickettype", "attendeetype", "type"],
   lastName: ["lastname", "last", "surname", "familyname"],
   linkedin: ["linkedin", "linkedinurl", "linkedinprofile", "profileurl"],
+  phone: ["phone", "phonenumber", "mobile", "mobilenumber", "cell", "telephone", "tel", "number"],
   position: ["position", "role", "title", "jobtitle", "jobrole"],
   profileType: ["profiletype", "profile", "audience", "audiencetype", "segment"],
 };
@@ -144,6 +146,7 @@ export function parseGuestCsv(text: string): GuestCsvResult {
         guestType,
         lastName,
         linkedin: read("linkedin"),
+        phone: read("phone"),
         position: read("position"),
         profileType: toProfileType(read("profileType")),
         source: "csv",
