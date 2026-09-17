@@ -33,6 +33,7 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { AttendeeRoster } from "./attendee-roster";
+import { KamiWorkspace } from "./kami-workspace";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
   deriveEventMetrics,
@@ -343,7 +344,7 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
   );
 }
 
-function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "kami">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
   const tab = tabs.find((item) => item.id === activeTab)!;
   const IconComponent = tab.icon;
 
@@ -466,6 +467,10 @@ export function EventDetailPage({ eventId, initialTab }: { eventId: string; init
           ) : activeTab === "attendees" ? (
             <div className="event-detail-tab-content" key={activeTab}>
               <AttendeeRoster event={event} />
+            </div>
+          ) : activeTab === "kami" ? (
+            <div className="event-detail-tab-content" key={activeTab}>
+              <KamiWorkspace art={art} event={event} onNotice={showNotice} />
             </div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>
