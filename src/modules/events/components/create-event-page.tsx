@@ -1,0 +1,1027 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  type ChangeEvent,
+  type DragEvent,
+  type FormEvent,
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import { CityArtwork } from "@/shared/ui/city-artwork";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckIcon,
+  CloseIcon,
+  DocumentIcon,
+  ImageIcon,
+  LocationIcon,
+  PeopleIcon,
+  PlusIcon,
+  SparklesIcon,
+  StaffIcon,
+  TrashIcon,
+  UploadIcon,
+} from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
+import { TactileButton } from "@/shared/ui/tactile-button";
+import {
+  createEventId,
+  EVENT_COVER_PLACEHOLDER_ART,
+  type EventGuestRecord,
+  normalizeCoverImage,
+  saveEventRecord,
+} from "../event-record";
+
+const CATEGORY_OPTIONS = [
+  "Sports",
+  "Luxury",
+  "Investing",
+  "Startups",
+  "Technology",
+  "Entertainment",
+  "Web3",
+  "Real Estate",
+  "Fashion",
+  "Media",
+] as const;
+
+const AUDIENCE_OPTIONS = [
+  "Founders",
+  "Investors",
+  "Family Offices",
+  "Executives",
+  "Brands",
+  "Sponsors",
+  "Creators",
+  "Media",
+  "Athletes",
+  "Government",
+  "Service Providers",
+] as const;
+
+const STAFF = [
+  { id: "maria", name: "Maria Chen", role: "Lead wefter", avatar: "/network/avatars/sarah-chen.png" },
+  { id: "daniel", name: "Daniel Park", role: "Wefter", avatar: "/network/avatars/daniel-park.png" },
+  { id: "sophie", name: "Sophie Laurent", role: "Wefter", avatar: "/network/avatars/emma-laurent.png" },
+  { id: "alex", name: "Alex Rivera", role: "Guest experience", avatar: "/network/avatars/alex-rivera.png" },
+  { id: "sofia", name: "Sofia Martinez", role: "Sponsor liaison", avatar: "/network/avatars/sofia-martinez.png" },
+] as const;
+
+const ORGANIZER = {
+  name: "Nick Bacci",
+  role: "Organizer",
+  avatar: "/network/avatars/michael-ross.png",
+};
+
+type EventForm = {
+  attendees: string;
+  categories: string[];
+  city: string;
+  description: string;
+  endDate: string;
+  endTime: string;
+  name: string;
+  profiles: string[];
+  startDate: string;
+  startTime: string;
+  venue: string;
+};
+
+type CsvImport = {
+  attendees: number;
+  file: File;
+  sponsors: number;
+  vips: number;
+};
+
+type ManualGuest = EventGuestRecord;
+
+type Toast = {
+  detail: string;
+  title: string;
+  tone: "neutral" | "success";
+};
+
+const INITIAL_FORM: EventForm = {
+  attendees: "",
+  categories: [],
+  city: "",
+  description: "",
+  endDate: "",
+  endTime: "",
+  name: "",
+  profiles: [],
+  startDate: "",
+  startTime: "",
+  venue: "",
+};
+
+function formatDate(value: string) {
+  if (!value) return "Choose dates";
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return "Choose dates";
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(year, month - 1, day));
+}
+
+function formatDateRange(start: string, end: string) {
+  if (!start && !end) return "Choose dates";
+  if (!end || start === end) return formatDate(start || end);
+
+  const startDate = formatDate(start);
+  const endDate = formatDate(end);
+  const startYear = start.slice(0, 4);
+  if (startYear && startYear === end.slice(0, 4)) {
+    return `${startDate.replace(`, ${startYear}`, "")} – ${endDate}`;
+  }
+  return `${startDate} – ${endDate}`;
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function splitCsvRow(row: string) {
+  const cells: string[] = [];
+  let current = "";
+  let quoted = false;
+
+  for (let index = 0; index < row.length; index += 1) {
+    const character = row[index];
+    if (character === '"' && row[index + 1] === '"' && quoted) {
+      current += '"';
+      index += 1;
+    } else if (character === '"') {
+      quoted = !quoted;
+    } else if (character === "," && !quoted) {
+      cells.push(current.trim());
+      current = "";
+    } else {
+      current += character;
+    }
+  }
+  cells.push(current.trim());
+  return cells;
+}
+
+function FormField({
+  children,
+  error,
+  id,
+  label,
+  required = false,
+}: {
+  children: ReactNode;
+  error?: string;
+  id: string;
+  label: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="event-field">
+      <label htmlFor={id}>
+        {label}
+        {required ? <span aria-hidden="true">*</span> : null}
+      </label>
+      {children}
+      {error ? <small className="event-field__error">{error}</small> : null}
+    </div>
+  );
+}
+
+function SectionHeading({
+  children,
+  description,
+  icon,
+  id,
+}: {
+  children: ReactNode;
+  description: string;
+  icon: ReactNode;
+  id: string;
+}) {
+  return (
+    <div className="create-section-heading">
+      <span className="create-section-heading__icon">{icon}</span>
+      <div>
+        <h2 id={id}>{children}</h2>
+        <p>{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function ChipSelector({
+  label,
+  onChange,
+  options,
+  selected,
+}: {
+  label: string;
+  onChange: (next: string[]) => void;
+  options: readonly string[];
+  selected: string[];
+}) {
+  function toggle(option: string) {
+    onChange(
+      selected.includes(option)
+        ? selected.filter((item) => item !== option)
+        : [...selected, option],
+    );
+  }
+
+  return (
+    <div aria-label={label} className="chip-selector" role="group">
+      {options.map((option) => {
+        const isSelected = selected.includes(option);
+        return (
+          <button
+            aria-pressed={isSelected}
+            className="selector-chip"
+            key={option}
+            onClick={() => toggle(option)}
+            type="button"
+          >
+            <span>{option}</span>
+            {isSelected ? <CloseIcon height="13" width="13" /> : null}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Avatar({
+  name,
+  size = 38,
+  src,
+}: {
+  name: string;
+  size?: number;
+  src: string;
+}) {
+  return (
+    <span className="event-avatar" style={{ height: size, width: size }}>
+      <Image alt={`Portrait of ${name}`} height={size} src={src} width={size} />
+    </span>
+  );
+}
+
+export function CreateEventPage() {
+  const router = useRouter();
+  const [form, setForm] = useState<EventForm>(INITIAL_FORM);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverUrl, setCoverUrl] = useState<string | null>(null);
+  const [coverDragging, setCoverDragging] = useState(false);
+  const [csvImport, setCsvImport] = useState<CsvImport | null>(null);
+  const [csvError, setCsvError] = useState("");
+  const [csvDragging, setCsvDragging] = useState(false);
+  const [attendeeMode, setAttendeeMode] = useState<"csv" | "manual">("csv");
+  const [manualGuest, setManualGuest] = useState<ManualGuest>({
+    company: "",
+    email: "",
+    firstName: "",
+    guestType: "Attendee",
+    lastName: "",
+    linkedin: "",
+    position: "",
+  });
+  const [manualGuests, setManualGuests] = useState<ManualGuest[]>([]);
+  const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>([]);
+  const [staffOpen, setStaffOpen] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [actionState, setActionState] = useState<"idle" | "creating" | "saving">("idle");
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const csvInputRef = useRef<HTMLInputElement>(null);
+  const coverUrlRef = useRef<string | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const selectedStaff = STAFF.filter((person) => selectedStaffIds.includes(person.id));
+  const nameError = showValidation && !form.name.trim() ? "Add an event name." : undefined;
+  const cityError = showValidation && !form.city ? "Choose a city." : undefined;
+  const startError = showValidation && !form.startDate ? "Choose a start date." : undefined;
+  const endError = showValidation && !form.endDate ? "Choose an end date." : undefined;
+
+  useEffect(() => {
+    return () => {
+      if (coverUrlRef.current) URL.revokeObjectURL(coverUrlRef.current);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
+  function updateField<Key extends keyof EventForm>(key: Key, value: EventForm[Key]) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  function showToast(message: Toast) {
+    setToast(message);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 3600);
+  }
+
+  function acceptCoverFile(file: File | undefined) {
+    setCoverDragging(false);
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast({
+        detail: "Choose a JPG, PNG, or another browser-supported image.",
+        title: "That file is not an image",
+        tone: "neutral",
+      });
+      return;
+    }
+
+    if (coverUrlRef.current) URL.revokeObjectURL(coverUrlRef.current);
+    const nextUrl = URL.createObjectURL(file);
+    coverUrlRef.current = nextUrl;
+    setCoverFile(file);
+    setCoverUrl(nextUrl);
+  }
+
+  function removeCover() {
+    if (coverUrlRef.current) URL.revokeObjectURL(coverUrlRef.current);
+    coverUrlRef.current = null;
+    setCoverFile(null);
+    setCoverUrl(null);
+    if (coverInputRef.current) coverInputRef.current.value = "";
+  }
+
+  async function acceptCsvFile(file: File | undefined) {
+    setCsvDragging(false);
+    setCsvError("");
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".csv") && !file.type.includes("csv")) {
+      setCsvImport(null);
+      setCsvError("Choose a .csv file to import attendees.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setCsvImport(null);
+      setCsvError("The file must be 10 MB or smaller.");
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const rows = text.split(/\r?\n/).filter((row) => row.trim().length > 0);
+      if (rows.length < 2) {
+        throw new Error("No attendee rows found");
+      }
+      const headers = splitCsvRow(rows[0]).map((header) =>
+        header.toLowerCase().replace(/[\s_-]+/g, ""),
+      );
+      const guestTypeIndex = headers.indexOf("guesttype");
+      const attendeeRows = rows.slice(1);
+      let vips = 0;
+      let sponsors = 0;
+      if (guestTypeIndex >= 0) {
+        attendeeRows.forEach((row) => {
+          const guestType = splitCsvRow(row)[guestTypeIndex]?.toLowerCase();
+          if (guestType === "vip") vips += 1;
+          if (guestType === "sponsor") sponsors += 1;
+        });
+      }
+      setCsvImport({ attendees: attendeeRows.length, file, sponsors, vips });
+    } catch {
+      setCsvImport(null);
+      setCsvError("We could not read attendee rows from this file.");
+    }
+  }
+
+  function handleDrop(
+    event: DragEvent<HTMLElement>,
+    accept: (file: File | undefined) => void,
+  ) {
+    event.preventDefault();
+    accept(event.dataTransfer.files[0]);
+  }
+
+  function handleDropzoneKey(
+    event: KeyboardEvent<HTMLElement>,
+    input: HTMLInputElement | null,
+  ) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      input?.click();
+    }
+  }
+
+  function addManualGuest() {
+    if (!manualGuest.firstName.trim() || !manualGuest.email.includes("@")) {
+      showToast({
+        detail: "Add a first name and valid email address.",
+        title: "Guest details need attention",
+        tone: "neutral",
+      });
+      return;
+    }
+    setManualGuests((current) => [...current, manualGuest]);
+    showToast({
+      detail: `${manualGuest.firstName} was added to the local guest list.`,
+      title: "Guest added",
+      tone: "success",
+    });
+    setManualGuest({
+      company: "",
+      email: "",
+      firstName: "",
+      guestType: "Attendee",
+      lastName: "",
+      linkedin: "",
+      position: "",
+    });
+  }
+
+  function toggleStaff(id: string) {
+    setSelectedStaffIds((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+    );
+  }
+
+  function validateRequired() {
+    setShowValidation(true);
+    return Boolean(form.name.trim() && form.city && form.startDate && form.endDate);
+  }
+
+  async function createEvent(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!validateRequired()) {
+      showToast({
+        detail: "Complete the highlighted fields before creating the event.",
+        title: "A few details are missing",
+        tone: "neutral",
+      });
+      return;
+    }
+    setActionState("creating");
+
+    let coverImage: string | null = null;
+    if (coverFile) {
+      try {
+        coverImage = await normalizeCoverImage(coverFile);
+      } catch {
+        coverImage = null;
+      }
+    }
+
+    const now = new Date().toISOString();
+    const id = createEventId(form.name);
+    const expectedAttendees = form.attendees ? Number(form.attendees) : null;
+
+    try {
+      saveEventRecord({
+        attendees: {
+          imported: csvImport
+            ? {
+                attendees: csvImport.attendees,
+                fileName: csvImport.file.name,
+                sponsors: csvImport.sponsors,
+                vips: csvImport.vips,
+              }
+            : null,
+          manual: manualGuests,
+        },
+        categories: form.categories,
+        city: form.city,
+        coverImage,
+        createdAt: now,
+        description: form.description,
+        endDate: form.endDate,
+        endTime: form.endTime,
+        expectedAttendees,
+        expectedAudience: form.profiles,
+        id,
+        name: form.name.trim(),
+        staff: selectedStaff.map(({ avatar, id: staffId, name, role }) => ({
+          avatar,
+          id: staffId,
+          name,
+          role,
+        })),
+        startDate: form.startDate,
+        startTime: form.startTime,
+        updatedAt: now,
+        venue: form.venue,
+      });
+      router.push(`/events/${id}`);
+    } catch {
+      setActionState("idle");
+      showToast({
+        detail: "Browser storage could not save this event. Your form is still here so you can try again.",
+        title: "Event could not be saved",
+        tone: "neutral",
+      });
+    }
+  }
+
+  function saveDraft() {
+    setActionState("saving");
+    setTimeout(() => {
+      setActionState("idle");
+      showToast({
+        detail: "Your current form state is safe for this browser session.",
+        title: "Draft saved locally",
+        tone: "success",
+      });
+    }, 520);
+  }
+
+  const coverUpload = (
+    <div
+      aria-label="Upload event cover image"
+      className={`cover-dropzone ${coverDragging ? "cover-dropzone--dragging" : ""}`}
+      onDragEnter={(event) => {
+        event.preventDefault();
+        setCoverDragging(true);
+      }}
+      onDragLeave={() => setCoverDragging(false)}
+      onDragOver={(event) => event.preventDefault()}
+      onDrop={(event) => handleDrop(event, acceptCoverFile)}
+      onKeyDown={(event) => handleDropzoneKey(event, coverInputRef.current)}
+      role="button"
+      tabIndex={0}
+    >
+      <span className="dropzone-icon"><UploadIcon height="21" width="21" /></span>
+      <strong>Upload cover</strong>
+      <span>JPG or PNG · 16:9 works best</span>
+    </div>
+  );
+
+  return (
+    <div className="overview-shell create-event-shell">
+      <div className="dashboard-layout">
+        <ConsoleSidebar active="events" />
+        <main className="dashboard-main create-event-main">
+          <header className="create-event-header">
+            <Link className="create-back-link" href="/events">
+              <ArrowLeftIcon height="15" width="15" /> Events
+            </Link>
+            <h1>Create event</h1>
+            <p>Set up a new We Are One experience.</p>
+          </header>
+
+          <div className="create-event-layout">
+            <form className="create-event-form" noValidate onSubmit={createEvent}>
+              <Surface as="section" className="create-section" depth="raised" aria-labelledby="event-basics-title">
+                <SectionHeading
+                  description="The essentials guests and staff will see."
+                  icon={<CalendarIcon height="20" width="20" />}
+                  id="event-basics-title"
+                >
+                  Event basics
+                </SectionHeading>
+
+                <div className="event-basics-grid">
+                  <FormField error={nameError} id="event-name" label="Event name" required>
+                    <input
+                      aria-invalid={Boolean(nameError)}
+                      className="event-control"
+                      data-filled={Boolean(form.name)}
+                      id="event-name"
+                      onChange={(event) => updateField("name", event.target.value)}
+                      placeholder="Name your event"
+                      value={form.name}
+                    />
+                  </FormField>
+                  <FormField error={cityError} id="event-city" label="City" required>
+                    <span className="event-control-wrap">
+                      <LocationIcon height="16" width="16" />
+                      <select
+                        aria-invalid={Boolean(cityError)}
+                        className="event-control event-control--with-icon"
+                        data-filled={Boolean(form.city)}
+                        id="event-city"
+                        onChange={(event) => updateField("city", event.target.value)}
+                        value={form.city}
+                      >
+                        <option value="">Choose a city</option>
+                        <option>Las Vegas, USA</option>
+                        <option>Singapore</option>
+                        <option>Davos, Switzerland</option>
+                        <option>Aspen, USA</option>
+                        <option>Monaco</option>
+                      </select>
+                    </span>
+                  </FormField>
+                  <FormField id="event-venue" label="Venue">
+                    <input
+                      className="event-control"
+                      data-filled={Boolean(form.venue)}
+                      id="event-venue"
+                      onChange={(event) => updateField("venue", event.target.value)}
+                      placeholder="Add a venue"
+                      value={form.venue}
+                    />
+                  </FormField>
+                  <FormField id="event-attendees" label="Expected attendees">
+                    <span className="event-control-wrap">
+                      <PeopleIcon height="16" width="16" />
+                      <input
+                        className="event-control event-control--with-icon"
+                        data-filled={Boolean(form.attendees)}
+                        id="event-attendees"
+                        inputMode="numeric"
+                        min="0"
+                        onChange={(event) => updateField("attendees", event.target.value.replace(/\D/g, ""))}
+                        placeholder="0"
+                        type="text"
+                        value={form.attendees}
+                      />
+                    </span>
+                  </FormField>
+                  <FormField error={startError} id="event-start-date" label="Start date" required>
+                    <input
+                      aria-invalid={Boolean(startError)}
+                      className="event-control"
+                      data-filled={Boolean(form.startDate)}
+                      id="event-start-date"
+                      onChange={(event) => updateField("startDate", event.target.value)}
+                      type="date"
+                      value={form.startDate}
+                    />
+                  </FormField>
+                  <FormField id="event-start-time" label="Start time">
+                    <input
+                      className="event-control"
+                      data-filled={Boolean(form.startTime)}
+                      id="event-start-time"
+                      onChange={(event) => updateField("startTime", event.target.value)}
+                      type="time"
+                      value={form.startTime}
+                    />
+                  </FormField>
+                  <FormField error={endError} id="event-end-date" label="End date" required>
+                    <input
+                      aria-invalid={Boolean(endError)}
+                      className="event-control"
+                      data-filled={Boolean(form.endDate)}
+                      id="event-end-date"
+                      min={form.startDate}
+                      onChange={(event) => updateField("endDate", event.target.value)}
+                      type="date"
+                      value={form.endDate}
+                    />
+                  </FormField>
+                  <FormField id="event-end-time" label="End time">
+                    <input
+                      className="event-control"
+                      data-filled={Boolean(form.endTime)}
+                      id="event-end-time"
+                      onChange={(event) => updateField("endTime", event.target.value)}
+                      type="time"
+                      value={form.endTime}
+                    />
+                  </FormField>
+                </div>
+
+                <div className="cover-field">
+                  <span className="cover-field__label">Cover image</span>
+                  <input
+                    accept="image/*"
+                    className="visually-hidden"
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => acceptCoverFile(event.target.files?.[0])}
+                    ref={coverInputRef}
+                    type="file"
+                  />
+                  {coverUrl && coverFile ? (
+                    <div className="cover-complete">
+                      <div className="cover-complete__preview">
+                        <Image alt={`Cover preview for ${form.name || "new event"}`} fill sizes="(max-width: 620px) 100vw, 540px" src={coverUrl} unoptimized />
+                      </div>
+                      <div className="cover-complete__details">
+                        <span className="upload-success"><CheckIcon height="15" width="15" /></span>
+                        <div>
+                          <strong>{coverFile.name}</strong>
+                          <span>{formatBytes(coverFile.size)} · Ready in the event preview</span>
+                        </div>
+                        <div className="upload-actions">
+                          <button onClick={() => coverInputRef.current?.click()} type="button">Replace</button>
+                          <button aria-label="Remove cover image" onClick={removeCover} type="button"><TrashIcon height="15" width="15" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div onClick={() => coverInputRef.current?.click()}>{coverUpload}</div>
+                  )}
+                </div>
+              </Surface>
+
+              <Surface as="section" className="create-section" depth="raised" aria-labelledby="event-context-title">
+                <SectionHeading
+                  description="Give Weft enough signal to understand the room."
+                  icon={<SparklesIcon height="20" width="20" />}
+                  id="event-context-title"
+                >
+                  Event context
+                </SectionHeading>
+                <FormField id="event-description" label="Event description" required>
+                  <div className="textarea-wrap">
+                    <textarea
+                      className="event-control event-textarea"
+                      data-filled={Boolean(form.description)}
+                      id="event-description"
+                      maxLength={500}
+                      onChange={(event) => updateField("description", event.target.value)}
+                      placeholder="Describe the gathering and who it brings together"
+                      rows={4}
+                      value={form.description}
+                    />
+                    <span>{form.description.length}/500</span>
+                  </div>
+                </FormField>
+                <div className="selector-field">
+                  <div className="selector-field__heading">
+                    <strong>Event categories <span aria-hidden="true">*</span></strong>
+                    <small>Select the signals that best describe the event.</small>
+                  </div>
+                  <ChipSelector
+                    label="Event categories"
+                    onChange={(categories) => updateField("categories", categories)}
+                    options={CATEGORY_OPTIONS}
+                    selected={form.categories}
+                  />
+                </div>
+              </Surface>
+
+              <Surface as="section" className="create-section" depth="raised" aria-labelledby="expected-audience-title">
+                <SectionHeading
+                  description="Who do you expect to be in the room?"
+                  icon={<PeopleIcon height="20" width="20" />}
+                  id="expected-audience-title"
+                >
+                  Expected audience
+                </SectionHeading>
+                <ChipSelector
+                  label="Expected audience profiles"
+                  onChange={(profiles) => updateField("profiles", profiles)}
+                  options={AUDIENCE_OPTIONS}
+                  selected={form.profiles}
+                />
+              </Surface>
+
+              <Surface as="section" className="create-section attendee-section" depth="raised" aria-labelledby="attendees-title">
+                <SectionHeading
+                  description="Import your guest list or add people manually."
+                  icon={<UploadIcon height="20" width="20" />}
+                  id="attendees-title"
+                >
+                  Attendees
+                </SectionHeading>
+                <div className="attendee-tabs" role="tablist" aria-label="Attendee entry method">
+                  <button aria-selected={attendeeMode === "csv"} onClick={() => setAttendeeMode("csv")} role="tab" type="button">Import CSV</button>
+                  <button aria-selected={attendeeMode === "manual"} onClick={() => setAttendeeMode("manual")} role="tab" type="button">Add manually</button>
+                </div>
+
+                {attendeeMode === "csv" ? (
+                  <div className="attendee-import-layout" role="tabpanel">
+                    <div>
+                      <input
+                        accept=".csv,text/csv"
+                        className="visually-hidden"
+                        onChange={(event) => void acceptCsvFile(event.target.files?.[0])}
+                        ref={csvInputRef}
+                        type="file"
+                      />
+                      {csvImport ? (
+                        <div className="csv-complete">
+                          <span className="csv-complete__icon"><DocumentIcon height="23" width="23" /></span>
+                          <div className="csv-complete__copy">
+                            <span className="upload-success"><CheckIcon height="14" width="14" /></span>
+                            <div>
+                              <strong>{csvImport.file.name}</strong>
+                              <span>{formatBytes(csvImport.file.size)} · Import complete</span>
+                            </div>
+                          </div>
+                          <div className="csv-results">
+                            <strong>{csvImport.attendees}<span>attendees</span></strong>
+                            <strong>{csvImport.vips}<span>VIPs</span></strong>
+                            <strong>{csvImport.sponsors}<span>sponsors</span></strong>
+                          </div>
+                          <div className="upload-actions csv-complete__actions">
+                            <button onClick={() => csvInputRef.current?.click()} type="button">Replace file</button>
+                            <button
+                              aria-label="Remove CSV file"
+                              onClick={() => {
+                                setCsvImport(null);
+                                if (csvInputRef.current) csvInputRef.current.value = "";
+                              }}
+                              type="button"
+                            >
+                              <TrashIcon height="15" width="15" />
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div
+                          aria-label="Upload attendee CSV"
+                          className={`csv-dropzone ${csvDragging ? "csv-dropzone--dragging" : ""}`}
+                          onClick={() => csvInputRef.current?.click()}
+                          onDragEnter={(event) => {
+                            event.preventDefault();
+                            setCsvDragging(true);
+                          }}
+                          onDragLeave={() => setCsvDragging(false)}
+                          onDragOver={(event) => event.preventDefault()}
+                          onDrop={(event) => handleDrop(event, (file) => void acceptCsvFile(file))}
+                          onKeyDown={(event) => handleDropzoneKey(event, csvInputRef.current)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <span className="dropzone-icon"><DocumentIcon height="21" width="21" /></span>
+                          <strong>Drop your CSV here</strong>
+                          <span>or click to browse · maximum 10 MB</span>
+                        </div>
+                      )}
+                      {csvError ? <p className="upload-error" role="alert">{csvError}</p> : null}
+                    </div>
+                    <div className="csv-requirements">
+                      <strong>CSV requirements</strong>
+                      <p>Required: first name, last name, email</p>
+                      <p>Optional: company, role, LinkedIn, profile type, guest type</p>
+                      <button className="template-action" onClick={() => showToast({ detail: "The demo template includes all supported columns.", title: "Template prepared", tone: "success" })} type="button">
+                        <UploadIcon className="rotate-180" height="15" width="15" /> Download template
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="manual-attendee-panel" role="tabpanel">
+                    <div className="manual-attendee-grid" role="form">
+                      <FormField id="guest-first-name" label="First name">
+                        <input className="event-control" data-filled={Boolean(manualGuest.firstName)} id="guest-first-name" onChange={(event) => setManualGuest((current) => ({ ...current, firstName: event.target.value }))} placeholder="First name" value={manualGuest.firstName} />
+                      </FormField>
+                      <FormField id="guest-last-name" label="Last name">
+                        <input className="event-control" data-filled={Boolean(manualGuest.lastName)} id="guest-last-name" onChange={(event) => setManualGuest((current) => ({ ...current, lastName: event.target.value }))} placeholder="Last name" value={manualGuest.lastName} />
+                      </FormField>
+                      <FormField id="guest-email" label="Email">
+                        <input className="event-control" data-filled={Boolean(manualGuest.email)} id="guest-email" onChange={(event) => setManualGuest((current) => ({ ...current, email: event.target.value }))} placeholder="name@company.com" type="email" value={manualGuest.email} />
+                      </FormField>
+                      <FormField id="guest-type" label="Guest type">
+                        <select className="event-control" data-filled id="guest-type" onChange={(event) => setManualGuest((current) => ({ ...current, guestType: event.target.value as ManualGuest["guestType"] }))} value={manualGuest.guestType}>
+                          <option>Attendee</option>
+                          <option>VIP</option>
+                          <option>Sponsor</option>
+                        </select>
+                      </FormField>
+                      <FormField id="guest-linkedin" label="LinkedIn">
+                        <input className="event-control" data-filled={Boolean(manualGuest.linkedin)} id="guest-linkedin" onChange={(event) => setManualGuest((current) => ({ ...current, linkedin: event.target.value }))} placeholder="linkedin.com/in/profile" type="url" value={manualGuest.linkedin} />
+                      </FormField>
+                      <FormField id="guest-position" label="Position">
+                        <input className="event-control" data-filled={Boolean(manualGuest.position)} id="guest-position" onChange={(event) => setManualGuest((current) => ({ ...current, position: event.target.value }))} placeholder="Founder & CEO" value={manualGuest.position} />
+                      </FormField>
+                      <FormField id="guest-company" label="Company">
+                        <input className="event-control" data-filled={Boolean(manualGuest.company)} id="guest-company" onChange={(event) => setManualGuest((current) => ({ ...current, company: event.target.value }))} placeholder="Company name" value={manualGuest.company} />
+                      </FormField>
+                      <TactileButton className="manual-add-action" onClick={addManualGuest} variant="graphite">
+                        <PlusIcon height="15" width="15" /> Add guest
+                      </TactileButton>
+                    </div>
+                    {manualGuests.length ? (
+                      <p className="manual-attendee-result"><CheckIcon height="14" width="14" /> {manualGuests.length} {manualGuests.length === 1 ? "guest" : "guests"} added in this session</p>
+                    ) : null}
+                  </div>
+                )}
+              </Surface>
+
+              <Surface as="section" className="create-section team-section" depth="raised" aria-labelledby="event-team-title">
+                <SectionHeading
+                  description="Assign the people who will help run the room."
+                  icon={<StaffIcon height="20" width="20" />}
+                  id="event-team-title"
+                >
+                  Event team
+                </SectionHeading>
+                <div className="team-layout">
+                  <div className="organizer-block">
+                    <span className="team-label">Organizer</span>
+                    <div className="team-person">
+                      <Avatar name={ORGANIZER.name} size={42} src={ORGANIZER.avatar} />
+                      <div><strong>{ORGANIZER.name}</strong><span>{ORGANIZER.role}</span></div>
+                    </div>
+                  </div>
+                  <div className="staff-block">
+                    <span className="team-label">Staff / Wefters</span>
+                    <div className="staff-list">
+                      {selectedStaff.map((person) => (
+                        <div className="staff-pill" key={person.id}>
+                          <Avatar name={person.name} size={36} src={person.avatar} />
+                          <div><strong>{person.name.split(" ")[0]}</strong><span>{person.role}</span></div>
+                          <button aria-label={`Remove ${person.name}`} onClick={() => toggleStaff(person.id)} type="button"><CloseIcon height="14" width="14" /></button>
+                        </div>
+                      ))}
+                      <div className="staff-picker">
+                        <TactileButton aria-expanded={staffOpen} className="assign-staff-action" onClick={() => setStaffOpen((current) => !current)}>
+                          <PlusIcon height="15" width="15" /> Assign staff
+                        </TactileButton>
+                        {staffOpen ? (
+                          <Surface className="staff-popover" depth="floating">
+                            <div className="staff-popover__head"><strong>Assign staff</strong><span>{selectedStaff.length} selected</span></div>
+                            {STAFF.map((person) => {
+                              const selected = selectedStaffIds.includes(person.id);
+                              return (
+                                <button aria-pressed={selected} key={person.id} onClick={() => toggleStaff(person.id)} type="button">
+                                  <Avatar name={person.name} size={34} src={person.avatar} />
+                                  <span><strong>{person.name}</strong><small>{person.role}</small></span>
+                                  <em>{selected ? <CheckIcon height="14" width="14" /> : <PlusIcon height="14" width="14" />}</em>
+                                </button>
+                              );
+                            })}
+                          </Surface>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Surface>
+            </form>
+
+            <aside className="event-summary-column" aria-label="Live event summary">
+              <Surface className="event-summary-card" depth="raised">
+                <div className="event-summary-heading">
+                  <DocumentIcon height="20" width="20" />
+                  <h2>Event summary</h2>
+                  <span className="summary-live-dot">Live</span>
+                </div>
+                <div className="summary-cover">
+                  {coverUrl ? (
+                    <Image alt={`Cover for ${form.name || "new event"}`} fill sizes="320px" src={coverUrl} unoptimized />
+                  ) : (
+                    <CityArtwork art={EVENT_COVER_PLACEHOLDER_ART} className="city-art--photo summary-city-art">
+                      <span className="summary-art-label">ADD A COVER IMAGE</span>
+                    </CityArtwork>
+                  )}
+                </div>
+                <h3 className="summary-transition" key={form.name}>{form.name || "Untitled event"}</h3>
+                <div className="summary-meta">
+                  <span><CalendarIcon height="15" width="15" /><span className="summary-transition" key={`${form.startDate}-${form.endDate}`}>{formatDateRange(form.startDate, form.endDate)}</span></span>
+                  <span><LocationIcon height="15" width="15" /><span className="summary-transition" key={form.city}>{form.city || "Choose a city"}</span></span>
+                  <span><PeopleIcon height="15" width="15" /><span className="summary-transition" key={form.attendees}>{form.attendees ? `${form.attendees} expected attendees` : "Add an attendee estimate"}</span></span>
+                </div>
+
+                <div className="summary-group">
+                  <strong>Context</strong>
+                  <div className="summary-chips summary-transition" key={form.categories.join("-")}>
+                    {form.categories.length ? form.categories.map((category) => <span key={category}>{category}</span>) : <small>Add event categories</small>}
+                  </div>
+                </div>
+                <div className="summary-group">
+                  <strong>Expected audience</strong>
+                  <div className="summary-chips summary-transition" key={form.profiles.join("-")}>
+                    {form.profiles.length ? (
+                      <>
+                        {form.profiles.slice(0, 4).map((profile) => <span key={profile}>{profile}</span>)}
+                        {form.profiles.length > 4 ? <span>+{form.profiles.length - 4} more</span> : null}
+                      </>
+                    ) : <small>Add audience profiles</small>}
+                  </div>
+                </div>
+                <div className="summary-group summary-team">
+                  <strong>Team</strong>
+                  <div className="summary-team__row summary-transition" key={selectedStaffIds.join("-")}>
+                    <div className="summary-avatars">
+                      {selectedStaff.slice(0, 4).map((person) => <Avatar key={person.id} name={person.name} size={30} src={person.avatar} />)}
+                    </div>
+                    <span>{selectedStaff.length ? `${selectedStaff.length} staff assigned` : "Assign event staff"}</span>
+                  </div>
+                </div>
+
+                <div className="summary-actions">
+                  <TactileButton className="create-event-action" disabled={actionState !== "idle"} onClick={() => document.querySelector<HTMLFormElement>(".create-event-form")?.requestSubmit()} variant="graphite">
+                    {actionState === "creating" ? "Creating…" : "Create event"}
+                    {actionState !== "creating" ? <ArrowRightIcon height="15" width="15" /> : null}
+                  </TactileButton>
+                  <TactileButton className="save-draft-action" disabled={actionState !== "idle"} onClick={saveDraft}>
+                    {actionState === "saving" ? "Saving…" : "Save as draft"}
+                  </TactileButton>
+                </div>
+              </Surface>
+            </aside>
+          </div>
+
+          {toast ? (
+            <Surface aria-live="polite" className={`event-toast event-toast--${toast.tone}`} depth="floating" role="status">
+              <span>{toast.tone === "success" ? <CheckIcon height="17" width="17" /> : <ImageIcon height="17" width="17" />}</span>
+              <div><strong>{toast.title}</strong><p>{toast.detail}</p></div>
+              <button aria-label="Dismiss notification" onClick={() => setToast(null)} type="button"><CloseIcon height="15" width="15" /></button>
+            </Surface>
+          ) : null}
+        </main>
+      </div>
+    </div>
+  );
+}

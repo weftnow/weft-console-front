@@ -88,3 +88,21 @@ export function CloseIcon(props: IconProps) {
 export function ReturnIcon(props: IconProps) {
   return <IconBase {...props}><path d="M8 7H4V3" /><path d="M4.5 7.5A8.5 8.5 0 1 1 3.8 16" /></IconBase>;
 }
+export function UploadIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M12 16V4M7 9l5-5 5 5" /><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" /></IconBase>;
+}
+export function DocumentIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /><path d="M14 3v5h5M9 13h6M9 17h4" /></IconBase>;
+}
+export function CheckIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m5 12 4 4L19 6" /></IconBase>;
+}
+export function TrashIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6" /></IconBase>;
+}
+export function ImageIcon(props: IconProps) {
+  return <IconBase {...props}><rect x="3" y="4" width="18" height="16" rx="3" /><circle cx="9" cy="9" r="2" /><path d="m5 18 5-5 3 3 2-2 4 4" /></IconBase>;
+}
+export function EditIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M13.5 6.5 17.5 10.5M4 20l4.5-1 10-10a2.8 2.8 0 0 0-4-4l-10 10L4 20Z" /><path d="m13 6 4 4" /></IconBase>;
+}

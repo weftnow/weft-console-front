@@ -1,7 +1,8 @@
+import Link from "next/link";
+
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { FilterMenu } from "@/shared/ui/filter-menu";
 import { PlusIcon, SearchIcon } from "@/shared/ui/icons";
-import { TactileButton } from "@/shared/ui/tactile-button";
 import { AllEventsTable } from "./all-events-table";
 import { LiveEventPanel } from "./live-event-panel";
 import { RecentlyCompletedPanel } from "./recently-completed-panel";
@@ -21,10 +22,10 @@ function EventsHeader() {
           <input aria-label="Search events" placeholder="Search events…" type="search" />
         </label>
         <FilterMenu label="Status" options={["All statuses", "Live", "Upcoming", "Completed"]} />
-        <FilterMenu label="City" options={["All cities", "Las Vegas", "Singapore", "Abu Dhabi", "Aspen"]} />
-        <TactileButton className="new-event-action" variant="primary">
+        <FilterMenu label="City" options={["All cities", "Las Vegas", "Singapore", "Davos", "Aspen"]} />
+        <Link className="tactile-button tactile-button--primary new-event-action" href="/events/new">
           <PlusIcon height="16" width="16" /> New event
-        </TactileButton>
+        </Link>
       </div>
     </header>
   );
