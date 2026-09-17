@@ -21,7 +21,7 @@ test("recommendation pairs center profiles and the connector with readable card 
   assert.match(css, /\.recommendation-person\s*\{[^}]*text-align:\s*center/s);
   assert.match(css, /\.recommendation-person \.network-person__image\s*\{[^}]*margin-inline:\s*auto/s);
   assert.match(css, /\.recommendation-person h3\s*\{[^}]*font-size:\s*13px/s);
-  assert.match(css, /\.recommendation-reason p\s*\{[^}]*font-size:\s*10px/s);
+  assert.match(css, /\.recommendation-reason p\s*\{[^}]*font-size:\s*11px/s);
 });
 
 test("every page shares the single root inset surface and shadow tokens", () => {
@@ -162,4 +162,25 @@ test("large wells and compact details scale the shared inset lighting", () => {
     css,
     /\.progress-track\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-compact\)/s,
   );
+});
+
+test("type scale keeps a 10px floor and same-role labels share one size", () => {
+  const sizes = [...css.matchAll(/font-size:\s*(\d+)px/g)].map((m) => Number(m[1]));
+  assert.ok(sizes.length > 0);
+  assert.ok(Math.min(...sizes) >= 10, `smallest font-size is ${Math.min(...sizes)}px`);
+  const metricLabels = [
+    /\.metric__label\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.event-detail-metric div > span\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.live-metric__label\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.network-metric small\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.people-metric__copy span\s*\{[^}]*font-size:\s*(\d+)px/s,
+  ].map((pattern) => css.match(pattern)?.[1]);
+  assert.deepEqual(metricLabels, ["12", "12", "12", "12", "12"]);
+  const tableHeads = [
+    /\.event-table th\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.people-table th\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.partner-table th\s*\{[^}]*font-size:\s*(\d+)px/s,
+    /\.returning-table th\s*\{[^}]*font-size:\s*(\d+)px/s,
+  ].map((pattern) => css.match(pattern)?.[1]);
+  assert.deepEqual(tableHeads, ["11", "11", "11", "11"]);
 });
