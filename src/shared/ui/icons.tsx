@@ -64,3 +64,15 @@ export function ClockIcon(props: IconProps) {
 export function ShieldIcon(props: IconProps) {
   return <IconBase {...props}><path d="M12 3 5 6v5c0 4.7 2.8 8.1 7 10 4.2-1.9 7-5.3 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></IconBase>;
 }
+export function SearchIcon(props: IconProps) {
+  return <IconBase {...props}><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></IconBase>;
+}
+export function SparklesIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M12 2.5c.4 4.1 2.6 6.3 6.7 6.7-4.1.4-6.3 2.6-6.7 6.7-.4-4.1-2.6-6.3-6.7-6.7 4.1-.4 6.3-2.6 6.7-6.7Z" /><path d="M19 15.5c.2 2 1.3 3.1 3.3 3.3-2 .2-3.1 1.3-3.3 3.3-.2-2-1.3-3.1-3.3-3.3 2-.2 3.1-1.3 3.3-3.3ZM5.3 2.5c.1 1.4.9 2.2 2.3 2.3-1.4.1-2.2.9-2.3 2.3-.1-1.4-.9-2.2-2.3-2.3 1.4-.1 2.2-.9 2.3-2.3Z" /></IconBase>;
+}
+export function CloseIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m7 7 10 10M17 7 7 17" /></IconBase>;
+}
+export function ReturnIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M8 7H4V3" /><path d="M4.5 7.5A8.5 8.5 0 1 1 3.8 16" /></IconBase>;
+}
