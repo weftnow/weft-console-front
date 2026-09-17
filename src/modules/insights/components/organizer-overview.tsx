@@ -6,16 +6,14 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   GlobeIcon,
-  HomeIcon,
   LinkIcon,
   LocationIcon,
-  NetworkIcon,
-  OutcomesIcon,
   PeopleIcon,
   ShieldIcon,
   StarIcon,
   TrendIcon,
 } from "@/shared/ui/icons";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import {
@@ -25,14 +23,6 @@ import {
 } from "../overview-data";
 import { ConnectionQualityChart } from "./connection-quality-chart";
 import { RepeatAttendanceChart } from "./repeat-attendance-chart";
-
-const navigation = [
-  { label: "Overview", icon: HomeIcon, active: true },
-  { label: "Events", icon: CalendarIcon },
-  { label: "Network", icon: NetworkIcon },
-  { label: "People", icon: PeopleIcon },
-  { label: "Outcomes", icon: OutcomesIcon },
-];
 
 function MetricGlyph({ icon }: { icon: MetricIcon }) {
   const icons: Record<MetricIcon, ReactNode> = {
@@ -87,44 +77,6 @@ function WorldMap() {
       <circle className="node" cx="342" cy="79" r="6" />
       <circle className="node" cx="477" cy="107" r="6" />
     </svg>
-  );
-}
-
-function Sidebar() {
-  return (
-    <Surface as="aside" className="sidebar" depth="raised">
-      <div className="brand" aria-label="We Are One">
-        <div className="brand-mark"><span /></div>
-        <span className="brand-wordmark">WE ARE ONE</span>
-      </div>
-      <nav aria-label="Primary navigation">
-        <ul className="nav-list">
-          {navigation.map(({ active, icon: Icon, label }) => (
-            <li key={label}>
-              <a className={`nav-link ${active ? "nav-link--active surface-pressed" : ""}`} href={`#${label.toLowerCase()}`} aria-current={active ? "page" : undefined}>
-                <Icon height="19" width="19" />
-                <span>{label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <div className="brand-story" aria-label="Different cities. A stronger tomorrow.">
-        <div className="brand-story__copy">
-          <strong>Different Cities.<br />A Stronger Tomorrow.</strong>
-          <span className="brand-story__line" />
-          <span className="brand-story__label">WE ARE ONE</span>
-        </div>
-      </div>
-      <div className="profile">
-        <div className="avatar" aria-hidden="true">N</div>
-        <div className="profile__text">
-          <span className="profile__name">Nick</span>
-          <span className="profile__role">Organizer</span>
-        </div>
-        <ChevronDownIcon height="15" width="15" />
-      </div>
-    </Surface>
   );
 }
 
@@ -276,7 +228,7 @@ export function OrganizerOverview() {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <Sidebar />
+        <ConsoleSidebar active="overview" />
         <main className="dashboard-main">
           <Topbar />
           <div className="content-stack">

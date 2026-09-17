@@ -7,6 +7,10 @@ const overview = readFileSync(
   new URL("../src/modules/insights/components/organizer-overview.tsx", import.meta.url),
   "utf8",
 );
+const sidebar = readFileSync(
+  new URL("../src/shared/ui/console-sidebar.tsx", import.meta.url),
+  "utf8",
+);
 const repeatChart = readFileSync(
   new URL("../src/modules/insights/components/repeat-attendance-chart.tsx", import.meta.url),
   "utf8",
@@ -14,7 +18,7 @@ const repeatChart = readFileSync(
 
 test("selected controls use the shared pressed depth recipe", () => {
   assert.match(css, /\.surface-pressed\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-pressed\)/s);
-  assert.match(overview, /nav-link--active surface-pressed/);
+  assert.match(sidebar, /nav-link--active surface-pressed/);
   assert.ok(css.indexOf(".nav-link.surface-pressed") > css.indexOf(".nav-link {"));
 });
 
