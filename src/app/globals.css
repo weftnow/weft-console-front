@@ -1367,7 +1367,55 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 }
 
 
+/* Attendee roster ------------------------------------------------------- */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.roster-panel { padding-bottom: 12px; }
+.roster-panel .panel-heading { align-items: center; flex-wrap: wrap; }
+.roster-controls { flex-wrap: wrap; justify-content: flex-end; }
+.roster-filter { display: inline-flex; }
+.roster-filter select { min-height: 38px; max-width: 168px; border: 1px solid var(--weft-border); border-radius: 999px; padding: 0 13px; outline: none; background: var(--weft-surface); box-shadow: var(--weft-shadow-floating); color: var(--weft-text-soft); cursor: pointer; font-size: 11px; font-weight: 600; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, color 150ms ease; }
+.roster-filter select:hover { transform: translateY(-1px); color: var(--weft-text); }
+.roster-filter select:focus-visible { border-color: rgba(255,90,31,.24); box-shadow: var(--weft-shadow-floating), var(--weft-focus); }
+
+.roster-table { min-width: 880px; }
+.roster-table th { white-space: nowrap; }
+.roster-table td:first-child { min-width: 196px; }
+.roster-sort { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; font: inherit; transition: color 150ms ease; }
+.roster-sort:hover { color: var(--weft-text); }
+.roster-sort svg { opacity: .4; transition: opacity 150ms ease, color 150ms ease; }
+.roster-sort[data-active="true"] { color: var(--weft-text); font-weight: 620; }
+.roster-sort[data-active="true"] svg { opacity: 1; color: var(--weft-orange-deep); }
+.roster-sort:focus-visible { outline: none; border-radius: 6px; box-shadow: var(--weft-focus); }
+
+.roster-guest strong { display: block; font-size: 11px; font-weight: 640; letter-spacing: -.012em; }
+.roster-guest span { display: block; margin-top: 2px; color: var(--weft-text-muted); font-size: 10px; }
+.guest-pill--attendee { background: rgba(87,78,67,.08); color: var(--weft-text-muted); }
+.guest-pill--sponsor { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.guest-pill--vip { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.roster-link { display: inline-flex; align-items: center; gap: 5px; color: var(--weft-orange-deep); font-size: 10px; text-decoration: none; }
+.roster-link:hover { text-decoration: underline; }
+.roster-link:focus-visible { outline: none; border-radius: 6px; box-shadow: var(--weft-focus); }
+.roster-page-count { color: var(--weft-text-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+
+.roster-notice { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; border-radius: var(--weft-radius-sm); padding: 9px 12px; background: var(--weft-orange-soft); color: #9c3a0d; font-size: 10px; line-height: 1.4; }
+.roster-empty { display: grid; min-height: 296px; align-content: center; justify-items: center; padding: 30px; text-align: center; }
+.roster-empty__icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; color: var(--weft-text-soft); }
+.roster-empty h3 { margin: 16px 0 0; font-size: 15px; font-weight: 650; letter-spacing: -.028em; }
+.roster-empty p { max-width: 44ch; margin: 7px 0 0; color: var(--weft-text-muted); font-size: 11px; line-height: 1.5; }
+.roster-empty__action { min-height: 38px; margin-top: 17px; padding: 0 17px; font-size: 11px; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .roster-panel .panel-heading { align-items: flex-start; }
+  .roster-controls { width: 100%; justify-content: flex-start; }
+  .roster-controls .search-field--compact { flex: 1 1 100%; }
+  .roster-filter select { max-width: none; }
+}
+
+
 @media (prefers-reduced-motion: reduce) {
   .event-detail-hero, .event-detail-tab-content, .event-detail-metric__value, .event-readiness__item, .event-detail-notice, .event-detail-skeleton { animation: none; }
   .event-detail-more summary svg, .event-quick-action svg:last-child { transition: none; }
+  .roster-filter select, .roster-sort, .roster-sort svg { transition: none; }
+  .roster-filter select:hover { transform: none; }
 }
