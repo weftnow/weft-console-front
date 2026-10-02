@@ -9,7 +9,6 @@ export interface KamiContextItem {
 }
 
 export interface KamiPreviewPerson {
-  avatar: string;
   company: string;
   name: string;
   role: string;
@@ -94,53 +93,36 @@ export function deriveKamiContext(event: EventRecord): KamiContextItem[] {
   ];
 }
 
-export const KAMI_PREVIEW_SCENARIOS: KamiPreviewScenario[] = [
-  {
-    detail:
-      "Sarah Chen has led four sports platform rounds this year and looks for teams with live audience traction.",
-    guestMessage: "I'd like to meet investors interested in sports technology.",
-    id: "founder",
-    label: "Founder looking for investors",
-    reason: "Sarah Chen invests in emerging sports platforms and is here tonight.",
-    replies: ["Tell me more about them", "Introduce us", "Show someone else"],
-    suggestion: {
-      avatar: "/network/avatars/sarah-chen.png",
-      company: "Velocity Capital",
-      name: "Sarah Chen",
-      role: "Partner",
-    },
-  },
-  {
-    detail:
-      "Daniel Park spent six years in luxury hospitality before founding Atelier Residences, and is raising a seed round.",
-    guestMessage: "I'm looking for founders building in luxury hospitality.",
-    id: "investor",
-    label: "Investor looking for founders",
-    reason: "Daniel Park is raising for a members-only hospitality platform and is two tables away.",
-    replies: ["Tell me more about them", "Introduce us", "Show someone else"],
-    suggestion: {
-      avatar: "/network/avatars/daniel-park.png",
-      company: "Atelier Residences",
-      name: "Daniel Park",
-      role: "Co-founder",
-    },
-  },
-  {
-    detail:
-      "Sofia Martinez runs partnerships for eight brands across the season and is scouting for next year.",
-    guestMessage: "We're a brand looking for partners for next season.",
-    id: "brand",
-    label: "Brand looking for partners",
-    reason: "Sofia Martinez places brand partnerships across the season and is free after the keynote.",
-    replies: ["Tell me more about them", "Introduce us", "Show someone else"],
-    suggestion: {
-      avatar: "/network/avatars/sofia-martinez.png",
-      company: "Meridian Sports",
-      name: "Sofia Martinez",
-      role: "Head of Partnerships",
-    },
-  },
-];
+const SCENARIO_TEMPLATES = [
+  { id: "founder", label: "Founder looking for investors", guestMessage: "I'd like to meet investors interested in what I'm building.", fallback: { name: "A partner at a venture fund", role: "Investor", company: "Attending tonight" } },
+  { id: "investor", label: "Investor looking for founders", guestMessage: "I'm looking for founders raising this year.", fallback: { name: "A founder raising a seed round", role: "Founder", company: "Attending tonight" } },
+  { id: "brand", label: "Brand looking for partners", guestMessage: "We're a brand looking for partners for next season.", fallback: { name: "A head of partnerships", role: "Partnerships", company: "Attending tonight" } },
+] as const;
+
+const REPLIES = ["Tell me more about them", "Introduce us", "Show someone else"];
+
+/** Example conversations for the organizer preview, built from this event's guests where possible. */
+export function buildKamiPreviewScenarios(event: EventRecord): KamiPreviewScenario[] {
+  const guests = event.attendees.guests.filter((guest) => guest.firstName.trim());
+  return SCENARIO_TEMPLATES.map((template, index) => {
+    const guest = guests[index];
+    const suggestion: KamiPreviewPerson = guest
+      ? { name: `${guest.firstName} ${guest.lastName}`.trim(), role: guest.position || guest.guestType, company: guest.company }
+      : { ...template.fallback };
+    const generic = suggestion.name.charAt(0).toLowerCase() + suggestion.name.slice(1);
+    return {
+      id: template.id,
+      label: template.label,
+      guestMessage: template.guestMessage,
+      replies: REPLIES,
+      suggestion,
+      reason: guest ? `${suggestion.name} is here tonight and fits what you described.` : `There is ${generic} here tonight who fits what you described.`,
+      detail: guest
+        ? `${suggestion.name}${suggestion.role ? `, ${suggestion.role}` : ""}${suggestion.company ? ` at ${suggestion.company}` : ""}, is on this event's guest list.`
+        : "In a live event, Kami explains why this person is relevant using their guest profile.",
+    };
+  });
+}
 
 const TONE_COPY: Record<KamiTone, { lead: string; opening: string }> = {
   concierge: {
@@ -197,15 +179,12 @@ export type KamiPreviewIntent = "detail" | "introduce" | "custom";
 
 const PREVIEW_FOLLOW_UP_TIME = "8:43 PM";
 
-/**
- * Canned answers for the demo conversation. No model call is made; the preview
- * only has to show an organizer the shape of the exchange.
- */
+/** Example answers for the preview conversation. No model call is made. */
 export function buildKamiFollowUp(
   scenario: KamiPreviewScenario,
   intent: KamiPreviewIntent,
 ): KamiPreviewMessage {
-  const firstName = scenario.suggestion.name.split(" ")[0];
+  const firstName = /^A /.test(scenario.suggestion.name) ? "them" : scenario.suggestion.name.split(" ")[0];
   const lines =
     intent === "detail"
       ? [scenario.detail]

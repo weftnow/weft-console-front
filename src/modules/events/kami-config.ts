@@ -41,7 +41,7 @@ export const KAMI_ACTIVATIONS: { id: KamiActivation; label: string }[] = [
   { id: "on-request", label: "Only when a guest starts" },
 ];
 
-/** WhatsApp stays off in the demo; the channel is announced, not connected. */
+/** WhatsApp stays off until the WhatsApp channel is connected; the channel is announced, not connected. */
 export const KAMI_CHANNELS: { available: boolean; id: KamiChannel; label: string; short: string }[] = [
   { available: true, id: "web", label: "Web (Event app)", short: "Event app" },
   { available: true, id: "sms", label: "SMS", short: "SMS" },

@@ -33,7 +33,6 @@ import {
   StarIcon,
 } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
-import { TactileButton } from "@/shared/ui/tactile-button";
 import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
 import type { EventDetailDto } from "../event-dto";
@@ -49,14 +48,6 @@ import {
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-const LAS_VEGAS_ART = {
-  sky: "#3b3053",
-  horizon: "#f0842c",
-  image: "/las_vegas.png",
-  profile:
-    "polygon(0% 100%,0% 72%,6% 72%,6% 54%,14% 54%,14% 68%,22% 68%,22% 42%,30% 42%,30% 64%,38% 64%,38% 32%,44% 32%,46% 10%,48% 32%,54% 32%,54% 60%,64% 60%,64% 36%,72% 36%,72% 66%,82% 66%,82% 46%,92% 46%,92% 72%,100% 72%,100% 100%)",
-};
-
 const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
   { id: "overview", label: "Overview", icon: CalendarIcon },
   { id: "attendees", label: "Attendees", icon: PeopleIcon },
@@ -64,6 +55,11 @@ const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
   { id: "staff", label: "Staff", icon: StaffIcon },
   { id: "insights", label: "Insights", icon: OutcomesIcon },
 ];
+
+const tabDescriptions = {
+  insights: "Event insights appear once introductions start.",
+  staff: "Staff coordination arrives in a future release.",
+} as const;
 
 const statusLabels = {
   completed: "Completed",
@@ -226,7 +222,6 @@ function ReadinessCard({ event }: { event: EventRecord }) {
     },
     { detail: "Complete", label: "Attendees imported", ready: metrics.attendees > 0 },
     { detail: "Complete", label: "Staff assigned", ready: metrics.staff > 0 },
-    { detail: "Default configuration", label: "Kami ready", ready: true },
   ];
 
   return (
@@ -350,9 +345,9 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
 
   return (
     <Surface className="event-tab-placeholder" depth="raised">
-      <Surface className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
-      <h2>{tab.label}</h2>
-      <p>The {tab.label.toLowerCase()} workspace is represented here for navigation continuity. Its full workflow is outside this Overview implementation.</p>
+      <Surface aria-label={tab.label} className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
+      <h2>Coming soon</h2>
+      <p>{tabDescriptions[activeTab]}</p>
       <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>
         Return to overview <ArrowRightIcon height="15" width="15" />
       </Link>
@@ -379,7 +374,7 @@ export function EventDetailPage({ event, initialTab, context }: { event: EventDe
   const metrics = useMemo(() => deriveEventMetrics(event), [event]);
 
   const status = deriveEventStatus(event);
-  const art = event.city === "Las Vegas, USA" ? LAS_VEGAS_ART : EVENT_COVER_PLACEHOLDER_ART;
+  const art = event.coverImage ? { ...EVENT_COVER_PLACEHOLDER_ART, image: event.coverImage } : EVENT_COVER_PLACEHOLDER_ART;
 
   const copyEventLink = async () => {
     try {
@@ -409,9 +404,6 @@ export function EventDetailPage({ event, initialTab, context }: { event: EventDe
               </p>
             </div>
             <div className="event-detail-header__actions">
-              <TactileButton className="event-detail-header__action" onClick={() => showNotice("Event editing is outside this demo.")}>
-                <EditIcon height="16" width="16" /> Edit event
-              </TactileButton>
               <details className="event-detail-more">
                 <summary className="tactile-button event-detail-header__action">More <ChevronDownIcon height="15" width="15" /></summary>
                 <Surface className="event-detail-more__menu" depth="floating">

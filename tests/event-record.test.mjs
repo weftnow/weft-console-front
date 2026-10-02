@@ -117,3 +117,9 @@ test("the new-event cover placeholder renders without a Las Vegas image", () => 
   assert.doesNotMatch(markup, /las_vegas\.png/);
   assert.doesNotMatch(markup, /<img/);
 });
+
+test("event detail carries no demo city art or demo copy", () => {
+  const source = readFileSync(new URL("../src/modules/events/components/event-detail-page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /LAS_VEGAS_ART|las_vegas\.png|outside this demo|outside this Overview implementation/);
+  assert.doesNotMatch(source, /label: "Kami ready", ready: true/);
+});

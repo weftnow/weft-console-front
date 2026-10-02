@@ -1553,7 +1553,7 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .kami-message--guest .kami-bubble { max-width: 88%; border-color: rgba(12,13,11,.7); border-radius: 13px 13px 4px 13px; background: linear-gradient(180deg,#31342f,#161815); box-shadow: 0 1px 0 rgba(255,255,255,.12) inset, 0 2px 6px rgba(24,23,20,.2); color: #f1efea; }
 
 .kami-suggestion { display: grid; grid-template-columns: 44px minmax(0,1fr) 16px; gap: 11px; align-items: center; margin-left: 35px; border-radius: var(--weft-radius-sm); padding: 10px 11px; }
-.kami-suggestion__portrait { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.82), 0 2px 6px rgba(55,48,39,.15); }
+.kami-suggestion__portrait { display: grid; place-items: center; color: var(--weft-text-soft); width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.82), 0 2px 6px rgba(55,48,39,.15); }
 .kami-suggestion > div { min-width: 0; }
 .kami-suggestion strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 640; }
 .kami-suggestion span { display: block; margin-top: 3px; color: var(--weft-text-soft); font-size: 11px; }
