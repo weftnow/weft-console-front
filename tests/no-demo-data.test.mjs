@@ -14,8 +14,13 @@ test("no source file contains demo data or demo branding", () => {
   assert.deepEqual(offenders, []);
 });
 
-test("demo assets are gone from public/", () => {
-  for (const path of ["public/samples", "public/network", "public/las_vegas.png", "public/map.png", "public/vercel.svg"]) {
-    assert.equal(existsSync(path), false, `${path} should be removed`);
-  }
+test("public/ ships no files (demo assets stay gone)", () => {
+  const shipped = existsSync("public") ? files("public").filter((path) => !path.split("/").pop().startsWith(".")) : [];
+  assert.deepEqual(shipped, []);
+});
+
+test("source never references deleted demo images", () => {
+  const images = /\/(las_vegas|singapore|davos|miami|monaco|bitcoin_tech_week|map)\.png|\/network\/avatars|\/samples\//;
+  const offenders = files("src").filter((path) => /\.(tsx?|css|json)$/.test(path) && images.test(readFileSync(path, "utf8")));
+  assert.deepEqual(offenders, []);
 });

@@ -23,7 +23,7 @@ test("no events shows the page empty state with one create action", () => {
   const html = render([]);
   assert.match(html, /No events yet/);
   assert.match(html, /Create your first event to start operating its networking experience\./);
-  assert.equal(html.match(/href="\/events\/new"/g)?.length, 2); // header "New event" + empty-state action
+  assert.equal(html.match(/href="\/events\/new"/g)?.length, 1); // only the empty-state action; no duplicate header CTA
   assert.doesNotMatch(html, /Upcoming events|Recently completed|All events/);
 });
 
@@ -38,6 +38,7 @@ test("protected covers bypass image optimization; static art does not", () => {
 test("events render from data with real links and counts", () => {
   const html = render([event("11111111-1111-4111-8111-111111111111", "upcoming", "2099-01-01T00:00:00.000Z")]);
   assert.match(html, /href="\/events\/11111111-1111-4111-8111-111111111111"/);
+  assert.match(html, /New event/);
   assert.match(html, /Showing 1 event/);
   assert.match(html, /No live events right now/);
   assert.match(html, /No completed events yet/);

@@ -13,7 +13,8 @@ test("preview suggestions come from the event's real guests", () => {
   assert.equal(scenarios.length, 3);
   assert.equal(scenarios[0].suggestion.name, "Ada Lane");
   assert.equal(scenarios[0].suggestion.company, "Analytical Ltd");
-  assert.match(scenarios[0].reason, /Ada Lane/);
+  assert.match(scenarios[0].reason, /^Someone like Ada Lane/);
+  for (const scenario of scenarios) assert.doesNotMatch(scenario.reason, /fits what you described/);
   assert.equal(scenarios[1].suggestion.name, "Grace Lane");
 });
 
