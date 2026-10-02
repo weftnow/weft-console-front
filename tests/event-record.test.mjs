@@ -13,7 +13,7 @@ const moduleCache = new Map();
 /**
  * Transpile and evaluate a TypeScript source file. Relative imports are
  * resolved against the importing file rather than this test, so a module that
- * pulls in a sibling (event-record -> seed-guests) loads the real thing.
+ * pulls in a sibling (for example event-record -> event-schedule) loads the real thing.
  */
 function loadModule(path, base = import.meta.url) {
   const url = new URL(path, base);
