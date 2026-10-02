@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 
 import { requireClerkSession } from "@/infrastructure/auth/require-session";
+import { PartnerReportPage } from "@/modules/sponsors/components/partner-report-page";
 
-export const metadata: Metadata = {
-  title: "Horizon Family Office · Las Vegas · F1 Week · Weft",
-};
+export const metadata: Metadata = { title: "Partner report · Weft" };
+export const dynamic = "force-dynamic";
 
 export default async function PartnerReport() {
   await requireClerkSession();
-  return <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-16">
-    <h1 className="text-3xl font-semibold">Sponsor report unavailable</h1>
-    <p className="mt-3 text-muted-foreground">This report is unavailable until sponsor participation and report access are connected to an organization.</p>
-  </main>;
+  return <PartnerReportPage />;
 }

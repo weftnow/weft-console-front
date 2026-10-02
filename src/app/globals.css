@@ -139,7 +139,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 .brand-story__label { font-size: 10px; letter-spacing: .18em; }
 .profile { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 18px 4px 0; }
 .profile__switch, .profile__logout { display: block; margin-top: 5px; border: 0; padding: 0; background: none; color: var(--weft-text-muted); font: inherit; font-size: 11px; text-align: left; text-decoration: underline; cursor: pointer; }
-.demo-data-notice { margin: 0 0 16px; border: 1px solid var(--weft-border); border-radius: 12px; padding: 10px 14px; background: var(--weft-orange-soft); color: var(--weft-text-soft); font-size: 12px; line-height: 1.5; }
 .avatar { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; overflow: hidden; border: 2px solid rgba(255,255,255,.76); border-radius: 50%; background: #29312d; box-shadow: 0 2px 7px rgba(47,42,34,.18); color: white; font-size: 12px; font-weight: 700; }
 .profile__text { min-width: 0; line-height: 1.1; }
 .profile__name { display: block; font-size: 12px; font-weight: 650; }

@@ -15,13 +15,17 @@ test("sidebar displays server supplied identity and role through Clerk account c
   assert.match(account, /signOut\(\{ redirectUrl: "\/sign-in" \}\)/);
 });
 
-test("all fixture dashboard views say their content is demo data", () => {
+test("dashboard views render real records or empty states, so they carry no demo-data notice", () => {
   for (const file of [
     "src/modules/insights/components/organizer-overview.tsx",
     "src/modules/events/components/events-page.tsx",
     "src/modules/network/components/network-page.tsx",
     "src/modules/attendees/components/people-page.tsx",
-  ]) assert.match(read(file), /DemoDataNotice/);
+  ]) {
+    const source = read(file);
+    assert.doesNotMatch(source, /DemoDataNotice|-data"/);
+    assert.match(source, /EmptyState/);
+  }
 });
 
 test("authentication routes preserve same-origin destinations and sign out to sign-in", () => {
