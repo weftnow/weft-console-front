@@ -26,15 +26,15 @@ const navigation: NavigationItem[] = [
   { key: "events", label: "Events", href: "/events", icon: CalendarIcon, supported: true },
   { key: "network", label: "Network", href: "/network", icon: NetworkIcon, supported: true },
   { key: "people", label: "People", href: "/people", icon: PeopleIcon, supported: true },
-  { key: "outcomes", label: "Outcomes", href: "#outcomes", icon: OutcomesIcon, supported: false },
+  { key: "outcomes", label: "Outcomes", href: "", icon: OutcomesIcon, supported: false },
 ];
 
 export function ConsoleSidebar({ active, context }: { active: ConsoleDestination; context: ConsoleContext }) {
   return (
     <Surface as="aside" className="sidebar" depth="raised">
-      <div className="brand" aria-label="We Are One">
+      <div className="brand" aria-label="Weft">
         <div className="brand-mark"><span /></div>
-        <span className="brand-wordmark">WE ARE ONE</span>
+        <span className="brand-wordmark">Weft</span>
       </div>
       <nav aria-label="Primary navigation">
         <ul className="nav-list">
@@ -42,24 +42,23 @@ export function ConsoleSidebar({ active, context }: { active: ConsoleDestination
             const isActive = key === active;
             const className = `nav-link ${isActive ? "nav-link--active surface-pressed" : ""}`;
             const content = <><Icon height="19" width="19" /><span>{label}</span></>;
-
             return (
               <li key={key}>
                 {supported ? (
                   <Link className={className} href={href} aria-current={isActive ? "page" : undefined}>{content}</Link>
                 ) : (
-                  <a className={className} href={href}>{content}</a>
+                  <span className={`${className} nav-link--disabled`} aria-disabled="true">{content}</span>
                 )}
               </li>
             );
           })}
         </ul>
       </nav>
-      <div className="brand-story" aria-label="Different cities. A stronger tomorrow.">
+      <div className="brand-story" aria-label="The networking layer for business events.">
         <div className="brand-story__copy">
-          <strong>Different Cities.<br />A Stronger Tomorrow.</strong>
+          <strong>The networking layer<br />for business events.</strong>
           <span className="brand-story__line" />
-          <span className="brand-story__label">WE ARE ONE</span>
+          <span className="brand-story__label">Weft</span>
         </div>
       </div>
       <ConsoleAccount user={context.user} organization={{ name: context.organization.name, role: context.membership.role }} />

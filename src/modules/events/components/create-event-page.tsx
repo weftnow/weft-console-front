@@ -538,7 +538,7 @@ export function CreateEventPage({ context, consoleContext, selectedOrganizationI
               <ArrowLeftIcon height="15" width="15" /> Events
             </Link>
             <h1>Create event</h1>
-            <p>Set up a new We Are One experience.</p>
+            <p>Set up a new event.</p>
           </header>
 
           <div className="create-event-layout">
