@@ -10,6 +10,7 @@ import {
   SearchIcon,
   SortIcon,
 } from "@/shared/ui/icons";
+import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { AttendeeImportPanel } from "./attendee-import-panel";
@@ -63,27 +64,6 @@ function SortableHeader({
         <SortIcon height="11" width="11" />
       </button>
     </th>
-  );
-}
-
-function RosterEmpty({
-  action,
-  detail,
-  title,
-}: {
-  action?: { label: string; onClick: () => void };
-  detail: string;
-  title: string;
-}) {
-  return (
-    <div className="roster-empty">
-      <Surface className="roster-empty__icon" depth="inset"><PeopleIcon height="22" width="22" /></Surface>
-      <h3>{title}</h3>
-      <p>{detail}</p>
-      {action ? (
-        <TactileButton className="roster-empty__action" onClick={action.onClick}>{action.label}</TactileButton>
-      ) : null}
-    </div>
   );
 }
 
@@ -232,15 +212,17 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
       ) : null}
 
       {guests.length === 0 ? (
-        <RosterEmpty
-          action={{ label: "Import CSV", onClick: () => setImportOpen(true) }}
-          detail="Append attendees from a CSV. Existing event emails are skipped and their records are preserved."
+        <EmptyState
+          action={<TactileButton onClick={() => setImportOpen(true)}>Import CSV</TactileButton>}
+          description="Append attendees from a CSV. Existing event emails are skipped and their records are preserved."
+          icon={PeopleIcon}
           title="No attendees yet"
         />
       ) : filtered.length === 0 ? (
-        <RosterEmpty
-          action={{ label: "Clear filters", onClick: clearFilters }}
-          detail="No guest on this roster matches the current search and filters."
+        <EmptyState
+          action={<TactileButton onClick={clearFilters}>Clear filters</TactileButton>}
+          description="No guest on this roster matches the current search and filters."
+          icon={PeopleIcon}
           title="No matching attendees"
         />
       ) : (

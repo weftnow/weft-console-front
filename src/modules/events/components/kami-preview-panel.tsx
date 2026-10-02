@@ -8,6 +8,7 @@ import {
   ChevronRightIcon,
   EyeIcon,
   OutcomesIcon,
+  PeopleIcon,
   RefreshIcon,
   SendIcon,
 } from "@/shared/ui/icons";
@@ -51,7 +52,7 @@ function MessageRow({ index, message }: { index: number; message: KamiPreviewMes
 }
 
 /**
- * The demo exchange. Remounted by its key whenever the scenario changes or the
+ * The example exchange. Remounted by its key whenever the scenario changes or the
  * organizer replays the preview, so the conversation always starts over.
  */
 function KamiConversation({
@@ -107,13 +108,7 @@ function KamiConversation({
               depth="floating"
               style={{ "--message-index": messages.length } as CSSProperties}
             >
-              <Image
-                alt={`Portrait of ${scenario.suggestion.name}`}
-                className="kami-suggestion__portrait"
-                height={44}
-                src={scenario.suggestion.avatar}
-                width={44}
-              />
+              <Surface className="kami-suggestion__portrait" depth="inset" aria-hidden="true"><PeopleIcon height="20" width="20" /></Surface>
               <div>
                 <strong>{scenario.suggestion.name}</strong>
                 <span>{scenario.suggestion.role}</span>
@@ -216,7 +211,7 @@ export function KamiPreviewPanel({
           <div className="section-head">
             <EyeIcon className="section-head__icon" height="19" width="19" />
             <div>
-              <h2 className="panel-title" id="kami-preview-title">Preview as attendee</h2>
+              <h2 className="panel-title" id="kami-preview-title">Example conversation</h2>
               <p className="panel-subtitle">See how Kami will interact with your guests.</p>
             </div>
           </div>
@@ -258,14 +253,13 @@ export function KamiPreviewPanel({
       </Surface>
 
       <TactileButton className="kami-scenario-action" onClick={onScenarioChange}>
-        <RefreshIcon height="15" width="15" /> Preview another scenario
+        <RefreshIcon height="15" width="15" /> Show another example
       </TactileButton>
 
       <Surface className="kami-ready" depth="raised">
         <span className="kami-ready__glyph"><OutcomesIcon height="19" width="19" /></span>
         <div>
-          <strong>Kami is ready</strong>
-          <p>Kami will be active for this event with the configuration above.</p>
+          <p>Kami uses the configuration above for this event.</p>
         </div>
       </Surface>
     </div>

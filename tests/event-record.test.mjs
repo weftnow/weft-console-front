@@ -13,7 +13,7 @@ const moduleCache = new Map();
 /**
  * Transpile and evaluate a TypeScript source file. Relative imports are
  * resolved against the importing file rather than this test, so a module that
- * pulls in a sibling (event-record -> seed-guests) loads the real thing.
+ * pulls in a sibling (for example event-record -> event-schedule) loads the real thing.
  */
 function loadModule(path, base = import.meta.url) {
   const url = new URL(path, base);
@@ -116,4 +116,19 @@ test("the new-event cover placeholder renders without a Las Vegas image", () => 
 
   assert.doesNotMatch(markup, /las_vegas\.png/);
   assert.doesNotMatch(markup, /<img/);
+});
+
+test("event detail carries no demo city art or demo copy", () => {
+  const source = readFileSync(new URL("../src/modules/events/components/event-detail-page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /LAS_VEGAS_ART|las_vegas\.png|outside this demo|outside this Overview implementation/);
+  assert.doesNotMatch(source, /label: "Kami ready", ready: true/);
+});
+
+test("Kami surfaces make no readiness claims and the preview is labelled as an example", () => {
+  const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+  const detail = read("../src/modules/events/components/event-detail-page.tsx");
+  const panel = read("../src/modules/events/components/kami-preview-panel.tsx");
+  assert.doesNotMatch(detail, /Kami is ready/);
+  assert.doesNotMatch(panel, /Kami is ready/);
+  assert.match(panel, /Example conversation/);
 });

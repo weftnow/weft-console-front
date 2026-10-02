@@ -70,11 +70,17 @@ test("isolated database persists the authorized event and rolls back failed chil
   const creatorMembershipId = randomUUID();
   const staffMembershipId = randomUUID();
   const outsiderMembershipId = randomUUID();
+  const sponsorId = randomUUID();
+  const inactiveOrganizerId = randomUUID();
+  const sponsorMembershipId = randomUUID();
+  const inactiveMembershipId = randomUUID();
   const eventName = `Transaction ${randomUUID()}`;
   try {
     await pool.query("insert into users (id, display_name) values ($1, 'Creator'), ($2, 'Staff'), ($3, 'Outsider')", [userId, staffUserId, outsiderId]);
     await pool.query("insert into organizations (id, name) values ($1, 'Test organization'), ($2, 'Other organization')", [organizationId, otherOrganizationId]);
     await pool.query("insert into organization_memberships (id, organization_id, user_id, role) values ($1, $2, $3, 'owner'), ($4, $2, $5, 'staff'), ($6, $7, $8, 'staff')", [creatorMembershipId, organizationId, userId, staffMembershipId, staffUserId, outsiderMembershipId, otherOrganizationId, outsiderId]);
+    await pool.query("insert into users (id, display_name) values ($1, 'Sponsor'), ($2, 'Inactive organizer')", [sponsorId, inactiveOrganizerId]);
+    await pool.query("insert into organization_memberships (id, organization_id, user_id, role, active) values ($1, $2, $3, 'sponsor', true), ($4, $2, $5, 'organizer', false)", [sponsorMembershipId, organizationId, sponsorId, inactiveMembershipId, inactiveOrganizerId]);
     const { createEventSchema } = loadTs("src/modules/events/event-schemas.ts");
     const { resolveEventSchedule } = loadTs("src/modules/events/event-schedule.ts");
     const { createEvent, getEvent, getEventCover } = loadTs("src/modules/events/server/service.ts");
@@ -104,6 +110,15 @@ test("isolated database persists the authorized event and rolls back failed chil
     assert.equal(fresh.rows[0].id, created.id);
     assert.equal((await getEvent({ userId, eventId: created.id })).attendees.guests.length, 2);
     assert.ok((await getEventCover({ userId, eventId: created.id })).bytes.length > 0);
+    const listed = await repository.listForUser(userId, organizationId);
+    const summary = listed.find((event) => event.id === created.id);
+    assert.equal(summary?.guestCount, 2);
+    assert.equal(summary?.hasCover, true);
+    assert.equal((await repository.listForUser(outsiderId, organizationId)).some((event) => event.id === created.id), false);
+    assert.equal((await repository.listForUser(staffUserId, organizationId)).some((event) => event.id === created.id), false);
+    assert.equal((await repository.listForUser(sponsorId, organizationId)).some((event) => event.id === created.id), false);
+    assert.equal((await repository.listForUser(inactiveOrganizerId, organizationId)).some((event) => event.id === created.id), false);
+    assert.equal((await repository.listForUser(userId, otherOrganizationId)).some((event) => event.id === created.id), false, "the list is scoped to the selected organization");
     await assert.rejects(getEvent({ userId: outsiderId, eventId: created.id }), (error) => error.code === "FORBIDDEN");
     await assert.rejects(getEventCover({ userId: outsiderId, eventId: created.id }), (error) => error.code === "FORBIDDEN");
     await assert.rejects(createEvent({ userId, organizationId, data: { ...input, name: `${eventName} cross-org`, staffMembershipIds: [outsiderMembershipId] } }), (error) => error.code === "VALIDATION_ERROR");
@@ -116,7 +131,7 @@ test("isolated database persists the authorized event and rolls back failed chil
     await pool.query("delete from events where creator_id = $1", [userId]);
     await pool.query("delete from organization_memberships where organization_id in ($1, $2)", [organizationId, otherOrganizationId]);
     await pool.query("delete from organizations where id in ($1, $2)", [organizationId, otherOrganizationId]);
-    await pool.query("delete from users where id in ($1, $2, $3)", [userId, staffUserId, outsiderId]);
+    await pool.query("delete from users where id in ($1, $2, $3, $4, $5)", [userId, staffUserId, outsiderId, sponsorId, inactiveOrganizerId]);
     await pool.end();
     if (previousRuntimeUrl) process.env.DATABASE_URL = previousRuntimeUrl; else delete process.env.DATABASE_URL;
   }

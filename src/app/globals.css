@@ -129,6 +129,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 .nav-link { display: flex; min-height: 45px; align-items: center; gap: 11px; border: 1px solid transparent; border-radius: 14px; padding: 0 13px; background: rgba(255,255,255,.2); box-shadow: var(--weft-shadow-nav); color: #5d5f5b; font-size: 12px; text-decoration: none; transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease; }
 .nav-link:hover { color: var(--weft-text); background: rgba(255,255,255,.38); }
 .nav-link.surface-pressed { background: var(--weft-surface-inset); box-shadow: var(--weft-shadow-pressed); }
+.nav-link--disabled { cursor: default; opacity: .5; }
+.nav-link--disabled:hover { color: #5d5f5b; background: rgba(255,255,255,.2); }
 .nav-link--active { border-color: rgba(255,90,31,.16); color: var(--weft-orange-deep); }
 .brand-story { position: relative; min-height: 270px; margin-top: 38px; overflow: hidden; border-radius: 17px; background: linear-gradient(180deg,rgba(7,8,7,.02),rgba(7,8,7,.86)), radial-gradient(circle at 24% 25%,#60655d 0 2%,transparent 3%), linear-gradient(145deg,#4a514a,#111311 65%); color: white; box-shadow: inset 0 0 0 1px rgba(255,255,255,.11),0 10px 20px rgba(25,24,21,.16); }
 .brand-story::before { position: absolute; inset: 24% 0 0; background: linear-gradient(90deg,transparent 12%,#131714 12% 19%,transparent 19% 33%,#20241f 33% 45%,transparent 45% 69%,#0d100e 69% 78%,transparent 78%); content: ""; opacity: .78; clip-path: polygon(0 100%,0 70%,8% 70%,8% 47%,15% 47%,15% 76%,24% 76%,24% 31%,31% 31%,31% 65%,39% 65%,39% 19%,48% 19%,48% 60%,59% 60%,59% 41%,68% 41%,68% 74%,78% 74%,78% 28%,87% 28%,87% 67%,100% 67%,100% 100%); }
@@ -138,7 +140,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 .brand-story__label { font-size: 10px; letter-spacing: .18em; }
 .profile { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 18px 4px 0; }
 .profile__switch, .profile__logout { display: block; margin-top: 5px; border: 0; padding: 0; background: none; color: var(--weft-text-muted); font: inherit; font-size: 11px; text-align: left; text-decoration: underline; cursor: pointer; }
-.demo-data-notice { margin: 0 0 16px; border: 1px solid var(--weft-border); border-radius: 12px; padding: 10px 14px; background: var(--weft-orange-soft); color: var(--weft-text-soft); font-size: 12px; line-height: 1.5; }
 .avatar { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; overflow: hidden; border: 2px solid rgba(255,255,255,.76); border-radius: 50%; background: #29312d; box-shadow: 0 2px 7px rgba(47,42,34,.18); color: white; font-size: 12px; font-weight: 700; }
 .profile__text { min-width: 0; line-height: 1.1; }
 .profile__name { display: block; font-size: 12px; font-weight: 650; }
@@ -1389,11 +1390,16 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .roster-page-count { color: var(--weft-text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 
 .roster-notice { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; border-radius: var(--weft-radius-sm); padding: 9px 12px; background: var(--weft-orange-soft); color: #9c3a0d; font-size: 11px; line-height: 1.4; }
-.roster-empty { display: grid; min-height: 296px; align-content: center; justify-items: center; padding: 30px; text-align: center; }
-.roster-empty__icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; color: var(--weft-text-soft); }
-.roster-empty h3 { margin: 16px 0 0; font-size: 15px; font-weight: 650; letter-spacing: -.028em; }
-.roster-empty p { max-width: 44ch; margin: 7px 0 0; color: var(--weft-text-muted); font-size: 12px; line-height: 1.5; }
-.roster-empty__action { min-height: 38px; margin-top: 17px; padding: 0 17px; font-size: 12px; font-weight: 600; }
+.empty-state { display: grid; align-content: center; justify-items: center; padding: 30px; text-align: center; }
+.empty-state--page { min-height: 296px; }
+.empty-state--panel { min-height: 132px; padding: 20px; }
+.empty-state__icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; color: var(--weft-text-soft); }
+.empty-state--panel .empty-state__icon { width: 38px; height: 38px; }
+.empty-state h2, .empty-state h3 { margin: 16px 0 0; font-size: 15px; font-weight: 650; letter-spacing: -.028em; }
+.empty-state--panel h3 { margin-top: 11px; font-size: 13px; }
+.empty-state p { max-width: 44ch; margin: 7px 0 0; color: var(--weft-text-muted); font-size: 12px; line-height: 1.5; }
+.empty-state__action { margin-top: 17px; }
+.empty-state__action > .tactile-button { display: inline-flex; min-height: 38px; align-items: center; gap: 8px; padding: 0 17px; font-size: 12px; font-weight: 600; text-decoration: none; }
 
 @media (max-width: 760px) {
   .roster-panel .panel-heading { align-items: flex-start; }
@@ -1548,7 +1554,7 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .kami-message--guest .kami-bubble { max-width: 88%; border-color: rgba(12,13,11,.7); border-radius: 13px 13px 4px 13px; background: linear-gradient(180deg,#31342f,#161815); box-shadow: 0 1px 0 rgba(255,255,255,.12) inset, 0 2px 6px rgba(24,23,20,.2); color: #f1efea; }
 
 .kami-suggestion { display: grid; grid-template-columns: 44px minmax(0,1fr) 16px; gap: 11px; align-items: center; margin-left: 35px; border-radius: var(--weft-radius-sm); padding: 10px 11px; }
-.kami-suggestion__portrait { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.82), 0 2px 6px rgba(55,48,39,.15); }
+.kami-suggestion__portrait { display: grid; place-items: center; color: var(--weft-text-soft); width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.82), 0 2px 6px rgba(55,48,39,.15); }
 .kami-suggestion > div { min-width: 0; }
 .kami-suggestion strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 640; }
 .kami-suggestion span { display: block; margin-top: 3px; color: var(--weft-text-soft); font-size: 11px; }

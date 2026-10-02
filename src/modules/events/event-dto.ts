@@ -41,3 +41,10 @@ export const createEventResponseSchema = z.strictObject({
 });
 
 export type EventDetailDto = z.infer<typeof eventDetailDtoSchema>;
+
+export type EventSummaryDto = {
+  id: string; name: string; city: string; venue: string;
+  startDate: string; endDate: string; startsAt: string; endsAt: string; timezone: string;
+  guestCount: number; coverImage: string | null;
+  status: "upcoming" | "live" | "completed";
+};

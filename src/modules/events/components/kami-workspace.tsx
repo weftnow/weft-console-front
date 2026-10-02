@@ -40,7 +40,7 @@ import {
   MAX_CUSTOM_CONTEXT,
   saveKamiConfig,
 } from "../kami-config";
-import { deriveKamiContext, KAMI_PREVIEW_SCENARIOS } from "../kami-preview";
+import { buildKamiPreviewScenarios, deriveKamiContext } from "../kami-preview";
 import { useDictation } from "../hooks/use-dictation";
 import { KamiCallModal } from "./kami-call-modal";
 import { KamiMark, SegmentedControl, ToggleSwitch } from "./kami-controls";
@@ -221,8 +221,9 @@ export function KamiWorkspace({
   }, [config, event.id]);
 
   const context = useMemo(() => deriveKamiContext(event), [event]);
+  const scenarios = useMemo(() => buildKamiPreviewScenarios(event), [event]);
   const usingDefaults = isDefaultKamiConfig(config, defaults);
-  const scenario = KAMI_PREVIEW_SCENARIOS[scenarioIndex];
+  const scenario = scenarios[scenarioIndex];
 
   const update = <K extends keyof KamiConfig>(key: K, value: KamiConfig[K]) => {
     setConfig((current) => ({ ...current, [key]: value }));
@@ -282,7 +283,7 @@ export function KamiWorkspace({
   };
 
   const nextScenario = () => {
-    setScenarioIndex((index) => (index + 1) % KAMI_PREVIEW_SCENARIOS.length);
+    setScenarioIndex((index) => (index + 1) % scenarios.length);
   };
 
   return (

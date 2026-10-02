@@ -18,8 +18,10 @@ test("organizer dashboard routes resolve Neon context before rendering fixture c
 test("partner report requires a Clerk session but never renders unscoped fixture reports", () => {
   const source = route("partner-report/page.tsx");
   assert.match(source, /requireClerkSession\(/);
-  assert.doesNotMatch(source, /<PartnerReportPage/);
-  assert.match(source, /unavailable/i);
+  assert.ok(source.indexOf("requireClerkSession(") < source.indexOf("<PartnerReportPage"), "partner report must check the session before rendering");
+  const component = readFileSync(new URL("../src/modules/sponsors/components/partner-report-page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(component, /partner-report-data|Horizon/);
+  assert.match(component, /No partner report yet/);
 });
 
 test("event detail authorizes its event before resolving the displayed organization context", () => {

@@ -14,7 +14,12 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/shared/ui/chart";
-import type { ConnectionPoint } from "../overview-data";
+
+export interface ConnectionPoint {
+  city: string;
+  date: string;
+  value: number;
+}
 
 const chartConfig = {
   value: {

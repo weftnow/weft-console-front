@@ -1,39 +1,24 @@
-import { partnerReportData } from "../partner-report-data";
-import { FollowUpsPanel } from "./follow-ups-panel";
-import { InvestmentOpportunitiesPanel } from "./investment-opportunities-panel";
-import { OpportunityPipelinePanel } from "./opportunity-pipeline-panel";
-import { OutcomesImpactPanel } from "./outcomes-impact-panel";
-import { PartnerGoalsPanel } from "./partner-goals-panel";
-import { PartnerMetrics } from "./partner-metrics";
-import { PartnerReportHero } from "./partner-report-hero";
-import { PeopleMetPanel } from "./people-met-panel";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { OutcomesIcon } from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
 
 /**
  * Standalone partner report. It deliberately renders without the organizer
  * console navigation — a partner opens this as their own view of one event.
  */
 export function PartnerReportPage() {
-  const { event } = partnerReportData;
-
   return (
     <div className="partner-shell">
       <main className="partner-main">
-        <PartnerReportHero />
-        <PartnerMetrics />
-        <div className="partner-analysis-grid">
-          <PartnerGoalsPanel />
-          <OpportunityPipelinePanel />
-        </div>
-        <InvestmentOpportunitiesPanel />
-        <div className="partner-closing-grid">
-          <PeopleMetPanel />
-          <OutcomesImpactPanel />
-        </div>
-        <FollowUpsPanel />
-        <footer className="dashboard-footer">
-          <span>We Are One &nbsp;|&nbsp; Powered by Weft</span>
-          <span>Partner report &nbsp;·&nbsp; {event.city} &nbsp;·&nbsp; {event.edition}</span>
-        </footer>
+        <header className="events-header">
+          <div className="events-header__copy">
+            <h1 className="events-header__title">Partner report</h1>
+          </div>
+        </header>
+        <Surface as="section" className="panel" depth="raised">
+          <EmptyState description="Reports appear after a partner's event has outcomes." icon={OutcomesIcon} title="No partner report yet" />
+        </Surface>
+        <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
       </main>
     </div>
   );

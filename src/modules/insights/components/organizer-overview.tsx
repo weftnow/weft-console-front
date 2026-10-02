@@ -1,208 +1,122 @@
-import Image from "next/image";
-import type { ReactNode } from "react";
+import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
 
+import type { EventSummaryDto } from "@/modules/events/event-dto";
+import { eventArt, formatCountdown, groupEvents } from "@/modules/events/event-list";
+import { formatEventDateRange } from "@/modules/events/event-record";
 import { CityArtwork } from "@/shared/ui/city-artwork";
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
-import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
 import type { ConsoleContext } from "@/modules/organizations/types";
-import { FilterMenu } from "@/shared/ui/filter-menu";
-import {
-  ArrowRightIcon,
-  CalendarIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  GlobeIcon,
-  LinkIcon,
-  LocationIcon,
-  PeopleIcon,
-  ShieldIcon,
-  StarIcon,
-  TrendIcon,
-} from "@/shared/ui/icons";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { ArrowRightIcon, CalendarIcon, ChevronRightIcon, LocationIcon, OutcomesIcon, PeopleIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
-import { TactileButton } from "@/shared/ui/tactile-button";
-import { organizerOverviewData, type MetricIcon } from "../overview-data";
-import { ConnectionQualityChart } from "./connection-quality-chart";
-import { RepeatAttendanceChart } from "./repeat-attendance-chart";
 
-function MetricGlyph({ icon }: { icon: MetricIcon }) {
-  const icons: Record<MetricIcon, ReactNode> = {
-    calendar: <CalendarIcon />,
-    link: <LinkIcon />,
-    people: <PeopleIcon />,
-    repeat: <PeopleIcon />,
-    star: <StarIcon />,
-  };
+type Glyph = ComponentType<SVGProps<SVGSVGElement>>;
 
-  return icons[icon];
-}
-
-function WorldMap() {
-  return (
-    <Image alt="" className="hero-map" height={836} loading="eager" sizes="(max-width: 620px) 90vw, 55vw" src="/map.png" width={1881} />
-  );
-}
-
-function Topbar() {
-  return (
-    <header className="topbar">
-      <div className="eyebrow-line">People · Ideas · Opportunities · A stronger tomorrow</div>
-      <div className="topbar-actions">
-        <FilterMenu icon={<CalendarIcon height="17" width="17" />} label="All time" options={["All time", "This year", "Last 3 events"]} />
-        <FilterMenu icon={<LocationIcon height="17" width="17" />} label="All cities" options={["All cities", "Miami", "Las Vegas", "Singapore", "Davos"]} />
-        <div className="brand-mini"><span className="brand-mini__disk">W</span><span>WE ARE ONE</span></div>
-      </div>
-    </header>
-  );
-}
-
-function Hero() {
+function Hero({ events }: { events: EventSummaryDto[] }) {
+  const cities = new Set(events.map((event) => event.city)).size;
+  const next = groupEvents(events).upcoming[0];
   return (
     <Surface as="section" className="hero-panel" depth="raised" aria-labelledby="overview-heading">
       <div className="hero-copy">
         <p className="section-kicker">Overview</p>
-        <h1 className="hero-title" id="overview-heading">A global network<br />of extraordinary people.</h1>
-        <p className="hero-meta"><span>12 events across 8 cities</span><span>·</span><span>Last event: Miami, Sep 12, 2026</span></p>
+        <h1 className="hero-title" id="overview-heading">Your event network</h1>
+        {events.length ? (
+          <p className="hero-meta">
+            <span>{events.length} {events.length === 1 ? "event" : "events"} across {cities} {cities === 1 ? "city" : "cities"}</span>
+            {next ? <><span>·</span><span>Next: {next.name}, {formatEventDateRange(next.startDate, next.endDate)}</span></> : null}
+          </p>
+        ) : null}
       </div>
-      <WorldMap />
-      <div className="hero-script">Move<br />Together.</div>
     </Surface>
   );
 }
 
-function Metrics() {
+function Metric({ icon: Icon, label, value }: { icon: Glyph; label: string; value: number }) {
   return (
-    <section aria-label="Network overview metrics" className="metrics-grid">
-      {organizerOverviewData.metrics.map((metric) => (
-        <Surface as="article" className={`metric ${metric.selected ? "metric--selected" : ""}`} depth="raised" key={metric.label}>
-          <Surface className="metric__icon" depth="inset"><MetricGlyph icon={metric.icon} /></Surface>
-          <div className="metric__value">{metric.value}</div>
-          <div className="metric__label">{metric.label}</div>
-          <div className="metric__trend"><TrendIcon height="14" width="14" />{metric.trend}</div>
-          <p className="metric__comparison">{metric.comparison}</p>
-        </Surface>
-      ))}
-    </section>
+    <Surface as="article" className="metric" depth="raised">
+      <Surface className="metric__icon" depth="inset"><Icon /></Surface>
+      <div className="metric__value">{value.toLocaleString()}</div><div className="metric__label">{label}</div>
+    </Surface>
   );
 }
 
-function Analytics() {
-  return (
-    <section className="analytics-grid" aria-label="Network analytics">
-      <Surface as="article" className="panel" depth="raised">
-        <div className="panel-heading">
-          <div><h2 className="panel-title">Connection quality over time</h2><p className="panel-subtitle">% of attendees reporting a valuable connection</p></div>
-          <TactileButton className="compact-select">Valuable connections <ChevronDownIcon height="14" width="14" /></TactileButton>
-        </div>
-        <Surface className="chart-well" depth="inset"><ConnectionQualityChart points={organizerOverviewData.connectionQuality} /></Surface>
-      </Surface>
-      <Surface as="article" className="panel" depth="raised">
-        <div className="panel-heading">
-          <h2 className="panel-title">Network snapshot</h2>
-          <TactileButton aria-label="View attendee details" iconOnly><PeopleIcon height="18" width="18" /></TactileButton>
-        </div>
-        <div className="snapshot-layout">
-          <div className="snapshot-stats">
-            <div className="snapshot-stat"><strong>1,840</strong><span>total attendees</span></div>
-            <div className="snapshot-stat"><strong>572</strong><span>attended more than once</span></div>
-            <div className="snapshot-stat"><strong>214</strong><span>attended 3+ events</span></div>
-            <div className="snapshot-stat"><strong>8</strong><span>cities connected</span></div>
-          </div>
-          <div className="radial-wrap"><RepeatAttendanceChart percentage={31} /></div>
-        </div>
-        <Surface className="insight-callout" depth="inset"><GlobeIcon height="27" width="27" /><span>A growing global community,<br />coming back, city after city.</span></Surface>
-      </Surface>
-    </section>
-  );
-}
-
-function EventPerformanceTable() {
+function EventsTable({ events, total }: { events: EventSummaryDto[]; total: number }) {
   return (
     <Surface as="section" className="panel table-panel" depth="raised" aria-labelledby="event-performance-title">
-      <div className="panel-heading">
-        <h2 className="panel-title" id="event-performance-title">Event performance</h2>
-        <TactileButton className="compact-select">Most recent <ChevronDownIcon height="14" width="14" /></TactileButton>
-      </div>
+      <div className="panel-heading"><h2 className="panel-title" id="event-performance-title">Your events</h2></div>
       <div className="table-scroll">
         <table className="event-table">
-          <thead><tr><th>Event</th><th>City</th><th>Date</th><th>Attendees</th><th>Introductions</th><th>Valuable</th><th>Repeat guests</th><th><span className="chart-summary">Open</span></th></tr></thead>
+          <thead><tr><th>Event</th><th>City</th><th>Date</th><th>Guests</th><th><span className="chart-summary">Open</span></th></tr></thead>
           <tbody className="table-body-well" data-depth="inset">
-            {organizerOverviewData.performance.map((event) => (
-              <tr key={event.name}>
-                <td><div className="event-name"><CityArtwork className="mini-city" art={event.theme} /><span>{event.name}</span></div></td>
-                <td>{event.city}</td><td>{event.date}</td><td>{event.attendees}</td><td>{event.introductions}</td>
-                <td><div className="progress-cell"><span>{event.valuable}%</span><span className="progress-track"><span className="progress-fill" style={{ width: `${event.valuable}%` }} /></span></div></td>
-                <td>{event.repeatGuests}%</td><td><ChevronRightIcon height="15" width="15" /></td>
+            {events.map((event) => (
+              <tr key={event.id}>
+                <td><div className="event-name"><CityArtwork className="mini-city" art={eventArt(event)} /><span>{event.name}</span></div></td>
+                <td>{event.city}</td><td>{formatEventDateRange(event.startDate, event.endDate)}</td><td>{event.guestCount.toLocaleString()}</td>
+                <td><Link aria-label={`Open ${event.name}`} href={`/events/${event.id}`}><ChevronRightIcon height="15" width="15" /></Link></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="table-footer"><span>Showing 5 of 12 events</span><a className="text-link" href="#events">View all events <ArrowRightIcon height="15" width="15" /></a></div>
+      <div className="table-footer"><span>Showing {events.length} of {total} {total === 1 ? "event" : "events"}</span><Link className="text-link" href="/events">View all events <ArrowRightIcon height="15" width="15" /></Link></div>
     </Surface>
   );
 }
 
-function UpcomingEvents() {
+function UpcomingEvents({ events }: { events: EventSummaryDto[] }) {
   return (
     <Surface as="section" className="panel upcoming-panel" depth="raised" aria-labelledby="upcoming-title">
-      <div className="panel-heading"><h2 className="panel-title" id="upcoming-title">Upcoming events</h2><TactileButton className="compact-select">View all upcoming <ChevronDownIcon height="14" width="14" /></TactileButton></div>
-      <div className="event-card-grid">
-        {organizerOverviewData.upcoming.map((event) => (
-          <Surface as="article" className="event-card" depth="inset" key={event.city}>
-            <CityArtwork className="city-art--large" art={event.theme} />
-            <div className="event-card__body"><h3>{event.city}</h3><p>{event.name}</p><div className="event-meta"><span><CalendarIcon height="13" width="13" />{event.date}</span><span><PeopleIcon height="13" width="13" />{event.registered} registered</span><span><ShieldIcon height="13" width="13" />{event.daysToGo} days to go</span></div></div>
-            <TactileButton aria-label={`Open ${event.city}`} iconOnly><ArrowRightIcon height="17" width="17" /></TactileButton>
-          </Surface>
-        ))}
-      </div>
+      <div className="panel-heading"><h2 className="panel-title" id="upcoming-title">Upcoming events</h2></div>
+      {events.length === 0 ? <EmptyState icon={CalendarIcon} size="panel" title="No upcoming events" /> : (
+        <div className="event-card-grid">
+          {events.map((event) => (
+            <Surface as="article" className="event-card" depth="inset" key={event.id}>
+              <CityArtwork className="city-art--large" art={eventArt(event)} />
+              <div className="event-card__body"><h3>{event.name}</h3><p>{event.city}</p><div className="event-meta"><span><CalendarIcon height="13" width="13" />{formatEventDateRange(event.startDate, event.endDate)}</span><span><PeopleIcon height="13" width="13" />{event.guestCount.toLocaleString()} guests</span><span>{formatCountdown(event.startsAt)}</span></div></div>
+              <Link aria-label={`Open ${event.name}`} className="tactile-button tactile-button--neutral tactile-button--icon" href={`/events/${event.id}`}><ArrowRightIcon height="17" width="17" /></Link>
+            </Surface>
+          ))}
+        </div>
+      )}
     </Surface>
   );
 }
 
-function ClosingSections() {
-  const completed = organizerOverviewData.completed;
-  return (
-    <section className="closing-grid" aria-label="Recent network activity">
-      <Surface as="article" className="panel" depth="raised">
-        <div className="panel-heading"><div><h2 className="panel-title">The network is moving</h2><p className="panel-subtitle">Attendees traveling across cities. A growing, connected community.</p></div></div>
-        <div className="movement-flow">
-          {organizerOverviewData.movement.map((location, index) => (
-            <div key={location.city} style={{ display: "contents" }}>
-              <Surface className="movement-node" depth="inset"><CityArtwork className="city-art--small" art={location.theme} /><div><strong>{location.city}</strong><span>{location.detail}</span></div><em><PeopleIcon height="15" width="15" />{location.signal}</em></Surface>
-              {index < organizerOverviewData.movement.length - 1 ? <span className="movement-arrow"><ArrowRightIcon height="15" width="15" /></span> : null}
-            </div>
-          ))}
-        </div>
-      </Surface>
-      <Surface as="article" className="panel" depth="raised">
-        <div className="panel-heading"><h2 className="panel-title">Recently completed</h2><TactileButton className="compact-select">View all reports <ChevronDownIcon height="14" width="14" /></TactileButton></div>
-        <Surface className="completed-card" depth="inset">
-          <CityArtwork art={completed.theme} className="completed-art" />
-          <div className="completed-copy"><h3>{completed.name}</h3><p>{completed.city} &nbsp;·&nbsp; {completed.date}</p><div className="completed-metrics"><div><strong>{completed.attendees}</strong><span>Attendees</span></div><div><strong>{completed.introductions}</strong><span>Introductions</span></div><div><strong>{completed.valuable}%</strong><span>Valuable</span></div></div></div>
-          <ChevronRightIcon height="16" width="16" />
-        </Surface>
-      </Surface>
-    </section>
-  );
-}
-
-export function OrganizerOverview({ context }: { context: ConsoleContext }) {
+export function OrganizerOverview({ context, events }: { context: ConsoleContext; events: EventSummaryDto[] }) {
+  const grouped = groupEvents(events);
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
         <ConsoleSidebar active="overview" context={context} />
         <main className="dashboard-main">
-          <Topbar />
           <div className="content-stack">
-            <DemoDataNotice />
-            <Hero />
-            <Metrics />
-            <Analytics />
-            <EventPerformanceTable />
-            <UpcomingEvents />
-            <ClosingSections />
-            <footer className="dashboard-footer"><span>We Are One &nbsp;|&nbsp; Powered by Weft</span><span>People create what&apos;s next</span></footer>
+            <Hero events={events} />
+            {events.length === 0 ? (
+              <Surface as="section" className="panel" depth="raised">
+                <EmptyState
+                  action={<Link className="tactile-button tactile-button--primary" href="/events/new">Create event</Link>}
+                  description="Create your first event to start measuring networking outcomes."
+                  icon={CalendarIcon}
+                  title="No events yet"
+                />
+              </Surface>
+            ) : (
+              <>
+                <section aria-label="Network overview metrics" className="metrics-grid">
+                  <Metric icon={CalendarIcon} label="Events" value={events.length} />
+                  <Metric icon={PeopleIcon} label="Guests" value={events.reduce((sum, event) => sum + event.guestCount, 0)} />
+                  <Metric icon={CalendarIcon} label="Upcoming" value={grouped.upcoming.length} />
+                  <Metric icon={LocationIcon} label="Cities" value={new Set(events.map((event) => event.city)).size} />
+                </section>
+                <Surface as="section" className="panel" depth="raised" aria-label="Networking outcomes">
+                  <EmptyState description="Outcomes appear here once your events have introductions." icon={OutcomesIcon} size="panel" title="Not enough data yet" />
+                </Surface>
+                <EventsTable events={grouped.all.slice(0, 5)} total={events.length} />
+                <UpcomingEvents events={grouped.upcoming.slice(0, 3)} />
+              </>
+            )}
+            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
       </div>
