@@ -1,6 +1,6 @@
 # Create Event backend
 
-The server authentication adapter is intentionally unconfigured. `getCurrentUser()` returns `null`, so protected API requests return 401 and Create Event and Event Detail show an authentication-required state. A future adapter must verify a real server-side session, map its provider subject to an existing local `users.id` UUID, and return that user's display name and avatar. It must never trust an identity from a request body, header or query parameter. Automated tests inject trusted actors at service and route boundaries only.
+The server authentication adapter verifies the active Clerk session and maps its verified subject and configured instance to a local `users.id` UUID. The API never trusts an identity from a request body, header or query parameter. See [Console authentication](authentication.md) for invitation acceptance, identity provisioning and role setup. Automated tests inject trusted actors at service and route boundaries only.
 
 Pilot creation is for active organization owners and organizers. Staff and sponsors cannot create events or load the organizer Detail DTO. For one permitted organization, the server selects it; when a user belongs to several, the form requires a selected organization UUID and the server rechecks membership. Selected staff must have active staff or organizer membership in that same organization. Event submission never provisions membership.
 
@@ -17,7 +17,7 @@ No separate development `weft_console` database or test branch is required. Loca
 
 The `weft` database on that branch belongs to a separate Alembic-managed service and already defines its own `events` and `organizers` tables, which conflict with this migration's `events` table and duplicate its identity model. The Console therefore does not share that database; integrating with its organizers and events is deliberate future work. Never run schema push or apply this migration to the `production` branch during development.
 
-Real pilot user provisioning, provider identity mapping, and authenticated browser verification remain gated on the separate authentication integration.
+Local UUID users are linked explicitly through the Clerk identity provisioning command described in [Console authentication](authentication.md). Authenticated browser acceptance still requires an explicitly invited and provisioned development account with an active owner or organizer membership.
 
 ## Local setup and migration
 
