@@ -12,7 +12,9 @@ const row = (overrides) => ({
 test("listEvents maps rows to summaries with a schedule status and protected cover URL", async () => {
   const { listEvents } = loadTs("src/modules/events/server/service.ts");
   const now = new Date("2026-11-19T05:00:00Z");
-  const [event] = await listEvents({ userId: "u" }, { listForUser: async () => [row({ hasCover: true })] }, now);
+  let scope;
+  const [event] = await listEvents({ userId: "u", organizationId: "o" }, { listForUser: async (...args) => { scope = args; return [row({ hasCover: true })]; } }, now);
+  assert.deepEqual(scope, ["u", "o"], "the list is scoped to the selected organization");
   assert.equal(event.status, "live");
   assert.equal(event.startsAt, "2026-11-19T01:00:00.000Z");
   assert.equal(event.coverImage, "/api/events/33333333-3333-4333-8333-333333333333/cover");
@@ -23,7 +25,7 @@ test("status boundaries follow the schedule: start is live, end is completed", a
   const { listEvents } = loadTs("src/modules/events/server/service.ts");
   const { deriveScheduleStatus } = loadTs("src/modules/events/event-schedule.ts");
   for (const now of [new Date("2026-11-19T00:59:59Z"), new Date("2026-11-19T01:00:00Z"), new Date("2026-11-19T10:00:00Z")]) {
-    const [event] = await listEvents({ userId: "u" }, { listForUser: async () => [row({})] }, now);
+    const [event] = await listEvents({ userId: "u", organizationId: "o" }, { listForUser: async () => [row({})] }, now);
     assert.equal(event.status, deriveScheduleStatus("2026-11-19T01:00:00.000Z", "2026-11-19T10:00:00.000Z", now));
   }
 });

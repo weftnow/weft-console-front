@@ -119,3 +119,13 @@ Pages without data render only the page header and the empty state; no zeroed me
 - Guard test: no file under `src/` imports the deleted mock modules or references `/network/avatars`, `las_vegas.png` or "WE ARE ONE".
 - `tests/inset-depth.test.mjs` still passes; update its expectations only where the tested markup moved into `EmptyState`.
 - `pnpm lint`, `pnpm typecheck`, `pnpm test`, and a browser check of every route signed out (the only state reachable until the auth adapter exists). Populated rendering is covered by the service and database tests.
+
+## 7. Alignment with Clerk authentication
+
+This branch was rebased onto Console authentication (Clerk sessions with Neon authorization). Authentication behavior follows `docs/backend/authentication.md`, which supersedes the points above where they differ:
+
+- `getCurrentUser()` resolves the Clerk session to a provisioned local user. Unauthenticated requests redirect to Clerk sign-in; unmapped accounts and users without an active owner or organizer membership redirect to `/access-required`. No route renders an "Authentication required" state.
+- The sidebar takes the server-resolved `ConsoleContext` (user, selected organization, membership) and renders the Clerk account control (`ConsoleAccount`: user button, organization and role, switch organization, sign out) in place of the `viewer` profile and the "Not signed in" row.
+- `/` and `/events` list events with `listEvents({ userId, organizationId })` for the selected organization only, still restricted to active owner or organizer memberships.
+- `EventAccessState` no longer renders the sidebar, so error pages and access states show the message without navigation.
+- The partner report requires a Clerk session and renders the empty state.

@@ -130,8 +130,8 @@ export type EventSummaryRow = {
   startsAt: Date; endsAt: Date; guestCount: number; hasCover: boolean;
 };
 
-/** Events the user may operate: active owner or organizer membership only. */
-export async function listForUser(userId: string): Promise<EventSummaryRow[]> {
+/** Events of one organization the user may operate: active owner or organizer membership only. */
+export async function listForUser(userId: string, organizationId: string): Promise<EventSummaryRow[]> {
   return getDatabase().select({
     id: events.id, name: events.name, city: events.city, venue: events.venue,
     startDate: events.startDate, endDate: events.endDate, timezone: events.timezone,
@@ -145,5 +145,6 @@ export async function listForUser(userId: string): Promise<EventSummaryRow[]> {
       eq(organizationMemberships.active, true),
       inArray(organizationMemberships.role, ["owner", "organizer"]),
     ))
+    .where(eq(events.organizationId, organizationId))
     .orderBy(desc(events.startsAt));
 }

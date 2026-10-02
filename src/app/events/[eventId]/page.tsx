@@ -3,14 +3,13 @@ import type { Metadata } from "next";
 import { EventDetailPage } from "@/modules/events/components/event-detail-page";
 import { EventAccessState } from "@/modules/events/components/event-access-state";
 import { getEventDetailTab } from "@/modules/events/event-record";
-import { getCurrentUser } from "@/infrastructure/auth/current-user";
 import { getEvent } from "@/modules/events/queries/get-event";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import type { EventDetailDto } from "@/modules/events/event-dto";
 import { ApplicationError } from "@/shared/lib/application-error";
 import { notFound } from "next/navigation";
 import { requireClerkSession } from "@/infrastructure/auth/require-session";
-import { requireOrganizationContext } from "@/infrastructure/auth/console-page-context";
+import { requireLocalActor, requireOrganizationContext } from "@/infrastructure/auth/console-page-context";
 
 export const metadata: Metadata = {
   title: "Event overview · Weft Console",
@@ -26,8 +25,7 @@ export default async function EventDetailRoute(
     props.searchParams,
   ]);
   const initialTab = getEventDetailTab(searchParams.tab);
-  const actor = await getCurrentUser();
-  if (!actor) return <EventAccessState title="Authentication required" description="Sign in through the configured organization authentication system to view this event." />;
+  const actor = await requireLocalActor();
   if (!uuidSchema.safeParse(eventId).success) notFound();
   let event: EventDetailDto | null = null;
   let accessDenied = false;

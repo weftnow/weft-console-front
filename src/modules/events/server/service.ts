@@ -98,11 +98,11 @@ export async function getEventCover(
 }
 
 export async function listEvents(
-  { userId }: { userId: string },
+  { userId, organizationId }: { userId: string; organizationId: string },
   dependencies: { listForUser: typeof repository.listForUser } = repository,
   now = new Date(),
 ): Promise<EventSummaryDto[]> {
-  const rows = await dependencies.listForUser(userId);
+  const rows = await dependencies.listForUser(userId, organizationId);
   return rows.map((row) => {
     const startsAt = row.startsAt.toISOString();
     const endsAt = row.endsAt.toISOString();

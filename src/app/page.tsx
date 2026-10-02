@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const context = await requireOrganizerPageContext();
-  return <OrganizerOverview context={context} events={await listEvents({ userId: context.user.id })} />;
+  return <OrganizerOverview context={context} events={await listEvents({ userId: context.user.id, organizationId: context.organization.id })} />;
 }

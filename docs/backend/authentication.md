@@ -8,7 +8,7 @@ The Console resolves the verified Clerk subject through `user_auth_identities`, 
 
 Neon `organization_memberships` is the authority for organization access and roles. Each protected request reads active membership again. Only owners and organizers enter the organizer Console. Staff and sponsors receive the neutral access page until their operational workflows are implemented. A browser cookie can remember a selected organization, but is bound to the local user and never grants access by itself.
 
-Overview, Events listing, Network and People remain illustrative fixture pages. Their visible demo notices do not represent selected-organization records. Create Event, Event Detail, covers and attendee CSV import continue using persisted Neon records and their event-level permission checks. Sponsor reports remain unavailable until participation and report authorization are modeled.
+Overview and the Events listing render the selected organization's persisted events (owner and organizer memberships only). Network and People render empty states until their data sources exist; no page shows fixture data. Create Event, Event Detail, covers and attendee CSV import continue using persisted Neon records and their event-level permission checks. The sponsor report requires a session and renders an empty state until participation and report authorization are modeled.
 
 ## Invitation and provisioning lifecycle
 
@@ -40,4 +40,4 @@ The forward migration is `drizzle/0002_clerk_user_identities.sql`; migrations `0
 
 `pnpm lint`, `pnpm typecheck` and `pnpm test` passed (84 tests passed; 7 isolated database tests skipped). `pnpm exec next build --webpack` passed. The default `pnpm build` Turbopack build could not run in this environment because its CSS worker failed while creating a process/binding to a port (`Operation not permitted`). A signed-out browser check on `localhost` confirmed `/`, `/events`, `/events/new`, a nested event URL with a tab query, `/network`, `/people` and `/partner-report` all redirect to Clerk sign-in; the Clerk form rendered and preserved each return destination. The database constraint suite is gated by `WEFT_DATABASE_TEST=1`; it was not run because the shared development database may be in active app or preview use. Signed-in owner/organizer flows require an explicitly invited and provisioned account; no invitations were sent and no production data or deployment was touched.
 
-Authentication protects these pages; it does not convert fixture dashboards into live analytics or implement staff and sponsor reporting workflows.
+Authentication protects these pages; it does not implement live networking analytics or staff and sponsor reporting workflows.
