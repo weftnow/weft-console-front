@@ -13,6 +13,7 @@
     "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.9.10",
     "@js-temporal/polyfill": "^0.5.1",
     "csv-parse": "^7.0.3",
     "drizzle-orm": "^0.45.3",

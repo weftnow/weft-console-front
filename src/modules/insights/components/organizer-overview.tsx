@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import { FilterMenu } from "@/shared/ui/filter-menu";
 import {
   ArrowRightIcon,
@@ -185,14 +187,15 @@ function ClosingSections() {
   );
 }
 
-export function OrganizerOverview() {
+export function OrganizerOverview({ context }: { context: ConsoleContext }) {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="overview" />
+        <ConsoleSidebar active="overview" context={context} />
         <main className="dashboard-main">
           <Topbar />
           <div className="content-stack">
+            <DemoDataNotice />
             <Hero />
             <Metrics />
             <Analytics />

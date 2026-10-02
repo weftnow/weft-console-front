@@ -1,21 +1,34 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import test from "node:test";
-import ts from "typescript";
+import { loadTs } from "./load-ts.mjs";
 
-const require = createRequire(import.meta.url);
+const { resolveCurrentUser } = loadTs("@/infrastructure/auth/resolve-current-user");
 
-test("unconfigured authentication never creates an actor", async () => {
-  const path = new URL("../src/infrastructure/auth/current-user.ts", import.meta.url);
-  assert.ok(existsSync(path), "the server auth boundary must exist");
-  const source = readFileSync(path, "utf8");
-  const compiled = ts.transpileModule(source, {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
-  }).outputText;
-  const loadedModule = { exports: {} };
-  new Function("module", "exports", "require", compiled)(loadedModule, loadedModule.exports, (name) =>
-    name === "server-only" ? {} : require(name),
-  );
-  assert.equal(await loadedModule.exports.getCurrentUser(), null);
+test("signed out and pending sessions never query Neon", async () => {
+  let calls = 0;
+  const findUser = async () => { calls += 1; return null; };
+  assert.equal(await resolveCurrentUser({ readSession: async () => null, instanceId: "ins_dev", findUser }), null);
+  assert.equal(calls, 0);
+});
+
+test("verified subject resolves only through an enabled instance mapping", async () => {
+  const actor = { id: "5f750edf-c8d5-43c2-b3ca-5f0ab190405f", displayName: "Organizer", avatarUrl: null };
+  let input;
+  const result = await resolveCurrentUser({
+    readSession: async () => ({ subject: "user_clerk_123" }), instanceId: "ins_dev",
+    findUser: async (value) => { input = value; return actor; },
+  });
+  assert.deepEqual(input, { instanceId: "ins_dev", subject: "user_clerk_123" });
+  assert.deepEqual(result, actor);
+});
+
+test("missing mapping returns a controlled forbidden error", async () => {
+  await assert.rejects(resolveCurrentUser({
+    readSession: async () => ({ subject: "user_unmapped" }), instanceId: "ins_dev", findUser: async () => null,
+  }), (error) => error.code === "FORBIDDEN");
+});
+
+test("missing instance config and repository outages fail closed", async () => {
+  await assert.rejects(resolveCurrentUser({ readSession: async () => ({ subject: "user_123" }), instanceId: undefined, findUser: async () => null }));
+  await assert.rejects(resolveCurrentUser({ readSession: async () => ({ subject: "user_123" }), instanceId: "ins_dev", findUser: async () => { throw new Error("db unavailable"); } }), /db unavailable/);
 });

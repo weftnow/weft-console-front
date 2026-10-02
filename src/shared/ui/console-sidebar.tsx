@@ -2,13 +2,14 @@ import Link from "next/link";
 
 import {
   CalendarIcon,
-  ChevronDownIcon,
   HomeIcon,
   NetworkIcon,
   OutcomesIcon,
   PeopleIcon,
 } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
+import { ConsoleAccount } from "@/shared/ui/console-account";
+import type { ConsoleContext } from "@/modules/organizations/types";
 
 export type ConsoleDestination = "overview" | "events" | "network" | "people";
 
@@ -28,7 +29,7 @@ const navigation: NavigationItem[] = [
   { key: "outcomes", label: "Outcomes", href: "#outcomes", icon: OutcomesIcon, supported: false },
 ];
 
-export function ConsoleSidebar({ active }: { active: ConsoleDestination }) {
+export function ConsoleSidebar({ active, context }: { active: ConsoleDestination; context: ConsoleContext }) {
   return (
     <Surface as="aside" className="sidebar" depth="raised">
       <div className="brand" aria-label="We Are One">
@@ -61,14 +62,7 @@ export function ConsoleSidebar({ active }: { active: ConsoleDestination }) {
           <span className="brand-story__label">WE ARE ONE</span>
         </div>
       </div>
-      <div className="profile">
-        <div className="avatar" aria-hidden="true">N</div>
-        <div className="profile__text">
-          <span className="profile__name">Nick</span>
-          <span className="profile__role">Organizer</span>
-        </div>
-        <ChevronDownIcon height="15" width="15" />
-      </div>
+      <ConsoleAccount user={context.user} organization={{ name: context.organization.name, role: context.membership.role }} />
     </Surface>
   );
 }

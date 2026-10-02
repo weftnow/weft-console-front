@@ -23,6 +23,16 @@ export async function listCreatorOrganizations(userId: string) {
     .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.active, true), inArray(organizationMemberships.role, ["owner", "organizer"])));
 }
 
+export async function listActiveMemberships(userId: string): Promise<Membership[]> {
+  return getDatabase().select({
+    id: organizationMemberships.id, organizationId: organizationMemberships.organizationId,
+    organizationName: organizations.name, userId: organizationMemberships.userId,
+    role: organizationMemberships.role, active: organizationMemberships.active,
+  }).from(organizationMemberships)
+    .innerJoin(organizations, eq(organizations.id, organizationMemberships.organizationId))
+    .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.active, true)));
+}
+
 export async function listAssignableStaff(organizationId: string) {
   return getDatabase().select({
     id: organizationMemberships.id, name: users.displayName,

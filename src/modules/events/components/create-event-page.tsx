@@ -44,6 +44,7 @@ import { createEventSchema, manualGuestSchema, zodFieldErrors } from "../event-s
 import { submitCreateEvent } from "../mutations/create-event";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { CreateEventContext } from "@/modules/organizations/types";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import { getGuestCsvFieldError, GuestCsvError, parseGuestCsv } from "../guest-csv";
 import { downloadGuestCsvTemplate } from "../guest-csv-template";
 
@@ -229,9 +230,9 @@ function Avatar({
   );
 }
 
-export function CreateEventPage({ context }: { context: CreateEventContext }) {
+export function CreateEventPage({ context, consoleContext, selectedOrganizationId }: { context: CreateEventContext; consoleContext: ConsoleContext; selectedOrganizationId?: string }) {
   const router = useRouter();
-  const [organizationId, setOrganizationId] = useState(context.organizations[0]?.id ?? "");
+  const [organizationId, setOrganizationId] = useState(selectedOrganizationId ?? context.organizations[0]?.id ?? "");
   const [form, setForm] = useState<EventForm>(INITIAL_FORM);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
@@ -530,7 +531,7 @@ export function CreateEventPage({ context }: { context: CreateEventContext }) {
   return (
     <div className="overview-shell create-event-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="events" />
+        <ConsoleSidebar active="events" context={consoleContext} />
         <main className="dashboard-main create-event-main">
           <header className="create-event-header">
             <Link className="create-back-link" href="/events">

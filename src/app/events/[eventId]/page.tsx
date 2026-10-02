@@ -9,6 +9,8 @@ import { uuidSchema } from "@/modules/events/event-schemas";
 import type { EventDetailDto } from "@/modules/events/event-dto";
 import { ApplicationError } from "@/shared/lib/application-error";
 import { notFound } from "next/navigation";
+import { requireClerkSession } from "@/infrastructure/auth/require-session";
+import { requireOrganizationContext } from "@/infrastructure/auth/console-page-context";
 
 export const metadata: Metadata = {
   title: "Event overview · Weft Console",
@@ -18,6 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function EventDetailRoute(
   props: PageProps<"/events/[eventId]">,
 ) {
+  await requireClerkSession();
   const [{ eventId }, searchParams] = await Promise.all([
     props.params,
     props.searchParams,
@@ -37,5 +40,12 @@ export default async function EventDetailRoute(
   }
   if (accessDenied) return <EventAccessState title="Access required" description="You do not have access to this event." />;
   if (!event) notFound();
-  return <EventDetailPage event={event} initialTab={initialTab} key={initialTab} />;
+  let consoleContext;
+  try {
+    consoleContext = await requireOrganizationContext({ user: actor, organizationId: event.organizationId, allowedRoles: ["owner", "organizer"] });
+  } catch (error) {
+    if (error instanceof ApplicationError && error.code === "FORBIDDEN") return <EventAccessState title="Access required" description="Your active organization membership is required to view this event." />;
+    throw error;
+  }
+  return <EventDetailPage event={event} initialTab={initialTab} context={consoleContext} key={initialTab} />;
 }

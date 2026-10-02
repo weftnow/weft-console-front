@@ -12,7 +12,7 @@ An `event_guests` row is an attendee's event-specific participation and contact 
 
 Only an active owner or organizer membership in the event's organization can import or read the full roster. Membership is rechecked under a row lock before event roster state or replay results are used. Staff and sponsors do not receive import access.
 
-The response is 201 for a new committed batch and 200 for an exact content replay. Errors use the shared envelope: 400 malformed JSON or event UUID, 401 missing actor, 403 origin or permission failure, 404 missing event, 413 oversized request, 415 wrong media type, 422 invalid CSV or capacity, and 500 sanitized unexpected failure.
+The response is 201 for a new committed batch and 200 for an exact content replay. Errors use the shared envelope: 400 malformed JSON or event UUID, 401 missing actor, 403 unmapped/disabled identity, origin or permission failure, 404 missing event, 413 oversized request, 415 wrong media type, 422 invalid CSV or capacity, and 500 sanitized unexpected failure. See [Console authentication](authentication.md) for explicit Clerk-to-local-user mapping.
 
 ## Append, duplicate and replay behavior
 

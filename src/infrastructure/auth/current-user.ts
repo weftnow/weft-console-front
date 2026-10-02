@@ -1,4 +1,8 @@
 import "server-only";
+import { cache } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { findClerkUser } from "./identity-repository";
+import { resolveCurrentUser } from "./resolve-current-user";
 
 /** A local application user resolved from a verified server-side session. */
 export type AuthenticatedUser = {
@@ -7,11 +11,11 @@ export type AuthenticatedUser = {
   avatarUrl: string | null;
 };
 
-/**
- * Integration point for a future authentication adapter. Until a real session
- * verifier maps a provider identity to an existing local user, fail closed.
- * Request bodies, headers and query parameters must never supply this actor.
- */
-export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
-  return null;
-}
+export const getCurrentUser = cache(async (): Promise<AuthenticatedUser | null> => resolveCurrentUser({
+  readSession: async () => {
+    const session = await auth();
+    return session.userId && session.sessionStatus === "active" ? { subject: session.userId } : null;
+  },
+  instanceId: process.env.WEFT_CLERK_INSTANCE_ID,
+  findUser: findClerkUser,
+}));
