@@ -35,8 +35,8 @@ Delete:
 Clear inline demo content:
 
 - `organizer-overview.tsx`: event/city counts, "Last event" line, 1,840 / 572 / 214 figures, 31% ring, "Showing 5 of 12", demo filter options, "WE ARE ONE" mini brand, `/map.png`, footer.
-- `events-page.tsx`: "We Are One" copy and demo city filters. Filters list only cities present in the user's events.
-- `event-detail-page.tsx`: `LAS_VEGAS_ART`, the "Event editing is outside this demo." notice, and the always-true "Kami ready" readiness item. Events without a cover use `EVENT_COVER_PLACEHOLDER_ART`.
+- `events-page.tsx` and `all-events-table.tsx`: "We Are One" copy and the search, filter, sort and pagination controls, none of which were wired to anything.
+- `event-detail-page.tsx`: `LAS_VEGAS_ART`, the "Edit event" button that only showed "Event editing is outside this demo.", and the always-true "Kami ready" readiness item. Events without a cover use `EVENT_COVER_PLACEHOLDER_ART`.
 - `people-page.tsx`: demo event and city filter options.
 - `network-page.tsx`: hardcoded "1,842 People".
 - `src/app/partner-report/page.tsx`: demo metadata title. `partner-mark.tsx` Horizon glyph is removed.
@@ -64,13 +64,13 @@ Service: `listEvents({ userId })` returns `EventSummaryDto[]`:
 ```ts
 type EventSummaryDto = {
   id: string; name: string; city: string; venue: string;
-  startsAt: string; endsAt: string; timezone: string;
+  startDate: string; endDate: string; startsAt: string; endsAt: string; timezone: string;
   guestCount: number; coverImage: string | null;
-  phase: "live" | "upcoming" | "completed";
+  status: "live" | "upcoming" | "completed";
 };
 ```
 
-`phase` is computed from `startsAt`/`endsAt` against the current time: `live` when now is within the range, `upcoming` before it, `completed` after it. A pure helper `eventPhase(event, now)` holds this rule and is unit tested.
+`status` is computed by the existing `deriveScheduleStatus(startsAt, endsAt, now)` in `event-schedule.ts`, so the list and Event Detail always agree.
 
 Route usage:
 
@@ -105,7 +105,7 @@ Copy:
 | Partner report | No partner report yet | Reports appear after a partner's event has outcomes. | none |
 | Event detail Staff / Insights tabs | Coming soon | Staff coordination arrives in a future release. / Event insights appear once introductions start. | none |
 
-Pages without data render only the page header and the empty state; no zeroed metrics or empty charts.
+Pages without data render only the page header and the empty state; no zeroed metrics or empty charts. The People, Network and Partner report presentational components bound to mock data are deleted with it (their CSS stays); they return with their backends.
 
 ## 5. Kami preview
 
@@ -113,7 +113,7 @@ Pages without data render only the page header and the empty state; no zeroed me
 
 ## 6. Testing
 
-- `eventPhase` unit tests (before, during, after, boundaries).
+- Status mapping and grouping unit tests, including the start and end boundaries.
 - `listEvents` service test with an injected repository: returns only active owner/organizer organizations' events; staff and sponsor memberships return none.
 - Database suite: `listForUser` returns the created event for its owner and nothing for an outsider.
 - Guard test: no file under `src/` imports the deleted mock modules or references `/network/avatars`, `las_vegas.png` or "WE ARE ONE".
