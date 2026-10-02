@@ -123,3 +123,12 @@ test("event detail carries no demo city art or demo copy", () => {
   assert.doesNotMatch(source, /LAS_VEGAS_ART|las_vegas\.png|outside this demo|outside this Overview implementation/);
   assert.doesNotMatch(source, /label: "Kami ready", ready: true/);
 });
+
+test("Kami surfaces make no readiness claims and the preview is labelled as an example", () => {
+  const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+  const detail = read("../src/modules/events/components/event-detail-page.tsx");
+  const panel = read("../src/modules/events/components/kami-preview-panel.tsx");
+  assert.doesNotMatch(detail, /Kami is ready/);
+  assert.doesNotMatch(panel, /Kami is ready/);
+  assert.match(panel, /Example conversation/);
+});

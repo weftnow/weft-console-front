@@ -330,8 +330,8 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
   return (
     <Surface as="section" className="event-detail-panel event-kami-card" depth="raised" aria-labelledby="event-kami-title">
       <Surface className="event-kami-card__mark" depth="inset"><SparklesIcon height="25" width="25" /></Surface>
-      <h2 id="event-kami-title">Kami is ready</h2>
-      <p>Kami will be active for this event using the default configuration.</p>
+      <h2 id="event-kami-title">Kami for this event</h2>
+      <p>Kami introduces guests to each other using this event&apos;s details and guest list.</p>
       <Link className="tactile-button event-kami-card__action" href={`/events/${eventId}?tab=kami`} onClick={() => onSelect("kami")}>
         View Kami settings <ArrowRightIcon height="14" width="14" />
       </Link>

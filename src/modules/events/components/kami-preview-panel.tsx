@@ -211,7 +211,7 @@ export function KamiPreviewPanel({
           <div className="section-head">
             <EyeIcon className="section-head__icon" height="19" width="19" />
             <div>
-              <h2 className="panel-title" id="kami-preview-title">Preview as attendee</h2>
+              <h2 className="panel-title" id="kami-preview-title">Example conversation</h2>
               <p className="panel-subtitle">See how Kami will interact with your guests.</p>
             </div>
           </div>
@@ -259,8 +259,7 @@ export function KamiPreviewPanel({
       <Surface className="kami-ready" depth="raised">
         <span className="kami-ready__glyph"><OutcomesIcon height="19" width="19" /></span>
         <div>
-          <strong>Kami is ready</strong>
-          <p>Kami will be active for this event with the configuration above.</p>
+          <p>Kami uses the configuration above for this event.</p>
         </div>
       </Surface>
     </div>
