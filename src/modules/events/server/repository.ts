@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, count, desc, eq, inArray, or } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
 import { eventAttendeeImports, eventCovers, eventGuests, events, eventStaff } from "@/infrastructure/database/schema/events";
@@ -33,15 +33,23 @@ export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
       endTime: data.endTime, timezone: schedule.timezone,
       startsAt: new Date(schedule.startsAt), endsAt: new Date(schedule.endsAt),
     }).returning({ id: events.id });
-    if (imported) await tx.insert(eventAttendeeImports).values({
-      eventId: inserted.id, fileName: imported.fileName, importedCount: imported.attendees,
-      storedCount: imported.storedGuests, vipCount: imported.vips, sponsorCount: imported.sponsors,
-    });
+    let importId: string | null = null;
+    if (imported) {
+      const [batch] = await tx.insert(eventAttendeeImports).values({
+        eventId: inserted.id, importedBy: userId, fileName: imported.fileName,
+        contentHash: imported.contentHash, fingerprintVersion: 1,
+        importedCount: imported.importedCount, storedCount: imported.importedCount,
+        duplicateCount: 0, blankCount: imported.blankCount,
+        vipCount: imported.vipCount, sponsorCount: imported.sponsorCount,
+      }).returning({ id: eventAttendeeImports.id });
+      importId = batch.id;
+    }
     if (guests.length) await tx.insert(eventGuests).values(guests.map((guest, position) => ({
       eventId: inserted.id, position, firstName: guest.firstName, lastName: guest.lastName,
       email: guest.email, normalizedEmail: guest.email || null, phone: guest.phone,
       company: guest.company, jobPosition: guest.position, profileType: guest.profileType,
       linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
+      importId: guest.source === "csv" ? importId : null,
     })));
     if (selectedIds.length) await tx.insert(eventStaff).values(selectedIds.map((membershipId) => ({
       eventId: inserted.id, organizationId, membershipId,
@@ -65,9 +73,11 @@ export async function findById(eventId: string, organizationId: string): Promise
   const [event] = await database.select().from(events)
     .where(and(eq(events.id, eventId), eq(events.organizationId, organizationId))).limit(1);
   if (!event) return null;
-  const [guests, imports, staff, covers] = await Promise.all([
+  const [guests, imports, importTotals, staff, covers] = await Promise.all([
     database.select().from(eventGuests).where(eq(eventGuests.eventId, eventId)).orderBy(eventGuests.position),
-    database.select().from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId)).limit(1),
+    database.select().from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId))
+      .orderBy(desc(eventAttendeeImports.importedAt), desc(eventAttendeeImports.id)).limit(20),
+    database.select({ total: count() }).from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId)),
     database.select({ id: organizationMemberships.id, name: users.displayName, role: organizationMemberships.role, avatar: users.avatarUrl })
       .from(eventStaff)
       .innerJoin(organizationMemberships, eq(eventStaff.membershipId, organizationMemberships.id))
@@ -75,7 +85,6 @@ export async function findById(eventId: string, organizationId: string): Promise
       .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId))),
     database.select({ eventId: eventCovers.eventId }).from(eventCovers).where(eq(eventCovers.eventId, eventId)).limit(1),
   ]);
-  const imported = imports[0];
   return {
     id: event.id, organizationId: event.organizationId, name: event.name,
     city: event.city as EventDetailDto["city"], venue: event.venue ?? "",
@@ -89,16 +98,20 @@ export async function findById(eventId: string, organizationId: string): Promise
     coverImage: covers.length ? `/api/events/${event.id}/cover` : null,
     attendees: {
       guests: guests.map((guest) => ({
+        id: guest.id, createdAt: guest.createdAt.toISOString(), updatedAt: guest.updatedAt.toISOString(), importId: guest.importId,
         company: guest.company, email: guest.email, firstName: guest.firstName,
         guestType: guest.guestType, lastName: guest.lastName, linkedin: guest.linkedin,
         phone: guest.phone, position: guest.jobPosition, profileType: guest.profileType,
         source: guest.source,
       })),
-      imported: imported ? {
-        attendees: imported.importedCount, fileName: imported.fileName,
-        sponsors: imported.sponsorCount, storedGuests: imported.storedCount,
-        vips: imported.vipCount,
-      } : null,
+      imports: imports.map((batch) => ({
+        id: batch.id, eventId: batch.eventId, fileName: batch.fileName,
+        importedCount: batch.importedCount, storedCount: batch.storedCount,
+        duplicateCount: batch.duplicateCount, blankCount: batch.blankCount,
+        vipCount: batch.vipCount, sponsorCount: batch.sponsorCount,
+        importedAt: batch.importedAt.toISOString(),
+      })),
+      importCount: importTotals[0]?.total ?? 0,
     },
     staff: staff.map((member) => ({ id: member.id, name: member.name, role: member.role, avatar: member.avatar ?? "" })),
   };

@@ -12,6 +12,7 @@ import {
 } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { AttendeeImportPanel } from "./attendee-import-panel";
 import type { EventGuestRecord, EventGuestType, EventRecord } from "../event-record";
 
 const PAGE_SIZE = 25;
@@ -86,16 +87,17 @@ function RosterEmpty({
   );
 }
 
-export function AttendeeRoster({ event }: { event: EventRecord }) {
+export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; onImportSaved: () => void | Promise<void> }) {
   const [query, setQuery] = useState("");
   const [guestType, setGuestType] = useState<EventGuestType | "all">("all");
   const [profileType, setProfileType] = useState("all");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(0);
+  const [importOpen, setImportOpen] = useState(false);
 
   const guests = event.attendees.guests;
-  const imported = event.attendees.imported;
+  const latestImport = event.attendees.imports[0];
 
   const profileTypes = useMemo(
     () => [...new Set(guests.map((guest) => guest.profileType).filter(Boolean))].sort(),
@@ -138,11 +140,6 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
     setPage(0);
   };
 
-  // An import that stored no rows still knows its totals; say so rather than
-  // showing an empty table under a non-zero attendee count.
-  const countsOnly = guests.length === 0 && Boolean(imported) && imported!.attendees > 0;
-  const withheld = imported ? imported.attendees - imported.storedGuests : 0;
-
   return (
     <Surface as="section" className="panel table-panel roster-panel" depth="raised" aria-labelledby="roster-title">
       <div className="panel-heading">
@@ -153,12 +150,12 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
             <p className="panel-subtitle">
               {guests.length === 0
                 ? "No guest records on this event yet."
-                : `${guests.length.toLocaleString()} ${guests.length === 1 ? "guest" : "guests"} on the roster${imported ? ` · imported from ${imported.fileName}` : ""}`}
+                : `${guests.length.toLocaleString()} ${guests.length === 1 ? "guest" : "guests"} on the roster${latestImport ? ` · latest import ${latestImport.fileName}` : ""}`}
             </p>
           </div>
         </div>
-        {guests.length > 0 ? (
-          <div className="panel-controls roster-controls">
+        <div className="panel-controls roster-controls">
+            {guests.length > 0 ? <>
             <label className="search-field search-field--compact">
               <SearchIcon height="15" width="15" />
               <input
@@ -200,24 +197,44 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
                 </select>
               </label>
             ) : null}
-          </div>
-        ) : null}
+            </> : null}
+            <TactileButton aria-expanded={importOpen} onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton>
+        </div>
       </div>
 
-      {withheld > 0 && guests.length > 0 ? (
-        <p className="roster-notice">
-          {withheld.toLocaleString()} of {imported!.attendees.toLocaleString()} imported rows are counted in the event totals but were not stored in full.
-        </p>
+      {importOpen ? (
+        <AttendeeImportPanel
+          eventId={event.id}
+          existingGuests={guests}
+          hasActiveFilters={filtersActive}
+          onCancel={() => setImportOpen(false)}
+          onClearFilters={clearFilters}
+          onSaved={onImportSaved}
+        />
       ) : null}
 
-      {countsOnly ? (
+      {event.attendees.importCount > 0 ? (
+        <section className="attendee-import-history" aria-label="Latest attendee imports">
+          <div className="attendee-import-history__heading">
+            <strong>Latest imports</strong>
+            <span>{event.attendees.importCount > event.attendees.imports.length ? `Showing ${event.attendees.imports.length} of ${event.attendees.importCount}` : `${event.attendees.importCount} total`}</span>
+          </div>
+          <ul>
+            {event.attendees.imports.map((batch) => (
+              <li key={batch.id}>
+                <span className="attendee-import-history__file">{batch.fileName}</span>
+                <time dateTime={batch.importedAt}>{new Date(batch.importedAt).toLocaleString()}</time>
+                <span>{batch.storedCount.toLocaleString()} added · {batch.duplicateCount.toLocaleString()} skipped</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {guests.length === 0 ? (
         <RosterEmpty
-          detail={`${imported!.attendees.toLocaleString()} attendees were counted from ${imported!.fileName}, but no guest details were stored for this import. Re-import the file to populate the roster.`}
-          title="Counts only for this import"
-        />
-      ) : guests.length === 0 ? (
-        <RosterEmpty
-          detail="Import a CSV or add guests by hand while creating the event, and they will appear here."
+          action={{ label: "Import CSV", onClick: () => setImportOpen(true) }}
+          detail="Append attendees from a CSV. Existing event emails are skipped and their records are preserved."
           title="No attendees yet"
         />
       ) : filtered.length === 0 ? (
@@ -243,7 +260,7 @@ export function AttendeeRoster({ event }: { event: EventRecord }) {
               </thead>
               <tbody className="table-body-well" data-depth="inset">
                 {visible.map((guest) => (
-                  <tr key={`${guest.email}-${guest.firstName}-${guest.lastName}`}>
+                  <tr key={guest.id}>
                     <td>
                       <div className="roster-guest">
                         <strong>{fullName(guest) || "Unnamed guest"}</strong>

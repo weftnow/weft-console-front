@@ -10,6 +10,10 @@
 
 **Spec:** The user's Create Event backend requirements supplied on October 1, 2026, the user's clarification that authentication has not been implemented and is outside scope, and this document's explicitly proposed decisions. Relevant repository references: `ARCHITECTURE.md`, `docs/product.md`, `src/modules/events/components/create-event-page.tsx`, and `src/modules/events/event-record.ts`. Earlier demo plans describe the current implementation, not the new persistence requirements.
 
+## Database environment decision (updated October 2)
+
+The user selected `production` → `weft_console` for real pilot data and `dev` → `weft_console_test` shared by local development and automated tests. No separate test branch or development database is required. All local URLs target `dev` / `weft_console_test`: pooled `DATABASE_URL`, direct `DATABASE_MIGRATION_URL` and `DATABASE_TEST_URL`, with `WEFT_MIGRATION_TARGET=development`. Stop local/preview app usage during live tests and treat this shared data as disposable. Destructive migration bootstrap/upgrade checks require a temporary scratch database or isolated schema; do not reset the shared development database. This decision supersedes earlier requirements for a separately isolated live-test database. See `docs/backend/create-event.md` for explicit environment loading and deployment assignments.
+
 ## Repository findings
 
 - The actual routes are `/events/new` and `/events/[eventId]`, not `/dashboard/events/...`.
@@ -182,10 +186,10 @@ No provider-specific route, login UI or authentication dependency is introduced.
 - [ ] Add compatible stable `drizzle-orm`, `pg`, `server-only`, development `drizzle-kit` and `@types/pg`. Use a bounded reusable pool, Neon-provided TLS connection configuration, and no database connection at module evaluation/build time.
 - [ ] Define the inspected/reused identity schema and proposed event tables/constraints. Use `DATABASE_URL` for runtime and `DATABASE_MIGRATION_URL` for migration administration, with placeholders in `.env.example`. Validate configuration server side and fail closed; never use `NEXT_PUBLIC_` for secrets.
 - [ ] Generate a named `create_event_backend` migration with Drizzle Kit. Commit the actual generated filename and metadata together; this planning task does not create an empty migration placeholder.
-- [ ] Apply migrations on an isolated development/test Neon branch. Check clean bootstrap or the recorded existing-schema baseline, migration tracking, UUID/FK/check/unique constraints, and same-organization staff associations. Running migrate twice must not reapply changes.
-- [ ] Add database integration tests proving constraint violations and complete rollback. Gate live tests with explicit `WEFT_DATABASE_TEST=1` and an isolated `DATABASE_TEST_URL`; default test runs must not contact a live/pilot database. An explicitly enabled database test suite must fail, not skip, if configuration is missing.
+- [ ] Apply migrations on the `dev` branch / `weft_console_test` database with app usage stopped. Check clean bootstrap or the recorded existing-schema baseline, migration tracking, UUID/FK/check/unique constraints, and same-organization staff associations. Running migrate twice must not reapply changes.
+- [ ] Add database integration tests proving constraint violations and complete rollback. Gate live tests with explicit `WEFT_DATABASE_TEST=1` and `DATABASE_TEST_URL` for `dev` / `weft_console_test`; default test runs must not contact a live/pilot database. An explicitly enabled database test suite must fail, not skip, if configuration is missing.
 
-**Acceptance:** Versioned migrations create the intended schema on the test branch; no runtime migration, production schema push or secret reaches browser imports.
+**Acceptance:** Versioned migrations create the intended schema in `dev` / `weft_console_test`; no runtime migration, production schema push or secret reaches browser imports.
 
 ## Task 4: Implement organization authorization and creation context
 
@@ -246,7 +250,7 @@ No provider-specific route, login UI or authentication dependency is introduced.
 
 **Files:** README, backend guide, integration tests and narrowly needed fixes.
 
-- [ ] Run `pnpm lint`, `pnpm typecheck`, and `pnpm test`; resolve failures attributable to this feature. Run the explicitly enabled database suite against the isolated Neon branch and confirm migration/rollback checks pass.
+- [ ] Run `pnpm lint`, `pnpm typecheck`, and `pnpm test`; resolve failures attributable to this feature. Run the explicitly enabled database suite against `dev` / `weft_console_test` with app usage stopped and confirm migration/rollback checks pass.
 - [ ] Run `pnpm build` with nonproduction configuration to check server-only boundaries and route compilation. Confirm importing client schemas does not pull in database/auth/secrets, and build does not require a live database connection.
 - [ ] Verify the default browser routes show authentication-required states and anonymous requests return 401. Use test-only server resolver injection for automated lifecycle checks: minimal creation, cover/CSV/manual guests/staff, duplicate clicks, field/network/auth errors, timezone display and retained inputs. Do not ship a browser impersonation switch. Record real authenticated browser verification as pending until the separate auth integration; then refresh and open the returned URL in another authorized browser with empty localStorage.
 - [ ] With trusted test actors, verify a second organization cannot read the event, guest data or cover. Confirm sponsors/staff cannot use the organizer endpoints. Simulate database failure and verify generic errors with no seed fallback.

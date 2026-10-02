@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs && pnpm typecheck",
-    "db:generate": "drizzle-kit generate --name=create_event_backend",
+    "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {

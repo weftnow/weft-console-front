@@ -18,3 +18,9 @@ test("invalid CSV profile links identify the offending row", () => {
     /Row 2/,
   );
 });
+
+test("initial Create Event uploader can surface structured attendee CSV row errors", () => {
+  const { getGuestCsvFieldError } = loadTs("src/modules/events/guest-csv.ts");
+  assert.equal(getGuestCsvFieldError({ "attendeeImport.rows.8.email": "Enter a valid email address." }), "Enter a valid email address.");
+  assert.equal(getGuestCsvFieldError({ description: "Required" }), null);
+});

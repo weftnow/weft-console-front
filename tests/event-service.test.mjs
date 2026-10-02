@@ -25,6 +25,25 @@ test("duplicate initial guest emails fail before a repository write", async () =
   assert.equal(writes, 0);
 });
 
+test("initial CSV creation prepares the persisted batch and keeps CSV and manual guests distinct", async () => {
+  const { createEvent } = loadTs("src/modules/events/server/service.ts");
+  let prepared;
+  await createEvent({ userId, organizationId, data: {
+    ...input,
+    attendeeImport: { fileName: "guests.csv", csvText: "First Name,Email,Guest Type\nAda,ada@example.com,VIP\n" },
+    manualGuests: [{ firstName: "Bob", email: "bob@example.com", guestType: "Attendee" }],
+  } }, {
+    requireCreator: async () => ({ id: organizationId, name: "Org" }),
+    create: async (value) => { prepared = value; return {}; },
+  });
+
+  assert.equal(prepared.imported.importedCount, 1);
+  assert.equal(prepared.imported.guests.length, 1);
+  assert.match(prepared.imported.contentHash, /^[a-f0-9]{64}$/);
+  assert.deepEqual(prepared.guests.map((guest) => guest.source), ["csv", "manual"]);
+  assert.equal(prepared.guests[0].email, "ada@example.com");
+});
+
 test("cover bytes are decoded and normalized to bounded WebP", async () => {
   const { normalizeCover } = loadTs("src/modules/events/server/cover-image.ts");
   const png = await sharp({ create: { width: 20, height: 20, channels: 3, background: "red" } }).png().toBuffer();

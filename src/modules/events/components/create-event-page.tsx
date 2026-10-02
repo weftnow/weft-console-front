@@ -44,7 +44,8 @@ import { createEventSchema, manualGuestSchema, zodFieldErrors } from "../event-s
 import { submitCreateEvent } from "../mutations/create-event";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { CreateEventContext } from "@/modules/organizations/types";
-import { GuestCsvError, parseGuestCsv } from "../guest-csv";
+import { getGuestCsvFieldError, GuestCsvError, parseGuestCsv } from "../guest-csv";
+import { downloadGuestCsvTemplate } from "../guest-csv-template";
 
 const CATEGORY_OPTIONS = EVENT_CATEGORIES;
 const AUDIENCE_OPTIONS = EVENT_AUDIENCE_OPTIONS;
@@ -117,23 +118,6 @@ function formatDateRange(start: string, end: string) {
     return `${startDate.replace(`, ${startYear}`, "")} – ${endDate}`;
   }
   return `${startDate} – ${endDate}`;
-}
-
-/** Every column the importer reads, plus one example row per guest type. */
-const CSV_TEMPLATE = [
-  "First Name,Last Name,Email,Phone,Company,Position,LinkedIn,Profile Type,Guest Type",
-  "Ada,Whitfield,ada.whitfield@example.com,+1 702 555 0101,Northline Labs,Founder & CEO,linkedin.com/in/ada-whitfield,Founders,VIP",
-  "Tomas,Okonkwo,tomas.okonkwo@example.com,+1 415 555 0102,Arbor Peak Capital,Partner,linkedin.com/in/tomas-okonkwo,Investors,Attendee",
-  "Mira,Lindqvist,mira.lindqvist@example.com,+1 212 555 0103,Ardent Global Bank,Head of Sponsorships,linkedin.com/in/mira-lindqvist,Sponsors,Sponsor",
-].join("\n");
-
-function downloadCsvTemplate() {
-  const url = URL.createObjectURL(new Blob([CSV_TEMPLATE], { type: "text/csv" }));
-  const link = document.createElement("a");
-  link.download = "weft-attendee-template.csv";
-  link.href = url;
-  link.click();
-  URL.revokeObjectURL(url);
 }
 
 function formatBytes(bytes: number) {
@@ -856,7 +840,7 @@ export function CreateEventPage({ context }: { context: CreateEventContext }) {
                           <span>or click to browse · maximum 1 MiB</span>
                         </div>
                       )}
-                      {csvError || fieldErrors["attendeeImport.csvText"] ? <p className="upload-error" role="alert">{csvError || fieldErrors["attendeeImport.csvText"]}</p> : null}
+                      {csvError || getGuestCsvFieldError(fieldErrors) ? <p className="upload-error" role="alert">{csvError || getGuestCsvFieldError(fieldErrors)}</p> : null}
                     </div>
                     <div className="csv-requirements">
                       <strong>CSV requirements</strong>
@@ -864,7 +848,7 @@ export function CreateEventPage({ context }: { context: CreateEventContext }) {
                       <p>Email is optional for CSV guests.</p>
                       <p>Optional: phone, company, position, LinkedIn, profile type, guest type</p>
                       <p>Guest type accepts Attendee, VIP, or Sponsor.</p>
-                      <button className="template-action" onClick={downloadCsvTemplate} type="button">
+                      <button className="template-action" onClick={downloadGuestCsvTemplate} type="button">
                         <UploadIcon className="rotate-180" height="15" width="15" /> Download template
                       </button>
                     </div>

@@ -1,12 +1,16 @@
 import { z } from "zod";
 import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES, EVENT_CITIES } from "./event-options";
+import { attendeeImportDtoSchema } from "./attendee-import-schemas";
 import { guestTypeSchema, uuidSchema } from "./event-schemas";
 
 const guestSchema = z.strictObject({
+  id: uuidSchema,
   company: z.string(), email: z.string(), firstName: z.string(),
   guestType: guestTypeSchema, lastName: z.string(), linkedin: z.string(),
   phone: z.string(), position: z.string(), profileType: z.string(),
   source: z.enum(["csv", "manual"]),
+  importId: uuidSchema.nullable(),
+  createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 });
 
 export const eventDetailDtoSchema = z.strictObject({
@@ -22,10 +26,8 @@ export const eventDetailDtoSchema = z.strictObject({
   coverImage: z.string().nullable(),
   attendees: z.strictObject({
     guests: z.array(guestSchema),
-    imported: z.strictObject({
-      attendees: z.number().int(), fileName: z.string(), sponsors: z.number().int(),
-      storedGuests: z.number().int(), vips: z.number().int(),
-    }).nullable(),
+    imports: z.array(attendeeImportDtoSchema).max(20),
+    importCount: z.number().int().min(0),
   }),
   staff: z.array(z.strictObject({ id: uuidSchema, name: z.string(), role: z.string(), avatar: z.string() })),
 }).superRefine((event, ctx) => {
