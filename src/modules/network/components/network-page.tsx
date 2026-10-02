@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -255,12 +257,13 @@ function ReturningAttendees() {
   );
 }
 
-export function NetworkPage() {
+export function NetworkPage({ context }: { context: ConsoleContext }) {
   return (
     <div className="overview-shell network-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="network" />
+        <ConsoleSidebar active="network" context={context} />
         <main className="dashboard-main network-main">
+          <DemoDataNotice />
           <header className="network-header">
             <div className="network-header__copy">
               <p>Network</p>

@@ -11,6 +11,22 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [check("users_display_name_valid", sql`length(btrim(${table.displayName})) between 1 and 160`)]);
 
+export const userAuthIdentities = pgTable("user_auth_identities", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "restrict" }),
+  provider: text("provider").notNull().default("clerk"),
+  instanceId: text("instance_id").notNull(),
+  subject: text("subject").notNull(),
+  disabledAt: timestamp("disabled_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  check("user_auth_identities_provider_check", sql`${table.provider} = 'clerk'`),
+  check("user_auth_identities_instance_nonempty", sql`length(btrim(${table.instanceId})) > 0`),
+  check("user_auth_identities_subject_nonempty", sql`length(btrim(${table.subject})) > 0`),
+  unique("identity_provider_instance_subject_unique").on(table.provider, table.instanceId, table.subject),
+  unique("identity_user_provider_instance_unique").on(table.userId, table.provider, table.instanceId),
+]);
+
 export const organizations = pgTable("organizations", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),

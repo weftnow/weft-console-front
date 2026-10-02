@@ -9,6 +9,12 @@ export type Membership = {
   active: boolean;
 };
 
+export type ConsoleContext = {
+  user: { id: string; displayName: string; avatarUrl: string | null };
+  organization: { id: string; name: string };
+  membership: { id: string; role: OrganizationRole };
+};
+
 export type AuthorizedOrganization = { id: string; name: string };
 export type AssignableStaff = { id: string; name: string; role: string; avatar: string };
 export type CreateEventOrganization = AuthorizedOrganization & { staff: AssignableStaff[] };

@@ -15,6 +15,7 @@ import {
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -74,7 +75,6 @@ export function EventDetailSkeleton() {
   return (
     <div className="overview-shell event-detail-shell" aria-busy="true">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="events" />
         <main className="dashboard-main event-detail-main">
           <div className="event-detail-skeleton event-detail-skeleton--header" />
           <div className="event-detail-skeleton event-detail-skeleton--hero" />
@@ -94,7 +94,6 @@ export function MissingEvent() {
   return (
     <div className="overview-shell event-detail-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="events" />
         <main className="dashboard-main event-detail-main">
           <Surface className="event-detail-missing" depth="raised">
             <span className="event-detail-missing__icon"><CalendarIcon height="24" width="24" /></span>
@@ -361,7 +360,7 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
   );
 }
 
-export function EventDetailPage({ event, initialTab }: { event: EventDetailDto; initialTab: EventDetailTab }) {
+export function EventDetailPage({ event, initialTab, context }: { event: EventDetailDto; initialTab: EventDetailTab; context: ConsoleContext }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
   const [notice, setNotice] = useState("");
@@ -394,7 +393,7 @@ export function EventDetailPage({ event, initialTab }: { event: EventDetailDto; 
   return (
     <div className="overview-shell event-detail-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="events" />
+        <ConsoleSidebar active="events" context={context} />
         <main className="dashboard-main event-detail-main">
           <header className="event-detail-header">
             <div className="event-detail-header__copy">

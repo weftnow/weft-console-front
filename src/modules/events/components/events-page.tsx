@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import { FilterMenu } from "@/shared/ui/filter-menu";
 import { PlusIcon, SearchIcon } from "@/shared/ui/icons";
 import { AllEventsTable } from "./all-events-table";
@@ -31,12 +33,13 @@ function EventsHeader() {
   );
 }
 
-export function EventsPage() {
+export function EventsPage({ context }: { context: ConsoleContext }) {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="events" />
+        <ConsoleSidebar active="events" context={context} />
         <main className="dashboard-main">
+          <DemoDataNotice />
           <EventsHeader />
           <div className="content-stack">
             <LiveEventPanel />

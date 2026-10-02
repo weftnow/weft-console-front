@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
+import type { ConsoleContext } from "@/modules/organizations/types";
 import { FilterMenu } from "@/shared/ui/filter-menu";
 import {
   CalendarIcon,
@@ -109,12 +111,13 @@ function PeopleMetrics() {
   );
 }
 
-export function PeoplePage() {
+export function PeoplePage({ context }: { context: ConsoleContext }) {
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
-        <ConsoleSidebar active="people" />
+        <ConsoleSidebar active="people" context={context} />
         <main className="dashboard-main people-main">
+          <DemoDataNotice />
           <div className="people-workspace">
             <div className="people-primary">
               <PeopleHeader />
