@@ -103,7 +103,7 @@ test("isolated database persists the authorized event and rolls back failed chil
     await assert.rejects(createEvent({ userId, organizationId, data: { ...input, name: `${eventName} cross-org`, staffMembershipIds: [outsiderMembershipId] } }), (error) => error.code === "VALIDATION_ERROR");
     const data = createEventSchema.parse({ ...input, name: `${eventName} rollback`, attendeeImport: null, manualGuests: [], staffMembershipIds: [], coverImage: null });
     const guest = { firstName: "Ada", lastName: "", email: "ada@example.com", phone: "", company: "", position: "", profileType: "", linkedin: "", guestType: "VIP", source: "manual" };
-    await assert.rejects(repository.create({ userId, organizationId, data, schedule: resolveEventSchedule(data), guests: [guest, guest], imported: null, cover: null }), (error) => error.code === "23505");
+    await assert.rejects(repository.create({ userId, organizationId, data, schedule: resolveEventSchedule(data), guests: [guest, guest], imported: null, cover: null }), (error) => (error.cause ?? error).code === "23505");
     const rolledBack = await pool.query("select count(*)::integer as count from events where name = $1", [data.name]);
     assert.equal(rolledBack.rows[0].count, 0);
   } finally {
