@@ -6,7 +6,7 @@ Pilot creation is for active organization owners and organizers. Staff and spons
 
 Initial guest uploads are limited to 2,000 combined guests. CSV text is limited to 1 MiB UTF-8, the complete JSON request to 3 MiB, and a normalized cover to 256 KiB. Invalid rows, duplicate emails and invalid images reject the entire creation. Save as Draft is session-only; it does not persist. Server idempotency is future work, so a lost POST response can require manual reconciliation.
 
-No Neon connection is configured in this checkout. Read-only inspection of the development branch, migration history, existing identity/organization tables and pilot identifiers is pending. Before applying the generated migration, inspect those objects and baseline or adapt the migration if authoritative equivalents exist. Never run schema push or apply it to production during development.
+The Console uses its own `weft_console` database on the `dev` branch of the Neon "Weft B2B" project, with `weft_console_test` for the database test suite. The `weft` database on that branch belongs to a separate Alembic-managed service and already defines its own `events` and `organizers` tables, which conflict with this migration's `events` table and duplicate its identity model. The Console therefore does not share that database; integrating with its organizers and events is deliberate future work. Never run schema push or apply this migration to the `production` branch during development.
 
 Real pilot user provisioning, provider identity mapping, and authenticated browser verification remain gated on the separate authentication integration.
 
@@ -14,7 +14,9 @@ Real pilot user provisioning, provider identity mapping, and authenticated brows
 
 Install with `pnpm install`. Use `.env.example` as the variable template; keep actual URLs in an untracked local environment file or the deployment secret store. `DATABASE_URL` is the runtime connection and `DATABASE_MIGRATION_URL` is the migration administrator connection. Neither belongs in a `NEXT_PUBLIC_` variable. The runtime connection is opened lazily, so `pnpm build` needs no database.
 
-The generated migration is `drizzle/0000_create_event_backend.sql` with its Drizzle journal and snapshot in `drizzle/meta/`. Before applying it to a development branch, inspect tables, constraints, identity identifiers and `drizzle.__drizzle_migrations` read-only. If authoritative `users` or organization tables already exist, adapt and baseline the migration rather than recreating them. This inspection remains pending because no Neon credentials are configured here.
+The generated migration is `drizzle/0000_create_event_backend.sql` with its Drizzle journal and snapshot in `drizzle/meta/`. It has been applied to `weft_console` and `weft_console_test` on the `dev` branch; a second run made no changes. Before applying it to any other database, inspect tables, constraints, identity identifiers and `drizzle.__drizzle_migrations` read-only. If authoritative `users` or organization tables already exist, adapt and baseline the migration rather than recreating them.
+
+Use Neon's pooled connection string for `DATABASE_URL` and the direct one for `DATABASE_MIGRATION_URL`. The Vercel project stores the pooled `weft_console` URL as a sensitive `DATABASE_URL` for Production and Preview.
 
 After review, set `DATABASE_MIGRATION_URL` to an isolated development or test branch and run:
 
@@ -28,7 +30,7 @@ Run it a second time to verify migration tracking prevents reapplication. The ex
 WEFT_DATABASE_TEST=1 DATABASE_TEST_URL=postgresql://... pnpm test
 ```
 
-The default suite does not connect to a database. The live database suite was not run in this checkout because there is no configured Neon branch. Its constraint and rollback checks remain pending.
+The default suite does not connect to a database. The live database suite passes against `weft_console_test`.
 
 ## Pilot provisioning and release
 
