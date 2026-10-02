@@ -3,8 +3,9 @@ import { createEventSchema, uuidSchema, zodFieldErrors } from "../event-schemas"
 import { resolveEventSchedule } from "../event-schedule";
 import type { EventDetailDto } from "../event-dto";
 import type { EventGuestRecord } from "../event-record";
-import { normalizeLinkedin, GuestCsvError } from "../guest-csv-core";
-import { parseGuestCsvServer } from "./guest-csv-server";
+import type { PreparedCsvImport } from "../attendee-import-types";
+import { normalizeLinkedin } from "../guest-csv-core";
+import { prepareCsvImport } from "./attendee-import-service";
 import { normalizeCover } from "./cover-image";
 import * as repository from "./repository";
 import { requireEventCreator } from "@/modules/organizations/service";
@@ -16,7 +17,7 @@ export type PreparedEvent = {
   data: ReturnType<typeof createEventSchema.parse>;
   schedule: ReturnType<typeof resolveEventSchedule>;
   guests: EventGuestRecord[];
-  imported: { attendees: number; fileName: string; sponsors: number; storedGuests: number; vips: number } | null;
+  imported: PreparedCsvImport | null;
   cover: Awaited<ReturnType<typeof normalizeCover>> | null;
 };
 
@@ -34,11 +35,14 @@ export async function createEvent(
   if (parsed.data.organizationId !== organizationId) throw new ApplicationError("VALIDATION_ERROR", "Check the selected organization.", { organizationId: "Organization selection changed." });
   await dependencies.requireCreator({ userId, organizationId });
   const schedule = resolveEventSchedule(parsed.data);
-  let csv: ReturnType<typeof parseGuestCsvServer> | null = null;
+  let csv: PreparedCsvImport | null = null;
   if (parsed.data.attendeeImport) {
-    try { csv = parseGuestCsvServer(parsed.data.attendeeImport.csvText); }
+    try { csv = prepareCsvImport(parsed.data.attendeeImport); }
     catch (error) {
-      if (error instanceof GuestCsvError) throw new ApplicationError("VALIDATION_ERROR", "Check the attendee CSV.", { "attendeeImport.csvText": error.message });
+      if (error instanceof ApplicationError && error.code === "VALIDATION_ERROR") {
+        const fields = Object.fromEntries(Object.entries(error.fields ?? {}).map(([field, message]) => [`attendeeImport.${field}`, message]));
+        throw new ApplicationError("VALIDATION_ERROR", "Check the attendee CSV.", fields);
+      }
       throw error;
     }
   }
@@ -56,10 +60,7 @@ export async function createEvent(
   }
   if (guests.length > 2000) throw new ApplicationError("VALIDATION_ERROR", "Too many initial guests.", { attendeeImport: "The combined initial guest list is limited to 2,000 people." });
   const cover = parsed.data.coverImage ? await normalizeCover(parsed.data.coverImage) : null;
-  const imported = csv && parsed.data.attendeeImport ? {
-    attendees: csv.rows, fileName: parsed.data.attendeeImport.fileName,
-    sponsors: csv.sponsors, storedGuests: csv.guests.length, vips: csv.vips,
-  } : null;
+  const imported = csv;
   return dependencies.create({ userId, organizationId, data: parsed.data, schedule, guests, imported, cover });
 }
 

@@ -1,5 +1,6 @@
 import { deriveScheduleStatus } from "./event-schedule";
 import { z } from "zod";
+import type { AttendeeImportDto } from "./attendee-import-schemas";
 export { EVENT_AUDIENCE_OPTIONS } from "./event-options";
 
 export type EventGuestType = "Attendee" | "VIP" | "Sponsor";
@@ -18,6 +19,13 @@ export interface EventGuestRecord {
   source: EventGuestSource;
 }
 
+export interface SavedEventGuestRecord extends EventGuestRecord {
+  createdAt: string;
+  id: string;
+  importId: string | null;
+  updatedAt: string;
+}
+
 export interface EventStaffRecord {
   avatar: string;
   id: string;
@@ -25,16 +33,8 @@ export interface EventStaffRecord {
   role: string;
 }
 
-export interface EventAttendeeImport {
-  attendees: number;
-  fileName: string;
-  sponsors: number;
-  storedGuests: number;
-  vips: number;
-}
-
 export interface EventRecord {
-  attendees: { imported: EventAttendeeImport | null; guests: EventGuestRecord[] };
+  attendees: { guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number };
   categories: string[];
   city: string;
   coverImage: string | null;

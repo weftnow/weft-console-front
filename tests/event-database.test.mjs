@@ -91,7 +91,13 @@ test("isolated database persists the authorized event and rolls back failed chil
     const created = await createEvent({ userId, organizationId, data: input });
     assert.match(created.id, /^[0-9a-f-]{36}$/);
     assert.equal(created.attendees.guests.length, 2);
-    assert.equal(created.attendees.imported.storedGuests, 1);
+    assert.equal(created.attendees.imports[0].storedCount, 1);
+    assert.equal(created.attendees.importCount, 1);
+    assert.match(created.attendees.guests[0].id, /^[0-9a-f-]{36}$/);
+    assert.equal(created.attendees.guests[0].importId, created.attendees.imports[0].id);
+    assert.equal(created.attendees.guests[1].importId, null);
+    assert.ok(created.attendees.guests[0].createdAt);
+    assert.equal((await getEvent({ userId, eventId: created.id })).attendees.importCount, 1);
     assert.equal(created.staff.length, 1);
     assert.equal(created.coverImage, `/api/events/${created.id}/cover`);
     const fresh = await pool.query("select id from events where id = $1", [created.id]);

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   type ComponentType,
   type CSSProperties,
@@ -361,6 +362,7 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
 }
 
 export function EventDetailPage({ event, initialTab }: { event: EventDetailDto; initialTab: EventDetailTab }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
   const [notice, setNotice] = useState("");
   const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -455,7 +457,7 @@ export function EventDetailPage({ event, initialTab }: { event: EventDetailDto; 
             </div>
           ) : activeTab === "attendees" ? (
             <div className="event-detail-tab-content" key={activeTab}>
-              <AttendeeRoster event={event} />
+              <AttendeeRoster event={event} onImportSaved={() => router.refresh()} />
             </div>
           ) : activeTab === "kami" ? (
             <div className="event-detail-tab-content" key={activeTab}>

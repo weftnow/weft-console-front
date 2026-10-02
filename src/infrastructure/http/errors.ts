@@ -7,10 +7,10 @@ const statuses: Record<ApplicationErrorCode, number> = {
   VALIDATION_ERROR: 422, INTERNAL_ERROR: 500,
 };
 
-export function errorResponse(error: unknown, operation: string): Response {
+export function errorResponse(error: unknown, operation: string, unexpectedMessage?: string): Response {
   const requestId = crypto.randomUUID();
   const safe = error instanceof ApplicationError ? error : new ApplicationError(
-    "INTERNAL_ERROR", "Something went wrong while creating the event. Please try again.",
+    "INTERNAL_ERROR", unexpectedMessage ?? "Something went wrong while creating the event. Please try again.",
   );
   if (!(error instanceof ApplicationError)) {
     // Deliberately omit the thrown object's message, SQL detail, stack and parameters.

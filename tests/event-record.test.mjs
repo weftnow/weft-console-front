@@ -74,7 +74,7 @@ function loadCityArtwork() {
 
 function eventWithEstimate(expectedAttendees) {
   return {
-    attendees: { guests: [], imported: null },
+    attendees: { guests: [], imports: [], importCount: 0 },
     categories: [],
     city: "Las Vegas, USA",
     coverImage: null,

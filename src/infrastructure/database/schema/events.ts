@@ -40,6 +40,29 @@ export const events = pgTable("events", {
   check("events_audience_allowed", sql`${table.expectedAudience} <@ ARRAY['Founders','Investors','Family Offices','Executives','Brands','Sponsors','Creators','Media','Athletes','Government','Service Providers']::text[]`),
 ]);
 
+export const eventAttendeeImports = pgTable("event_attendee_imports", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+  importedBy: uuid("imported_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  fileName: text("file_name").notNull(),
+  contentHash: text("content_hash"),
+  fingerprintVersion: integer("fingerprint_version").default(1).notNull(),
+  importedCount: integer("imported_count").notNull(),
+  storedCount: integer("stored_count").notNull(),
+  duplicateCount: integer("duplicate_count").default(0).notNull(),
+  blankCount: integer("blank_count").default(0).notNull(),
+  vipCount: integer("vip_count").notNull(),
+  sponsorCount: integer("sponsor_count").notNull(),
+  importedAt: timestamp("imported_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  unique("event_attendee_imports_id_event_unique").on(table.id, table.eventId),
+  uniqueIndex("event_attendee_imports_fingerprint_unique").on(table.eventId, table.fingerprintVersion, table.contentHash).where(sql`${table.contentHash} is not null`),
+  index("event_attendee_imports_history_idx").on(table.eventId, table.importedAt, table.id),
+  check("event_import_file_valid", sql`length(btrim(${table.fileName})) between 1 and 255 and ${table.fileName} !~ '[\\\\/[:cntrl:]]'`),
+  check("event_import_fingerprint_valid", sql`${table.fingerprintVersion} = 1 and (${table.contentHash} is null or ${table.contentHash} ~ '^[0-9a-f]{64}$')`),
+  check("event_import_counts_valid", sql`${table.importedCount} between 0 and 2000 and ${table.storedCount} between 0 and 2000 and ${table.duplicateCount} >= 0 and ${table.blankCount} >= 0 and ${table.importedCount} = ${table.storedCount} + ${table.duplicateCount} and ${table.vipCount} >= 0 and ${table.sponsorCount} >= 0 and ${table.vipCount} + ${table.sponsorCount} <= ${table.storedCount}`),
+]);
+
 export const eventGuests = pgTable("event_guests", {
   id: uuid("id").defaultRandom().primaryKey(),
   eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
@@ -50,25 +73,19 @@ export const eventGuests = pgTable("event_guests", {
   jobPosition: text("job_position").notNull(), profileType: text("profile_type").notNull(),
   linkedin: text("linkedin").notNull(),
   guestType: guestType("guest_type").notNull(), source: guestSource("source").notNull(),
+  importId: uuid("import_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   index("event_guests_event_position_idx").on(table.eventId, table.position),
+  unique("event_guests_event_position_unique").on(table.eventId, table.position),
   uniqueIndex("event_guests_event_email_unique").on(table.eventId, table.normalizedEmail).where(sql`${table.normalizedEmail} is not null`),
+  foreignKey({ columns: [table.importId, table.eventId], foreignColumns: [eventAttendeeImports.id, eventAttendeeImports.eventId], name: "event_guests_import_event_fk" }).onDelete("no action"),
   check("event_guests_position_valid", sql`${table.position} >= 0`),
   check("event_guests_name_valid", sql`length(${table.firstName}) <= 100 and length(${table.lastName}) <= 100 and length(btrim(${table.firstName} || ${table.lastName})) > 0`),
   check("event_guests_contact_valid", sql`length(${table.email}) <= 254 and length(${table.phone}) <= 40 and length(${table.company}) <= 200 and length(${table.jobPosition}) <= 200 and length(${table.profileType}) <= 100 and length(${table.linkedin}) <= 500`),
-]);
-
-export const eventAttendeeImports = pgTable("event_attendee_imports", {
-  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
-  fileName: text("file_name").notNull(),
-  importedCount: integer("imported_count").notNull(),
-  storedCount: integer("stored_count").notNull(),
-  vipCount: integer("vip_count").notNull(),
-  sponsorCount: integer("sponsor_count").notNull(),
-  importedAt: timestamp("imported_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => [
-  check("event_import_file_valid", sql`length(btrim(${table.fileName})) between 1 and 255`),
-  check("event_import_counts_valid", sql`${table.importedCount} >= 0 and ${table.storedCount} >= 0 and ${table.storedCount} <= ${table.importedCount} and ${table.vipCount} >= 0 and ${table.sponsorCount} >= 0`),
+  check("event_guests_source_import_valid", sql`(${table.source} = 'csv' and ${table.importId} is not null) or (${table.source} = 'manual' and ${table.importId} is null)`),
+  check("event_guests_email_normalized_valid", sql`${table.normalizedEmail} is not distinct from nullif(lower(btrim(${table.email})), '')`),
 ]);
 
 export const eventStaff = pgTable("event_staff", {
