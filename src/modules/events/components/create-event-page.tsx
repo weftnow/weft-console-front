@@ -35,44 +35,19 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import {
-  createEventId,
-  EVENT_AUDIENCE_OPTIONS,
   EVENT_COVER_PLACEHOLDER_ART,
   type EventGuestRecord,
-  MAX_STORED_GUESTS,
   normalizeCoverImage,
-  saveEventRecord,
 } from "../event-record";
+import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES } from "../event-options";
+import { createEventSchema, manualGuestSchema, zodFieldErrors } from "../event-schemas";
+import { submitCreateEvent } from "../mutations/create-event";
+import { ApplicationError } from "@/shared/lib/application-error";
+import type { CreateEventContext } from "@/modules/organizations/types";
 import { GuestCsvError, parseGuestCsv } from "../guest-csv";
 
-const CATEGORY_OPTIONS = [
-  "Sports",
-  "Luxury",
-  "Investing",
-  "Startups",
-  "Technology",
-  "Entertainment",
-  "Web3",
-  "Real Estate",
-  "Fashion",
-  "Media",
-] as const;
-
+const CATEGORY_OPTIONS = EVENT_CATEGORIES;
 const AUDIENCE_OPTIONS = EVENT_AUDIENCE_OPTIONS;
-
-const STAFF = [
-  { id: "maria", name: "Maria Chen", role: "Lead wefter", avatar: "/network/avatars/sarah-chen.png" },
-  { id: "daniel", name: "Daniel Park", role: "Wefter", avatar: "/network/avatars/daniel-park.png" },
-  { id: "sophie", name: "Sophie Laurent", role: "Wefter", avatar: "/network/avatars/emma-laurent.png" },
-  { id: "alex", name: "Alex Rivera", role: "Guest experience", avatar: "/network/avatars/alex-rivera.png" },
-  { id: "sofia", name: "Sofia Martinez", role: "Sponsor liaison", avatar: "/network/avatars/sofia-martinez.png" },
-] as const;
-
-const ORGANIZER = {
-  name: "Nick Baci",
-  role: "Organizer",
-  avatar: "/network/avatars/michael-ross.png",
-};
 
 type EventForm = {
   attendees: string;
@@ -187,7 +162,7 @@ function FormField({
         {required ? <span aria-hidden="true">*</span> : null}
       </label>
       {children}
-      {error ? <small className="event-field__error">{error}</small> : null}
+      {error ? <small className="event-field__error" id={`${id}-error`} role="alert">{error}</small> : null}
     </div>
   );
 }
@@ -261,17 +236,18 @@ function Avatar({
 }: {
   name: string;
   size?: number;
-  src: string;
+  src: string | null;
 }) {
   return (
     <span className="event-avatar" style={{ height: size, width: size }}>
-      <Image alt={`Portrait of ${name}`} height={size} src={src} width={size} />
+      {src ? <Image alt={`Portrait of ${name}`} height={size} src={src} width={size} unoptimized /> : <span aria-label={name}>{name.trim().slice(0, 1).toUpperCase()}</span>}
     </span>
   );
 }
 
-export function CreateEventPage() {
+export function CreateEventPage({ context }: { context: CreateEventContext }) {
   const router = useRouter();
+  const [organizationId, setOrganizationId] = useState(context.organizations[0]?.id ?? "");
   const [form, setForm] = useState<EventForm>(INITIAL_FORM);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
@@ -296,18 +272,23 @@ export function CreateEventPage() {
   const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>([]);
   const [staffOpen, setStaffOpen] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [toast, setToast] = useState<Toast | null>(null);
-  const [actionState, setActionState] = useState<"idle" | "creating" | "saving">("idle");
+  const [actionState, setActionState] = useState<"idle" | "creating">("idle");
   const coverInputRef = useRef<HTMLInputElement>(null);
   const csvInputRef = useRef<HTMLInputElement>(null);
   const coverUrlRef = useRef<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const submitGuardRef = useRef(false);
 
+  const activeOrganization = context.organizations.find((organization) => organization.id === organizationId);
+  const STAFF = activeOrganization?.staff ?? [];
+  const ORGANIZER = { name: context.organizer.name, avatar: context.organizer.avatar, role: "Organizer" };
   const selectedStaff = STAFF.filter((person) => selectedStaffIds.includes(person.id));
-  const nameError = showValidation && !form.name.trim() ? "Add an event name." : undefined;
-  const cityError = showValidation && !form.city ? "Choose a city." : undefined;
-  const startError = showValidation && !form.startDate ? "Choose a start date." : undefined;
-  const endError = showValidation && !form.endDate ? "Choose an end date." : undefined;
+  const nameError = fieldErrors.name ?? (showValidation && !form.name.trim() ? "Add an event name." : undefined);
+  const cityError = fieldErrors.city ?? (showValidation && !form.city ? "Choose a city." : undefined);
+  const startError = fieldErrors.startDate ?? (showValidation && !form.startDate ? "Choose a start date." : undefined);
+  const endError = fieldErrors.endDate ?? (showValidation && !form.endDate ? "Choose an end date." : undefined);
 
   useEffect(() => {
     return () => {
@@ -318,6 +299,13 @@ export function CreateEventPage() {
 
   function updateField<Key extends keyof EventForm>(key: Key, value: EventForm[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
+    const field = key === "attendees" ? "expectedAttendees" : key === "profiles" ? "expectedAudience" : key;
+    setFieldErrors((current) => {
+      if (!(field in current)) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
   }
 
   function showToast(message: Toast) {
@@ -329,9 +317,9 @@ export function CreateEventPage() {
   function acceptCoverFile(file: File | undefined) {
     setCoverDragging(false);
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       showToast({
-        detail: "Choose a JPG, PNG, or another browser-supported image.",
+        detail: "Choose a JPG, PNG, or WebP image.",
         title: "That file is not an image",
         tone: "neutral",
       });
@@ -362,9 +350,9 @@ export function CreateEventPage() {
       setCsvError("Choose a .csv file to import attendees.");
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 1024 * 1024) {
       setCsvImport(null);
-      setCsvError("The file must be 10 MB or smaller.");
+      setCsvError("The file must be 1 MiB or smaller.");
       return;
     }
 
@@ -379,13 +367,6 @@ export function CreateEventPage() {
         truncated: parsed.truncated,
         vips: parsed.vips,
       });
-      if (parsed.truncated) {
-        showToast({
-          detail: `Counts cover all ${parsed.rows.toLocaleString()} rows, but only the first ${MAX_STORED_GUESTS.toLocaleString()} are stored in full.`,
-          title: "Large guest list trimmed",
-          tone: "neutral",
-        });
-      }
     } catch (error) {
       setCsvImport(null);
       setCsvError(
@@ -415,9 +396,13 @@ export function CreateEventPage() {
   }
 
   function addManualGuest() {
-    if (!manualGuest.firstName.trim() || !manualGuest.email.includes("@")) {
+    if (!manualGuestSchema.safeParse({
+      firstName: manualGuest.firstName, lastName: manualGuest.lastName, email: manualGuest.email,
+      phone: manualGuest.phone, company: manualGuest.company, position: manualGuest.position,
+      profileType: manualGuest.profileType, linkedin: manualGuest.linkedin, guestType: manualGuest.guestType,
+    }).success || manualGuests.length + (csvImport?.guests.length ?? 0) >= 2000) {
       showToast({
-        detail: "Add a first name and valid email address.",
+        detail: "Add a valid first name and email, and keep the guest list under 2,000 people.",
         title: "Guest details need attention",
         tone: "neutral",
       });
@@ -425,7 +410,7 @@ export function CreateEventPage() {
     }
     setManualGuests((current) => [...current, manualGuest]);
     showToast({
-      detail: `${manualGuest.firstName} was added to the local guest list.`,
+      detail: `${manualGuest.firstName} was added to this form's guest list.`,
       title: "Guest added",
       tone: "success",
     });
@@ -451,98 +436,90 @@ export function CreateEventPage() {
 
   function validateRequired() {
     setShowValidation(true);
-    return Boolean(form.name.trim() && form.city && form.startDate && form.endDate);
+    return Boolean(form.name.trim() && form.city && form.startDate && form.endDate && form.description.trim() && form.categories.length);
   }
 
   async function createEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitGuardRef.current) return;
+    submitGuardRef.current = true;
     if (!validateRequired()) {
+      submitGuardRef.current = false;
       showToast({
         detail: "Complete the highlighted fields before creating the event.",
         title: "A few details are missing",
         tone: "neutral",
       });
+      requestAnimationFrame(() => document.querySelector<HTMLInputElement | HTMLTextAreaElement>(".create-event-form [aria-invalid='true']")?.focus());
       return;
     }
     setActionState("creating");
-
-    let coverImage: string | null = null;
-    if (coverFile) {
-      try {
-        coverImage = await normalizeCoverImage(coverFile);
-      } catch {
-        coverImage = null;
-      }
-    }
-
-    const now = new Date().toISOString();
-    const id = createEventId(form.name);
-    const expectedAttendees = form.attendees ? Number(form.attendees) : null;
-
     try {
-      const { droppedGuests } = saveEventRecord({
-        attendees: {
-          guests: [...csvImport?.guests ?? [], ...manualGuests],
-          imported: csvImport
-            ? {
-                attendees: csvImport.attendees,
-                fileName: csvImport.file.name,
-                sponsors: csvImport.sponsors,
-                storedGuests: csvImport.guests.length,
-                vips: csvImport.vips,
-              }
-            : null,
-        },
-        categories: form.categories,
-        city: form.city,
-        coverImage,
-        createdAt: now,
-        description: form.description,
-        endDate: form.endDate,
-        endTime: form.endTime,
-        expectedAttendees,
-        expectedAudience: form.profiles,
-        id,
-        name: form.name.trim(),
-        staff: selectedStaff.map(({ avatar, id: staffId, name, role }) => ({
-          avatar,
-          id: staffId,
-          name,
-          role,
-        })),
-        startDate: form.startDate,
-        startTime: form.startTime,
-        updatedAt: now,
-        venue: form.venue,
-      });
-      if (droppedGuests) {
-        showToast({
-          detail: "Attendee totals were kept, but the guest rows did not fit in browser storage. Remove the cover image or a past event, then re-import.",
-          title: "Guest list could not be stored",
-          tone: "neutral",
-        });
+      let coverImage: string | null = null;
+      if (coverFile) {
+        try { coverImage = await normalizeCoverImage(coverFile); }
+        catch { throw new ApplicationError("VALIDATION_ERROR", "The selected cover could not be processed.", { coverImage: "Choose a valid JPG, PNG or WebP image." }); }
       }
-      router.push(`/events/${id}`);
-    } catch {
+      let csvText: string | null = null;
+      if (csvImport) {
+        try { csvText = await csvImport.file.text(); }
+        catch { throw new ApplicationError("VALIDATION_ERROR", "The CSV could not be read.", { "attendeeImport.csvText": "Choose the CSV file again." }); }
+      }
+      const input = {
+        organizationId,
+        name: form.name,
+        city: form.city,
+        venue: form.venue,
+        expectedAttendees: form.attendees === "" ? null : Number(form.attendees),
+        startDate: form.startDate,
+        endDate: form.endDate,
+        startTime: form.startTime,
+        endTime: form.endTime,
+        description: form.description,
+        categories: form.categories,
+        expectedAudience: form.profiles,
+        attendeeImport: csvImport && csvText !== null ? { fileName: csvImport.file.name, csvText } : null,
+        manualGuests: manualGuests.map((guest) => ({
+          firstName: guest.firstName, lastName: guest.lastName, email: guest.email,
+          phone: guest.phone, company: guest.company, position: guest.position,
+          profileType: guest.profileType, linkedin: guest.linkedin, guestType: guest.guestType,
+        })),
+        staffMembershipIds: selectedStaffIds,
+        coverImage,
+      };
+      const validated = createEventSchema.safeParse(input);
+      if (!validated.success) {
+        throw new ApplicationError("VALIDATION_ERROR", "Check the highlighted fields.", zodFieldErrors(validated.error));
+      }
+      setFieldErrors({});
+      const created = await submitCreateEvent(validated.data);
+      router.push(`/events/${created.id}`);
+    } catch (error) {
+      submitGuardRef.current = false;
       setActionState("idle");
+      const appError = error instanceof ApplicationError ? error : new ApplicationError("INTERNAL_ERROR", "The event could not be created. Your form is still here; try again.");
+      setFieldErrors(appError.fields ?? {});
+      if (Object.keys(appError.fields ?? {}).some((field) => field.startsWith("attendeeImport"))) setAttendeeMode("csv");
+      else if (Object.keys(appError.fields ?? {}).some((field) => field.startsWith("manualGuests"))) setAttendeeMode("manual");
       showToast({
-        detail: "Browser storage could not save this event. Your form is still here so you can try again.",
-        title: "Event could not be saved",
+        detail: appError.message,
+        title: appError.code === "UNAUTHORIZED" ? "Authentication required" : appError.code === "FORBIDDEN" ? "Access required" : "Event could not be created",
         tone: "neutral",
+      });
+      if (appError.fields) requestAnimationFrame(() => {
+        const first = Object.keys(appError.fields ?? {})[0];
+        const id = ({ organizationId: "event-organization", name: "event-name", city: "event-city", venue: "event-venue", expectedAttendees: "event-attendees", startDate: "event-start-date", startTime: "event-start-time", endDate: "event-end-date", endTime: "event-end-time", description: "event-description", categories: "event-categories" } as Record<string, string>)[first];
+        (id ? document.getElementById(id) : document.querySelector<HTMLElement>(".create-event-form [aria-invalid='true']"))?.focus();
       });
     }
   }
 
   function saveDraft() {
-    setActionState("saving");
-    setTimeout(() => {
-      setActionState("idle");
-      showToast({
-        detail: "Your current form state is safe for this browser session.",
-        title: "Draft saved locally",
-        tone: "success",
-      });
-    }, 520);
+    showToast({
+      detail: "This form remains in this tab. It will be lost if you refresh or leave the page.",
+      title: "Draft kept in this tab",
+      tone: "neutral",
+    });
   }
 
   const coverUpload = (
@@ -562,7 +539,7 @@ export function CreateEventPage() {
     >
       <span className="dropzone-icon"><UploadIcon height="21" width="21" /></span>
       <strong>Upload cover</strong>
-      <span>JPG or PNG · 16:9 works best</span>
+      <span>JPG, PNG or WebP · 16:9 works best</span>
     </div>
   );
 
@@ -580,7 +557,7 @@ export function CreateEventPage() {
           </header>
 
           <div className="create-event-layout">
-            <form className="create-event-form" noValidate onSubmit={createEvent}>
+            <form aria-busy={actionState !== "idle"} className="create-event-form" inert={actionState !== "idle"} noValidate onSubmit={createEvent}>
               <Surface as="section" className="create-section" depth="raised" aria-labelledby="event-basics-title">
                 <SectionHeading
                   description="The essentials guests and staff will see."
@@ -591,8 +568,14 @@ export function CreateEventPage() {
                 </SectionHeading>
 
                 <div className="event-basics-grid">
+                  {context.organizations.length > 1 ? <FormField error={fieldErrors.organizationId} id="event-organization" label="Organization" required>
+                    <select aria-describedby={fieldErrors.organizationId ? "event-organization-error" : undefined} aria-invalid={Boolean(fieldErrors.organizationId)} className="event-control" id="event-organization" onChange={(event) => { setOrganizationId(event.target.value); setSelectedStaffIds([]); }} value={organizationId}>
+                      {context.organizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                    </select>
+                  </FormField> : null}
                   <FormField error={nameError} id="event-name" label="Event name" required>
                     <input
+                      aria-describedby={nameError ? "event-name-error" : undefined}
                       aria-invalid={Boolean(nameError)}
                       className="event-control"
                       data-filled={Boolean(form.name)}
@@ -606,6 +589,7 @@ export function CreateEventPage() {
                     <span className="event-control-wrap">
                       <LocationIcon height="16" width="16" />
                       <select
+                        aria-describedby={cityError ? "event-city-error" : undefined}
                         aria-invalid={Boolean(cityError)}
                         className="event-control event-control--with-icon"
                         data-filled={Boolean(form.city)}
@@ -622,8 +606,10 @@ export function CreateEventPage() {
                       </select>
                     </span>
                   </FormField>
-                  <FormField id="event-venue" label="Venue">
+                  <FormField error={fieldErrors.venue} id="event-venue" label="Venue">
                     <input
+                      aria-describedby={fieldErrors.venue ? "event-venue-error" : undefined}
+                      aria-invalid={Boolean(fieldErrors.venue)}
                       className="event-control"
                       data-filled={Boolean(form.venue)}
                       id="event-venue"
@@ -632,10 +618,12 @@ export function CreateEventPage() {
                       value={form.venue}
                     />
                   </FormField>
-                  <FormField id="event-attendees" label="Expected attendees">
+                  <FormField error={fieldErrors.expectedAttendees} id="event-attendees" label="Expected attendees">
                     <span className="event-control-wrap">
                       <PeopleIcon height="16" width="16" />
                       <input
+                        aria-describedby={fieldErrors.expectedAttendees ? "event-attendees-error" : undefined}
+                        aria-invalid={Boolean(fieldErrors.expectedAttendees)}
                         className="event-control event-control--with-icon"
                         data-filled={Boolean(form.attendees)}
                         id="event-attendees"
@@ -650,6 +638,7 @@ export function CreateEventPage() {
                   </FormField>
                   <FormField error={startError} id="event-start-date" label="Start date" required>
                     <input
+                      aria-describedby={startError ? "event-start-date-error" : undefined}
                       aria-invalid={Boolean(startError)}
                       className="event-control"
                       data-filled={Boolean(form.startDate)}
@@ -659,8 +648,10 @@ export function CreateEventPage() {
                       value={form.startDate}
                     />
                   </FormField>
-                  <FormField id="event-start-time" label="Start time">
+                  <FormField error={fieldErrors.startTime} id="event-start-time" label="Start time">
                     <input
+                      aria-describedby={fieldErrors.startTime ? "event-start-time-error" : undefined}
+                      aria-invalid={Boolean(fieldErrors.startTime)}
                       className="event-control"
                       data-filled={Boolean(form.startTime)}
                       id="event-start-time"
@@ -671,6 +662,7 @@ export function CreateEventPage() {
                   </FormField>
                   <FormField error={endError} id="event-end-date" label="End date" required>
                     <input
+                      aria-describedby={endError ? "event-end-date-error" : undefined}
                       aria-invalid={Boolean(endError)}
                       className="event-control"
                       data-filled={Boolean(form.endDate)}
@@ -681,8 +673,10 @@ export function CreateEventPage() {
                       value={form.endDate}
                     />
                   </FormField>
-                  <FormField id="event-end-time" label="End time">
+                  <FormField error={fieldErrors.endTime} id="event-end-time" label="End time">
                     <input
+                      aria-describedby={fieldErrors.endTime ? "event-end-time-error" : undefined}
+                      aria-invalid={Boolean(fieldErrors.endTime)}
                       className="event-control"
                       data-filled={Boolean(form.endTime)}
                       id="event-end-time"
@@ -722,6 +716,7 @@ export function CreateEventPage() {
                   ) : (
                     <div onClick={() => coverInputRef.current?.click()}>{coverUpload}</div>
                   )}
+                  {fieldErrors.coverImage ? <p className="upload-error" role="alert">{fieldErrors.coverImage}</p> : null}
                 </div>
               </Surface>
 
@@ -733,9 +728,11 @@ export function CreateEventPage() {
                 >
                   Event context
                 </SectionHeading>
-                <FormField id="event-description" label="Event description" required>
+                <FormField error={fieldErrors.description ?? (showValidation && !form.description.trim() ? "Add a description." : undefined)} id="event-description" label="Event description" required>
                   <div className="textarea-wrap">
                     <textarea
+                      aria-describedby={fieldErrors.description || (showValidation && !form.description.trim()) ? "event-description-error" : undefined}
+                      aria-invalid={Boolean(fieldErrors.description || (showValidation && !form.description.trim()))}
                       className="event-control event-textarea"
                       data-filled={Boolean(form.description)}
                       id="event-description"
@@ -753,12 +750,15 @@ export function CreateEventPage() {
                     <strong>Event categories <span aria-hidden="true">*</span></strong>
                     <small>Select the signals that best describe the event.</small>
                   </div>
+                  <div id="event-categories" tabIndex={-1} aria-invalid={Boolean(fieldErrors.categories || (showValidation && !form.categories.length))} aria-describedby={fieldErrors.categories || (showValidation && !form.categories.length) ? "event-categories-error" : undefined}>
                   <ChipSelector
                     label="Event categories"
                     onChange={(categories) => updateField("categories", categories)}
                     options={CATEGORY_OPTIONS}
                     selected={form.categories}
                   />
+                  </div>
+                  {fieldErrors.categories || (showValidation && !form.categories.length) ? <small className="event-field__error" id="event-categories-error" role="alert">{fieldErrors.categories ?? "Choose at least one category."}</small> : null}
                 </div>
               </Surface>
 
@@ -808,7 +808,7 @@ export function CreateEventPage() {
                             <span className="upload-success"><CheckIcon height="14" width="14" /></span>
                             <div>
                               <strong>{csvImport.file.name}</strong>
-                              <span>{formatBytes(csvImport.file.size)} · Import complete</span>
+                              <span>{formatBytes(csvImport.file.size)} · Ready to import</span>
                             </div>
                           </div>
                           <div className="csv-results">
@@ -816,14 +816,9 @@ export function CreateEventPage() {
                             <strong>{csvImport.vips.toLocaleString()}<span>VIPs</span></strong>
                             <strong>{csvImport.sponsors.toLocaleString()}<span>sponsors</span></strong>
                           </div>
-                          {csvImport.truncated || csvImport.skipped > 0 ? (
+                          {csvImport.skipped > 0 ? (
                             <p className="csv-complete__note">
-                              {csvImport.truncated
-                                ? `Storing the first ${csvImport.guests.length.toLocaleString()} guests in full. `
-                                : ""}
-                              {csvImport.skipped > 0
-                                ? `${csvImport.skipped.toLocaleString()} ${csvImport.skipped === 1 ? "row" : "rows"} skipped for having no name or email.`
-                                : ""}
+                              {`${csvImport.skipped.toLocaleString()} empty ${csvImport.skipped === 1 ? "row" : "rows"} skipped.`}
                             </p>
                           ) : null}
                           <div className="upload-actions csv-complete__actions">
@@ -858,14 +853,15 @@ export function CreateEventPage() {
                         >
                           <span className="dropzone-icon"><DocumentIcon height="21" width="21" /></span>
                           <strong>Drop your CSV here</strong>
-                          <span>or click to browse · maximum 10 MB</span>
+                          <span>or click to browse · maximum 1 MiB</span>
                         </div>
                       )}
-                      {csvError ? <p className="upload-error" role="alert">{csvError}</p> : null}
+                      {csvError || fieldErrors["attendeeImport.csvText"] ? <p className="upload-error" role="alert">{csvError || fieldErrors["attendeeImport.csvText"]}</p> : null}
                     </div>
                     <div className="csv-requirements">
                       <strong>CSV requirements</strong>
-                      <p>Required: first name, last name, email</p>
+                      <p>Required: at least one name column and a name for each guest.</p>
+                      <p>Email is optional for CSV guests.</p>
                       <p>Optional: phone, company, position, LinkedIn, profile type, guest type</p>
                       <p>Guest type accepts Attendee, VIP, or Sponsor.</p>
                       <button className="template-action" onClick={downloadCsvTemplate} type="button">
@@ -917,6 +913,7 @@ export function CreateEventPage() {
                     {manualGuests.length ? (
                       <p className="manual-attendee-result"><CheckIcon height="14" width="14" /> {manualGuests.length} {manualGuests.length === 1 ? "guest" : "guests"} added in this session</p>
                     ) : null}
+                    {Object.entries(fieldErrors).filter(([field]) => field.startsWith("manualGuests.")).map(([field, message]) => <p className="upload-error" key={field} role="alert">Guest {Number(field.split(".")[1]) + 1}: {message}</p>)}
                   </div>
                 )}
               </Surface>
@@ -968,6 +965,7 @@ export function CreateEventPage() {
                         ) : null}
                       </div>
                     </div>
+                    {fieldErrors.staffMembershipIds ? <p className="upload-error" role="alert">{fieldErrors.staffMembershipIds}</p> : null}
                   </div>
                 </div>
               </Surface>
@@ -1029,7 +1027,7 @@ export function CreateEventPage() {
                     {actionState !== "creating" ? <ArrowRightIcon height="15" width="15" /> : null}
                   </TactileButton>
                   <TactileButton className="save-draft-action" disabled={actionState !== "idle"} onClick={saveDraft}>
-                    {actionState === "saving" ? "Saving…" : "Save as draft"}
+                    Keep draft in this tab
                   </TactileButton>
                 </div>
               </Surface>

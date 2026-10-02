@@ -34,6 +34,7 @@ import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
+import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
   deriveEventMetrics,
@@ -42,7 +43,6 @@ import {
   type EventRecord,
   formatEventDateRange,
   formatRelativeActivity,
-  loadEventRecord,
 } from "../event-record";
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
@@ -69,7 +69,7 @@ const statusLabels = {
   upcoming: "Upcoming",
 } as const;
 
-function EventDetailSkeleton() {
+export function EventDetailSkeleton() {
   return (
     <div className="overview-shell event-detail-shell" aria-busy="true">
       <div className="dashboard-layout">
@@ -89,7 +89,7 @@ function EventDetailSkeleton() {
   );
 }
 
-function MissingEvent() {
+export function MissingEvent() {
   return (
     <div className="overview-shell event-detail-shell">
       <div className="dashboard-layout">
@@ -98,7 +98,7 @@ function MissingEvent() {
           <Surface className="event-detail-missing" depth="raised">
             <span className="event-detail-missing__icon"><CalendarIcon height="24" width="24" /></span>
             <h1>Event not found</h1>
-            <p>This browser does not have a saved event for this link.</p>
+            <p>This event is unavailable.</p>
             <Link className="tactile-button tactile-button--graphite event-detail-missing__action" href="/events">
               <ArrowLeftIcon height="15" width="15" /> Back to events
             </Link>
@@ -360,18 +360,10 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
   );
 }
 
-export function EventDetailPage({ eventId, initialTab }: { eventId: string; initialTab: EventDetailTab }) {
-  const [event, setEvent] = useState<EventRecord | null | undefined>(undefined);
+export function EventDetailPage({ event, initialTab }: { event: EventDetailDto; initialTab: EventDetailTab }) {
   const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
   const [notice, setNotice] = useState("");
   const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      setEvent(loadEventRecord(eventId));
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [eventId]);
 
   useEffect(() => () => {
     if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current);
@@ -383,13 +375,10 @@ export function EventDetailPage({ eventId, initialTab }: { eventId: string; init
     noticeTimerRef.current = setTimeout(() => setNotice(""), 3000);
   };
 
-  const metrics = useMemo(() => event ? deriveEventMetrics(event) : null, [event]);
-
-  if (event === undefined) return <EventDetailSkeleton />;
-  if (!event || !metrics) return <MissingEvent />;
+  const metrics = useMemo(() => deriveEventMetrics(event), [event]);
 
   const status = deriveEventStatus(event);
-  const art = event.id === "las-vegas-f1-week" ? LAS_VEGAS_ART : EVENT_COVER_PLACEHOLDER_ART;
+  const art = event.city === "Las Vegas, USA" ? LAS_VEGAS_ART : EVENT_COVER_PLACEHOLDER_ART;
 
   const copyEventLink = async () => {
     try {
