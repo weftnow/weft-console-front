@@ -345,7 +345,7 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
 
   return (
     <Surface className="event-tab-placeholder" depth="raised">
-      <Surface aria-label={tab.label} className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
+      <Surface className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
       <h2>Coming soon</h2>
       <p>{tabDescriptions[activeTab]}</p>
       <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>

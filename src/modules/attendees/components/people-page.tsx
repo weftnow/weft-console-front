@@ -20,6 +20,7 @@ export function PeoplePage({ context }: { context: ConsoleContext }) {
             <Surface as="section" className="panel" depth="raised">
               <EmptyState description="Guests appear here once you add them to an event." icon={PeopleIcon} title="No people yet" />
             </Surface>
+            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
       </div>

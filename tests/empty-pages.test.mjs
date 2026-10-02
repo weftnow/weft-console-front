@@ -34,3 +34,25 @@ test("partner report is an on-brand empty state without console navigation", () 
   assert.match(html, /Reports appear after a partner&#x27;s event has outcomes\./);
   assert.doesNotMatch(html, /Horizon|Primary navigation/);
 });
+
+test("people and network pages carry the shared footer", () => {
+  for (const [path, name] of [["src/modules/attendees/components/people-page.tsx", "PeoplePage"], ["src/modules/network/components/network-page.tsx", "NetworkPage"]]) {
+    assert.match(render(path, name, { context }), /<footer class="dashboard-footer"><span>Powered by Weft<\/span><\/footer>/);
+  }
+});
+
+test("partner report has a page heading", () => {
+  const html = render("src/modules/sponsors/components/partner-report-page.tsx", "PartnerReportPage");
+  assert.match(html, /<h1[^>]*>Partner report<\/h1>/);
+});
+
+for (const file of ["src/app/error.tsx", "src/app/events/error.tsx"]) {
+  test(`${file} renders the events unavailable state`, () => {
+    const Page = loadTs(file).default;
+    const html = renderToStaticMarkup(React.createElement(Page, { error: new Error("x"), retry: () => {}, reset: () => {} }));
+    assert.match(html, /<h1>Events unavailable<\/h1>/);
+    assert.match(html, /Your events could not be loaded\. Please try again\./);
+    assert.match(html, /<button[^>]*>Try again<\/button>/);
+    assert.doesNotMatch(html, /Back to events/);
+  });
+}

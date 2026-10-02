@@ -20,6 +20,7 @@ export function NetworkPage({ context }: { context: ConsoleContext }) {
             <Surface as="section" className="panel" depth="raised">
               <EmptyState description="It builds as introductions happen at your events." icon={NetworkIcon} title="Your network starts here" />
             </Surface>
+            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
       </div>
