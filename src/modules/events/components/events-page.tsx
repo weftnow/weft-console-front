@@ -1,55 +1,56 @@
 import Link from "next/link";
 
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
-import { DemoDataNotice } from "@/shared/ui/demo-data-notice";
+import type { EventSummaryDto } from "../event-dto";
+import { groupEvents } from "../event-list";
 import type { ConsoleContext } from "@/modules/organizations/types";
-import { FilterMenu } from "@/shared/ui/filter-menu";
-import { PlusIcon, SearchIcon } from "@/shared/ui/icons";
+import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { CalendarIcon, PlusIcon } from "@/shared/ui/icons";
+import { Surface } from "@/shared/ui/surface";
 import { AllEventsTable } from "./all-events-table";
 import { LiveEventPanel } from "./live-event-panel";
 import { RecentlyCompletedPanel } from "./recently-completed-panel";
 import { UpcomingEventsPanel } from "./upcoming-events-panel";
 
-function EventsHeader() {
-  return (
-    <header className="events-header">
-      <div className="events-header__copy">
-        <p className="eyebrow-line">We Are One</p>
-        <h1 className="events-header__title">Events</h1>
-        <p className="events-header__subtitle">All We Are One experiences across cities.</p>
-      </div>
-      <div className="events-header__actions">
-        <label className="search-field">
-          <SearchIcon height="16" width="16" />
-          <input aria-label="Search events" placeholder="Search events…" type="search" />
-        </label>
-        <FilterMenu label="Status" options={["All statuses", "Live", "Upcoming", "Completed"]} />
-        <FilterMenu label="City" options={["All cities", "Las Vegas", "Singapore", "Davos", "Aspen"]} />
-        <Link className="tactile-button tactile-button--primary new-event-action" href="/events/new">
-          <PlusIcon height="16" width="16" /> New event
-        </Link>
-      </div>
-    </header>
-  );
-}
+const newEventLink = (label: string) => (
+  <Link className="tactile-button tactile-button--primary new-event-action" href="/events/new">
+    <PlusIcon height="16" width="16" /> {label}
+  </Link>
+);
 
-export function EventsPage({ context }: { context: ConsoleContext }) {
+export function EventsPage({ context, events }: { context: ConsoleContext; events: EventSummaryDto[] }) {
+  const grouped = groupEvents(events);
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
         <ConsoleSidebar active="events" context={context} />
         <main className="dashboard-main">
-          <DemoDataNotice />
-          <EventsHeader />
+          <header className="events-header">
+            <div className="events-header__copy">
+              <h1 className="events-header__title">Events</h1>
+              <p className="events-header__subtitle">Every event your organization operates on Weft.</p>
+            </div>
+            <div className="events-header__actions">{newEventLink("New event")}</div>
+          </header>
           <div className="content-stack">
-            <LiveEventPanel />
-            <UpcomingEventsPanel />
-            <AllEventsTable />
-            <RecentlyCompletedPanel />
-            <footer className="dashboard-footer">
-              <span>We Are One &nbsp;|&nbsp; Powered by Weft</span>
-              <span>People create what&apos;s next</span>
-            </footer>
+            {events.length === 0 ? (
+              <Surface as="section" className="panel" depth="raised">
+                <EmptyState
+                  action={<Link className="tactile-button tactile-button--primary" href="/events/new">Create event</Link>}
+                  description="Create your first event to start operating its networking experience."
+                  icon={CalendarIcon}
+                  title="No events yet"
+                />
+              </Surface>
+            ) : (
+              <>
+                <LiveEventPanel event={grouped.live[0] ?? null} />
+                <UpcomingEventsPanel events={grouped.upcoming.slice(0, 3)} />
+                <AllEventsTable events={grouped.all} />
+                <RecentlyCompletedPanel events={grouped.completed.slice(0, 3)} />
+              </>
+            )}
+            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
       </div>

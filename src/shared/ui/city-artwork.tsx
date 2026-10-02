@@ -41,6 +41,7 @@ export function CityArtwork({
           loading={eager ? "eager" : "lazy"}
           sizes="(max-width: 900px) 100vw, 33vw"
           src={art.image}
+          unoptimized={art.image.startsWith("/api/")}
         />
       ) : null}
       {children}
