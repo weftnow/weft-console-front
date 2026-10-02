@@ -36,7 +36,9 @@ function loadModule(path, base = import.meta.url) {
   const loadedModule = { exports: {} };
   moduleCache.set(resolved.href, loadedModule.exports);
   const scopedRequire = (request) =>
-    request.startsWith(".") ? loadModule(request, resolved.href) : require(request);
+    request.startsWith("@/")
+      ? loadModule(`../src/${request.slice(2)}`, import.meta.url)
+      : request.startsWith(".") ? loadModule(request, resolved.href) : require(request);
   const evaluate = new Function("module", "exports", "require", compiled);
   evaluate(loadedModule, loadedModule.exports, scopedRequire);
   moduleCache.set(resolved.href, loadedModule.exports);
