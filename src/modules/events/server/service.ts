@@ -1,7 +1,7 @@
 import "server-only";
 import { createEventSchema, uuidSchema, zodFieldErrors } from "../event-schemas";
-import { resolveEventSchedule } from "../event-schedule";
-import type { EventDetailDto } from "../event-dto";
+import { deriveScheduleStatus, resolveEventSchedule } from "../event-schedule";
+import type { EventDetailDto, EventSummaryDto } from "../event-dto";
 import type { EventGuestRecord } from "../event-record";
 import type { PreparedCsvImport } from "../attendee-import-types";
 import { normalizeLinkedin } from "../guest-csv-core";
@@ -95,4 +95,22 @@ export async function getEventCover(
   const cover = await dependencies.findCover(eventId, organizationId);
   if (!cover) throw new ApplicationError("NOT_FOUND", "Cover not found.");
   return cover;
+}
+
+export async function listEvents(
+  { userId }: { userId: string },
+  dependencies: { listForUser: typeof repository.listForUser } = repository,
+  now = new Date(),
+): Promise<EventSummaryDto[]> {
+  const rows = await dependencies.listForUser(userId);
+  return rows.map((row) => {
+    const startsAt = row.startsAt.toISOString();
+    const endsAt = row.endsAt.toISOString();
+    return {
+      id: row.id, name: row.name, city: row.city, venue: row.venue ?? "",
+      startDate: row.startDate, endDate: row.endDate, startsAt, endsAt, timezone: row.timezone,
+      guestCount: row.guestCount, coverImage: row.hasCover ? `/api/events/${row.id}/cover` : null,
+      status: deriveScheduleStatus(startsAt, endsAt, now),
+    };
+  });
 }

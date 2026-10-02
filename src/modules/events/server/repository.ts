@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq, inArray, or } from "drizzle-orm";
+import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
 import { eventAttendeeImports, eventCovers, eventGuests, events, eventStaff } from "@/infrastructure/database/schema/events";
@@ -122,4 +122,28 @@ export async function findCover(eventId: string, organizationId: string): Promis
     .from(eventCovers).innerJoin(events, eq(eventCovers.eventId, events.id))
     .where(and(eq(events.id, eventId), eq(events.organizationId, organizationId))).limit(1);
   return row ? { bytes: row.bytes, mimeType: row.mimeType } : null;
+}
+
+export type EventSummaryRow = {
+  id: string; name: string; city: string; venue: string | null;
+  startDate: string; endDate: string; timezone: string;
+  startsAt: Date; endsAt: Date; guestCount: number; hasCover: boolean;
+};
+
+/** Events the user may operate: active owner or organizer membership only. */
+export async function listForUser(userId: string): Promise<EventSummaryRow[]> {
+  return getDatabase().select({
+    id: events.id, name: events.name, city: events.city, venue: events.venue,
+    startDate: events.startDate, endDate: events.endDate, timezone: events.timezone,
+    startsAt: events.startsAt, endsAt: events.endsAt,
+    guestCount: sql<number>`(select count(*)::int from ${eventGuests} where ${eventGuests.eventId} = ${events.id})`,
+    hasCover: sql<boolean>`exists (select 1 from ${eventCovers} where ${eventCovers.eventId} = ${events.id})`,
+  }).from(events)
+    .innerJoin(organizationMemberships, and(
+      eq(organizationMemberships.organizationId, events.organizationId),
+      eq(organizationMemberships.userId, userId),
+      eq(organizationMemberships.active, true),
+      inArray(organizationMemberships.role, ["owner", "organizer"]),
+    ))
+    .orderBy(desc(events.startsAt));
 }

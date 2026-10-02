@@ -104,6 +104,12 @@ test("isolated database persists the authorized event and rolls back failed chil
     assert.equal(fresh.rows[0].id, created.id);
     assert.equal((await getEvent({ userId, eventId: created.id })).attendees.guests.length, 2);
     assert.ok((await getEventCover({ userId, eventId: created.id })).bytes.length > 0);
+    const listed = await repository.listForUser(userId);
+    const summary = listed.find((event) => event.id === created.id);
+    assert.equal(summary?.guestCount, 2);
+    assert.equal(summary?.hasCover, true);
+    assert.equal((await repository.listForUser(outsiderId)).some((event) => event.id === created.id), false);
+    assert.equal((await repository.listForUser(staffUserId)).some((event) => event.id === created.id), false);
     await assert.rejects(getEvent({ userId: outsiderId, eventId: created.id }), (error) => error.code === "FORBIDDEN");
     await assert.rejects(getEventCover({ userId: outsiderId, eventId: created.id }), (error) => error.code === "FORBIDDEN");
     await assert.rejects(createEvent({ userId, organizationId, data: { ...input, name: `${eventName} cross-org`, staffMembershipIds: [outsiderMembershipId] } }), (error) => error.code === "VALIDATION_ERROR");
