@@ -30,7 +30,7 @@ export function EventsPage({ context, events }: { context: ConsoleContext; event
               <h1 className="events-header__title">Events</h1>
               <p className="events-header__subtitle">Every event your organization operates on Weft.</p>
             </div>
-            <div className="events-header__actions">{newEventLink("New event")}</div>
+            {events.length > 0 ? <div className="events-header__actions">{newEventLink("New event")}</div> : null}
           </header>
           <div className="content-stack">
             {events.length === 0 ? (

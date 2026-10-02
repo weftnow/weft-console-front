@@ -116,7 +116,7 @@ export function buildKamiPreviewScenarios(event: EventRecord): KamiPreviewScenar
       guestMessage: template.guestMessage,
       replies: REPLIES,
       suggestion,
-      reason: guest ? `${suggestion.name} is here tonight and fits what you described.` : `There is ${generic} here tonight who fits what you described.`,
+      reason: guest ? `Someone like ${suggestion.name}, who is on this event's guest list.` : `Someone like ${generic} could be a good fit.`,
       detail: guest
         ? `${suggestion.name}${suggestion.role ? `, ${suggestion.role}` : ""}${suggestion.company ? ` at ${suggestion.company}` : ""}, is on this event's guest list.`
         : "In a live event, Kami explains why this person is relevant using their guest profile.",
