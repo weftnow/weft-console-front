@@ -30,6 +30,7 @@ test("every business page checks the server session before rendering", () => {
   const publicRoutes = new Set([
     path.join(appRoot, "sign-in", "[[...sign-in]]", "page.tsx"),
     path.join(appRoot, "sign-up", "[[...sign-up]]", "page.tsx"),
+    path.join(appRoot, "accept-invitation", "page.tsx"),
   ]);
   const unguarded = routePages().filter((file) => {
     if (publicRoutes.has(file)) return false;

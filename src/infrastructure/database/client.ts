@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as identity from "./schema/identity";
 import * as eventTables from "./schema/events";
+import * as invitationTables from "./schema/organization-invitations";
 
 let database: ReturnType<typeof createDatabase> | undefined;
 
@@ -20,10 +21,16 @@ function createDatabase() {
     connectionString: url.toString(), max: 5, idleTimeoutMillis: 30_000, connectionTimeoutMillis: 5_000,
     ssl: isLocal ? false : { rejectUnauthorized: true },
   });
-  return drizzle({ client: pool, schema: { ...identity, ...eventTables } });
+  return drizzle({ client: pool, schema: { ...identity, ...eventTables, ...invitationTables } });
 }
 
 export function getDatabase() {
   database ??= createDatabase();
   return database;
+}
+
+export async function closeDatabase() {
+  const current = database;
+  database = undefined;
+  if (current) await current.$client.end();
 }

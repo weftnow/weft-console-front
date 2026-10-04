@@ -12,19 +12,21 @@ Overview and the Events listing render the selected organization's persisted eve
 
 ## Invitation and provisioning lifecycle
 
-1. An administrator sends an invitation from Clerk Dashboard. Invitation delivery is a separate administrative task.
-2. The recipient accepts the invitation and signs in. A valid but unmapped account sees the Console access page.
-3. An administrator retrieves the exact Clerk user subject and the instance configured for that deployment, then explicitly links it to a local UUID or provisions a new local user:
+The Console now has an owner-managed Team invitation flow. The selected Neon organization determines the invitation destination, and the owner chooses `owner` or `organizer` before sending. Clerk sends and accepts the email invitation; the Weft invitation ledger and Neon membership transaction grant Console access. Clerk membership roles are transport details only.
 
-   ```bash
-   WEFT_PROVISION_TARGET=development pnpm exec node --env-file=.env.local --experimental-strip-types scripts/provision-clerk-user.ts \
-     --instance-id ins_development \
-     --clerk-user-id user_example12345678 \
-     --display-name "Organizer Name"
-   ```
+An accepted invitation verifies the Clerk subject, exact provider organization and local invitation UUID correlation, current verified email addresses, provider membership timestamp, local instance mapping and active inviter. The transaction reuses an enabled identity mapping or creates one, preserves an existing local UUID and profile, and adds the invited membership only when no membership exists. Existing active memberships keep their current role. Email is never used to link a local user.
 
-   To link an existing local user instead, use `--local-user-id <UUID>` in place of `--display-name`. `--avatar-url https://...` is optional. The command requires explicit `WEFT_PROVISION_TARGET=development|test`, reads the direct development/test connection from `DATABASE_MIGRATION_URL`, and refuses database targets other than Neon `weft_console_test`. It prints only the local UUID and operation result. Exact repeated mappings are safe; conflicting or disabled mappings require administrative review.
-4. Provision an existing organization membership separately using the existing membership administration workflow. Invitation acceptance and identity linking never assign a role.
+Owners can retry failed delivery and reconcile an unknown outcome. If Clerk accepted a send but its response was lost, the Console searches the provider invitation pages for the local UUID before retrying. If delivery cannot be established, the invitation remains unknown and the UI does not claim that it was sent. Revocation updates Neon first; a failed Clerk cleanup remains visible, while local admission stays revoked.
+
+An existing signed-in user can recover a newly accepted organization through `/onboarding`. `/access-required` remains a denied-access state without exact accepted-invitation evidence. A local membership revocation or disabled identity mapping continues to block replay.
+
+First-owner setup remains an explicit administrative operation. Do not promote the first signed-in person. The organization bridge setup command maps exact existing local organization UUIDs to Clerk Organizations; it does not create owners or memberships. The historical user provisioning command remains available for exceptional operations and initial bootstrap, not routine invitation recipients.
+
+## Invitation rollout prerequisites
+
+Before enabling this flow in an environment, enable Clerk Organizations with Membership optional, keep the instance's restricted registration and email sign-up settings, and disable end-user organization creation and automatic domain enrollment. Configure server-only `WEFT_APP_ORIGIN` to the canonical Console origin. Apply the invitation migration through the authorized migration process, then run the organization setup command in dry-run mode and review every exact organization UUID before an explicitly authorized apply. See [invitation onboarding operations](invitation-onboarding.md).
+
+The implementation has not changed live Clerk settings, applied the invitation migration, created provider organizations, bootstrapped owners or sent invitation email. Restricted-signup ticket acceptance and signed-in invitation scenarios still require live development verification before release.
 
 Mapping revocation sets `disabled_at` on the matching provider, instance and subject row. Membership revocation sets `organization_memberships.active = false`. Both changes affect the next protected request. Do not delete or reassign identity rows to repair a conflict; resolve ownership explicitly.
 

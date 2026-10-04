@@ -4,7 +4,7 @@ import { ApplicationError, type ApplicationErrorCode } from "@/shared/lib/applic
 const statuses: Record<ApplicationErrorCode, number> = {
   INVALID_JSON: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, NOT_FOUND: 404,
   PAYLOAD_TOO_LARGE: 413, UNSUPPORTED_MEDIA_TYPE: 415,
-  VALIDATION_ERROR: 422, INTERNAL_ERROR: 500,
+  VALIDATION_ERROR: 422, CONFLICT: 409, INTERNAL_ERROR: 500,
 };
 
 export function errorResponse(error: unknown, operation: string, unexpectedMessage?: string): Response {

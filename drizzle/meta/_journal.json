@@ -22,6 +22,13 @@
       "when": 1790962836384,
       "tag": "0002_clerk_user_identities",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791137163682,
+      "tag": "0003_wakeful_korvac",
+      "breakpoints": true
     }
   ]
 }
