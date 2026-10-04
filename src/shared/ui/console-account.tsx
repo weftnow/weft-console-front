@@ -25,6 +25,8 @@ export function ConsoleAccount({ user, organization }: {
       <span className="profile__name">{user.displayName}</span>
       <span className="profile__role">{organization.name} · {organization.role}</span>
       <a className="profile__switch" href="/select-organization">Switch organization</a>
+      <a className="profile__switch" href="/onboarding">Finish invitation setup</a>
+      {organization.role === "owner" && <a className="profile__switch" href="/settings/team">Team</a>}
       <button className="profile__logout" onClick={signOut} type="button">Sign out</button>
     </div>
   </div>;

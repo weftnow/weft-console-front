@@ -11,7 +11,7 @@ import { Surface } from "@/shared/ui/surface";
 import { ConsoleAccount } from "@/shared/ui/console-account";
 import type { ConsoleContext } from "@/modules/organizations/types";
 
-export type ConsoleDestination = "overview" | "events" | "network" | "people";
+export type ConsoleDestination = "overview" | "events" | "network" | "people" | "team";
 
 type NavigationItem = {
   key: ConsoleDestination | "outcomes";
@@ -26,6 +26,7 @@ const navigation: NavigationItem[] = [
   { key: "events", label: "Events", href: "/events", icon: CalendarIcon, supported: true },
   { key: "network", label: "Network", href: "/network", icon: NetworkIcon, supported: true },
   { key: "people", label: "People", href: "/people", icon: PeopleIcon, supported: true },
+  { key: "team", label: "Team", href: "/settings/team", icon: PeopleIcon, supported: true },
   { key: "outcomes", label: "Outcomes", href: "", icon: OutcomesIcon, supported: false },
 ];
 
@@ -38,7 +39,7 @@ export function ConsoleSidebar({ active, context }: { active: ConsoleDestination
       </div>
       <nav aria-label="Primary navigation">
         <ul className="nav-list">
-          {navigation.map(({ href, icon: Icon, key, label, supported }) => {
+          {navigation.filter((item) => item.key !== "team" || context.membership.role === "owner").map(({ href, icon: Icon, key, label, supported }) => {
             const isActive = key === active;
             const className = `nav-link ${isActive ? "nav-link--active surface-pressed" : ""}`;
             const content = <><Icon height="19" width="19" /><span>{label}</span></>;

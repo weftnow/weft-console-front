@@ -1,7 +1,7 @@
 export type ApplicationErrorCode =
   | "INVALID_JSON" | "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND"
   | "PAYLOAD_TOO_LARGE" | "UNSUPPORTED_MEDIA_TYPE" | "VALIDATION_ERROR"
-  | "INTERNAL_ERROR";
+  | "INTERNAL_ERROR" | "CONFLICT";
 
 export class ApplicationError extends Error {
   constructor(

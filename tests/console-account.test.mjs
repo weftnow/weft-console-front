@@ -13,6 +13,8 @@ test("sidebar displays server supplied identity and role through Clerk account c
   assert.match(account, /UserButton/);
   assert.match(account, /clearOrganizationSelection/);
   assert.match(account, /signOut\(\{ redirectUrl: "\/sign-in" \}\)/);
+  assert.match(account, /organization\.role === "owner".*\/settings\/team/s);
+  assert.match(account, /\/onboarding/);
 });
 
 test("dashboard views render real records or empty states, so they carry no demo-data notice", () => {
