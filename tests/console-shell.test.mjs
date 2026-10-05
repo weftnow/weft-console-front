@@ -40,6 +40,7 @@ test("unsupported Outcomes navigation is disabled, not a dead anchor", () => {
 });
 
 test("events shell keeps exactly one primary navigation outside the route main", () => {
+  process.env.WEFT_TEAM_INVITATIONS = "enabled";
   const { EventsShell } = loadTs("src/modules/events/components/events-shell.tsx");
   const { EventDetailSkeleton } = loadTs("src/modules/events/components/event-detail-skeleton.tsx");
   const html = renderToStaticMarkup(React.createElement(EventsShell,
@@ -51,6 +52,14 @@ test("events shell keeps exactly one primary navigation outside the route main",
   assert.ok(html.indexOf('aria-label="Primary navigation"') < html.indexOf('<main'));
   assert.match(html, /href="\/settings\/team"/);
   assert.doesNotMatch(html, /dashboard-layout[^]*dashboard-layout/);
+});
+
+test("events shell omits Team for owners until team invitations are enabled", () => {
+  delete process.env.WEFT_TEAM_INVITATIONS;
+  const { EventsShell } = loadTs("src/modules/events/components/events-shell.tsx");
+  const owner = { ...context, membership: { ...context.membership, role: "owner" } };
+  const html = renderToStaticMarkup(React.createElement(EventsShell, { context: owner }, React.createElement("main", null, "Events")));
+  assert.doesNotMatch(html, /href="\/settings\/team"/);
 });
 
 test("events shell omits Team for organizers", () => {

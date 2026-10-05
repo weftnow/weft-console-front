@@ -78,6 +78,7 @@ export async function requireOrganizerPageContext(options: { cleanupInvalidSelec
   const memberships = await listActorMemberships(user);
   const result = resolveConsoleAccess({ memberships, selectedOrganizationId: selection?.organizationId ?? null, userId: user.id });
   if (result.kind === "no-access") redirect("/access-required");
+  if (result.kind === "select") redirect("/select-organization");
   return {
     user,
     organization: { id: result.membership.organizationId, name: result.membership.organizationName ?? "" },

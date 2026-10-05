@@ -1,12 +1,15 @@
+import { notFound } from "next/navigation";
 import { requireOrganizerPageContext } from "@/infrastructure/auth/console-page-context";
 import { listInvitations } from "@/modules/organizations/invitations/service";
 import { TeamInvitations } from "@/modules/organizations/invitations/components/team-invitations";
 import { ApplicationError } from "@/shared/lib/application-error";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
+import { teamInvitationsEnabled } from "@/modules/organizations/invitations/availability";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
+  if (!teamInvitationsEnabled()) notFound();
   const context = await requireOrganizerPageContext();
   if (context.membership.role !== "owner") throw new ApplicationError("FORBIDDEN", "Only organization owners can manage invitations.");
   const invitations = await listInvitations({ userId: context.user.id, organizationId: context.organization.id });

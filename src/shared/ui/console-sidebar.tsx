@@ -10,6 +10,7 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { ConsoleAccount } from "@/shared/ui/console-account";
 import type { ConsoleContext } from "@/modules/organizations/types";
+import { teamInvitationsEnabled } from "@/modules/organizations/invitations/availability";
 
 export type ConsoleDestination = "overview" | "events" | "network" | "people" | "team";
 
@@ -39,7 +40,7 @@ export function ConsoleSidebar({ active, context }: { active: ConsoleDestination
       </div>
       <nav aria-label="Primary navigation">
         <ul className="nav-list">
-          {navigation.filter((item) => item.key !== "team" || context.membership.role === "owner").map(({ href, icon: Icon, key, label, supported }) => {
+          {navigation.filter((item) => item.key !== "team" || (context.membership.role === "owner" && teamInvitationsEnabled())).map(({ href, icon: Icon, key, label, supported }) => {
             const isActive = key === active;
             const className = `nav-link ${isActive ? "nav-link--active surface-pressed" : ""}`;
             const content = <><Icon height="19" width="19" /><span>{label}</span></>;

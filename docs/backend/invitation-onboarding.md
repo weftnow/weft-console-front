@@ -23,7 +23,7 @@ The access-required page and `/onboarding` can discover only accepted invitation
 Before rollout, an operator must complete each of these steps in the intended development instance:
 
 1. Enable Clerk Organizations with Membership optional. Keep restricted registration and email sign-up enabled. Disable end-user organization creation and automatic domain enrollment.
-2. Set `WEFT_CLERK_INSTANCE_ID` to the matching server-only instance identifier and `WEFT_APP_ORIGIN` to the canonical Console origin.
+2. After the invitation migrations are applied, set `WEFT_TEAM_INVITATIONS=enabled`; without it the Team navigation, page and actions stay unavailable. Set `WEFT_CLERK_INSTANCE_ID` to the matching server-only instance identifier and `WEFT_APP_ORIGIN` to the canonical Console origin.
 3. Apply the generated invitation migration through the approved migration workflow.
 4. Run the organization bridge setup in dry-run mode with exact existing local organization UUIDs. Review the provider organization matches and target. Apply only after explicit environment authorization.
 5. Provision new customers and their initial Owner through the local-first internal CLI in [customer provisioning operations](customer-provisioning.md). Never promote the first signed-in user. Existing organizations still require an explicitly approved active local owner before the Team page can send invitations.
