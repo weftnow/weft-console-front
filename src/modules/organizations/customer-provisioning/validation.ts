@@ -16,7 +16,8 @@ export function parseCustomerRequest(value: unknown): CustomerRequest {
 
 export function validateProvisioningDatabaseTarget(env: NodeJS.ProcessEnv = process.env) {
   const target = env.WEFT_PROVISION_TARGET;
-  if (!( ["development", "test", "production"] as string[]).includes(target ?? "")) {
+  const supportedTargets = new Set(["development", "test", "production"]);
+  if (!target || !supportedTargets.has(target)) {
     throw new Error("Set WEFT_PROVISION_TARGET to development, test, or production.");
   }
   const databaseUrl = env.DATABASE_MIGRATION_URL;

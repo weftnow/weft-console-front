@@ -94,7 +94,7 @@ test("invalid and crossed environment settings prevent every mutation and never 
   for (const env of invalidEnvironments) {
     for (const [command, flags] of mutations) {
       const { calls, service } = createServiceSpy();
-      const args = command === "create" ? [command, "--request-id", uuid, ...flags] : [command, "--request-id", uuid, ...flags];
+      const args = [command, "--request-id", uuid, ...flags];
       await assert.rejects(runProvisioningCommand(args, env, { service }), (error) => {
         assert.equal(typeof error.message, "string");
         assert.equal(error.message.includes("sensitive_fixture"), false);
@@ -121,6 +121,7 @@ test("production status validates only database and instance and remains read-on
     DATABASE_MIGRATION_URL: "postgresql://fixture:fixture@ep-production.neon.tech/weft_console_test?sslmode=require",
   }, { service }), /DATABASE_MIGRATION_URL/i);
   await assert.rejects(runProvisioningCommand(["status", "--request-id", uuid, "--apply"], env, { service }), /read-only/i);
+  assert.deepEqual(calls, [["readCustomerStatus", uuid, "ins_production"]]);
 });
 
 test("CLI rejects unknown flags and conflicting immutable role input", async () => {
