@@ -1,9 +1,11 @@
 import { SignIn } from "@clerk/nextjs";
+import { AuthShell } from "@/shared/ui/auth-shell";
+import { authAppearance } from "@/shared/ui/auth-appearance";
 
 export default function SignInPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignIn fallbackRedirectUrl="/" />
-    </div>
+    <AuthShell>
+      <SignIn fallbackRedirectUrl="/" appearance={authAppearance} />
+    </AuthShell>
   );
 }

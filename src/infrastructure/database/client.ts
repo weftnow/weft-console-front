@@ -4,6 +4,7 @@ import { Pool } from "pg";
 import * as identity from "./schema/identity";
 import * as eventTables from "./schema/events";
 import * as invitationTables from "./schema/organization-invitations";
+import * as customerProvisioningTables from "./schema/customer-provisioning";
 
 let database: ReturnType<typeof createDatabase> | undefined;
 
@@ -21,8 +22,10 @@ function createDatabase() {
     connectionString: url.toString(), max: 5, idleTimeoutMillis: 30_000, connectionTimeoutMillis: 5_000,
     ssl: isLocal ? false : { rejectUnauthorized: true },
   });
-  return drizzle({ client: pool, schema: { ...identity, ...eventTables, ...invitationTables } });
+  return drizzle({ client: pool, schema: { ...identity, ...eventTables, ...invitationTables, ...customerProvisioningTables } });
 }
+
+export type WeftDatabase = ReturnType<typeof createDatabase>;
 
 export function getDatabase() {
   database ??= createDatabase();

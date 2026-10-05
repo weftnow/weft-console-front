@@ -116,7 +116,6 @@ export function OrganizerOverview({ context, events }: { context: ConsoleContext
                 <UpcomingEvents events={grouped.upcoming.slice(0, 3)} />
               </>
             )}
-            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
       </div>

@@ -5,18 +5,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs, stubTs } from "./load-ts.mjs";
 
 stubTs("@/shared/ui/console-account", { ConsoleAccount: () => null });
-const context = {
-  user: { id: "5f750edf-c8d5-43c2-b3ca-5f0ab190405f", displayName: "Ada", avatarUrl: null },
-  organization: { id: "0b0d7f7c-1e0c-4a39-9a1e-8f2b5e4f4c11", name: "Analytical Engines" },
-  membership: { id: "membership-1", role: "organizer" },
-};
 const event = (id, status, startsAt) => ({
   id, name: `Event ${id}`, city: "Singapore", venue: "", startDate: startsAt.slice(0, 10), endDate: startsAt.slice(0, 10),
   startsAt, endsAt: startsAt, timezone: "Asia/Singapore", guestCount: 12, coverImage: null, status,
 });
 const render = (events) => {
   const { EventsPage } = loadTs("src/modules/events/components/events-page.tsx");
-  return renderToStaticMarkup(React.createElement(EventsPage, { context, events }));
+  return renderToStaticMarkup(React.createElement(EventsPage, { events }));
 };
 
 test("no events shows the page empty state with one create action", () => {

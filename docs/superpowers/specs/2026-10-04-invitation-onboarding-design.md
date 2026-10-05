@@ -1,6 +1,6 @@
 # Invitation onboarding design
 
-Status: implementation prepared; live integration verification remains pending. The repository changes do not authorize live provider settings, database migration application, owner bootstrap, or real invitation delivery.
+Status: owner-managed teammate invitation flow implemented; initial customer/Owner setup is superseded by `2026-10-04-customer-owner-provisioning-design.md`. Live integration verification remains pending. The repository changes do not authorize live provider settings, migration application, customer provisioning, or real invitation delivery.
 
 ## Outcome
 
@@ -72,9 +72,9 @@ Acceptance normally selects the invited organization directly, even when the use
 
 Preserve existing users, memberships and scripts for exceptional operations. Prepare mappings for existing organizations through a dry-run-first, development/test-only setup command, recovering provider organizations using exact server-written local organization UUID metadata. This is organization setup, never per-recipient provisioning.
 
-The first trusted owner must be established explicitly for an organization; never promote the first signed-in user. Existing pilot owner mappings can seed this. If the current environment has no owner, the operator supplies the exact Clerk subject, organization UUID and approved local-user linkage once using existing provisioning tools. Then send the affected account an organization invitation from Team; acceptance automatically provisions it. A historical application invitation without an organization and role cannot be retroactively interpreted as a Weft grant.
+The initial customer Owner is now created through the Weft-first CLI in [customer provisioning operations](../../backend/customer-provisioning.md); that flow supersedes this document's earlier proposal to manually link an exact Clerk subject and local user. Never promote the first signed-in user. Existing organizations still need an explicitly approved active local owner before the Team page can send teammate invitations. A historical application invitation without an organization and role cannot be retroactively interpreted as a Weft grant.
 
-Live settings changes, migration, first-owner bootstrap and test invitation delivery are separate execution steps with explicit environment targeting. Production deployment and real invitation emails are outside this planning task. Before release, verify restricted signup still works with Organization invitation tickets for new users; failure is a release blocker, not a reason to enable public signup.
+Live settings changes, migration, customer provisioning and test invitation delivery are separate execution steps with explicit environment targeting. Production deployment and real invitation emails remain outside this implementation. Before release, verify restricted signup still works with Organization invitation tickets for new users; failure is a release blocker, not a reason to enable public signup.
 
 ## Verification and sources
 

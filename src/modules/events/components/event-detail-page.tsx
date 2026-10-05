@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
+  type ReactNode,
   type ComponentType,
   type CSSProperties,
   type SVGProps,
@@ -14,8 +14,6 @@ import {
 } from "react";
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
-import type { ConsoleContext } from "@/modules/organizations/types";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -67,29 +65,8 @@ const statusLabels = {
   upcoming: "Upcoming",
 } as const;
 
-export function EventDetailSkeleton() {
-  return (
-    <div className="overview-shell event-detail-shell" aria-busy="true">
-      <div className="dashboard-layout">
-        <main className="dashboard-main event-detail-main">
-          <div className="event-detail-skeleton event-detail-skeleton--header" />
-          <div className="event-detail-skeleton event-detail-skeleton--hero" />
-          <div className="event-detail-skeleton event-detail-skeleton--tabs" />
-          <div className="event-detail-metrics">
-            {[0, 1, 2, 3].map((item) => (
-              <div className="event-detail-skeleton event-detail-skeleton--metric" key={item} />
-            ))}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
 export function MissingEvent() {
   return (
-    <div className="overview-shell event-detail-shell">
-      <div className="dashboard-layout">
         <main className="dashboard-main event-detail-main">
           <Surface className="event-detail-missing" depth="raised">
             <span className="event-detail-missing__icon"><CalendarIcon height="24" width="24" /></span>
@@ -100,8 +77,6 @@ export function MissingEvent() {
             </Link>
           </Surface>
         </main>
-      </div>
-    </div>
   );
 }
 
@@ -355,9 +330,16 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
   );
 }
 
-export function EventDetailPage({ event, initialTab, context }: { event: EventDetailDto; initialTab: EventDetailTab; context: ConsoleContext }) {
-  const router = useRouter();
+export function EventDetailPage({ event, initialTab, onImportSaved, refreshNotice }: {
+  event: EventDetailDto; initialTab: EventDetailTab; onImportSaved: () => Promise<void>; refreshNotice?: ReactNode;
+}) {
   const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
+  // Synchronize Back/Forward tab changes without remounting the page on data refresh.
+  const [previousInitialTab, setPreviousInitialTab] = useState(initialTab);
+  if (previousInitialTab !== initialTab) {
+    setPreviousInitialTab(initialTab);
+    setActiveTab(initialTab);
+  }
   const [notice, setNotice] = useState("");
   const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -386,10 +368,8 @@ export function EventDetailPage({ event, initialTab, context }: { event: EventDe
   };
 
   return (
-    <div className="overview-shell event-detail-shell">
-      <div className="dashboard-layout">
-        <ConsoleSidebar active="events" context={context} />
         <main className="dashboard-main event-detail-main">
+          {refreshNotice}
           <header className="event-detail-header">
             <div className="event-detail-header__copy">
               <Link className="create-back-link" href="/events"><ArrowLeftIcon height="15" width="15" /> Events</Link>
@@ -448,7 +428,7 @@ export function EventDetailPage({ event, initialTab, context }: { event: EventDe
             </div>
           ) : activeTab === "attendees" ? (
             <div className="event-detail-tab-content" key={activeTab}>
-              <AttendeeRoster event={event} onImportSaved={() => router.refresh()} />
+              <AttendeeRoster event={event} onImportSaved={onImportSaved} />
             </div>
           ) : activeTab === "kami" ? (
             <div className="event-detail-tab-content" key={activeTab}>
@@ -466,7 +446,5 @@ export function EventDetailPage({ event, initialTab, context }: { event: EventDe
             </Surface>
           ) : null}
         </main>
-      </div>
-    </div>
   );
 }

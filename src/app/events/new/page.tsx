@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function NewEvent() {
   await requireClerkSession();
   const actor = await requireLocalActor();
-  const { formContext, consoleContext, selectedOrganizationId } = await getCreateEventPageContexts(actor);
-  if (!formContext.organizations.length || !consoleContext) redirect("/access-required");
-  return <CreateEventPage context={formContext} consoleContext={consoleContext} selectedOrganizationId={selectedOrganizationId} />;
+  const { formContext, selectedOrganizationId } = await getCreateEventPageContexts(actor);
+  if (!formContext.organizations.length) redirect("/access-required");
+  return <CreateEventPage context={formContext} selectedOrganizationId={selectedOrganizationId} />;
 }

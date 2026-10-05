@@ -68,20 +68,16 @@ export async function getCreateEventPageContexts(user: AuthenticatedUser) {
   };
 }
 
-export async function requireOrganizerPageContext(): Promise<ConsoleContext> {
+export async function requireOrganizerPageContext(options: { cleanupInvalidSelection?: boolean } = {}): Promise<ConsoleContext> {
   const user = await requireLocalActor();
   const cookieStore = await cookies();
   const rawSelection = cookieStore.get(selectionCookie)?.value;
   const parsed = parseOrganizationSelection(rawSelection);
   const selection = parsed?.userId === user.id ? parsed : null;
-  if (rawSelection && !selection) cookieStore.delete(selectionCookie);
+  if (options.cleanupInvalidSelection !== false && rawSelection && !selection) cookieStore.delete(selectionCookie);
   const memberships = await listActorMemberships(user);
   const result = resolveConsoleAccess({ memberships, selectedOrganizationId: selection?.organizationId ?? null, userId: user.id });
   if (result.kind === "no-access") redirect("/access-required");
-  if (result.kind === "select") {
-    if (selection) cookieStore.delete(selectionCookie);
-    redirect("/select-organization");
-  }
   return {
     user,
     organization: { id: result.membership.organizationId, name: result.membership.organizationName ?? "" },

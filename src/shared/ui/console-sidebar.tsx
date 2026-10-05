@@ -33,9 +33,9 @@ const navigation: NavigationItem[] = [
 export function ConsoleSidebar({ active, context }: { active: ConsoleDestination; context: ConsoleContext }) {
   return (
     <Surface as="aside" className="sidebar" depth="raised">
-      <div className="brand" aria-label="Weft">
-        <div className="brand-mark"><span /></div>
-        <span className="brand-wordmark">Weft</span>
+      <div className="brand" aria-label={context.organization.name}>
+        <div className="brand-mark" aria-hidden="true"><span /></div>
+        <span className="brand-wordmark">{context.organization.name}</span>
       </div>
       <nav aria-label="Primary navigation">
         <ul className="nav-list">
@@ -46,22 +46,15 @@ export function ConsoleSidebar({ active, context }: { active: ConsoleDestination
             return (
               <li key={key}>
                 {supported ? (
-                  <Link className={className} href={href} aria-current={isActive ? "page" : undefined}>{content}</Link>
+                  <Link className={className} href={href} aria-label={label} aria-current={isActive ? "page" : undefined}>{content}</Link>
                 ) : (
-                  <span className={`${className} nav-link--disabled`} aria-disabled="true">{content}</span>
+                  <span className={`${className} nav-link--disabled`} aria-label={label} aria-disabled="true">{content}</span>
                 )}
               </li>
             );
           })}
         </ul>
       </nav>
-      <div className="brand-story" aria-label="The networking layer for business events.">
-        <div className="brand-story__copy">
-          <strong>The networking layer<br />for business events.</strong>
-          <span className="brand-story__line" />
-          <span className="brand-story__label">Weft</span>
-        </div>
-      </div>
       <ConsoleAccount user={context.user} organization={{ name: context.organization.name, role: context.membership.role }} />
     </Surface>
   );

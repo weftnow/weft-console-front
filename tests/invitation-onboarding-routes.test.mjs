@@ -4,6 +4,15 @@ import { loadTs } from "./load-ts.mjs";
 
 const validId = "33333333-3333-4333-8333-333333333333";
 
+test("invitation authentication uses hash routing and returns both flows to the invitation", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile("src/modules/organizations/invitations/components/invitation-auth.tsx", "utf8");
+  assert.match(source, /const returnUrl = `\/accept-invitation\?invitation=\$\{encodeURIComponent\(invitationId\)\}`/);
+  for (const component of ["SignIn", "SignUp"]) {
+    assert.match(source, new RegExp(`<${component}\\s+routing="hash"\\s+forceRedirectUrl=\\{returnUrl\\}`));
+  }
+});
+
 test("completion action uses the active server subject and writes a user-bound organization cookie only after commit", async () => {
   const { finishInvitationWith } = loadTs("src/modules/organizations/invitations/action-logic.ts");
   const calls = { completion: [], cookies: [] };

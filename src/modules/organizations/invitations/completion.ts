@@ -22,6 +22,7 @@ async function provider(deps: CompletionDependencies): Promise<Provider> {
 function exactEvidence(evidence: ProviderAcceptance, input: { organizationSubject: string; subject: string; invitationId: string; email: string }) {
   return evidence.subject === input.subject && evidence.organizationSubject === input.organizationSubject &&
     evidence.correlationId === input.invitationId && evidence.membershipId.length > 0 &&
+    evidence.invitationEmail.trim().toLowerCase() === input.email &&
     matchesInvitationEmail(input.email, evidence.verifiedEmails);
 }
 
@@ -59,19 +60,17 @@ export async function discoverAcceptedInvitations(
 ): Promise<Array<{ invitationId: string; organizationName: string }>> {
   const deps = { ...defaults, ...overrides } as CompletionDependencies;
   if (!deps.instanceId?.trim() || input.instanceId !== deps.instanceId) return [];
-  try {
-    const transport = await provider(deps);
-    const emails = await transport.findVerifiedEmails(input.subject);
-    const candidates = await deps.listInvitationCandidates({ instanceId: input.instanceId, emails });
-    const discovered: Array<{ invitationId: string; organizationName: string }> = [];
-    for (const candidate of candidates) {
-      const evidence = await transport.readAcceptance(candidate.organizationSubject, input.subject, candidate.invitationId);
-      if (!evidence || !exactEvidence(evidence, {
-        organizationSubject: candidate.organizationSubject, subject: input.subject,
-        invitationId: candidate.invitationId, email: candidate.email,
-      })) continue;
-      discovered.push({ invitationId: candidate.invitationId, organizationName: candidate.organizationName });
-    }
-    return discovered;
-  } catch { return []; }
+  const transport = await provider(deps);
+  const emails = await transport.findVerifiedEmails(input.subject);
+  const candidates = await deps.listInvitationCandidates({ instanceId: input.instanceId, emails });
+  const discovered: Array<{ invitationId: string; organizationName: string }> = [];
+  for (const candidate of candidates) {
+    const evidence = await transport.readAcceptance(candidate.organizationSubject, input.subject, candidate.invitationId);
+    if (!evidence || !exactEvidence(evidence, {
+      organizationSubject: candidate.organizationSubject, subject: input.subject,
+      invitationId: candidate.invitationId, email: candidate.email,
+    })) continue;
+    discovered.push({ invitationId: candidate.invitationId, organizationName: candidate.organizationName });
+  }
+  return discovered;
 }

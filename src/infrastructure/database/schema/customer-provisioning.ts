@@ -1,0 +1,60 @@
+import { sql } from "drizzle-orm";
+import { boolean, check, index, integer, pgTable, text, timestamp, unique, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { organizations, users } from "./identity.ts";
+
+export const customerProvisionings = pgTable("customer_provisionings", {
+  requestId: uuid("request_id").primaryKey(),
+  organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "restrict" }),
+  instanceId: text("instance_id").notNull(),
+  organizationName: text("organization_name").notNull(),
+  ownerEmail: text("owner_email").notNull(),
+  intendedRole: text("intended_role").notNull().default("owner"),
+  operator: text("operator").notNull(),
+  status: text("status").notNull().default("pending"),
+  organizationTransportState: text("organization_transport_state").notNull().default("queued"),
+  organizationLeaseUntil: timestamp("organization_lease_until", { withTimezone: true }),
+  organizationLeaseGeneration: integer("organization_lease_generation").notNull().default(0),
+  organizationErrorCode: text("organization_error_code"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  consumedAt: timestamp("consumed_at", { withTimezone: true }),
+  consumedSubject: text("consumed_subject"),
+  consumedUserId: uuid("consumed_user_id").references(() => users.id, { onDelete: "restrict" }),
+}, (table) => [
+  check("customer_provisionings_instance_nonempty", sql`length(btrim(${table.instanceId})) > 0`),
+  check("customer_provisionings_name_valid", sql`length(btrim(${table.organizationName})) between 1 and 200`),
+  check("customer_provisionings_email_normalized", sql`${table.ownerEmail} = lower(btrim(${table.ownerEmail})) and length(${table.ownerEmail}) between 1 and 254`),
+  check("customer_provisionings_role_owner", sql`${table.intendedRole} = 'owner'`),
+  check("customer_provisionings_status_check", sql`${table.status} in ('pending', 'consumed', 'cancelled')`),
+  check("customer_provisionings_transport_state_check", sql`${table.organizationTransportState} in ('queued', 'sending', 'ready', 'unknown', 'failed')`),
+  check("customer_provisionings_lease_generation_nonnegative", sql`${table.organizationLeaseGeneration} >= 0`),
+  check("customer_provisionings_consumed_fields_coherent", sql`(${table.status} = 'consumed' and ${table.consumedAt} is not null and ${table.consumedSubject} is not null and ${table.consumedUserId} is not null) or (${table.status} <> 'consumed' and ${table.consumedAt} is null and ${table.consumedSubject} is null and ${table.consumedUserId} is null)`),
+  unique("customer_provisionings_organization_instance_unique").on(table.organizationId, table.instanceId),
+  index("customer_provisionings_status_created_idx").on(table.status, table.createdAt),
+]);
+
+export const customerOwnerInvitations = pgTable("customer_owner_invitations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  requestId: uuid("request_id").notNull().references(() => customerProvisionings.requestId, { onDelete: "restrict" }),
+  instanceId: text("instance_id").notNull(),
+  providerInvitationId: text("provider_invitation_id"),
+  status: text("status").notNull().default("pending"),
+  deliveryState: text("delivery_state").notNull().default("queued"),
+  deliveryLeaseUntil: timestamp("delivery_lease_until", { withTimezone: true }),
+  deliveryLeaseGeneration: integer("delivery_lease_generation").notNull().default(0),
+  deliveryErrorCode: text("delivery_error_code"),
+  providerCleanupPending: boolean("provider_cleanup_pending").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+  acceptedSubject: text("accepted_subject"),
+  acceptedUserId: uuid("accepted_user_id").references(() => users.id, { onDelete: "restrict" }),
+}, (table) => [
+  check("customer_owner_invitations_instance_nonempty", sql`length(btrim(${table.instanceId})) > 0`),
+  check("customer_owner_invitations_status_check", sql`${table.status} in ('pending', 'accepted', 'revoked', 'expired')`),
+  check("customer_owner_invitations_delivery_state_check", sql`${table.deliveryState} in ('queued', 'sending', 'sent', 'unknown', 'failed')`),
+  check("customer_owner_invitations_lease_generation_nonnegative", sql`${table.deliveryLeaseGeneration} >= 0`),
+  check("customer_owner_invitations_accepted_fields_coherent", sql`(${table.status} = 'accepted' and ${table.acceptedAt} is not null and ${table.acceptedSubject} is not null and ${table.acceptedUserId} is not null) or (${table.status} <> 'accepted' and ${table.acceptedAt} is null and ${table.acceptedSubject} is null and ${table.acceptedUserId} is null)`),
+  uniqueIndex("customer_owner_invitations_one_pending_per_request").on(table.requestId).where(sql`${table.status} = 'pending'`),
+  uniqueIndex("customer_owner_invitations_instance_provider_id_unique").on(table.instanceId, table.providerInvitationId).where(sql`${table.providerInvitationId} is not null`),
+  index("customer_owner_invitations_request_created_idx").on(table.requestId, table.createdAt),
+]);

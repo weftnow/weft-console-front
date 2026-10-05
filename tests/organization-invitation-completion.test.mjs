@@ -6,7 +6,7 @@ const invitationId = "33333333-3333-4333-8333-333333333333";
 const subject = "user_invited";
 const record = { id: invitationId, organizationId: "org_local", instanceId: "ins_test", email: "ada+team@example.com", role: "organizer", status: "pending" };
 const evidence = { subject, organizationSubject: "org_clerk", membershipId: "mem_1", correlationId: invitationId,
-  acceptedAt: new Date("2026-01-03T00:00:00Z"), verifiedEmails: ["primary@example.com", "ada+team@example.com"], displayName: "Ada Lovelace", avatarUrl: null };
+  invitationEmail: "ada+team@example.com", acceptedAt: new Date("2026-01-03T00:00:00Z"), verifiedEmails: ["primary@example.com", "ada+team@example.com"], displayName: "Ada Lovelace", avatarUrl: null };
 
 function deps(overrides = {}) {
   const calls = { commit: [], provider: [], candidates: 0 };
@@ -35,6 +35,7 @@ test("wrong account, forged correlation, provider organization and email create 
     { evidence: { ...evidence, correlationId: "other_invitation" } },
     { evidence: { ...evidence, organizationSubject: "other_org" } },
     { evidence: { ...evidence, verifiedEmails: ["ada@example.com"] } },
+    { evidence: { ...evidence, invitationEmail: "other@example.com" } },
     { record: { ...record, instanceId: "ins_other" } },
   ]) {
     const d = deps({
@@ -67,4 +68,10 @@ test("recovery discovery is read only and returns only exact provider evidence",
   assert.deepEqual(result, [{ invitationId, organizationName: "Weft Summit" }]);
   assert.equal(d.calls.commit.length, 0);
   assert.equal(d.calls.candidates, 1);
+});
+
+test("temporary provider discovery failures propagate so recovery can show a retry state", async () => {
+  const { discoverAcceptedInvitations } = loadTs("src/modules/organizations/invitations/completion.ts");
+  const d = deps({ provider: { ...deps().value.provider, findVerifiedEmails: async () => { throw new Error("temporary outage"); } } });
+  await assert.rejects(discoverAcceptedInvitations({ instanceId: "ins_test", subject }, d.value));
 });

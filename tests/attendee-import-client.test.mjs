@@ -67,3 +67,10 @@ test("shared attendee template retains the Create Event columns", () => {
   const { GUEST_CSV_TEMPLATE } = loadTs("src/modules/events/guest-csv-template.ts");
   assert.equal(GUEST_CSV_TEMPLATE.split("\n")[0], "First Name,Last Name,Email,Phone,Company,Position,LinkedIn,Profile Type,Guest Type");
 });
+
+test("detail roster refresh is an awaited cache callback and does not refresh the server route", async () => {
+  const { readFileSync } = await import("node:fs");
+  const source = readFileSync("src/modules/events/components/event-detail-page.tsx", "utf8");
+  assert.match(source, /onImportSaved=\{onImportSaved\}/);
+  assert.doesNotMatch(source, /router\.refresh|useRouter/);
+});

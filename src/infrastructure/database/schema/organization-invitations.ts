@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { boolean, check, index, pgTable, text, timestamp, unique, uniqueIndex, uuid } from "drizzle-orm/pg-core";
-import { organizations, users } from "./identity";
+import { organizations, users } from "./identity.ts";
 
 export const organizationAuthIdentities = pgTable("organization_auth_identities", {
   id: uuid("id").defaultRandom().primaryKey(),

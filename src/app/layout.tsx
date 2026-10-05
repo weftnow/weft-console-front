@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PoweredByWeft } from "@/shared/ui/powered-by-weft";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <ClerkProvider>
           {children}
+          <footer className="weft-page-branding"><PoweredByWeft /></footer>
         </ClerkProvider>
       </body>
     </html>
