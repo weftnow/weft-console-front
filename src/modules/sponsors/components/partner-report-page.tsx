@@ -18,7 +18,6 @@ export function PartnerReportPage() {
         <Surface as="section" className="panel" depth="raised">
           <EmptyState description="Reports appear after a partner's event has outcomes." icon={OutcomesIcon} title="No partner report yet" />
         </Surface>
-        <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
       </main>
     </div>
   );

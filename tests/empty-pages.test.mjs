@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -35,9 +36,13 @@ test("partner report is an on-brand empty state without console navigation", () 
   assert.doesNotMatch(html, /Horizon|Primary navigation/);
 });
 
-test("people and network pages carry the shared footer", () => {
+test("pages share root branding instead of placing duplicate footers below their content", () => {
+  const layout = readFileSync("src/app/layout.tsx", "utf8");
+  assert.match(layout, /<footer className="weft-page-branding"><PoweredByWeft \/><\/footer>/);
   for (const [path, name] of [["src/modules/attendees/components/people-page.tsx", "PeoplePage"], ["src/modules/network/components/network-page.tsx", "NetworkPage"]]) {
-    assert.match(render(path, name, { context }), /<footer class="dashboard-footer"><span>Powered by Weft<\/span><\/footer>/);
+    const html = render(path, name, { context });
+    assert.doesNotMatch(html, /dashboard-footer/);
+    assert.doesNotMatch(html, /sidebar-branding|powered-by-weft/);
   }
 });
 

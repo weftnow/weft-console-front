@@ -14,9 +14,9 @@ test("no source file contains demo data or demo branding", () => {
   assert.deepEqual(offenders, []);
 });
 
-test("public/ ships no files (demo assets stay gone)", () => {
+test("public/ ships only the Weft brand mark (demo assets stay gone)", () => {
   const shipped = existsSync("public") ? files("public").filter((path) => !path.split("/").pop().startsWith(".")) : [];
-  assert.deepEqual(shipped, []);
+  assert.deepEqual(shipped, ["public/weft-mark.svg"]);
 });
 
 test("source never references deleted demo images", () => {
