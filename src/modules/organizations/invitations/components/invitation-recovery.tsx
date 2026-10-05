@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CompletionForm } from "./completion-form";
 
 type InvitationOption = { invitationId: string; organizationName: string };
 
-export function InvitationRecovery({ invitations }: { invitations: InvitationOption[] }) {
+export function InvitationRecovery({ invitations, retryable = false }: { invitations: InvitationOption[]; retryable?: boolean }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const router = useRouter();
+  if (invitations.length === 0 && retryable) return <div className="mt-6 space-y-3">
+    <p className="text-sm text-muted-foreground">We couldn’t verify invitations right now. Try again in a moment.</p>
+    <button className="inline-flex rounded-lg border border-border px-4 py-2 text-sm" onClick={() => router.refresh()} type="button">Try again</button>
+  </div>;
   if (invitations.length === 0) return <div className="mt-6 space-y-3">
     <p className="text-sm text-muted-foreground">Ask an organization owner to invite this account.</p>
     <Link className="inline-flex rounded-lg border border-border px-4 py-2 text-sm" href="/sign-in">Refresh account session</Link>

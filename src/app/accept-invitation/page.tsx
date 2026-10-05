@@ -1,5 +1,6 @@
 import { InvitationAuth } from "@/modules/organizations/invitations/components/invitation-auth";
 import { invitationIdSchema } from "@/modules/organizations/invitations/validation";
+import { AuthShell } from "@/shared/ui/auth-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +12,8 @@ export default async function AcceptInvitationPage({ searchParams }: {
   const invitationId = invitation?.success ? invitation.data : null;
   const ticketStatus = typeof query.__clerk_status === "string" && ["sign_in", "sign_up", "complete"].includes(query.__clerk_status)
     ? query.__clerk_status : null;
-  return <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-5 py-12 sm:px-8">
+  return <AuthShell title="Join your organization" description="Sign in with the account that received this invitation, or create your account to continue.">
     <meta name="referrer" content="no-referrer" />
-    <div>
-      <p className="text-sm font-medium text-muted-foreground">Weft Console</p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight">Join your organization</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Sign in with the account that received this invitation, or create your account to continue.</p>
-    </div>
     <InvitationAuth invitationId={invitationId} ticketStatus={ticketStatus} />
-  </main>;
+  </AuthShell>;
 }

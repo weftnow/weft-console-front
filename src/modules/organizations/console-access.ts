@@ -2,7 +2,6 @@ import type { Membership } from "./types";
 
 export type ConsoleAccessResult =
   | { kind: "ready"; membership: Membership }
-  | { kind: "select" }
   | { kind: "no-access" };
 
 export function resolveConsoleAccess(input: {
@@ -16,12 +15,11 @@ export function resolveConsoleAccess(input: {
   const eligible = active.filter((membership) => membership.role === "owner" || membership.role === "organizer");
   if (input.selectedOrganizationId) {
     const selected = active.find((membership) => membership.organizationId === input.selectedOrganizationId);
-    if (!selected) return eligible.length ? { kind: "select" } : { kind: "no-access" };
+    if (!selected) return { kind: "no-access" };
     return selected.role === "owner" || selected.role === "organizer"
       ? { kind: "ready", membership: selected }
       : { kind: "no-access" };
   }
   if (active.length === 1) return eligible[0] ? { kind: "ready", membership: eligible[0] } : { kind: "no-access" };
-  if (active.length > 1 && eligible.length > 0) return { kind: "select" };
   return { kind: "no-access" };
 }

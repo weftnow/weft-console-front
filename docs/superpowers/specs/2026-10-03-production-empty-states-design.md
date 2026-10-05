@@ -125,7 +125,7 @@ Pages without data render only the page header and the empty state; no zeroed me
 This branch was rebased onto Console authentication (Clerk sessions with Neon authorization). Authentication behavior follows `docs/backend/authentication.md`, which supersedes the points above where they differ:
 
 - `getCurrentUser()` resolves the Clerk session to a provisioned local user. Unauthenticated requests redirect to Clerk sign-in; unmapped accounts and users without an active owner or organizer membership redirect to `/access-required`. No route renders an "Authentication required" state.
-- The sidebar takes the server-resolved `ConsoleContext` (user, selected organization, membership) and renders the Clerk account control (`ConsoleAccount`: user button, organization and role, switch organization, sign out) in place of the `viewer` profile and the "Not signed in" row.
+- The sidebar takes the server-resolved `ConsoleContext` (user, selected organization, membership) and renders the Clerk account control (`ConsoleAccount`: user button, role, and sign out) in place of the `viewer` profile and the "Not signed in" row.
 - `/` and `/events` list events with `listEvents({ userId, organizationId })` for the selected organization only, still restricted to active owner or organizer memberships.
 - `EventAccessState` no longer renders the sidebar, so error pages and access states show the message without navigation.
 - The partner report requires a Clerk session and renders the empty state.

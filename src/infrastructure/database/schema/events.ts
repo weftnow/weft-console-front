@@ -3,7 +3,7 @@ import {
   check, customType, date, foreignKey, index, integer, pgEnum, pgTable,
   primaryKey, text, time, timestamp, unique, uniqueIndex, uuid,
 } from "drizzle-orm/pg-core";
-import { organizationMemberships, organizations, users } from "./identity";
+import { organizationMemberships, organizations, users } from "./identity.ts";
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
 export const guestType = pgEnum("event_guest_type", ["Attendee", "VIP", "Sponsor"]);

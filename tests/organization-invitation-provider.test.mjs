@@ -44,6 +44,7 @@ test("acceptance requires exact invitation correlation, organization and public 
   }, users: { getUser: async () => ({ id: "user_exact", fullName: "Ada Lovelace", imageUrl: null,
     emailAddresses: [{ emailAddress: "ada@example.com", verification: { status: "verified" } }] }) } });
   assert.equal((await provider.readAcceptance("org_exact", "user_exact", "local")).subject, "user_exact");
+  assert.equal((await provider.readAcceptance("org_exact", "user_exact", "local")).invitationEmail, "ada@example.com");
   assert.deepEqual(userIds, ["user_exact"]);
   membership = { ...membership, publicUserData: { userId: "different_user" } };
   assert.equal(await provider.readAcceptance("org_exact", "user_exact", "local"), null);

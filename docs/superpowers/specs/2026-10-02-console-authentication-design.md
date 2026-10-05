@@ -29,7 +29,6 @@ Clerk application: `app_3K9Cnx185cBaBgyMM441dY68SQ9` (Weft Console). Its develop
 | `/events/[eventId]` | Active session and mapped user; event organization determines permission, independently of the selected organization cookie |
 | `/partner-report` | Active session; show a neutral unavailable state until sponsor participation and report authorization are modeled. Do not render the existing unscoped fixture report |
 | `/access-required` | Active session; account has no mapping, no membership, or no implemented workflow for its role; allow logout |
-| `/select-organization` | Active session and mapped user; list only active memberships owned by that user |
 | Existing `/api/events` handlers | Anonymous/pending session: JSON 401; unmapped/disabled identity or insufficient membership: JSON 403; preserve existing error envelope and checks |
 
 The signed-out root must redirect to `/sign-in` before dashboard content is rendered. Deep links, RSC requests, prefetch requests, and browser navigation receive the same checks. Pending sessions are treated as signed out and must complete Clerk's sign-in flow.
@@ -71,7 +70,7 @@ Clerk profile/account controls display the authenticated person; local display n
 
 ## Organization and dashboard context
 
-Add server queries for all active memberships and a shared organization access operation. A single membership is selected automatically; multiple memberships require an organization selector. An HttpOnly, SameSite=Lax cookie stores only the local user UUID and selected organization UUID (Secure in production). Treat that value as untrusted: every access checks its user matches the verified actor and rechecks active membership and role. A forged/stale cookie must not reveal organization metadata. Binding the selection to the local user prevents one account's selection from being reused after switching accounts.
+Add server queries for active memberships and a shared organization access operation. A single eligible membership is selected automatically. Accounts with multiple active memberships cannot open the Console until organization switching is supported. An HttpOnly, SameSite=Lax cookie stores the local user UUID and organization UUID selected during invitation completion (Secure in production). Treat that value as untrusted: every access checks its user matches the verified actor and rechecks active membership and role. A forged or stale cookie must not reveal organization metadata.
 
 The selector action requires the session and local actor, validates the UUID, and verifies active membership before writing the cookie. Selection controls the dashboard context, not permission to operate on an event in another organization. Existing event services continue to derive the organization from their resource or explicitly validated form input.
 
@@ -84,9 +83,9 @@ Overview, Events listing, Network, and People currently render fixtures. Protect
 - Signed-out page requests go to Clerk sign-in with a safe same-origin return destination; successful sign-in returns to the intended page or `/`.
 - Signed-in but unprovisioned users go to `/access-required`, which checks Clerk directly and does not recurse through the local-user guard.
 - Mapped users with no active memberships get an access state; they never see the organizer dashboard.
-- Invalid/stale organization selection clears the selection and routes to the selector or access state without exposing unrelated organizations.
+- Invalid or stale organization selection clears the selection and routes to the access state without exposing unrelated organizations.
 - Database or auth configuration outages show a generic unavailable state or sanitized API 500; they must not become anonymous/demo fallbacks.
-- Logout returns to `/sign-in`; refresh and client navigation must not render fresh protected content after logout. Clear user-specific app state and organization selection on logout/account switching. Content already delivered to a browser cannot be retroactively removed.
+- Logout returns to `/sign-in`; refresh and client navigation must not render fresh protected content after logout. Clear the invitation-selected organization on logout and clear user-specific client state on account changes. Content already delivered to a browser cannot be retroactively removed.
 
 ## Environments and validation
 

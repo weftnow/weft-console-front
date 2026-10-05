@@ -42,6 +42,7 @@ export type ProviderAcceptance = {
   organizationSubject: string;
   membershipId: string;
   correlationId: string;
+  invitationEmail: string;
   acceptedAt: Date;
   verifiedEmails: string[];
   displayName: string;

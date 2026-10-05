@@ -20,7 +20,7 @@ Owners can retry failed delivery and reconcile an unknown outcome. If Clerk acce
 
 An existing signed-in user can recover a newly accepted organization through `/onboarding`. `/access-required` remains a denied-access state without exact accepted-invitation evidence. A local membership revocation or disabled identity mapping continues to block replay.
 
-First-owner setup remains an explicit administrative operation. Do not promote the first signed-in person. The organization bridge setup command maps exact existing local organization UUIDs to Clerk Organizations; it does not create owners or memberships. The historical user provisioning command remains available for exceptional operations and initial bootstrap, not routine invitation recipients.
+Initial customer and Owner setup uses the local-first internal provisioning CLI documented in [customer provisioning operations](customer-provisioning.md). Do not promote the first signed-in person. The organization bridge setup command maps exact existing local organization UUIDs to Clerk Organizations; it does not create owners or memberships. The historical user provisioning command is not the routine path for customer invitation recipients.
 
 ## Invitation rollout prerequisites
 
