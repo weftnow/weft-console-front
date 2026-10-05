@@ -41,11 +41,14 @@ Create a request UUID once and retain it for retries and recovery:
 PROVISION_REQUEST_ID="$(uuidgen)"
 ```
 
-The create preview is input-only. It validates request fields, but does not validate deployed configuration, connectivity or invitation delivery. It writes no rows and calls no provider:
+The create preview is input-only. It validates request fields, but does not validate deployed configuration, connectivity or invitation delivery. It writes no rows and calls no provider. These commands pass the environment file to Node directly; Node does not allow `--env-file` inside `NODE_OPTIONS` ([Node CLI documentation](https://nodejs.org/api/cli.html)):
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer create \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts create \
   --request-id "$PROVISION_REQUEST_ID" \
   --organization-name "Acme Summit" \
   --owner-email "owner@example.com"
@@ -54,8 +57,11 @@ pnpm run --silent provision:customer create \
 Create the local organization, pending Owner grant and invitation history first, then provision the Clerk organization and automatically send the Owner invitation:
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer create \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts create \
   --request-id "$PROVISION_REQUEST_ID" \
   --organization-name "Acme Summit" \
   --owner-email "owner@example.com" \
@@ -65,16 +71,22 @@ pnpm run --silent provision:customer create \
 Inspect sanitized local state and recorded IDs:
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer status \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts status \
   --request-id "$PROVISION_REQUEST_ID"
 ```
 
 Resume a failed or unknown organization/invitation operation. The command reconciles exact provider UUID correlations before any new send:
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer retry \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts retry \
   --request-id "$PROVISION_REQUEST_ID" \
   --apply --send-invitation
 ```
@@ -82,8 +94,11 @@ pnpm run --silent provision:customer retry \
 Replace an expired invitation for the same designated email. Renewal keeps the customer and Owner grant, closes the old local invitation first, and blocks the replacement send until any old provider invitation can be reconciled and cleaned up:
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer renew \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts renew \
   --request-id "$PROVISION_REQUEST_ID" \
   --apply --send-invitation
 ```
@@ -91,13 +106,16 @@ pnpm run --silent provision:customer renew \
 Cancel a pending customer bootstrap locally before attempting provider cleanup. Cancellation cannot remove an Owner grant that has already been consumed or delete customer data:
 
 ```bash
-NODE_OPTIONS="--env-file=.env.production.local" \
-pnpm run --silent provision:customer cancel \
+node --env-file=.env.production.local \
+  --disable-warning=ExperimentalWarning \
+  --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  scripts/provision-customer.ts cancel \
   --request-id "$PROVISION_REQUEST_ID" \
   --apply
 ```
 
-Exported variables take precedence over values in the Node environment file. Use a terminal without conflicting development variables. If all production variables are already exported, omit the `NODE_OPTIONS` assignment. Do not generate a new request UUID when retrying, renewing, cancelling or checking status.
+Exported variables take precedence over values in the Node environment file. Use a terminal without conflicting development variables. If all production variables are already exported, omit `--env-file=.env.production.local` and invoke the existing package script with `pnpm run --silent provision:customer <command> ...`. Do not generate a new request UUID when retrying, renewing, cancelling or checking status.
 
 ## Results and recovery
 
