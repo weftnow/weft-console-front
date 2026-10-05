@@ -2,8 +2,6 @@ import Link from "next/link";
 
 import type { EventSummaryDto } from "../event-dto";
 import { groupEvents } from "../event-list";
-import type { ConsoleContext } from "@/modules/organizations/types";
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { CalendarIcon, PlusIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
@@ -18,12 +16,9 @@ const newEventLink = (label: string) => (
   </Link>
 );
 
-export function EventsPage({ context, events }: { context: ConsoleContext; events: EventSummaryDto[] }) {
+export function EventsPage({ events }: { events: EventSummaryDto[] }) {
   const grouped = groupEvents(events);
   return (
-    <div className="overview-shell">
-      <div className="dashboard-layout">
-        <ConsoleSidebar active="events" context={context} />
         <main className="dashboard-main">
           <header className="events-header">
             <div className="events-header__copy">
@@ -50,10 +45,7 @@ export function EventsPage({ context, events }: { context: ConsoleContext; event
                 <RecentlyCompletedPanel events={grouped.completed.slice(0, 3)} />
               </>
             )}
-            <footer className="dashboard-footer"><span>Powered by Weft</span></footer>
           </div>
         </main>
-      </div>
-    </div>
   );
 }

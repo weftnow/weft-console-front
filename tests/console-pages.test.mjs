@@ -24,8 +24,8 @@ test("partner report requires a Clerk session but never renders unscoped fixture
   assert.match(component, /No partner report yet/);
 });
 
-test("event detail authorizes its event before resolving the displayed organization context", () => {
-  const source = route("events/[eventId]/page.tsx");
-  assert.ok(source.indexOf("getEvent({") < source.indexOf("requireOrganizationContext({"));
+test("event detail API authorizes its event before checking membership in the event organization", () => {
+  const source = readFileSync(new URL("../src/infrastructure/http/get-event-handler.ts", import.meta.url), "utf8");
+  assert.ok(source.indexOf("dependencies.getEvent({") < source.indexOf("dependencies.requireOrganizationContext({"));
   assert.match(source, /allowedRoles: \["owner", "organizer"\]/);
 });

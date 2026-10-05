@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEventQueryScope } from "./events-query-provider";
+import { seedEventDetail } from "../queries/event-detail-query";
 import { useRouter } from "next/navigation";
 import {
   type ChangeEvent,
@@ -15,7 +18,6 @@ import {
 } from "react";
 
 import { CityArtwork } from "@/shared/ui/city-artwork";
-import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -44,7 +46,6 @@ import { createEventSchema, manualGuestSchema, zodFieldErrors } from "../event-s
 import { submitCreateEvent } from "../mutations/create-event";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { CreateEventContext } from "@/modules/organizations/types";
-import type { ConsoleContext } from "@/modules/organizations/types";
 import { getGuestCsvFieldError, GuestCsvError, parseGuestCsv } from "../guest-csv";
 import { downloadGuestCsvTemplate } from "../guest-csv-template";
 
@@ -230,8 +231,10 @@ function Avatar({
   );
 }
 
-export function CreateEventPage({ context, consoleContext, selectedOrganizationId }: { context: CreateEventContext; consoleContext: ConsoleContext; selectedOrganizationId?: string }) {
+export function CreateEventPage({ context, selectedOrganizationId }: { context: CreateEventContext; selectedOrganizationId?: string }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const scope = useEventQueryScope();
   const [organizationId, setOrganizationId] = useState(selectedOrganizationId ?? context.organizations[0]?.id ?? "");
   const [form, setForm] = useState<EventForm>(INITIAL_FORM);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -478,6 +481,7 @@ export function CreateEventPage({ context, consoleContext, selectedOrganizationI
       }
       setFieldErrors({});
       const created = await submitCreateEvent(validated.data);
+      seedEventDetail(queryClient, scope, created);
       router.push(`/events/${created.id}`);
     } catch (error) {
       submitGuardRef.current = false;
@@ -529,9 +533,6 @@ export function CreateEventPage({ context, consoleContext, selectedOrganizationI
   );
 
   return (
-    <div className="overview-shell create-event-shell">
-      <div className="dashboard-layout">
-        <ConsoleSidebar active="events" context={consoleContext} />
         <main className="dashboard-main create-event-main">
           <header className="create-event-header">
             <Link className="create-back-link" href="/events">
@@ -1027,7 +1028,5 @@ export function CreateEventPage({ context, consoleContext, selectedOrganizationI
             </Surface>
           ) : null}
         </main>
-      </div>
-    </div>
   );
 }

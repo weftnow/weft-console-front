@@ -36,9 +36,11 @@ export const eventDetailDtoSchema = z.strictObject({
   }
 });
 
-export const createEventResponseSchema = z.strictObject({
+export const eventDetailResponseSchema = z.strictObject({
   data: z.strictObject({ event: eventDetailDtoSchema }),
 });
+
+export const createEventResponseSchema = eventDetailResponseSchema;
 
 export type EventDetailDto = z.infer<typeof eventDetailDtoSchema>;
 

@@ -9,5 +9,5 @@ export const dynamic = "force-dynamic";
 
 export default async function Events() {
   const context = await requireOrganizerPageContext();
-  return <EventsPage context={context} events={await listEvents({ userId: context.user.id, organizationId: context.organization.id })} />;
+  return <EventsPage events={await listEvents({ userId: context.user.id, organizationId: context.organization.id })} />;
 }

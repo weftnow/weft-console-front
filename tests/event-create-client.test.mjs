@@ -17,3 +17,12 @@ test("client adapter rejects malformed success and network failures safely", asy
   await assert.rejects(submitCreateEvent({}, async () => Response.json({ data: { event: { id: "forged" } } }, { status: 201 })), (error) => error.code === "INTERNAL_ERROR");
   await assert.rejects(submitCreateEvent({}, async () => { throw new Error("network secret"); }), (error) => error.code === "INTERNAL_ERROR" && !error.message.includes("secret"));
 });
+
+test("create page seeds returned full event in the active query scope before navigation", async () => {
+  const { readFileSync } = await import("node:fs");
+  const source = readFileSync("src/modules/events/components/create-event-page.tsx", "utf8");
+  assert.match(source, /useEventQueryScope\(\)/);
+  const seed = source.indexOf("seedEventDetail(queryClient, scope, created)");
+  assert.ok(seed > source.indexOf("await submitCreateEvent(validated.data)"));
+  assert.ok(seed < source.indexOf("router.push(`/events/${created.id}`)"));
+});
