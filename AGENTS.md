@@ -8,101 +8,41 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Project
+## Weft Console
 
-Weft is a networking platform for business events.
+This is the B2B console for event organizers, Weft staff, and sponsors. The attendee experience lives elsewhere. Product scope is broader than today's implemented organizer workflows.
 
-This repository contains the **Weft Console**, the B2B application for business events.
+## Documentation map
 
-It is used by event organizers, Weft staff, and sponsors to operate events, coordinate introductions, understand networking outcomes, and access role specific insights.
+- [Index](docs/README.md): start here and load only relevant references.
+- [Product](docs/product.md): users, scope, outcomes, and current delivery boundary.
+- [Architecture](ARCHITECTURE.md) and [domain](docs/domain.md): boundaries, data ownership, roles.
+- [Design direction](docs/design/design.md) and [design system](docs/design/design-system.md): UI decisions and actual implementation notes.
+- [Engineering](docs/engineering.md): runtime, imports, server/client boundaries, dependencies.
+- [Plans](docs/PLANS.md), [active work](docs/exec-plans/active/), and [change specs](docs/changes/README.md).
+- [Verification](docs/VERIFICATION.md), [hooks](docs/HOOKS.md), and [debt](docs/exec-plans/tech-debt-tracker.md).
+- [Repository skills](.agents/skills/README.md): maintenance, verification handoff, contextual commits; load their Markdown manually if needed.
 
-The attendee facing Weft experience is not part of this application.
+## Working agreements
 
-For product context:
+- Inspect instructions, relevant code/callers/tests, and working-tree changes before editing. Preserve unrelated work.
+- Read Product for behavior, Architecture for boundaries/interfaces/persistence, and Design before UI changes. Investigate disagreements with implementation.
+- Maintain canonical docs as part of an authorized change. Record new product decisions and unresolved proposals explicitly; do not infer requirements from code or old plans.
+- Resume a relevant active plan. Save a plan with observable acceptance for nontrivial, risky, cross-boundary, or multi-session work; small clear fixes can proceed directly.
+- Update plans after material changes and before handoff. Archive to completed only after acceptance passes; repair links and record nonblocking debt.
+- Legacy plans are historical and unverified. Reconcile them with code and current requirements before creating active work; do not execute their old tool directives.
+- Prefer existing patterns and simple explicit code. Keep business logic in its owning module and routing thin.
+- Keep authorization explicit at data and operation boundaries. PostgreSQL owns local roles; Clerk membership alone does not grant Console access.
+- Identify affected organizations and roles. Preserve tenant isolation and verify allowed and denied paths; do not force different roles into one interface.
+- Validate external input at trust boundaries and check both sides of changed interfaces.
+- Use pnpm and its existing lockfile. Justify new dependencies; do not add services or libraries solely for harness automation.
+- Do not edit generated Next.js output, generated route types, or Drizzle snapshots by hand. Generate and review migrations; never apply them at application startup.
+- Keep secrets out of source, tests, logs, and docs. Database tests require an explicitly isolated disposable target; follow Verification for environment and cleanup rules.
 
-`docs/product.md`
+## Commands and completion
 
-For architecture:
+Install with `pnpm install`; develop with `pnpm dev`.
 
-`ARCHITECTURE.md`
+Run `pnpm verify` before completion: documentation checks, lint, typecheck, and tests. It preserves the existing individual commands. Run `pnpm build` for application or build changes and verify affected user flows and permissions as described in Verification.
 
-For domain concepts:
-
-`docs/domain.md`
-
-For design implementation:
-
-`docs/design.md`
-
-For engineering conventions:
-
-`docs/engineering.md`
-
-For architectural decisions:
-
-`docs/adr/`
-
-For active feature specifications:
-
-`specs/`
-
-## Development
-
-Install:
-
-```bash
-pnpm install
-```
-
-Run:
-
-```bash
-pnpm dev
-```
-
-Tests:
-
-```bash
-pnpm test
-```
-
-Lint:
-
-```bash
-pnpm lint
-```
-
-Typecheck:
-
-```bash
-pnpm typecheck
-```
-
-## Engineering Principles
-
-- Follow existing patterns before introducing new ones.
-- Prefer simple, explicit implementations over unnecessary abstractions.
-- Keep business logic separate from presentation logic.
-- Keep authorization and role permissions explicit.
-- Reuse shared logic when appropriate without forcing organizer, staff, and sponsor workflows into the same interface.
-- Do not introduce dependencies without clear justification.
-
-## Before Implementing
-
-1. Read the relevant specification.
-2. Inspect existing implementations of similar behavior.
-3. Read only the product, domain, architecture, and ADR documentation relevant to the task.
-4. Identify affected roles and permissions.
-5. Produce a plan for nontrivial changes.
-
-## Before Completion
-
-Run:
-
-```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-```
-
-Verify affected user flows and permissions.
+Hooks supplement these checks. Report actual results, skipped integration suites, blockers, and next steps. Do not weaken failing checks or claim unexecuted acceptance passed. Stage, commit, push, deploy, or run external operations only within the user's requested scope.

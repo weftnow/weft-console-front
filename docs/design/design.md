@@ -4,7 +4,7 @@
 
 This document defines the visual and interaction direction for Weft interfaces.
 
-It is intentionally about **how the product should feel**, not about implementation details. For exact tokens, component rules, and code conventions, use `design-system.md`.
+It is intentionally about **how the product should feel**, not about implementation details. For tokens, component rules, and current implementation notes, use the [design system](design-system.md).
 
 The target is a **premium tactile interface**: calm, warm, physical, precise, and modern.
 

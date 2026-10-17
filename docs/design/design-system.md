@@ -17,9 +17,17 @@ It focuses only on design related concerns:
 * interaction states
 * accessibility as it affects UI behavior
 
-For broader project structure and architectural rules, use `architecture.md`.
+For broader project structure and architectural rules, use [Architecture](../../ARCHITECTURE.md).
 
-Use this document together with `design.md`.
+Use this document together with [design direction](design.md).
+
+## Current implementation and target guidance
+
+The sections below retain the intended design system. As inspected on 2026-10-17, Tailwind 4, custom CSS, Recharts, and shared React primitives are installed. shadcn/ui, Motion, Morphicons, and lucide are not installed; their examples describe a target and do not authorize adding dependencies for an ordinary UI change. Reuse `src/shared/ui/surface.tsx`, `tactile-button.tsx`, `icons.tsx`, and the existing CSS first.
+
+The implemented source of truth for tokens is `src/app/globals.css`: canvas `#f1efeb`, surface `#f8f7f4`, text `#171816`, accent `#ff5a1f`, and radii 11/15/19/24 px. The later palette, radii, class names, and motion examples are design guidance; reconcile differences explicitly before changing shared tokens. Actual primitives use `surface-raised`, `surface-floating`, `surface-inset`, and the `--weft-shadow-*` variables. Geist fonts are configured in `src/app/layout.tsx`.
+
+Preserve visible keyboard focus, reduced motion, readable empty/error/loading states, responsive layout, and meaningful control labels. Verify changed UI at desktop and narrow widths as described in [verification](../VERIFICATION.md).
 
 ---
 

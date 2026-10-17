@@ -1,5 +1,24 @@
 # ARCHITECTURE.md
 
+## Implemented baseline
+
+As inspected on 2026-10-17, this repository runs Next.js 16.3.5 App Router, React 19, strict TypeScript, and Tailwind 4. PostgreSQL uses Drizzle ORM over node-postgres; Clerk provides session identity. TanStack Query owns the client Event Detail cache. See [engineering](docs/engineering.md) for local conventions and [domain](docs/domain.md) for capability ownership.
+
+- `src/app/` owns routes, layouts, API adapters, and server actions. `src/proxy.ts` integrates Clerk request authentication.
+- `src/modules/events/` owns event validation, schedules, CSV parsing, server services/repositories, client queries/mutations, and event screens.
+- `src/modules/organizations/` owns local memberships, Console eligibility, Team invitations, and initial customer/Owner provisioning.
+- `src/modules/attendees/`, `network/`, `insights/`, and `sponsors/` currently expose screens; their empty states must not be mistaken for persisted networking or reporting capabilities.
+- `src/infrastructure/` owns Clerk identity resolution, HTTP handlers/errors, and the shared PostgreSQL client/schema. `src/shared/ui/` owns shared visual primitives.
+- `drizzle/` contains generated migration SQL and metadata; `scripts/` contains explicit migration, provisioning, build, and harness commands. There is no dedicated staff module today.
+
+Event writes pass from route adapters through actor resolution, validation and module services to organization-scoped repositories. Detail reads use the same server boundary, with a scoped client cache. CSV imports append atomically with batch fingerprint/replay handling. Organization invitation and initial Owner admission depend on local invitation/grant records and verified provider evidence; PostgreSQL remains authoritative for roles. See the [backend references](docs/README.md) for transaction and recovery details.
+
+Protected behavior must validate the authenticated local identity, active membership, organization, and permission at the operation/data boundary. Browser input and Clerk organization roles are not local authorization evidence. APIs validate bodies, origins, sizes and identifiers; cover reads and attendee imports also enforce event access. Runtime uses `DATABASE_URL`; migration/provisioning credentials are separate explicit operator configuration.
+
+## Intended structure and evolution
+
+The rules below describe the architecture direction. Example folders and capability names are targets, not a claim that all exist. Future staff, sponsor reporting, matching, and introduction operations require their own scoped implementation and authorization decisions.
+
 ## Architecture Style
 
 The Weft Console follows **Screaming Architecture**.
@@ -10,7 +29,7 @@ This application is specifically for organizers, Weft staff, and sponsors. It op
 
 Detailed definitions and ownership of each business capability belong in:
 
-`docs/domain.md`
+[Domain ownership](docs/domain.md).
 
 ## Core Principles
 
@@ -303,19 +322,13 @@ Before implementing a feature:
 
 For detailed module responsibilities and boundaries, read:
 
-`docs/domain.md`
+[Domain ownership](docs/domain.md).
 
 ## Architectural Decisions
 
-Important architectural decisions belong in:
+Record significant decisions and their reasons in the relevant [execution plan](docs/PLANS.md); fold accepted, durable rules into this document and the owning reference. There is no separate ADR directory today.
 
-`docs/adr/`
-
-`ARCHITECTURE.md` defines the structure and architectural rules of the codebase.
-
-`docs/domain.md` defines the meaning and ownership of the Console business capabilities.
-
-ADRs explain why significant architectural decisions were made.
+This file defines architecture; [domain ownership](docs/domain.md) defines capability meaning. Historical plans and specifications do not override either reference.
 
 ## Evolution
 
