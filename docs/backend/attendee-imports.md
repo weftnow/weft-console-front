@@ -10,7 +10,7 @@ An `event_guests` row is an attendee's event-specific participation and contact 
 
 `POST /api/events/{eventId}/attendee-imports` accepts JSON with only `fileName` and `csvText`. The route requires the normal server-side actor, a same-origin request, JSON content type and a body no larger than 3 MiB. The CSV is limited to 1 MiB and 2,000 candidate rows. The existing authentication adapter is unconfigured, so normal requests currently fail closed with 401. Do not add a request-supplied identity or a test impersonation path.
 
-Only an active owner or organizer membership in the event's organization can import or read the full roster. Membership is rechecked under a row lock before event roster state or replay results are used. Staff and sponsors do not receive import access.
+Only an active Owner or Organizer membership in the event's organization can import attendees. An active staff `operator` grant can read the granted event and roster; Wefter grants cannot read the full roster. Import authorization is rechecked under a row lock before event roster state or replay results are used. See [shared access contracts](../access-contracts.md) for the complete event policy.
 
 The response is 201 for a new committed batch and 200 for an exact content replay. Errors use the shared envelope: 400 malformed JSON or event UUID, 401 missing actor, 403 unmapped/disabled identity, origin or permission failure, 404 missing event, 413 oversized request, 415 wrong media type, 422 invalid CSV or capacity, and 500 sanitized unexpected failure. See [Console authentication](authentication.md) for explicit Clerk-to-local-user mapping.
 

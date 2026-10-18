@@ -602,6 +602,11 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 @media (max-width: 620px) {
   .overview-shell { padding: 7px; }
   .sidebar { overflow-x: auto; border-radius: 18px; }
+  .profile__identity { flex-wrap: wrap; gap: 8px; }
+  .profile__text { flex: 1 1 110px; }
+  .profile__identity > a, .profile__identity > form, .profile__identity > button { min-width: 0; flex: 1 1 130px; }
+  .profile__identity > form { display: flex; }
+  .profile__identity > form > button { width: 100%; min-height: 36px; text-align: left; }
   .brand { width: 100%; justify-items: start; }
   .brand-mark { display: none; }
   .brand-wordmark { max-width: 100%; text-align: left; }

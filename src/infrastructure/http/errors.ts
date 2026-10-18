@@ -16,7 +16,7 @@ export function errorResponse(error: unknown, operation: string, unexpectedMessa
     // Deliberately omit the thrown object's message, SQL detail, stack and parameters.
     console.error("weft_request_failure", { requestId, operation });
   }
-  return Response.json({ error: { code: safe.code, message: safe.message, ...(safe.fields ? { fields: safe.fields } : {}) } }, {
+  return Response.json({ error: { code: safe.code, message: safe.message, ...(safe.fields ? { fields: safe.fields } : {}), ...(safe.details !== undefined ? { details: safe.details } : {}) } }, {
     status: statuses[safe.code],
     headers: { "Cache-Control": "private, no-store", "X-Request-Id": requestId },
   });

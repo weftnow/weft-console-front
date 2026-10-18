@@ -106,7 +106,7 @@ export async function findMemberByProviderIdentity(input: { subject: string; ins
 }
 
 export async function reserveInvitation(input: {
-  organizationId: string; instanceId: string; inviterUserId: string; email: string; role: "owner" | "organizer"; now: Date;
+  organizationId: string; instanceId: string; inviterUserId: string; email: string; role: "owner" | "organizer" | "staff"; now: Date;
 }): Promise<{ invitation: InvitationRecord; created: boolean }> {
   return getDatabase().transaction(async (tx) => {
     const [owner] = await tx.select({ id: organizationMemberships.id }).from(organizationMemberships).where(and(
@@ -239,7 +239,7 @@ export async function commitAdmission(input: { invitationId: string; instanceId:
     )).for("update").limit(1);
     if (membership && !membership.active) return { kind: "conflict" };
     if (!membership) await tx.insert(organizationMemberships).values({
-      organizationId: invitation.organizationId, userId, role: invitation.role as "owner" | "organizer", active: true,
+      organizationId: invitation.organizationId, userId, role: invitation.role as "owner" | "organizer" | "staff", active: true,
     });
     await tx.update(organizationInvitations).set({
       status: "accepted", acceptedAt: input.evidence.acceptedAt, acceptedSubject: input.evidence.subject, acceptedUserId: userId,

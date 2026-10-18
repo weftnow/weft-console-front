@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
-  check, customType, date, foreignKey, index, integer, pgEnum, pgTable,
+  check, customType, date, foreignKey, index, integer, jsonb, pgEnum, pgTable,
   primaryKey, text, time, timestamp, unique, uniqueIndex, uuid,
 } from "drizzle-orm/pg-core";
 import { organizationMemberships, organizations, users } from "./identity.ts";
@@ -8,6 +8,7 @@ import { organizationMemberships, organizations, users } from "./identity.ts";
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
 export const guestType = pgEnum("event_guest_type", ["Attendee", "VIP", "Sponsor"]);
 export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
+export const eventConsoleAccess = pgEnum("event_console_access", ["operator", "wefter"]);
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -92,12 +93,34 @@ export const eventStaff = pgTable("event_staff", {
   eventId: uuid("event_id").notNull(),
   organizationId: uuid("organization_id").notNull(),
   membershipId: uuid("membership_id").notNull(),
+  consoleAccess: eventConsoleAccess("console_access"),
+  revision: integer("revision").default(1).notNull(),
+  availabilityWindows: jsonb("availability_windows").$type<Array<{ startsAt: string; endsAt: string }>>().default(sql`'[]'::jsonb`).notNull(),
+  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "restrict" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   primaryKey({ columns: [table.eventId, table.membershipId] }),
   foreignKey({ columns: [table.eventId, table.organizationId], foreignColumns: [events.id, events.organizationId], name: "event_staff_event_org_fk" }).onDelete("cascade"),
   foreignKey({ columns: [table.membershipId, table.organizationId], foreignColumns: [organizationMemberships.id, organizationMemberships.organizationId], name: "event_staff_membership_org_fk" }).onDelete("restrict"),
   index("event_staff_membership_idx").on(table.membershipId),
+  check("event_staff_revision_positive", sql`${table.revision} >= 1`),
 ]);
+
+export const eventNetworkingSettings = pgTable("event_networking_settings", {
+  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
+  revision: integer("revision").default(1).notNull(),
+  settings: jsonb("settings").$type<{
+    networkingWindows: Array<{ startsAt: string; endsAt: string }>;
+    stopNewIntroductionsAt: string | null;
+    landmarks: Array<{ id: string; name: string; directions: string | null }>;
+    softMaxIntroductionsPerGuest: number | null;
+    locationFreshnessMinutes: number | null;
+    dispatchAcknowledgmentMinutes: number | null;
+    missedMeetingMinutes: number | null;
+  }>().notNull(),
+  updatedBy: uuid("updated_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [check("event_networking_settings_revision_positive", sql`${table.revision} >= 1`)]);
 
 export const eventCovers = pgTable("event_covers", {
   eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),

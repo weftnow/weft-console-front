@@ -4,6 +4,11 @@ Write a spec when observable behavior, permissions, scope, compatibility, or acc
 
 Use `docs/changes/YYYY-MM-DD-short-name.md` with: Status, linked plan, problem, explicit requirements, proposals/open decisions, affected roles/organizations, observable behavior, compatibility/non-goals, and acceptance scenarios. Keep Status Draft until consequential decisions are resolved; then Ready. Mark Complete and repair the plan link only after verified acceptance.
 
+## Current specifications
+
+- [F01 Console access and shared data rules](2026-10-17-f01-console-access-shared-rules.md): implemented foundation with development database integration passed and signed-in browser acceptance pending.
+- [F02 Event settings and Wefter management](2026-10-18-f02-event-settings-wefter-management.md): agreed specification; implementation in progress, with database and signed-in browser acceptance pending.
+
 ## Imported specifications
 
 The following existing design specifications were migrated from the previous planning tree. Their original status and assumptions are retained as historical evidence; inspect current canonical docs and implementation before using them. None was newly approved or verified by the harness migration.

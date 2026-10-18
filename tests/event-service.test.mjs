@@ -55,11 +55,10 @@ test("cover bytes are decoded and normalized to bounded WebP", async () => {
 
 test("organizer detail rejects staff before reading guest data", async () => {
   const { getEvent } = loadTs("src/modules/events/server/service.ts");
-  const { requireEventCreator } = loadTs("src/modules/organizations/service.ts");
   let detailedReads = 0;
   await assert.rejects(getEvent({ userId, eventId: "33333333-3333-4333-8333-333333333333" }, {
     findOrganizationId: async () => organizationId,
-    requireCreator: (input) => requireEventCreator(input, { findMembership: async () => ({ id: userId, userId, organizationId, role: "staff", active: true }) }),
+    requireReader: async () => { throw Object.assign(new Error("denied"), { code: "FORBIDDEN" }); },
     findById: async () => { detailedReads++; return null; },
     findCover: async () => null,
   }), (error) => error.code === "FORBIDDEN");

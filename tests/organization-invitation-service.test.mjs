@@ -43,6 +43,17 @@ test("owner send delivers once and duplicate reservation preserves the original 
   assert.equal(duplicate.calls.sent.length, 0);
 });
 
+test("owner can admit a staff membership without implying any event grant", async () => {
+  const { sendInvitation } = loadTs("src/modules/organizations/invitations/service.ts");
+  let reserved;
+  const d = deps({ reserveInvitation: async (input) => { reserved = input; return { invitation: { ...invitation, role: "staff" }, created: false }; } });
+  const result = await sendInvitation(actor, { email: "staff@example.com", role: "staff" }, d.value);
+  assert.equal(result.kind, "existing");
+  assert.equal(reserved.role, "staff");
+  assert.equal("eventId" in reserved, false);
+  assert.equal("accessMode" in reserved, false);
+});
+
 test("existing local member is rejected without sending or changing roles", async () => {
   const { sendInvitation } = loadTs("src/modules/organizations/invitations/service.ts");
   const d = deps({ findActiveMemberByEmail: async () => ({ role: "organizer", active: true }) });

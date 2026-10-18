@@ -7,6 +7,7 @@
 | [Product](product.md) | Users, product intent, delivery boundary, and open scope |
 | [Architecture](../ARCHITECTURE.md) | Implemented boundaries and separately labeled architecture direction |
 | [Domain](domain.md) | Capability ownership, organization context, local roles |
+| [Shared access contracts](access-contracts.md) | Event grants, local IDs, revisions, pair normalization, and restricted Wefter context |
 | [Design direction](design/design.md) | Visual and interaction intent |
 | [Design system](design/design-system.md) | Shared primitives, tokens, accessibility; installed versus proposed tooling |
 | [Engineering](engineering.md) | Local runtime, TypeScript, framework, dependency, and generated-output conventions |
@@ -28,6 +29,7 @@
 - [Invitation onboarding](backend/invitation-onboarding.md): existing-customer Team invitations and provider organization bridge.
 - [Customer provisioning](backend/customer-provisioning.md): initial organization and Owner grant, explicit operator commands and recovery.
 - [Vercel deployment](backend/vercel-deployment.md): build and migration order, environment boundaries, rollback limits.
+- [Event settings and Wefter management](backend/event-settings.md): persisted settings, schedules, API contracts, and F12 integration boundary.
 
 ## Documentation maintenance
 

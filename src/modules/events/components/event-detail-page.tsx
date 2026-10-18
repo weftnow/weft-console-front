@@ -33,6 +33,9 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
+import { EventAccessPanel } from "./event-access-panel";
+import { EventSettingsPanel } from "./event-settings-panel";
+import { EventWeftersPanel } from "./event-wefters-panel";
 import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
@@ -51,12 +54,14 @@ const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
   { id: "attendees", label: "Attendees", icon: PeopleIcon },
   { id: "kami", label: "Kami", icon: SparklesIcon },
   { id: "staff", label: "Staff", icon: StaffIcon },
+  { id: "settings", label: "Settings", icon: EditIcon },
   { id: "insights", label: "Insights", icon: OutcomesIcon },
 ];
 
 const tabDescriptions = {
   insights: "Event insights appear once introductions start.",
-  staff: "Staff coordination arrives in a future release.",
+  staff: "Manage who can access this event and what they can see.",
+  settings: "Configure networking windows and event operating limits.",
 } as const;
 
 const statusLabels = {
@@ -434,6 +439,10 @@ export function EventDetailPage({ event, initialTab, onImportSaved, refreshNotic
             <div className="event-detail-tab-content" key={activeTab}>
               <KamiWorkspace art={art} event={event} onNotice={showNotice} />
             </div>
+          ) : activeTab === "staff" ? (
+            <div className="event-detail-tab-content grid gap-5" key={activeTab}><EventAccessPanel eventId={event.id} /><EventWeftersPanel eventId={event.id} /></div>
+          ) : activeTab === "settings" ? (
+            <div className="event-detail-tab-content" key={activeTab}><EventSettingsPanel eventId={event.id} /></div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>
               <EventTabPlaceholder activeTab={activeTab} eventId={event.id} onSelect={setActiveTab} />

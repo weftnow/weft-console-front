@@ -2,11 +2,11 @@
 
 ## Current delivery boundary
 
-The following product vision covers organizers, staff, and sponsors. As inspected on 2026-10-17, persisted workflows are organizer event creation/detail, initial and append-only attendee CSV imports, Clerk authentication with local organization authorization, owner-managed Team invitations, and internal customer/initial Owner provisioning. Owner and Organizer are currently eligible for Console access; staff and sponsor memberships are denied by the Console access resolver.
+The following product vision covers organizers, staff, and sponsors. F01 includes organizer event creation/detail, attendee CSV imports, local organization selection, Owner-managed Team invitations, and versioned event grants. F02 adds persisted event networking settings, named Wefters, and Owner/Organizer-managed availability intervals. Owner and Organizer access remains organization-wide; staff requires a per-event grant; sponsor memberships remain denied operational event access.
 
-Overview, Network, People, and Partner Report have production empty states rather than fabricated metrics or operational networking results. Initial customer admission and invitation workflows have automated local coverage; live database, provider delivery, and signed-in acceptance require the separate checks in [verification](VERIFICATION.md). Existing documentation is not proof of live deployment behavior.
+Overview, Network, People, and Partner Report have production empty states rather than fabricated metrics or operational networking results. Wefters see only their own read-only availability hours. Assignment storage/screens, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows and must protect active introductions across availability/access changes; F08 owns persisted pair uniqueness. Initial customer admission and invitation workflows have automated local coverage; live database, provider delivery, and signed-in acceptance require the separate checks in [verification](VERIFICATION.md). Existing documentation is not proof of live deployment behavior.
 
-Role-specific staff operations, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain product direction. Their exact delivery priority and permission rules are open until a scoped change defines them. See [domain ownership](domain.md) and [backend references](README.md) for the implemented boundaries.
+Wefter assignment storage/screens, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows; F08 owns persisted pair uniqueness. See [domain ownership](domain.md) and [shared access contracts](access-contracts.md) for the implemented boundaries and consumer obligations.
 
 ## Weft
 

@@ -16,7 +16,7 @@ export default async function TeamPage() {
       <header className="events-header"><div className="events-header__copy">
         <p className="events-header__subtitle">{context.organization.name}</p>
         <h1 className="events-header__title">Team</h1>
-        <p className="events-header__subtitle">Invite owners and organizers to work in this organization.</p>
+        <p className="events-header__subtitle">Invite owners, organizers, and staff to work in this organization.</p>
       </div></header>
       <div className="content-stack"><TeamInvitations invitations={invitations} /></div>
     </main>

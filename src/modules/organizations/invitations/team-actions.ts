@@ -5,7 +5,7 @@ type TeamContext = { user: { id: string }; organization: { id: string; name: str
 type TeamActionState = { kind: string; message: string; invitation?: InvitationView };
 type Dependencies = {
   getContext(): Promise<TeamContext>;
-  sendInvitation(actor: InvitationAdminActor, input: { email: string; role: "owner" | "organizer" }): Promise<{ kind: "sent" | "existing" | "delivery-pending"; invitation: InvitationView }>;
+  sendInvitation(actor: InvitationAdminActor, input: { email: string; role: "owner" | "organizer" | "staff" }): Promise<{ kind: "sent" | "existing" | "delivery-pending"; invitation: InvitationView }>;
   retryInvitationDelivery(actor: InvitationAdminActor, id: string): Promise<InvitationView>;
   revokeInvitation(actor: InvitationAdminActor, id: string): Promise<InvitationView>;
 };
@@ -29,7 +29,7 @@ export async function sendTeamInvitationWith(formData: FormData, deps: Dependenc
     return { kind: "delivery-pending", message: "Delivery could not be confirmed. Check the invitation status before retrying.", invitation: result.invitation };
   } catch (error) {
     if (error instanceof Error && error.message === "owner_required") return { kind: "error", message: "Only an organization owner can manage invitations." };
-    if (error && typeof error === "object" && "issues" in error) return { kind: "error", message: "Enter a valid email and choose Owner or Organizer." };
+    if (error && typeof error === "object" && "issues" in error) return { kind: "error", message: "Enter a valid email and choose Owner, Organizer, or Staff." };
     return safeFailure();
   }
 }

@@ -4,7 +4,7 @@ This document describes the owner-managed invitation lifecycle in the Weft Conso
 
 ## Access and roles
 
-Only an active Neon organization owner can open **Team**, send invitations, retry delivery or revoke a pending invitation. The page and each Server Action derive the selected organization and local user from the current server context. Submitted values cannot select an organization, actor or permission. The supported Weft roles are `owner` and `organizer`; staff and sponsor invitations are not available.
+Only an active Neon organization owner can open **Team**, send invitations, retry delivery or revoke a pending invitation. The page and each Server Action derive the selected organization and local user from the current server context. Submitted values cannot select an organization, actor or permission. The supported Weft invitation roles are `owner`, `organizer`, and `staff`; sponsors cannot be invited through this workflow. A staff invitation admits the local membership only and grants no event access.
 
 Neon remains authoritative for Console identity, memberships and roles. Clerk Organization invitations provide email delivery and account authentication. Every Clerk invitation uses `org:member`; the chosen Weft role remains in the local invitation ledger.
 

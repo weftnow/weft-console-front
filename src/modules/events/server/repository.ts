@@ -130,7 +130,7 @@ export type EventSummaryRow = {
   startsAt: Date; endsAt: Date; guestCount: number; hasCover: boolean;
 };
 
-/** Events of one organization the user may operate: active owner or organizer membership only. */
+/** Organization-wide organizer events plus explicitly granted operator events. */
 export async function listForUser(userId: string, organizationId: string): Promise<EventSummaryRow[]> {
   return getDatabase().select({
     id: events.id, name: events.name, city: events.city, venue: events.venue,
@@ -143,7 +143,10 @@ export async function listForUser(userId: string, organizationId: string): Promi
       eq(organizationMemberships.organizationId, events.organizationId),
       eq(organizationMemberships.userId, userId),
       eq(organizationMemberships.active, true),
-      inArray(organizationMemberships.role, ["owner", "organizer"]),
+      or(
+        inArray(organizationMemberships.role, ["owner", "organizer"]),
+        sql`exists (select 1 from ${eventStaff} where ${eventStaff.eventId} = ${events.id} and ${eventStaff.organizationId} = ${events.organizationId} and ${eventStaff.membershipId} = ${organizationMemberships.id} and ${eventStaff.consoleAccess} = 'operator')`,
+      ),
     ))
     .where(eq(events.organizationId, organizationId))
     .orderBy(desc(events.startsAt));

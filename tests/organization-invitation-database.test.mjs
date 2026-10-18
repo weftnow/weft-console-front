@@ -45,6 +45,10 @@ test("organization invitation transactions serialize duplicates and acceptance r
     assert.equal((await findInvitation(first.invitation.id, `${instanceId}_wrong`)), null);
     invitationIds.push(first.invitation.id);
 
+    const staffInvitation = await reserveInvitation({ organizationId: newOrgId, instanceId, inviterUserId: ownerId, email: "staff@example.com", role: "staff", now });
+    invitationIds.push(staffInvitation.invitation.id);
+    assert.equal(staffInvitation.invitation.role, "staff");
+
     const firstChoice = await reserveInvitation({ organizationId: newOrgId, instanceId, inviterUserId: ownerId, email: "preserve@example.com", role: "owner", now });
     const laterChoice = await reserveInvitation({ organizationId: newOrgId, instanceId, inviterUserId: ownerId, email: "preserve@example.com", role: "organizer", now });
     assert.equal(laterChoice.created, false);

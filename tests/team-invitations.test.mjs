@@ -33,7 +33,7 @@ test("organizers are denied direct actions and role tampering never reaches invi
   const input = new FormData(); input.set("email", "ada@example.com"); input.set("role", "owner");
   assert.equal((await sendTeamInvitationWith(input, d.value)).kind, "error");
   const invalidRole = makeDeps();
-  input.set("role", "staff");
+  input.set("role", "sponsor");
   assert.equal((await sendTeamInvitationWith(input, invalidRole.value)).kind, "error");
   assert.equal(invalidRole.calls.send.length, 0);
 });

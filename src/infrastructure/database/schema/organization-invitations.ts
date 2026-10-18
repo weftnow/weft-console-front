@@ -38,7 +38,7 @@ export const organizationInvitations = pgTable("organization_invitations", {
 }, (table) => [
   check("organization_invitations_instance_nonempty", sql`length(btrim(${table.instanceId})) > 0`),
   check("organization_invitations_email_normalized", sql`${table.email} = lower(btrim(${table.email})) and length(${table.email}) between 1 and 254`),
-  check("organization_invitations_role_check", sql`${table.role} in ('owner', 'organizer')`),
+  check("organization_invitations_role_check", sql`${table.role} in ('owner', 'organizer', 'staff')`),
   check("organization_invitations_status_check", sql`${table.status} in ('pending', 'accepted', 'revoked', 'expired')`),
   check("organization_invitations_delivery_state_check", sql`${table.deliveryState} in ('queued', 'sending', 'sent', 'unknown', 'failed')`),
   check("organization_invitations_accepted_fields_coherent", sql`(${table.status} = 'accepted' and ${table.acceptedAt} is not null and ${table.acceptedSubject} is not null and ${table.acceptedUserId} is not null) or (${table.status} <> 'accepted' and ${table.acceptedAt} is null and ${table.acceptedSubject} is null and ${table.acceptedUserId} is null)`),

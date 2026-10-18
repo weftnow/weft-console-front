@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const invitationIdSchema = z.uuid();
-export const invitedRoleSchema = z.enum(["owner", "organizer"]);
+export const invitedRoleSchema = z.enum(["owner", "organizer", "staff"]);
 export const invitationInputSchema = z.strictObject({
   email: z.string().trim().max(254).email().transform((email) => email.toLowerCase()),
   role: invitedRoleSchema,

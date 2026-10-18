@@ -97,8 +97,8 @@ const readEvent = (id, dependencies) => loadTs("src/infrastructure/http/get-even
 const readDependencies = (overrides = {}) => ({
   getCurrentUser: async () => actor,
   getEvent: async (input) => { assert.deepEqual(input, { userId: actor.id, eventId: event.id }); return event; },
-  requireOrganizationContext: async (input) => {
-    assert.deepEqual(input, { user: actor, organizationId: event.organizationId, allowedRoles: ["owner", "organizer"] });
+  requireEventReaderAccess: async (input) => {
+    assert.deepEqual(input, { userId: actor.id, eventId: event.id, organizationId: event.organizationId });
   }, ...overrides,
 });
 
@@ -113,7 +113,7 @@ test("event GET checks actual organization after reading with verified actor and
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.deepEqual((await response.json()).data.event, event);
-  const denied = await readEvent(event.id, readDependencies({ requireOrganizationContext: async () => { throw new ApplicationError("FORBIDDEN", "Denied"); } }));
+  const denied = await readEvent(event.id, readDependencies({ requireEventReaderAccess: async () => { throw new ApplicationError("FORBIDDEN", "Denied"); } }));
   assert.equal(denied.status, 403);
   assert.equal((await denied.json()).data, undefined);
 });
@@ -131,18 +131,19 @@ test("event GET sanitizes unexpected failures and untrusted cover URLs", async (
   } finally { console.error = original; }
 });
 
-test("event detail GET admits only owners and organizers of the loaded event organization", async () => {
+test("event detail GET applies operation-specific event authorization to the loaded event", async () => {
   const { handleGetEvent } = loadTs("src/infrastructure/http/get-event-handler.ts");
-  for (const role of ["owner", "organizer", "staff", "sponsor"]) {
+  for (const role of ["owner", "organizer", "operator", "wefter", "sponsor"]) {
     const response = await handleGetEvent(event.id, {
       getCurrentUser: async () => actor,
       getEvent: async ({ userId }) => { assert.equal(userId, actor.id); return event; },
-      requireOrganizationContext: async ({ organizationId, allowedRoles }) => {
+      requireEventReaderAccess: async ({ organizationId, eventId, userId }) => {
         assert.equal(organizationId, event.organizationId);
-        assert.deepEqual(allowedRoles, ["owner", "organizer"]);
-        if (!allowedRoles.includes(role)) throw new ApplicationError("FORBIDDEN", "Denied");
+        assert.equal(eventId, event.id);
+        assert.equal(userId, actor.id);
+        if (role === "wefter" || role === "sponsor") throw new ApplicationError("FORBIDDEN", "Denied");
       },
     });
-    assert.equal(response.status, role === "owner" || role === "organizer" ? 200 : 403);
+    assert.equal(response.status, role === "wefter" || role === "sponsor" ? 403 : 200);
   }
 });

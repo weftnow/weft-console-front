@@ -8,8 +8,21 @@ import { normalizeLinkedin } from "../guest-csv-core";
 import { prepareCsvImport } from "./attendee-import-service";
 import { normalizeCover } from "./cover-image";
 import * as repository from "./repository";
+import * as accessRepository from "./access-repository";
+import { canAccessEvent } from "../access-policy";
 import { requireEventCreator } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
+
+export async function requireEventReaderAccess(input: { userId: string; eventId: string; organizationId: string }): Promise<void> {
+  const access = await accessRepository.findEventAccessForActor(input.eventId, input.userId);
+  const allowed = access && access.organizationId === input.organizationId && canAccessEvent({
+    membership: { active: true, role: access.role === "operator" || access.role === "wefter" ? "staff" : access.role },
+    accessMode: access.role === "operator" || access.role === "wefter" ? access.role : null,
+  }, "detail");
+  if (!allowed) {
+    throw new ApplicationError("FORBIDDEN", "You do not have access to this event or organization.");
+  }
+}
 
 export type PreparedEvent = {
   userId: string;
@@ -66,19 +79,19 @@ export async function createEvent(
 
 type ReadDependencies = {
   findOrganizationId: typeof repository.findOrganizationId;
-  requireCreator: typeof requireEventCreator;
+  requireReader?: (input: { userId: string; eventId: string; organizationId: string }) => Promise<void>;
   findById: typeof repository.findById;
   findCover: typeof repository.findCover;
 };
 
 export async function getEvent(
   { userId, eventId }: { userId: string; eventId: string },
-  dependencies: ReadDependencies = { ...repository, requireCreator: requireEventCreator },
+  dependencies: ReadDependencies = { ...repository },
 ): Promise<EventDetailDto> {
   if (!uuidSchema.safeParse(eventId).success) throw new ApplicationError("NOT_FOUND", "Event not found.");
   const organizationId = await dependencies.findOrganizationId(eventId);
   if (!organizationId) throw new ApplicationError("NOT_FOUND", "Event not found.");
-  await dependencies.requireCreator({ userId, organizationId });
+  await (dependencies.requireReader ?? requireEventReaderAccess)({ userId, eventId, organizationId });
   const event = await dependencies.findById(eventId, organizationId);
   if (!event) throw new ApplicationError("NOT_FOUND", "Event not found.");
   return event;
@@ -86,12 +99,12 @@ export async function getEvent(
 
 export async function getEventCover(
   { userId, eventId }: { userId: string; eventId: string },
-  dependencies: ReadDependencies = { ...repository, requireCreator: requireEventCreator },
+  dependencies: ReadDependencies = { ...repository },
 ) {
   if (!uuidSchema.safeParse(eventId).success) throw new ApplicationError("NOT_FOUND", "Event not found.");
   const organizationId = await dependencies.findOrganizationId(eventId);
   if (!organizationId) throw new ApplicationError("NOT_FOUND", "Event not found.");
-  await dependencies.requireCreator({ userId, organizationId });
+  await (dependencies.requireReader ?? requireEventReaderAccess)({ userId, eventId, organizationId });
   const cover = await dependencies.findCover(eventId, organizationId);
   if (!cover) throw new ApplicationError("NOT_FOUND", "Cover not found.");
   return cover;
