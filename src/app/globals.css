@@ -1438,7 +1438,7 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .roster-filter select:hover { transform: translateY(-1px); color: var(--weft-text); }
 .roster-filter select:focus-visible { border-color: rgba(255,90,31,.24); box-shadow: var(--weft-shadow-floating), var(--weft-focus); }
 
-.roster-table { min-width: 880px; }
+.roster-table { min-width: 1060px; }
 .roster-table th { white-space: nowrap; }
 .roster-table td:first-child { min-width: 196px; }
 .roster-sort { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; font: inherit; transition: color 150ms ease; }
@@ -1766,3 +1766,17 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
   border-radius: 12px;
   font-size: 13px;
 }
+.profile-panel__saved { margin: 0; color: var(--weft-text-muted); font-size: 11px; }
+.profile-panel__fields { display: grid; gap: 14px; border-top: 1px solid rgba(87,78,67,.1); padding-top: 12px; }
+.profile-panel__textarea { min-height: 64px; }
+.profile-panel__private { display: flex; align-items: center; gap: 8px; color: var(--weft-text-muted); font-size: 11px; }
+.profile-panel__summary { display: grid; gap: 8px; margin: 0; font-size: 11px; }
+.profile-panel__summary dt { font-weight: 600; }
+.profile-panel__summary dd { margin: 2px 0 0; color: var(--weft-text-muted); white-space: pre-wrap; }
+.profile-pill--available { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.profile-pill--missing { background: rgba(87,78,67,.12); color: var(--weft-text-muted); }
+.profile-pill--url_only { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.roster-profile { display: grid; gap: 6px; }
+.roster-profile__chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.roster-profile__chips .status-pill { padding: 2px 8px; font-size: 10px; }
+.roster-profile .roster-link { width: fit-content; border: 0; padding: 0; background: none; cursor: pointer; font: inherit; }
