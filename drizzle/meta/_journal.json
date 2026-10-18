@@ -36,6 +36,13 @@
       "when": 1791151842396,
       "tag": "0004_gigantic_taskmaster",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792336518894,
+      "tag": "0005_networking_inclusion",
+      "breakpoints": true
     }
   ]
 }

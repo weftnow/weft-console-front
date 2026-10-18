@@ -330,8 +330,8 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
   );
 }
 
-export function EventDetailPage({ event, initialTab, onImportSaved, refreshNotice }: {
-  event: EventDetailDto; initialTab: EventDetailTab; onImportSaved: () => Promise<void>; refreshNotice?: ReactNode;
+export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNotice }: {
+  event: EventDetailDto; initialTab: EventDetailTab; onRosterChanged: () => Promise<void>; refreshNotice?: ReactNode;
 }) {
   const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
   // Synchronize Back/Forward tab changes without remounting the page on data refresh.
@@ -428,7 +428,7 @@ export function EventDetailPage({ event, initialTab, onImportSaved, refreshNotic
             </div>
           ) : activeTab === "attendees" ? (
             <div className="event-detail-tab-content" key={activeTab}>
-              <AttendeeRoster event={event} onImportSaved={onImportSaved} />
+              <AttendeeRoster event={event} onRosterChanged={onRosterChanged} />
             </div>
           ) : activeTab === "kami" ? (
             <div className="event-detail-tab-content" key={activeTab}>

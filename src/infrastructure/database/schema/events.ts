@@ -8,6 +8,9 @@ import { organizationMemberships, organizations, users } from "./identity.ts";
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
 export const guestType = pgEnum("event_guest_type", ["Attendee", "VIP", "Sponsor"]);
 export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
+export const guestNetworkingStatus = pgEnum("event_guest_networking_status", ["included", "excluded"]);
+export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["guest_request", "organizer_decision", "not_attending", "other"]);
+export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed"]);
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -74,9 +77,15 @@ export const eventGuests = pgTable("event_guests", {
   linkedin: text("linkedin").notNull(),
   guestType: guestType("guest_type").notNull(), source: guestSource("source").notNull(),
   importId: uuid("import_id"),
+  networkingStatus: guestNetworkingStatus("networking_status").default("included").notNull(),
+  networkingExcludedAt: timestamp("networking_excluded_at", { withTimezone: true }),
+  networkingExcludedBy: uuid("networking_excluded_by").references(() => users.id, { onDelete: "restrict" }),
+  networkingExclusionReason: guestExclusionReason("networking_exclusion_reason"),
+  networkingVersion: integer("networking_version").default(1).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
+  unique("event_guests_id_event_unique").on(table.id, table.eventId),
   index("event_guests_event_position_idx").on(table.eventId, table.position),
   unique("event_guests_event_position_unique").on(table.eventId, table.position),
   uniqueIndex("event_guests_event_email_unique").on(table.eventId, table.normalizedEmail).where(sql`${table.normalizedEmail} is not null`),
@@ -86,6 +95,42 @@ export const eventGuests = pgTable("event_guests", {
   check("event_guests_contact_valid", sql`length(${table.email}) <= 254 and length(${table.phone}) <= 40 and length(${table.company}) <= 200 and length(${table.jobPosition}) <= 200 and length(${table.profileType}) <= 100 and length(${table.linkedin}) <= 500`),
   check("event_guests_source_import_valid", sql`(${table.source} = 'csv' and ${table.importId} is not null) or (${table.source} = 'manual' and ${table.importId} is null)`),
   check("event_guests_email_normalized_valid", sql`${table.normalizedEmail} is not distinct from nullif(lower(btrim(${table.email})), '')`),
+  check("event_guests_networking_valid", sql`(${table.networkingStatus} = 'excluded' and ${table.networkingExcludedAt} is not null and ${table.networkingExcludedBy} is not null and ${table.networkingExclusionReason} is not null) or (${table.networkingStatus} = 'included' and ${table.networkingExcludedAt} is null and ${table.networkingExcludedBy} is null and ${table.networkingExclusionReason} is null)`),
+  check("event_guests_networking_version_valid", sql`${table.networkingVersion} >= 1`),
+]);
+
+/** Do-not-match pairs. The pair is stored in canonical order, so A+B and B+A are one row and a guest cannot block themself. */
+export const eventMatchBlocks = pgTable("event_guest_match_blocks", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+  guestLowId: uuid("guest_low_id").notNull(),
+  guestHighId: uuid("guest_high_id").notNull(),
+  reason: text("reason"),
+  createdBy: uuid("created_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  foreignKey({ columns: [table.guestLowId, table.eventId], foreignColumns: [eventGuests.id, eventGuests.eventId], name: "event_guest_match_blocks_low_guest_fk" }).onDelete("cascade"),
+  foreignKey({ columns: [table.guestHighId, table.eventId], foreignColumns: [eventGuests.id, eventGuests.eventId], name: "event_guest_match_blocks_high_guest_fk" }).onDelete("cascade"),
+  unique("event_guest_match_blocks_pair_unique").on(table.eventId, table.guestLowId, table.guestHighId),
+  index("event_guest_match_blocks_high_idx").on(table.eventId, table.guestHighId),
+  check("event_guest_match_blocks_order_valid", sql`${table.guestLowId} < ${table.guestHighId}`),
+  check("event_guest_match_blocks_reason_valid", sql`${table.reason} is null or length(${table.reason}) <= 500`),
+]);
+
+/** Append-only log of networking changes, written in the same transaction as each change. Automatic matching only sets processed_at. */
+export const eventMatchingChanges = pgTable("event_matching_changes", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+  kind: matchingChangeKind("kind").notNull(),
+  guestIds: uuid("guest_ids").array().notNull(),
+  actorId: uuid("actor_id").notNull().references(() => users.id, { onDelete: "restrict" }),
+  reason: text("reason"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  processedAt: timestamp("processed_at", { withTimezone: true }),
+}, (table) => [
+  index("event_matching_changes_pending_idx").on(table.eventId, table.processedAt, table.createdAt),
+  check("event_matching_changes_guests_valid", sql`cardinality(${table.guestIds}) between 1 and 2`),
+  check("event_matching_changes_reason_valid", sql`${table.reason} is null or length(${table.reason}) <= 500`),
 ]);
 
 export const eventStaff = pgTable("event_staff", {

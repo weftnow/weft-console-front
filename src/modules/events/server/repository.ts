@@ -2,7 +2,7 @@ import "server-only";
 import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
-import { eventAttendeeImports, eventCovers, eventGuests, events, eventStaff } from "@/infrastructure/database/schema/events";
+import { eventAttendeeImports, eventCovers, eventGuests, eventMatchBlocks, events, eventStaff } from "@/infrastructure/database/schema/events";
 import { canAssignStaff, canCreateEvent } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
@@ -73,11 +73,13 @@ export async function findById(eventId: string, organizationId: string): Promise
   const [event] = await database.select().from(events)
     .where(and(eq(events.id, eventId), eq(events.organizationId, organizationId))).limit(1);
   if (!event) return null;
-  const [guests, imports, importTotals, staff, covers] = await Promise.all([
+  const [guests, imports, importTotals, matchBlocks, staff, covers] = await Promise.all([
     database.select().from(eventGuests).where(eq(eventGuests.eventId, eventId)).orderBy(eventGuests.position),
     database.select().from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId))
       .orderBy(desc(eventAttendeeImports.importedAt), desc(eventAttendeeImports.id)).limit(20),
     database.select({ total: count() }).from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId)),
+    database.select().from(eventMatchBlocks).where(eq(eventMatchBlocks.eventId, eventId))
+      .orderBy(eventMatchBlocks.createdAt, eventMatchBlocks.id),
     database.select({ id: organizationMemberships.id, name: users.displayName, role: organizationMemberships.role, avatar: users.avatarUrl })
       .from(eventStaff)
       .innerJoin(organizationMemberships, eq(eventStaff.membershipId, organizationMemberships.id))
@@ -103,6 +105,10 @@ export async function findById(eventId: string, organizationId: string): Promise
         guestType: guest.guestType, lastName: guest.lastName, linkedin: guest.linkedin,
         phone: guest.phone, position: guest.jobPosition, profileType: guest.profileType,
         source: guest.source,
+        networking: {
+          status: guest.networkingStatus, excludedAt: guest.networkingExcludedAt?.toISOString() ?? null,
+          reason: guest.networkingExclusionReason, version: guest.networkingVersion,
+        },
       })),
       imports: imports.map((batch) => ({
         id: batch.id, eventId: batch.eventId, fileName: batch.fileName,
@@ -112,6 +118,10 @@ export async function findById(eventId: string, organizationId: string): Promise
         importedAt: batch.importedAt.toISOString(),
       })),
       importCount: importTotals[0]?.total ?? 0,
+      matchBlocks: matchBlocks.map((block) => ({
+        id: block.id, guestIds: [block.guestLowId, block.guestHighId], reason: block.reason,
+        createdAt: block.createdAt.toISOString(),
+      })),
     },
     staff: staff.map((member) => ({ id: member.id, name: member.name, role: member.role, avatar: member.avatar ?? "" })),
   };
