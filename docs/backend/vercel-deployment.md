@@ -4,6 +4,10 @@ Vercel uses the checked-in `vercel.json` build command, `pnpm build:vercel`.
 It validates the database settings, runs `pnpm build`, then runs `pnpm db:migrate`.
 Either command failing fails the deployment. A failed app build never applies migrations.
 Local `pnpm build` continues to build only the app.
+The shared app command explicitly selects Next.js's supported Webpack production bundler,
+so local verification, pre-push checks and Vercel use the same bundler. This avoids
+Turbopack's local loader-worker port failure in the current macOS execution environment;
+build failures still stop the hook and prevent deployment migrations.
 
 ## One-time Vercel setup
 

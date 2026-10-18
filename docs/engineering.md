@@ -12,6 +12,8 @@ Before browser acceptance, confirm the configured Clerk development instance and
 
 ### Local production build and start
 
+`pnpm build` explicitly uses Next.js's supported Webpack production bundler (`next build --webpack`). The pre-push hook and Vercel wrapper both invoke this same command. Turbopack's loader worker fails to bind its local IPC port in the current macOS execution environment, including approved runs, while Webpack completes the full production build. Keep development on `next dev`; no hook or validation is skipped. Reassess Turbopack separately when the upstream environment issue is resolved.
+
 An ignored `.env.production.local` file takes precedence over `.env.local` during production builds/startup. Next resolves existing process environment first, followed by `.env.production.local`, `.env.local`, `.env.production`, and `.env` for these commands. Inspect which files exist without dumping their contents. `NEXT_PUBLIC_` values are embedded at build time, so changing only runtime configuration cannot repair an artifact built with live Clerk keys.
 
 For local production-artifact acceptance, preload `.env.local` before **both** build and start. Set `VERCEL=0`, `VERCEL_ENV=development`, and `VERCEL_TARGET_ENV=development` in the child process. The following shell function uses the Node environment loader exercised during F03 acceptance and fails before launching pnpm if the key prefixes or database name are wrong. Confirm the endpoint separately as above. Existing exported variables take precedence over Node's `--env-file`; resolve any stale exports before proceeding. Keep the ignored environment files unchanged.

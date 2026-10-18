@@ -103,6 +103,6 @@ Implementation and acceptance evidence from 2026-10-18 follows. Migration `0007_
 
 ## Handoff or outcome
 
-UI follow-up: the [F01–F03 UI repair](2026-10-18-f01-f03-ui-repair.md) consolidates Staff controls and repairs Settings composition and conflict review. This does not close the separate-role browser acceptance tracked here.
+UI follow-up: the [F01–F03 UI repair](../completed/2026-10-18-f01-f03-ui-repair.md) consolidates Staff controls and repairs Settings composition and conflict review. This does not close the separate-role browser acceptance tracked here.
 
 Next action: provide non-production Organizer and Wefter sessions if direct browser acceptance for those roles is required. Automated authorization, transaction behavior, signed-in Owner UI, responsive/keyboard checks, build and repository verification are complete. Keep this plan active until separate-role browser acceptance is available. F12 assignment persistence, busy checks and active-introduction protection are not implemented or claimed; F12 must integrate them with schedule/access mutations. No commit, push, deploy, invitation or production change was made.
