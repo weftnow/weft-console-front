@@ -13,7 +13,7 @@ import { canAccessEvent } from "../access-policy";
 import { requireEventCreator } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
 
-export async function requireEventReaderAccess(input: { userId: string; eventId: string; organizationId: string }): Promise<void> {
+export async function requireEventReaderAccess(input: { userId: string; eventId: string; organizationId: string }): Promise<boolean> {
   const access = await accessRepository.findEventAccessForActor(input.eventId, input.userId);
   const allowed = access && access.organizationId === input.organizationId && canAccessEvent({
     membership: { active: true, role: access.role === "operator" || access.role === "wefter" ? "staff" : access.role },
@@ -22,6 +22,7 @@ export async function requireEventReaderAccess(input: { userId: string; eventId:
   if (!allowed) {
     throw new ApplicationError("FORBIDDEN", "You do not have access to this event or organization.");
   }
+  return access.role === "owner" || access.role === "organizer";
 }
 
 export type PreparedEvent = {
@@ -79,7 +80,7 @@ export async function createEvent(
 
 type ReadDependencies = {
   findOrganizationId: typeof repository.findOrganizationId;
-  requireReader?: (input: { userId: string; eventId: string; organizationId: string }) => Promise<void>;
+  requireReader?: (input: { userId: string; eventId: string; organizationId: string }) => Promise<boolean | void>;
   findById: typeof repository.findById;
   findCover: typeof repository.findCover;
 };
@@ -91,9 +92,10 @@ export async function getEvent(
   if (!uuidSchema.safeParse(eventId).success) throw new ApplicationError("NOT_FOUND", "Event not found.");
   const organizationId = await dependencies.findOrganizationId(eventId);
   if (!organizationId) throw new ApplicationError("NOT_FOUND", "Event not found.");
-  await (dependencies.requireReader ?? requireEventReaderAccess)({ userId, eventId, organizationId });
+  const canManage = await (dependencies.requireReader ?? requireEventReaderAccess)({ userId, eventId, organizationId });
   const event = await dependencies.findById(eventId, organizationId);
   if (!event) throw new ApplicationError("NOT_FOUND", "Event not found.");
+  event.attendees.canManage = canManage ?? true;
   return event;
 }
 

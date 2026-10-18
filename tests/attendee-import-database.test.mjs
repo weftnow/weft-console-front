@@ -26,6 +26,7 @@ async function withEvent(run) {
       values ($1, $2, $3, 'CSV test event', 'Import persistence test', 'Singapore', ARRAY['Technology'], ARRAY[]::text[], '2026-11-19', '2026-11-19', 'Asia/Singapore', '2026-11-18T16:00:00Z', '2026-11-19T16:00:00Z')`, [eventId, organizationId, userId]);
     await run({ pool, userId, organizationId, eventId, membershipId });
   } finally {
+    await loadTs("src/infrastructure/database/client.ts").closeDatabase();
     await pool.query("delete from events where id = $1", [eventId]);
     await pool.query("delete from organization_memberships where id = $1", [membershipId]);
     await pool.query("delete from organizations where id = $1", [organizationId]);
@@ -36,8 +37,8 @@ async function withEvent(run) {
 }
 
 const guestValues = (eventId, position, email, firstName = "Seed") => ({
-  eventId, position, firstName, lastName: "Guest", email, normalizedEmail: email,
-  phone: "", company: "", jobPosition: "", profileType: "", linkedin: "",
+  eventId, personId: randomUUID(), revision: 1, position, firstName, lastName: "Guest", email, normalizedEmail: email,
+  phone: "", normalizedPhone: null, company: "", jobPosition: "", profileType: "", linkedin: "",
   guestType: "Attendee", source: "manual", importId: null,
 });
 
@@ -53,18 +54,23 @@ test("concurrent identical imports commit one batch and persist a fresh readable
     assert.equal(results.filter((result) => result.replayed).length, 1);
     assert.equal((await pool.query("select count(*)::integer as count from event_attendee_imports where event_id = $1", [eventId])).rows[0].count, 1);
     assert.equal((await pool.query("select count(*)::integer as count from event_guests where event_id = $1", [eventId])).rows[0].count, 1);
+    assert.equal((await pool.query("select count(*)::integer as count from event_people where event_id = $1", [eventId])).rows[0].count, 1, "replay does not create another event-local identity");
     const { getEvent } = loadTs("src/modules/events/server/service.ts");
     const fresh = await getEvent({ userId, eventId });
     assert.equal(fresh.attendees.importCount, 1);
     assert.equal(fresh.attendees.guests.length, 1);
     assert.equal(fresh.attendees.guests[0].importId, results[0].import.id);
+    assert.equal(fresh.attendees.guests[0].revision, 1);
+    assert.ok(fresh.attendees.guests[0].personId);
   });
 });
 
 test("overlapping email batches skip existing manual details and never overwrite provenance", { skip: !enabled }, async () => {
   await withEvent(async ({ pool, userId, eventId }) => {
     const { importAttendees } = loadTs("src/modules/events/server/attendee-import-service.ts");
-    await pool.query("insert into event_guests (event_id, position, first_name, last_name, email, normalized_email, phone, company, job_position, profile_type, linkedin, guest_type, source) values ($1, 0, 'Original', 'VIP', 'ada@example.com', 'ada@example.com', '555', 'Original Co', 'Founder', 'Founders', '', 'VIP', 'manual')", [eventId]);
+    const personId = randomUUID();
+    await pool.query("insert into event_people (id,event_id) values ($1,$2)", [personId, eventId]);
+    await pool.query("insert into event_guests (event_id, person_id, position, first_name, last_name, email, normalized_email, phone, company, job_position, profile_type, linkedin, guest_type, source) values ($1, $2, 0, 'Original', 'VIP', 'ada@example.com', 'ada@example.com', '555', 'Original Co', 'Founder', 'Founders', '', 'VIP', 'manual')", [eventId, personId]);
     const result = await importAttendees({ userId, eventId, data: { fileName: "overlap.csv", csvText: "First Name,Email,Guest Type,Company\nChanged,ada@example.com,Attendee,Changed Co\nGrace,grace@example.com,Attendee,Grace Co\n" } });
     assert.equal(result.import.storedCount, 1);
     assert.equal(result.import.duplicateCount, 1);
@@ -76,10 +82,13 @@ test("overlapping email batches skip existing manual details and never overwrite
 test("two near-capacity imports serialize and cannot exceed 2,000 guests", { skip: !enabled }, async () => {
   await withEvent(async ({ pool, userId, eventId }) => {
     const { importAttendees } = loadTs("src/modules/events/server/attendee-import-service.ts");
-    const { eventGuests } = loadTs("src/infrastructure/database/schema/events.ts");
+    const { eventGuests, eventPeople } = loadTs("src/infrastructure/database/schema/events.ts");
     const { getDatabase } = loadTs("src/infrastructure/database/client.ts");
     const seeded = Array.from({ length: 1999 }, (_, index) => guestValues(eventId, index, `seed${index}@example.com`));
-    await getDatabase().insert(eventGuests).values(seeded);
+    await getDatabase().transaction(async (tx) => {
+      await tx.insert(eventPeople).values(seeded.map((guest) => ({ id: guest.personId, eventId })));
+      await tx.insert(eventGuests).values(seeded);
+    });
     const inputs = ["New One,new-one@example.com", "New Two,new-two@example.com"].map((line, index) => ({
       fileName: `capacity-${index}.csv`, csvText: `First Name,Email\n${line}\n`,
     }));
@@ -87,6 +96,7 @@ test("two near-capacity imports serialize and cannot exceed 2,000 guests", { ski
     assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
     assert.equal(results.filter((result) => result.status === "rejected" && result.reason.code === "VALIDATION_ERROR").length, 1);
     assert.equal((await pool.query("select count(*)::integer as count from event_guests where event_id = $1", [eventId])).rows[0].count, 2000);
+    assert.equal((await pool.query("select count(*)::integer as count from event_people where event_id = $1", [eventId])).rows[0].count, 2000);
   });
 });
 
@@ -105,6 +115,7 @@ test("locked import rechecks revoked membership and rolls back a failed guest in
     await pool.query("update organization_memberships set active = true where id = $1", [membershipId]);
     const beforeEvent = await pool.query("select updated_at from events where id = $1", [eventId]);
     const beforeImports = await pool.query("select count(*)::integer as count from event_attendee_imports where event_id = $1", [eventId]);
+    const beforePeople = await pool.query("select count(*)::integer as count from event_people where event_id = $1", [eventId]);
     const { withLockedEventRoster: appendLockedRoster } = loadTs("src/modules/events/server/attendee-import-repository.ts");
     await assert.rejects(appendLockedRoster({
       userId, eventId,
@@ -118,7 +129,9 @@ test("locked import rechecks revoked membership and rolls back a failed guest in
     })));
     const afterEvent = await pool.query("select updated_at from events where id = $1", [eventId]);
     const afterImports = await pool.query("select count(*)::integer as count from event_attendee_imports where event_id = $1", [eventId]);
+    const afterPeople = await pool.query("select count(*)::integer as count from event_people where event_id = $1", [eventId]);
     assert.deepEqual(afterImports.rows, beforeImports.rows);
+    assert.deepEqual(afterPeople.rows, beforePeople.rows, "failed guest writes roll back their new identities");
     assert.deepEqual(afterEvent.rows, beforeEvent.rows);
   });
 });

@@ -57,6 +57,13 @@
       "when": 1792304618387,
       "tag": "0007_jittery_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792306996645,
+      "tag": "0008_attendee_contact_corrections",
+      "breakpoints": true
     }
   ]
 }

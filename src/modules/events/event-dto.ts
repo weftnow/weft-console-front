@@ -10,8 +10,12 @@ const guestSchema = z.strictObject({
   phone: z.string(), position: z.string(), profileType: z.string(),
   source: z.enum(["csv", "manual"]),
   importId: uuidSchema.nullable(),
+  personId: uuidSchema,
+  revision: z.number().int().min(1),
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 });
+
+export const savedEventGuestDtoSchema = guestSchema;
 
 export const eventDetailDtoSchema = z.strictObject({
   id: uuidSchema,
@@ -25,6 +29,7 @@ export const eventDetailDtoSchema = z.strictObject({
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
   coverImage: z.string().nullable(),
   attendees: z.strictObject({
+    canManage: z.boolean(),
     guests: z.array(guestSchema),
     imports: z.array(attendeeImportDtoSchema).max(20),
     importCount: z.number().int().min(0),

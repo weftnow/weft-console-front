@@ -2,11 +2,12 @@ import "server-only";
 import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
-import { eventAttendeeImports, eventCovers, eventGuests, events, eventStaff } from "@/infrastructure/database/schema/events";
+import { eventAttendeeImports, eventCovers, eventGuests, eventPeople, events, eventStaff } from "@/infrastructure/database/schema/events";
 import { canAssignStaff, canCreateEvent } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
 import type { PreparedEvent } from "./service";
+import { normalizeAttendeePhone } from "../attendee-contact";
 
 export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
   const { data, schedule, guests, imported, cover, userId, organizationId } = prepared;
@@ -44,13 +45,19 @@ export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
       }).returning({ id: eventAttendeeImports.id });
       importId = batch.id;
     }
-    if (guests.length) await tx.insert(eventGuests).values(guests.map((guest, position) => ({
-      eventId: inserted.id, position, firstName: guest.firstName, lastName: guest.lastName,
-      email: guest.email, normalizedEmail: guest.email || null, phone: guest.phone,
-      company: guest.company, jobPosition: guest.position, profileType: guest.profileType,
-      linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
-      importId: guest.source === "csv" ? importId : null,
-    })));
+    if (guests.length) {
+      const people = guests.map(() => crypto.randomUUID());
+      await tx.insert(eventPeople).values(people.map((id) => ({ id, eventId: inserted.id })));
+      await tx.insert(eventGuests).values(guests.map((guest, position) => ({
+        personId: people[position], revision: 1,
+        eventId: inserted.id, position, firstName: guest.firstName, lastName: guest.lastName,
+        email: guest.email, normalizedEmail: guest.email || null, phone: guest.phone,
+        normalizedPhone: normalizeAttendeePhone(guest.phone),
+        company: guest.company, jobPosition: guest.position, profileType: guest.profileType,
+        linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
+        importId: guest.source === "csv" ? importId : null,
+      })));
+    }
     if (selectedIds.length) await tx.insert(eventStaff).values(selectedIds.map((membershipId) => ({
       eventId: inserted.id, organizationId, membershipId,
     })));
@@ -97,8 +104,10 @@ export async function findById(eventId: string, organizationId: string): Promise
     createdAt: event.createdAt.toISOString(), updatedAt: event.updatedAt.toISOString(),
     coverImage: covers.length ? `/api/events/${event.id}/cover` : null,
     attendees: {
+      canManage: true,
       guests: guests.map((guest) => ({
         id: guest.id, createdAt: guest.createdAt.toISOString(), updatedAt: guest.updatedAt.toISOString(), importId: guest.importId,
+        personId: guest.personId, revision: guest.revision,
         company: guest.company, email: guest.email, firstName: guest.firstName,
         guestType: guest.guestType, lastName: guest.lastName, linkedin: guest.linkedin,
         phone: guest.phone, position: guest.jobPosition, profileType: guest.profileType,

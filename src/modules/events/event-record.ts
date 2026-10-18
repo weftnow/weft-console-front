@@ -23,6 +23,8 @@ export interface SavedEventGuestRecord extends EventGuestRecord {
   createdAt: string;
   id: string;
   importId: string | null;
+  personId: string;
+  revision: number;
   updatedAt: string;
 }
 
@@ -34,7 +36,7 @@ export interface EventStaffRecord {
 }
 
 export interface EventRecord {
-  attendees: { guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number };
+  attendees: { canManage: boolean; guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number };
   categories: string[];
   city: string;
   coverImage: string | null;

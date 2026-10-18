@@ -64,6 +64,16 @@ export const eventAttendeeImports = pgTable("event_attendee_imports", {
   check("event_import_counts_valid", sql`${table.importedCount} between 0 and 2000 and ${table.storedCount} between 0 and 2000 and ${table.duplicateCount} >= 0 and ${table.blankCount} >= 0 and ${table.importedCount} = ${table.storedCount} + ${table.duplicateCount} and ${table.vipCount} >= 0 and ${table.sponsorCount} >= 0 and ${table.vipCount} + ${table.sponsorCount} <= ${table.storedCount}`),
 ]);
 
+/** Event-local identity. Guest rows remain the durable participation/source records. */
+export const eventPeople = pgTable("event_people", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  unique("event_people_id_event_unique").on(table.id, table.eventId),
+  foreignKey({ columns: [table.eventId], foreignColumns: [events.id], name: "event_people_event_fk" }).onDelete("cascade"),
+]);
+
 export const eventGuests = pgTable("event_guests", {
   id: uuid("id").defaultRandom().primaryKey(),
   eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
@@ -75,18 +85,25 @@ export const eventGuests = pgTable("event_guests", {
   linkedin: text("linkedin").notNull(),
   guestType: guestType("guest_type").notNull(), source: guestSource("source").notNull(),
   importId: uuid("import_id"),
+  personId: uuid("person_id").notNull(),
+  revision: integer("revision").default(1).notNull(),
+  normalizedPhone: text("normalized_phone"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   index("event_guests_event_position_idx").on(table.eventId, table.position),
   unique("event_guests_event_position_unique").on(table.eventId, table.position),
-  uniqueIndex("event_guests_event_email_unique").on(table.eventId, table.normalizedEmail).where(sql`${table.normalizedEmail} is not null`),
+  index("event_guests_event_email_idx").on(table.eventId, table.normalizedEmail),
+  index("event_guests_event_phone_idx").on(table.eventId, table.normalizedPhone),
   foreignKey({ columns: [table.importId, table.eventId], foreignColumns: [eventAttendeeImports.id, eventAttendeeImports.eventId], name: "event_guests_import_event_fk" }).onDelete("no action"),
+  foreignKey({ columns: [table.personId, table.eventId], foreignColumns: [eventPeople.id, eventPeople.eventId], name: "event_guests_person_event_fk" }).onDelete("restrict"),
   check("event_guests_position_valid", sql`${table.position} >= 0`),
   check("event_guests_name_valid", sql`length(${table.firstName}) <= 100 and length(${table.lastName}) <= 100 and length(btrim(${table.firstName} || ${table.lastName})) > 0`),
   check("event_guests_contact_valid", sql`length(${table.email}) <= 254 and length(${table.phone}) <= 40 and length(${table.company}) <= 200 and length(${table.jobPosition}) <= 200 and length(${table.profileType}) <= 100 and length(${table.linkedin}) <= 500`),
   check("event_guests_source_import_valid", sql`(${table.source} = 'csv' and ${table.importId} is not null) or (${table.source} = 'manual' and ${table.importId} is null)`),
   check("event_guests_email_normalized_valid", sql`${table.normalizedEmail} is not distinct from nullif(lower(btrim(${table.email})), '')`),
+  check("event_guests_phone_normalized_valid", sql`${table.normalizedPhone} is not distinct from case when ${table.phone} ~ '^\\+?[0-9]([0-9 ()().-]*[0-9])?$' and length(regexp_replace(${table.phone}, '[^0-9]', '', 'g')) between 7 and 15 then nullif(regexp_replace(${table.phone}, '[^+0-9]', '', 'g'), '') else null end`),
+  check("event_guests_revision_positive", sql`${table.revision} >= 1`),
 ]);
 
 export const eventStaff = pgTable("event_staff", {
