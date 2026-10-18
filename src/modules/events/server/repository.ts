@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, isNotNull, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
 import { eventAttendeeImports, eventCovers, eventGuests, eventPeople, events, eventStaff } from "@/infrastructure/database/schema/events";
@@ -89,7 +89,7 @@ export async function findById(eventId: string, organizationId: string): Promise
       .from(eventStaff)
       .innerJoin(organizationMemberships, eq(eventStaff.membershipId, organizationMemberships.id))
       .innerJoin(users, eq(organizationMemberships.userId, users.id))
-      .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId))),
+      .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId), isNotNull(eventStaff.consoleAccess), eq(organizationMemberships.active, true), eq(organizationMemberships.role, "staff"))),
     database.select({ eventId: eventCovers.eventId }).from(eventCovers).where(eq(eventCovers.eventId, eventId)).limit(1),
   ]);
   return {

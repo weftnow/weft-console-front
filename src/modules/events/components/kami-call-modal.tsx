@@ -14,10 +14,7 @@ function initials(firstName: string, lastName: string) {
   return letters || "?";
 }
 
-/**
- * Shown when the organizer previews the experience: Kami works down the guest
- * list, so the first attendee on the roster is the first call it will place.
- */
+/** A local preview using the first attendee's event context. No call is placed. */
 export function KamiCallModal({
   config,
   event,
@@ -60,8 +57,8 @@ export function KamiCallModal({
         <div className="kami-call-modal__head">
           <KamiMark size={46} />
           <div>
-            <h2 id="kami-call-title">Kami is getting ready to call</h2>
-            <p>The first call for {event.name}.</p>
+            <h2 id="kami-call-title">Call preview</h2>
+            <p>An example for {event.name}.</p>
           </div>
           <button
             aria-label="Close"
@@ -84,24 +81,23 @@ export function KamiCallModal({
                 <span>{guest.position || "Attendee"}</span>
                 <small>{guest.company || "No company on file"}</small>
               </div>
-              <span className="kami-call-modal__status">Calling soon</span>
+              <span className="kami-call-modal__status">Preview only</span>
             </Surface>
             <p className="kami-call-modal__copy">
-              {firstName} is first on your attendee list, so Kami will call shortly to learn what
-              they want from this event, then line up introductions before doors open.
+              This example uses {firstName}’s details from the attendee list.
+              Previewing does not contact attendees.
             </p>
           </>
         ) : (
           <p className="kami-call-modal__copy">
-            There is no one on the attendee list yet. Import your guest list and Kami will start
-            calling from the top.
+            Add attendees to see an example using this event’s guest list.
           </p>
         )}
 
         <div className="kami-call-modal__footer">
           <span className="kami-call-modal__channel" data-enabled={config.channels.calls}>
             <PhoneIcon height="14" width="14" />
-            {config.channels.calls ? "Calls channel enabled" : "Calls channel is switched off"}
+            {config.channels.calls ? "Calls included in preview" : "Calls not included in preview"}
           </span>
           <TactileButton onClick={onClose} variant="graphite">Got it</TactileButton>
         </div>

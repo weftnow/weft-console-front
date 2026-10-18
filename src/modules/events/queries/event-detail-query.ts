@@ -42,7 +42,7 @@ export async function refreshEventDetail(queryClient: QueryClient, scope: EventQ
   if (result && result.kind !== "ready") {
     throw new ApplicationError(
       result.kind === "unauthorized" ? "UNAUTHORIZED" : result.kind === "forbidden" ? "FORBIDDEN" : "NOT_FOUND",
-      "Import saved; this event is no longer accessible.",
+      "Changes saved; this event is no longer accessible.",
     );
   }
 }

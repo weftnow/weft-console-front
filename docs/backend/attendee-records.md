@@ -10,6 +10,8 @@ Contact candidates require an exact normalized email or phone match inside the s
 
 The roster flags missing or syntactically invalid email and phone. Invalid contact text can be saved so it can be flagged and corrected. It does not produce a candidate. The current repository has no persisted profiles, matches, or meeting results. F03 creates no later-feature tables; therefore no existing related match rows can currently conflict with a link. Future match persistence must add an atomic conflict check and explicit per-match disposition before links can affect those records.
 
+The UI opens attendee editing and duplicate review in a focused dialog. Conflict comparisons show saved details alongside the user's draft, keeping revision tokens internal. Duplicate review shows existing links, the matching email/phone, and explains when the source's existing identity group will also be linked. An explicit same-person checkbox enables linking; the roster retains a linked-record label afterwards. Its header counts unique `personId` values separately from attendee records. Overview totals are labeled as records, not actual attendance or unique people. Identity linking does not choose or overwrite the displayed contact fields of other linked guest rows.
+
 ## API
 
 - `PUT /api/events/:eventId/attendees/:guestId`: strict replacement details and `expectedRevision`.

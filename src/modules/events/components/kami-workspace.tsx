@@ -299,7 +299,7 @@ export function KamiWorkspace({
           </div>
           <div className="kami-status__side">
             <div className="kami-status__state">
-              <span className="kami-status__pill">Ready</span>
+              <span className="kami-status__pill">Preview</span>
               <small>{usingDefaults ? "Using default configuration" : "Customized for this event"}</small>
             </div>
             <div className="kami-status__actions">
@@ -312,9 +312,8 @@ export function KamiWorkspace({
             </div>
           </div>
           <p className="kami-status__copy">
-            Kami will be active during {event.name} and use the event and attendee context below to
-            help guests find the right people, make introductions, and get the most value from their
-            time in the room.
+            Preview conversation examples using this event’s details and attendee list.
+            These preferences are saved in this browser for the preview.
           </p>
         </Surface>
 
@@ -375,7 +374,7 @@ export function KamiWorkspace({
                   <div>
                     <strong>{channel.label}</strong>
                     <span>
-                      {!channel.available ? "Coming soon" : enabled ? "Enabled" : "Disabled"}
+                      {!channel.available ? "Not available in preview" : enabled ? "Included in preview" : "Not included"}
                     </span>
                   </div>
                   <ToggleSwitch

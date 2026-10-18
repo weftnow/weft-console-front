@@ -1,25 +1,93 @@
 "use client";
+
+import Link from "next/link";
 import { useState } from "react";
-import { Temporal } from "@js-temporal/polyfill";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { wefterListResponseSchema, wefterUpdateResponseSchema, type TimeInterval } from "../settings-schemas";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { wefterAssignmentSchema, wefterListResponseSchema, wefterUpdateResponseSchema, type TimeInterval } from "../settings-schemas";
+import { eventAccessUpdateResponseSchema, type EventAccessMode } from "../access-schemas";
+import { describeIntervals, eventFormErrorSchema } from "../event-form";
 import { Surface } from "@/shared/ui/surface";
-type Data = ReturnType<typeof wefterListResponseSchema.parse>["data"];
-function local(value: string, zone: string) { if (!value) return ""; const z = Temporal.Instant.from(value).toZonedDateTimeISO(zone); return `${z.toPlainDate().toString()}T${String(z.hour).padStart(2,"0")}:${String(z.minute).padStart(2,"0")}`; }
-function instant(value: string, zone: string) { return value ? Temporal.ZonedDateTime.from(`${value}:00[${zone}]`, { disambiguation: "reject" }).toInstant().toString() : ""; }
-export function EventWeftersPanel({ eventId }: { eventId: string }) {
-  const client = useQueryClient(), key = ["event-wefters", eventId]; const [drafts, setDrafts] = useState<Record<string, TimeInterval[]>>({}); const [conflicts, setConflicts] = useState<string[]>([]); const [errors, setErrors] = useState<Record<string,string>>({});
-  const query = useQuery({ queryKey: key, queryFn: async () => { const r = await fetch(`/api/events/${eventId}/wefters`, { cache: "no-store" }); if (!r.ok) throw new Error(); return wefterListResponseSchema.parse(await r.json()).data; }, staleTime: 0 });
-  const mutation = useMutation({ mutationFn: async ({ member, assigned, windows }: { member: Data["candidates"][number]; assigned: boolean; windows: TimeInterval[] }) => { const response = await fetch(`/api/events/${eventId}/wefters/${member.membershipId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ expectedRevision: member.revision, assigned, availabilityWindows: windows }) }); const payload: unknown = await response.json(); if (response.status === 409) throw new Error("conflict"); if (!response.ok) throw new Error("save"); return wefterUpdateResponseSchema.parse(payload).data.wefter; }, onSuccess: async (_result, value) => { const membershipId = value.member.membershipId; setDrafts((current) => { const next = { ...current }; delete next[membershipId]; return next; }); setConflicts((current) => current.filter((id) => id !== membershipId)); setErrors((current) => { const next = { ...current }; delete next[membershipId]; return next; }); await client.invalidateQueries({ queryKey: key }); }, onError: (_error, value) => { setErrors((current) => ({ ...current, [value.member.membershipId]: "Could not save. Check times and access, then try again." })); if (_error.message === "conflict") setConflicts((current) => [...new Set([...current, value.member.membershipId])]); } });
-  if (query.isPending) return <Surface depth="raised"><p role="status">Loading Wefters…</p></Surface>;
-  if (query.isError || !query.data) return <Surface depth="raised"><p role="alert">Wefter roster could not be loaded.</p><button type="button" onClick={() => void query.refetch()}>Try again</button></Surface>;
-  const { candidates, wefters, timezone } = query.data; const assigned = new Set(wefters.map((item) => item.membershipId));
-  return <Surface className="grid gap-4 p-5" depth="raised" aria-labelledby="wefters-heading"><div><h2 id="wefters-heading" className="text-lg font-semibold">Wefters</h2><p className="text-sm text-muted-foreground">Select any number of active local staff. Owners and Organizers manage their hours in {timezone}.</p></div>
-    {candidates.length === 0 ? <p>No active staff memberships are available in this organization.</p> : <ul className="grid gap-3">{candidates.map((member) => { const isAssigned = assigned.has(member.membershipId); const saved = wefters.find((v) => v.membershipId === member.membershipId); const windows = drafts[member.membershipId] ?? saved?.availabilityWindows ?? [];
-      return <li className="rounded-xl border border-border p-4" key={member.membershipId}><div className="flex flex-wrap items-center justify-between gap-3"><div><strong>{member.memberName}</strong><p className="text-sm text-muted-foreground">{isAssigned ? "Wefter · restricted event access" : member.currentMode === "operator" ? "Operator" : "No event access"}</p></div><button className="tactile-button tactile-button--graphite" type="button" disabled={mutation.isPending} onClick={() => mutation.mutate({ member, assigned: !isAssigned, windows })}>{isAssigned ? "Remove Wefter" : member.currentMode === "operator" ? "Switch to Wefter" : "Assign as Wefter"}</button></div>
-        {!isAssigned && member.currentMode === "operator" ? <p className="mt-2 text-sm" role="note">Switching to Wefter replaces Operator access with restricted Wefter access.</p> : null}
-        {isAssigned ? <div className="mt-4 grid gap-3"><div className="flex items-center justify-between"><h3 className="font-medium">Availability hours</h3><button className="underline" type="button" onClick={() => setDrafts((current) => ({ ...current, [member.membershipId]: [...windows, { startsAt: "", endsAt: "" }] }))}>Add interval</button></div>{windows.map((window, index) => <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]" key={`${member.membershipId}-${index}`}><label className="grid gap-1 text-sm">Starts<input type="datetime-local" value={local(window.startsAt, timezone)} onChange={(e) => { try { const next = [...windows]; next[index] = { ...next[index]!, startsAt: instant(e.target.value, timezone) }; setDrafts((current) => ({ ...current, [member.membershipId]: next })); } catch { setErrors((current) => ({ ...current, [member.membershipId]: `Choose a valid time in ${timezone}.` })); } }} /></label><label className="grid gap-1 text-sm">Ends<input type="datetime-local" value={local(window.endsAt, timezone)} onChange={(e) => { try { const next = [...windows]; next[index] = { ...next[index]!, endsAt: instant(e.target.value, timezone) }; setDrafts((current) => ({ ...current, [member.membershipId]: next })); } catch { setErrors((current) => ({ ...current, [member.membershipId]: `Choose a valid time in ${timezone}.` })); } }} /></label><button className="self-end underline" type="button" onClick={() => setDrafts((current) => ({ ...current, [member.membershipId]: windows.filter((_, i) => i !== index) }))}>Remove</button></div>)}{windows.length === 0 ? <p>No hours configured.</p> : null}<button className="tactile-button w-fit" disabled={mutation.isPending || !Object.hasOwn(drafts, member.membershipId)} type="button" onClick={() => mutation.mutate({ member, assigned: true, windows })}>Save hours</button></div> : null}
-        {conflicts.includes(member.membershipId) ? <p className="mt-3" role="alert">Access or schedule changed elsewhere. Reload the roster, review the saved value, then edit again. Your draft remains on screen. <button className="underline" type="button" onClick={() => { void query.refetch(); setConflicts((current) => current.filter((id) => id !== member.membershipId)); }}>Reload latest</button></p> : null}{errors[member.membershipId] ? <p className="mt-2" role="alert">{errors[member.membershipId]}</p> : null}
-      </li>; })}</ul>}
+import { TactileButton } from "@/shared/ui/tactile-button";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { StaffIcon } from "@/shared/ui/icons";
+import { EventField, EventIntervals } from "./event-form-controls";
+import { useCanInviteStaff } from "./events-query-provider";
+
+type StaffData = ReturnType<typeof wefterListResponseSchema.parse>["data"];
+type Candidate = StaffData["candidates"][number];
+type StaffDraft = { accessMode: EventAccessMode | null; windows: TimeInterval[]; revision: number };
+const accessLabel = (mode: EventAccessMode | null) => mode === "wefter" ? "Wefter" : mode === "operator" ? "Roster access" : "No event access";
+
+function StaffMember({ eventId, member, schedule, timezone, refresh }: {
+  eventId: string; member: Candidate; schedule?: StaffData["wefters"][number]; timezone: string; refresh: () => Promise<StaffData>;
+}) {
+  const [draft, setDraft] = useState<StaffDraft | null>(null);
+  const [latest, setLatest] = useState<StaffDraft | null>(null);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const saved: StaffDraft = { accessMode: member.currentMode, windows: schedule?.availabilityWindows ?? [], revision: member.revision };
+  const current = draft ?? saved;
+  const edit = (changes: Partial<StaffDraft>) => { setDraft({ ...current, ...changes }); setError(""); setNotice(""); };
+  const save = useMutation({ mutationFn: async () => {
+    if (!draft) return;
+    const isWefter = draft.accessMode === "wefter";
+    if (isWefter && !wefterAssignmentSchema.safeParse({ expectedRevision: draft.revision, assigned: true, availabilityWindows: draft.windows }).success) {
+      throw new Error("Add a valid start and end for each set of hours.");
+    }
+    const response = await fetch(`/api/events/${eventId}/${isWefter ? "wefters" : "access"}/${member.membershipId}`, {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(isWefter ? { expectedRevision: draft.revision, assigned: true, availabilityWindows: draft.windows } : { expectedRevision: draft.revision, accessMode: draft.accessMode }),
+    });
+    const body: unknown = await response.json();
+    if (response.status === 409) {
+      const data = await refresh();
+      const candidate = data.candidates.find((item) => item.membershipId === member.membershipId);
+      if (!candidate) throw new Error("This person is no longer available to add. Your changes were not saved.");
+      setLatest({ accessMode: candidate.currentMode, revision: candidate.revision, windows: data.wefters.find((item) => item.membershipId === member.membershipId)?.availabilityWindows ?? [] });
+      return;
+    }
+    if (!response.ok) {
+      const parsed = eventFormErrorSchema.safeParse(body);
+      throw new Error(parsed.success ? Object.values(parsed.data.error.fields ?? {}).join(" ") || parsed.data.error.message : "Could not save staff changes. Try again.");
+    }
+    if (isWefter) wefterUpdateResponseSchema.parse(body); else eventAccessUpdateResponseSchema.parse(body);
+    setDraft(null); setLatest(null); setNotice("Staff details saved.");
+    await refresh();
+  }, onError: (reason) => setError(reason.message) });
+
+  return <li className="event-staff-member">
+    <form onSubmit={(event) => { event.preventDefault(); setError(""); save.mutate(); }}>
+      <fieldset disabled={save.isPending}>
+        <div className="event-staff-row"><div className="event-staff-identity"><span className="event-staff-avatar" aria-hidden="true">{member.memberName.split(" ").map((name) => name[0]).slice(0, 2).join("")}</span><div><h3>{member.memberName}</h3><p>{accessLabel(member.currentMode)}</p></div></div>
+          <EventField label={`Event access for ${member.memberName}`}>{(id) => <select className="event-control" id={id} value={current.accessMode ?? "none"} onChange={(event) => edit({ accessMode: event.target.value === "none" ? null : event.target.value as EventAccessMode })}><option value="none">No event access</option><option value="operator">Roster access</option><option value="wefter">Wefter</option></select>}</EventField>
+        </div>
+        <p className="event-staff-explanation">{current.accessMode === "wefter" ? "Wefters can view their own availability hours. They do not have access to the attendee roster." : current.accessMode === "operator" ? "Can view this event’s attendee roster. Cannot edit attendees or event settings." : "This person cannot open the event."}</p>
+        {member.currentMode === "wefter" && current.accessMode !== "wefter" ? <p className="event-change-note">Saving this change removes their Wefter hours{current.accessMode === null ? " and access to this event" : ""}.</p> : member.currentMode === "operator" && current.accessMode === "wefter" ? <p className="event-change-note">Saving as a Wefter removes their roster access.</p> : null}
+        {current.accessMode === "wefter" ? <div className="event-staff-hours"><h4>Availability hours</h4><p className="event-section-description">Set by the event organizers. Times use {timezone.replaceAll("_", " ")}.</p><EventIntervals label="hours" timezone={timezone} windows={current.windows} onChange={(windows) => edit({ windows })} /></div> : null}
+      </fieldset>
+      {latest ? <div className="event-conflict" role="alert"><h4>Staff details changed while you were editing</h4><p>Compare the saved details with your changes before saving again.</p><div className="event-comparison">{[{ title: "Saved details", value: latest }, { title: "Your changes", value: current }].map(({ title, value }) => <div key={title}><h4>{title}</h4><p>{accessLabel(value.accessMode)}</p>{value.accessMode === "wefter" ? <p>{describeIntervals(value.windows, timezone)}</p> : null}</div>)}</div><div className="event-form-actions"><TactileButton onClick={() => { setDraft(null); setLatest(null); }}>Use saved details</TactileButton><TactileButton onClick={() => { setDraft({ ...current, revision: latest.revision }); setLatest(null); }}>Keep my changes</TactileButton></div></div> : null}
+      {error ? <p className="event-field__error" role="alert">{error}</p> : null}{notice ? <p className="event-form-notice" role="status">{notice}</p> : null}
+      {draft ? <div className="event-form-footer"><span>Unsaved changes</span><div className="event-form-actions"><TactileButton disabled={save.isPending} onClick={() => { setDraft(null); setLatest(null); setError(""); }}>Discard changes</TactileButton><TactileButton disabled={save.isPending || !!latest} type="submit" variant="graphite">{save.isPending ? "Saving…" : "Save staff details"}</TactileButton></div></div> : null}
+    </form>
+  </li>;
+}
+
+export function EventWeftersPanel({ eventId, onSaved }: { eventId: string; onSaved: () => void | Promise<void> }) {
+  const canInvite = useCanInviteStaff();
+  const query = useQuery({ queryKey: ["event-wefters", eventId], queryFn: async () => {
+    const response = await fetch(`/api/events/${eventId}/wefters`, { cache: "no-store" });
+    if (!response.ok) throw new Error("Could not load staff.");
+    return wefterListResponseSchema.parse(await response.json()).data;
+  }, staleTime: 0 });
+  async function refresh() {
+    const result = await query.refetch();
+    if (!result.data || result.isError) throw new Error("Could not refresh staff details. Reload the page before saving again.");
+    await onSaved();
+    return result.data;
+  }
+  return <Surface as="section" className="panel event-management-panel" depth="raised" aria-labelledby="event-staff-heading">
+    <div className="event-management-heading"><span className="event-management-icon surface-inset"><StaffIcon height="20" width="20" /></span><div><h2 id="event-staff-heading">Event staff</h2><p>Manage roster access, Wefters and their availability hours.</p></div>{canInvite ? <Link className="event-text-action" href="/settings/team">Manage team</Link> : null}</div>
+    {query.isError && query.data ? <p className="event-field__error" role="status">Could not refresh staff. Your changes are still here. <button className="event-text-action" onClick={() => void query.refetch()} type="button">Try again</button></p> : null}
+    {query.isPending ? <p className="event-form-notice" role="status">Loading staff…</p> : !query.data ? <div className="event-form-section"><p role="alert">Could not load event staff.</p><TactileButton onClick={() => void query.refetch()}>Try again</TactileButton></div> : !query.data.candidates.length ? <EmptyState size="panel" icon={StaffIcon} title="No staff to add yet" description={canInvite ? "Invite staff to your organization, then give them access to this event." : "Ask an organization owner to invite staff. You can then give them access to this event."} action={canInvite ? <Link className="tactile-button event-form-button" href="/settings/team">Invite staff</Link> : undefined} /> : <ul className="event-staff-list">{query.data.candidates.map((member) => <StaffMember key={member.membershipId} eventId={eventId} member={member} schedule={query.data.wefters.find((item) => item.membershipId === member.membershipId)} timezone={query.data.timezone} refresh={refresh} />)}</ul>}
   </Surface>;
 }

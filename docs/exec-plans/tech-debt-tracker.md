@@ -4,6 +4,7 @@ Track concrete nonblocking follow-ups here. Unmet acceptance for current work st
 
 | Gap | Impact | Next action / evidence |
 | --- | --- | --- |
+| Default Turbopack build cannot bind a local CSS worker port in this environment | Default production-bundler acceptance remains open despite passing UI checks and the supported Webpack production build | Normal and approved `pnpm build` retries failed with `Operation not permitted`; rerun in an environment that permits the worker port. See the [UI repair plan](active/2026-10-18-f01-f03-ui-repair.md). No bundler config was changed. |
 | Legacy plan status diverges from implemented code | Old unchecked steps can trigger duplicate work or false completion | Reconcile only the relevant item when resumed; see [legacy index](legacy/README.md) |
 | Database/provider/browser onboarding acceptance remains separate | Mocked and skipped tests cannot establish live locking, delivery, or signed-in admission | Follow [verification prerequisites](../VERIFICATION.md) and [provisioning checks](../backend/customer-provisioning.md) in an authorized isolated environment |
 | Design tooling/tokens differ from target guidance | Unqualified examples could cause unnecessary dependencies or inconsistent primitives | Use the implemented-baseline note in the [design system](../design/design-system.md); decide intentional expansions in a scoped plan |

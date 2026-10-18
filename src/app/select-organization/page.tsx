@@ -14,7 +14,7 @@ export default async function SelectOrganizationPage() {
   );
   const grantedEvents = await listGrantedEventsForUser(user.id);
   if (!organizations.length && !grantedEvents.length) return <AuthShell title="Console access required" description="Your account does not have an organization or event this Console can open.">{null}</AuthShell>;
-  return <AuthShell title="Choose an organization" description="Select the organization you want to work in.">
+  return <AuthShell title={organizations.length ? "Choose your workspace" : "Your events"} description={organizations.length ? "Choose an organization or event to continue." : "Open an event you have access to."}>
     {organizations.length ? <form action={selectOrganization} className="mt-6 grid gap-3">
       {organizations.map((organization) => <button
         className="rounded-xl border border-border bg-background px-4 py-3 text-left text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -24,7 +24,7 @@ export default async function SelectOrganizationPage() {
     {grantedEvents.length ? <section className="mt-8 grid gap-3" aria-labelledby="granted-events-heading">
       <h2 className="text-sm font-semibold" id="granted-events-heading">Your event access</h2>
       {grantedEvents.map((event) => <Link className="rounded-xl border border-border bg-background px-4 py-3 text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${event.accessMode}/${event.eventId}`} key={event.eventId}>
-        <strong>{event.eventName}</strong><span className="ml-2 text-muted-foreground">{event.accessMode === "operator" ? "Operator" : "Wefter"}</span>
+        <strong>{event.eventName}</strong><span className="ml-2 text-muted-foreground">{event.accessMode === "operator" ? "Roster access" : "Wefter"}</span>
       </Link>)}
     </section> : null}
   </AuthShell>;

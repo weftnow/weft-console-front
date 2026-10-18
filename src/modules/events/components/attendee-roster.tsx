@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
+  ChevronDownIcon,
   ExternalLinkIcon,
   PeopleIcon,
   SearchIcon,
@@ -14,16 +15,26 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { AttendeeImportPanel } from "./attendee-import-panel";
+import { AttendeeRecordActions } from "./attendee-record-actions";
 import type { EventGuestRecord, EventGuestType, EventRecord } from "../event-record";
+import { attendeeContactFlags } from "../attendee-contact";
 
 const PAGE_SIZE = 25;
+const compactRosterQuery = "(max-width: 620px)";
+function subscribeCompactRoster(onChange: () => void) {
+  const media = window.matchMedia(compactRosterQuery);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+const isCompactRoster = () => window.matchMedia(compactRosterQuery).matches;
+const serverCompactRoster = () => false;
 const GUEST_TYPES: EventGuestType[] = ["VIP", "Sponsor", "Attendee"];
 
 type SortKey = "name" | "company" | "profileType";
 
 const SORT_LABELS: Record<SortKey, string> = {
   company: "Company",
-  name: "Guest",
+  name: "Attendee",
   profileType: "Profile type",
 };
 
@@ -43,11 +54,13 @@ function linkedinHref(value: string) {
 
 function SortableHeader({
   active,
+  compact,
   direction,
   onSort,
   sortKey,
 }: {
   active: boolean;
+  compact: boolean;
   direction: "asc" | "desc";
   onSort: (key: SortKey) => void;
   sortKey: SortKey;
@@ -58,6 +71,7 @@ function SortableHeader({
         className="sortable roster-sort"
         data-active={active}
         onClick={() => onSort(sortKey)}
+        tabIndex={compact ? -1 : undefined}
         type="button"
       >
         {SORT_LABELS[sortKey]}
@@ -67,7 +81,21 @@ function SortableHeader({
   );
 }
 
+function ImportHistory({ event }: { event: EventRecord }) {
+  if (!event.attendees.importCount) return null;
+  return <details className="attendee-import-history">
+    <summary><span><strong>Import history</strong><span>{event.attendees.importCount} {event.attendees.importCount === 1 ? "import" : "imports"}</span></span><ChevronDownIcon height="15" width="15" /></summary>
+    <ul aria-label="Latest attendee imports">{event.attendees.imports.map((batch) => <li key={batch.id}>
+      <span className="attendee-import-history__file" title={batch.fileName}>{batch.fileName}</span>
+      <time dateTime={batch.importedAt}>{new Date(batch.importedAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</time>
+      <span>{batch.storedCount.toLocaleString()} added · {batch.duplicateCount.toLocaleString()} skipped</span>
+    </li>)}</ul>
+    {event.attendees.importCount > event.attendees.imports.length ? <p>Showing the latest {event.attendees.imports.length} imports.</p> : null}
+  </details>;
+}
+
 export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; onImportSaved: () => void | Promise<void> }) {
+  const compact = useSyncExternalStore(subscribeCompactRoster, isCompactRoster, serverCompactRoster);
   const [query, setQuery] = useState("");
   const [guestType, setGuestType] = useState<EventGuestType | "all">("all");
   const [profileType, setProfileType] = useState("all");
@@ -77,7 +105,12 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
   const [importOpen, setImportOpen] = useState(false);
 
   const guests = event.attendees.guests;
-  const latestImport = event.attendees.imports[0];
+  const identityCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const guest of guests) counts.set(guest.personId, (counts.get(guest.personId) ?? 0) + 1);
+    return counts;
+  }, [guests]);
+  const peopleCount = identityCounts.size;
 
   const profileTypes = useMemo(
     () => [...new Set(guests.map((guest) => guest.profileType).filter(Boolean))].sort(),
@@ -129,13 +162,17 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
             <h2 className="panel-title" id="roster-title">Attendees</h2>
             <p className="panel-subtitle">
               {guests.length === 0
-                ? "No guest records on this event yet."
-                : `${guests.length.toLocaleString()} ${guests.length === 1 ? "guest" : "guests"} on the roster${latestImport ? ` · latest import ${latestImport.fileName}` : ""}`}
+                ? "Your event’s guest list."
+                : peopleCount === guests.length
+                  ? `${peopleCount.toLocaleString()} ${peopleCount === 1 ? "attendee" : "attendees"}`
+                  : `${peopleCount.toLocaleString()} ${peopleCount === 1 ? "person" : "people"} · ${guests.length.toLocaleString()} attendee records`}
             </p>
           </div>
         </div>
-        <div className="panel-controls roster-controls">
-            {guests.length > 0 ? <>
+        {event.attendees.canManage && guests.length > 0 ? <TactileButton className="roster-import-action" aria-expanded={importOpen} onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton> : null}
+      </div>
+
+      {guests.length > 0 ? <div className="roster-toolbar" role="search" aria-label="Filter attendees">
             <label className="search-field search-field--compact">
               <SearchIcon height="15" width="15" />
               <input
@@ -144,12 +181,12 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                   setQuery(input.target.value);
                   setPage(0);
                 }}
-                placeholder="Search name, company, phone…"
+                placeholder="Search attendees…"
                 type="search"
                 value={query}
               />
             </label>
-            <label className="roster-filter">
+            <div className="roster-toolbar__filters"><label className="roster-filter">
               <span className="sr-only">Filter by guest type</span>
               <select
                 onChange={(input) => {
@@ -161,6 +198,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                 <option value="all">All guest types</option>
                 {GUEST_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
               </select>
+              <ChevronDownIcon className="roster-filter__chevron" />
             </label>
             {profileTypes.length > 0 ? (
               <label className="roster-filter">
@@ -175,14 +213,25 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                   <option value="all">All profiles</option>
                   {profileTypes.map((type) => <option key={type} value={type}>{type}</option>)}
                 </select>
+                <ChevronDownIcon className="roster-filter__chevron" />
               </label>
             ) : null}
-            </> : null}
-            <TactileButton aria-expanded={importOpen} onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton>
-        </div>
-      </div>
+            <label className="roster-filter roster-mobile-sort">
+              <span className="sr-only">Sort attendees</span>
+              <select value={`${sortKey}:${direction}`} onChange={(input) => {
+                const [key, order] = input.target.value.split(":") as [SortKey, "asc" | "desc"];
+                setSortKey(key); setDirection(order); setPage(0);
+              }}>
+                <option value="name:asc">Last name: A–Z</option><option value="name:desc">Last name: Z–A</option>
+                <option value="company:asc">Company: A–Z</option><option value="company:desc">Company: Z–A</option>
+                <option value="profileType:asc">Profile: A–Z</option><option value="profileType:desc">Profile: Z–A</option>
+              </select>
+              <ChevronDownIcon className="roster-filter__chevron" />
+            </label>
+            {filtersActive ? <button className="event-text-action" type="button" onClick={clearFilters}>Clear filters</button> : null}</div>
+      </div> : null}
 
-      {importOpen ? (
+      {importOpen && event.attendees.canManage ? (
         <AttendeeImportPanel
           eventId={event.id}
           existingGuests={guests}
@@ -193,34 +242,16 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
         />
       ) : null}
 
-      {event.attendees.importCount > 0 ? (
-        <section className="attendee-import-history" aria-label="Latest attendee imports">
-          <div className="attendee-import-history__heading">
-            <strong>Latest imports</strong>
-            <span>{event.attendees.importCount > event.attendees.imports.length ? `Showing ${event.attendees.imports.length} of ${event.attendees.importCount}` : `${event.attendees.importCount} total`}</span>
-          </div>
-          <ul>
-            {event.attendees.imports.map((batch) => (
-              <li key={batch.id}>
-                <span className="attendee-import-history__file">{batch.fileName}</span>
-                <time dateTime={batch.importedAt}>{new Date(batch.importedAt).toLocaleString()}</time>
-                <span>{batch.storedCount.toLocaleString()} added · {batch.duplicateCount.toLocaleString()} skipped</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
       {guests.length === 0 ? (
         <EmptyState
-          action={<TactileButton onClick={() => setImportOpen(true)}>Import CSV</TactileButton>}
-          description="Append attendees from a CSV. Existing event emails are skipped and their records are preserved."
+          action={event.attendees.canManage && !importOpen ? <TactileButton onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton> : undefined}
+          description={event.attendees.canManage ? "Upload a CSV file to add attendees to this event." : "The event organizers haven’t added attendees yet."}
           icon={PeopleIcon}
           title="No attendees yet"
         />
       ) : filtered.length === 0 ? (
         <EmptyState
-          action={<TactileButton onClick={clearFilters}>Clear filters</TactileButton>}
+          action={<TactileButton onClick={clearFilters}>Show all attendees</TactileButton>}
           description="No guest on this roster matches the current search and filters."
           icon={PeopleIcon}
           title="No matching attendees"
@@ -228,60 +259,43 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
       ) : (
         <>
           <div className="table-scroll">
-            <table className="event-table roster-table">
+            <table className={`event-table roster-table ${event.attendees.canManage ? "" : "roster-table--readonly"}`} role="table">
+              <caption className="sr-only">Attendees for {event.name}</caption>
+              <colgroup><col className="roster-col-person" /><col className="roster-col-company" /><col className="roster-col-profile" /><col className="roster-col-type" />{event.attendees.canManage ? <col className="roster-col-actions" /> : null}</colgroup>
               <thead>
                 <tr>
-                  <SortableHeader active={sortKey === "name"} direction={direction} onSort={onSort} sortKey="name" />
-                  <th scope="col">Phone</th>
-                  <SortableHeader active={sortKey === "company"} direction={direction} onSort={onSort} sortKey="company" />
-                  <th scope="col">Position</th>
-                  <SortableHeader active={sortKey === "profileType"} direction={direction} onSort={onSort} sortKey="profileType" />
+                  <SortableHeader compact={compact} active={sortKey === "name"} direction={direction} onSort={onSort} sortKey="name" />
+                  <SortableHeader compact={compact} active={sortKey === "company"} direction={direction} onSort={onSort} sortKey="company" />
+                  <SortableHeader compact={compact} active={sortKey === "profileType"} direction={direction} onSort={onSort} sortKey="profileType" />
                   <th scope="col">Guest type</th>
-                  <th scope="col">LinkedIn</th>
+                  {event.attendees.canManage ? <th className="roster-actions-heading" scope="col">Actions</th> : null}
                 </tr>
               </thead>
-              <tbody className="table-body-well" data-depth="inset">
-                {visible.map((guest) => (
-                  <tr key={guest.id}>
-                    <td>
+              <tbody className="table-body-well" role="rowgroup" data-depth="inset">
+                {visible.map((guest) => {
+                  const flags = attendeeContactFlags(guest.email, guest.phone);
+                  const linkedCount = (identityCounts.get(guest.personId) ?? 1) - 1;
+                  return <tr key={guest.id} role="row">
+                    <td className="roster-person-cell" role="cell">
                       <div className="roster-guest">
-                        <strong>{fullName(guest) || "Unnamed guest"}</strong>
-                        <span>{guest.email || "No email"}</span>
+                        <div className="roster-guest__name"><strong>{fullName(guest) || "Unnamed attendee"}</strong>{guest.linkedin ? <a className="roster-profile-link" href={linkedinHref(guest.linkedin)} rel="noreferrer noopener" target="_blank" aria-label={`LinkedIn profile for ${fullName(guest) || "attendee"}`}><ExternalLinkIcon height="14" width="14" /></a> : null}</div>
+                        <span className={flags.email === "invalid" ? "roster-contact-warning" : ""} title={guest.email || undefined}>{guest.email || "No email"}{flags.email === "invalid" ? " · Check format" : ""}</span>
+                        {guest.phone ? flags.phone === "invalid" ? <span className="roster-contact-warning">{guest.phone} · Check format</span> : <a className="roster-phone" href={`tel:${guest.phone.replace(/[^+\d]/g, "")}`}>{guest.phone}</a> : <span className="roster-contact-missing">No phone</span>}
+                        {linkedCount ? <span className="attendee-linked-label">Linked with {linkedCount} {linkedCount === 1 ? "other record" : "other records"}</span> : null}
                       </div>
                     </td>
-                    <td>
-                      {guest.phone ? (
-                        <a className="roster-link" href={`tel:${guest.phone.replace(/[^+\d]/g, "")}`}>
-                          {guest.phone}
-                        </a>
-                      ) : (
-                        <span className="table-empty">—</span>
-                      )}
-                    </td>
-                    <td>{guest.company || <span className="table-empty">—</span>}</td>
-                    <td className="cell-muted">{guest.position || <span className="table-empty">—</span>}</td>
-                    <td>{guest.profileType || <span className="table-empty">—</span>}</td>
-                    <td>
+                    <td className="roster-company-cell" role="cell" data-label="Company"><div className="roster-company"><strong title={guest.company || undefined}>{guest.company || <span className="table-empty">Not added</span>}</strong>{guest.position ? <span title={guest.position}>{guest.position}</span> : null}</div></td>
+                    <td className="roster-profile-cell" role="cell" data-label="Profile">{guest.profileType || <span className="table-empty">Not set</span>}</td>
+                    <td className="roster-type-cell" role="cell">
                       <span className={`status-pill guest-pill guest-pill--${guest.guestType.toLowerCase()}`}>
                         {guest.guestType}
                       </span>
                     </td>
-                    <td>
-                      {guest.linkedin ? (
-                        <a
-                          className="roster-link"
-                          href={linkedinHref(guest.linkedin)}
-                          rel="noreferrer noopener"
-                          target="_blank"
-                        >
-                          Profile <ExternalLinkIcon height="12" width="12" />
-                        </a>
-                      ) : (
-                        <span className="table-empty">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                    {event.attendees.canManage ? <td className="attendee-actions-cell" role="cell">
+                      <AttendeeRecordActions canManage={event.attendees.canManage} eventId={event.id} guest={guest} guests={guests} onSaved={onImportSaved} />
+                    </td> : null}
+                  </tr>;
+                })}
               </tbody>
             </table>
           </div>
@@ -316,6 +330,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
           </div>
         </>
       )}
+      <ImportHistory event={event} />
     </Surface>
   );
 }

@@ -29,6 +29,18 @@ The implemented source of truth for tokens is `src/app/globals.css`: canvas `#f1
 
 Preserve visible keyboard focus, reduced motion, readable empty/error/loading states, responsive layout, and meaningful control labels. Verify changed UI at desktop and narrow widths as described in [verification](../VERIFICATION.md).
 
+### Event administration and attendee records
+
+Event Settings and Staff reuse the established rounded panel and inset-control treatments through `event-management-panel` and `event-control`. Staff uses a single list for access and Wefter hours; the internal `operator` value is displayed as **Roster access**. Availability remains organizer-managed. Empty Staff screens link to Team only for Owners.
+
+Attendee correction and duplicate review use the shared native `ConsoleDialog`, with focus trapping, Escape dismissal and return to the invoking control. Forms stack on narrow screens rather than expanding inside roster cells. Duplicate review shows already-linked records, matching contact details and an explicit same-person confirmation. The roster distinguishes unique people from attendee records. Missing contact details are flagged without claiming verification.
+
+Text buttons have a shared padded, centered baseline; icon-only and pagination controls keep their own compact sizes. The attendee table groups name/contact details and company/position into five aligned columns, with quiet row actions and collapsed import history. When every record is a different person, the header shows a single attendee count; linked records expose both counts. At phone widths, rows become labeled groups with a visible sort selector, while offscreen header controls leave the keyboard tab order. The empty roster has one primary import action. Event-list tables use explicit column widths and right-aligned counts.
+
+Roster filter and sort pills retain native select behavior with the browser arrow suppressed. The shared chevron is centered vertically and inset 14px, with 40px of right padding reserved for text clearance. The decorative icon ignores pointer input; keyboard focus remains on the select.
+
+Conflict screens compare saved values and the user's draft with readable labels. Revisions remain internal; background refetches cannot advance an unsaved draft's revision. An explicit review choice is required before retrying. Keep the existing server concurrency checks. Account actions belong in the compact account menu rather than in the identity row. Product copy must describe current capabilities; local Kami previews do not imply calls, introductions or assignment tooling are running.
+
 ---
 
 ## 1. Design stack

@@ -32,6 +32,7 @@ test("event access grants serialize first saves and retain incremented revocatio
   const staffMembershipId = randomUUID();
   const eventId = randomUUID();
   const { saveEventAccess, findEventAccessForActor } = loadTs("src/modules/events/server/access-repository.ts");
+  const { findById } = loadTs("src/modules/events/server/repository.ts");
   const { closeDatabase } = loadTs("src/infrastructure/database/client.ts");
   try {
     await pool.query("insert into users (id, display_name) values ($1, 'F01 owner'), ($2, 'F01 staff')", [ownerId, staffId]);
@@ -48,6 +49,10 @@ test("event access grants serialize first saves and retain incremented revocatio
     const granted = await pool.query("select console_access, revision from event_staff where event_id = $1 and membership_id = $2", [eventId, staffMembershipId]);
     assert.equal(granted.rows[0].revision, 1);
     assert.ok(["operator", "wefter"].includes(granted.rows[0].console_access));
+    assert.equal((await findById(eventId, organizationId)).staff.length, 1, "active grants count as event staff");
+    await pool.query("update organization_memberships set active = false where id = $1", [staffMembershipId]);
+    assert.equal((await findById(eventId, organizationId)).staff.length, 0, "inactive memberships do not count as assigned staff");
+    await pool.query("update organization_memberships set active = true where id = $1", [staffMembershipId]);
 
     assert.equal((await save(null, 1)).kind, "saved");
     assert.equal((await save("operator", 2)).kind, "saved");
@@ -56,6 +61,7 @@ test("event access grants serialize first saves and retain incremented revocatio
     assert.equal((await save(null, 3)).kind, "saved");
     const afterRevoke = await pool.query("select console_access, revision from event_staff where event_id = $1 and membership_id = $2", [eventId, staffMembershipId]);
     assert.deepEqual(afterRevoke.rows[0], { console_access: null, revision: 4 });
+    assert.equal((await findById(eventId, organizationId)).staff.length, 0, "revoked tombstones do not count as assigned staff");
     assert.equal(await findEventAccessForActor(eventId, staffId), null);
     const revoker = await pool.connect();
     let committed = false;

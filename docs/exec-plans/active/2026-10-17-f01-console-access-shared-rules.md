@@ -134,4 +134,6 @@ Remaining acceptance must include signed-in coverage for two organizations, two 
 
 ## Handoff or outcome
 
+UI follow-up: the [F01–F03 UI repair](2026-10-18-f01-f03-ui-repair.md) consolidates event access and Wefter hours, uses the display label “Roster access,” and replaces technical conflict copy. It does not close this feature's outstanding separate-role acceptance.
+
 F01 application, migration, unit-test, UI and canonical documentation changes are implemented in the working tree. The two generated migrations are applied to the explicitly authorized development `weft_console_test` database; the F01 access and staff invitation integration tests passed and cleaned their fixtures. Production, customer records, provider settings and invitations were untouched. The plan remains active for signed-in browser acceptance. F02 can begin against [the agreed grant/ID/conflict contracts](../../access-contracts.md); F08/F12 own their recorded persisted-pair and assignment obligations. No Sheary review is claimed.
