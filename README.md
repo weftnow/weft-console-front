@@ -6,8 +6,10 @@ Install and run locally:
 
 ```bash
 pnpm install
-pnpm dev
+pnpm dev --hostname localhost --port 3000
 ```
+
+Open `http://localhost:3000`. Before testing a local production build, follow the [runtime preflight and recovery guide](docs/engineering.md#local-runtime-and-authentication-troubleshooting); ignored production environment files can override local Clerk and database configuration.
 
 Run the project checks:
 

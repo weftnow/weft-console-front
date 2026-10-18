@@ -13,6 +13,8 @@ Run checks prescribed for the change, including focused behavior tests and the r
 
 Exercise the real boundary when required. Browser previews do not prove native IPC, mocks do not prove a live integration, and a running process does not prove usable UI. Use isolated synthetic data and documented cleanup/recovery. Respect bounded retries; never replay uncertain mutations blindly.
 
+Before local browser acceptance, follow the [runtime preflight and recovery guide](../../../docs/engineering.md#local-runtime-and-authentication-troubleshooting). Check hostname consistency, build/runtime environment precedence, and the rendered Clerk form. Diagnose matching server/browser errors before declaring authentication blocked; record the cause, recovery, and observed result.
+
 Record exact commands/results, skipped/zero-test runs, prerequisite failures, and remaining manual checks. Fix scoped failures; report pre-existing or external blockers without weakening checks.
 
 Update the active plan before handoff with progress and next action. Complete/archive only after all criteria pass, repairing links and recording nonblocking follow-ups. Report the change and reason, actual verification, and material gaps. Unexecuted checks have not passed.

@@ -41,7 +41,9 @@ This is the B2B console for event organizers, Weft staff, and sponsors. The atte
 
 ## Commands and completion
 
-Install with `pnpm install`; develop with `pnpm dev`.
+Install with `pnpm install`; develop with `pnpm dev --hostname localhost --port 3000` and browse `http://localhost:3000`.
+
+For local browser acceptance, bind and browse with `localhost`: explicitly binding `127.0.0.1` causes a rewrite/proxy loop with the installed Next.js/Clerk pair. Before local production-build acceptance, follow the [runtime preflight and recovery guide](docs/engineering.md#local-runtime-and-authentication-troubleshooting): confirm development Clerk/database targets and preload local configuration for both build and start. `.env.production.local` can override `.env.local`, and public Clerk values are frozen at build time. Diagnose server/browser errors using that guide before reporting authentication as blocked; never print secrets or change provider settings to repair a local startup problem.
 
 Run `pnpm verify` before completion: documentation checks, lint, typecheck, and tests. It preserves the existing individual commands. Run `pnpm build` for application or build changes and verify affected user flows and permissions as described in Verification.
 
