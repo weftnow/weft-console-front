@@ -13,8 +13,10 @@ import {
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { EXCLUSION_REASON_LABELS } from "@/modules/attendees/networking-schemas";
+import { NetworkingPanel } from "@/modules/attendees/components/networking-panel";
 import { AttendeeImportPanel } from "./attendee-import-panel";
-import type { EventGuestRecord, EventGuestType, EventRecord } from "../event-record";
+import type { EventGuestType, EventRecord, SavedEventGuestRecord } from "../event-record";
 
 const PAGE_SIZE = 25;
 const GUEST_TYPES: EventGuestType[] = ["VIP", "Sponsor", "Attendee"];
@@ -27,11 +29,11 @@ const SORT_LABELS: Record<SortKey, string> = {
   profileType: "Profile type",
 };
 
-function fullName(guest: EventGuestRecord) {
+function fullName(guest: SavedEventGuestRecord) {
   return `${guest.firstName} ${guest.lastName}`.trim();
 }
 
-function sortValue(guest: EventGuestRecord, key: SortKey) {
+function sortValue(guest: SavedEventGuestRecord, key: SortKey) {
   if (key === "name") return `${guest.lastName} ${guest.firstName}`.trim().toLowerCase();
   return guest[key].toLowerCase();
 }
@@ -67,10 +69,12 @@ function SortableHeader({
   );
 }
 
-export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; onImportSaved: () => void | Promise<void> }) {
+export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord; onRosterChanged: () => void | Promise<void> }) {
   const [query, setQuery] = useState("");
   const [guestType, setGuestType] = useState<EventGuestType | "all">("all");
   const [profileType, setProfileType] = useState("all");
+  const [networking, setNetworking] = useState<"all" | "included" | "excluded">("all");
+  const [managedGuestId, setManagedGuestId] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(0);
@@ -78,6 +82,8 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
 
   const guests = event.attendees.guests;
   const latestImport = event.attendees.imports[0];
+  const excludedCount = guests.filter((guest) => guest.networking.status === "excluded").length;
+  const managedGuest = managedGuestId ? guests.find((guest) => guest.id === managedGuestId) ?? null : null;
 
   const profileTypes = useMemo(
     () => [...new Set(guests.map((guest) => guest.profileType).filter(Boolean))].sort(),
@@ -89,6 +95,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
     const matches = guests.filter((guest) => {
       if (guestType !== "all" && guest.guestType !== guestType) return false;
       if (profileType !== "all" && guest.profileType !== profileType) return false;
+      if (networking !== "all" && guest.networking.status !== networking) return false;
       if (!needle) return true;
       return [fullName(guest), guest.email, guest.phone, guest.company, guest.position]
         .join(" ")
@@ -100,17 +107,18 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
       const result = sortValue(a, sortKey).localeCompare(sortValue(b, sortKey));
       return direction === "asc" ? result : -result;
     });
-  }, [direction, guestType, guests, profileType, query, sortKey]);
+  }, [direction, guestType, guests, networking, profileType, query, sortKey]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount - 1);
   const visible = filtered.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
-  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all";
+  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all" || networking !== "all";
 
   const clearFilters = () => {
     setQuery("");
     setGuestType("all");
     setProfileType("all");
+    setNetworking("all");
     setPage(0);
   };
 
@@ -130,7 +138,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
             <p className="panel-subtitle">
               {guests.length === 0
                 ? "No guest records on this event yet."
-                : `${guests.length.toLocaleString()} ${guests.length === 1 ? "guest" : "guests"} on the roster${latestImport ? ` · latest import ${latestImport.fileName}` : ""}`}
+                : `${guests.length.toLocaleString()} ${guests.length === 1 ? "guest" : "guests"} on the roster · ${(guests.length - excludedCount).toLocaleString()} included · ${excludedCount.toLocaleString()} excluded${latestImport ? ` · latest import ${latestImport.fileName}` : ""}`}
             </p>
           </div>
         </div>
@@ -177,6 +185,20 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                 </select>
               </label>
             ) : null}
+            <label className="roster-filter">
+              <span className="sr-only">Filter by networking status</span>
+              <select
+                onChange={(input) => {
+                  setNetworking(input.target.value as "all" | "included" | "excluded");
+                  setPage(0);
+                }}
+                value={networking}
+              >
+                <option value="all">All networking</option>
+                <option value="included">Included</option>
+                <option value="excluded">Excluded</option>
+              </select>
+            </label>
             </> : null}
             <TactileButton aria-expanded={importOpen} onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton>
         </div>
@@ -189,7 +211,19 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
           hasActiveFilters={filtersActive}
           onCancel={() => setImportOpen(false)}
           onClearFilters={clearFilters}
-          onSaved={onImportSaved}
+          onSaved={onRosterChanged}
+        />
+      ) : null}
+
+      {managedGuest ? (
+        <NetworkingPanel
+          blocks={event.attendees.matchBlocks}
+          eventId={event.id}
+          guest={managedGuest}
+          guests={guests}
+          key={managedGuest.id}
+          onChanged={onRosterChanged}
+          onClose={() => setManagedGuestId(null)}
         />
       ) : null}
 
@@ -238,6 +272,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                   <SortableHeader active={sortKey === "profileType"} direction={direction} onSort={onSort} sortKey="profileType" />
                   <th scope="col">Guest type</th>
                   <th scope="col">LinkedIn</th>
+                  <th scope="col">Networking</th>
                 </tr>
               </thead>
               <tbody className="table-body-well" data-depth="inset">
@@ -279,6 +314,17 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                       ) : (
                         <span className="table-empty">—</span>
                       )}
+                    </td>
+                    <td>
+                      <div className="roster-networking">
+                        <span
+                          className={`status-pill networking-pill networking-pill--${guest.networking.status}`}
+                          title={guest.networking.reason ? EXCLUSION_REASON_LABELS[guest.networking.reason] : undefined}
+                        >
+                          {guest.networking.status === "excluded" ? "Excluded" : "Included"}
+                        </span>
+                        <button className="roster-link" onClick={() => setManagedGuestId(guest.id)} type="button">Manage</button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -1453,6 +1453,16 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .guest-pill--attendee { background: rgba(87,78,67,.08); color: var(--weft-text-muted); }
 .guest-pill--sponsor { background: rgba(21,115,77,.1); color: var(--weft-green); }
 .guest-pill--vip { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.networking-pill--included { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.networking-pill--excluded { background: rgba(87,78,67,.12); color: var(--weft-text-muted); }
+.roster-networking { display: flex; align-items: center; gap: 10px; }
+.roster-networking .roster-link { border: 0; padding: 0; background: none; cursor: pointer; font: inherit; }
+.networking-panel__section { display: grid; gap: 8px; border-top: 1px solid rgba(87,78,67,.1); padding-top: 12px; font-size: 11px; }
+.networking-panel__section p { margin: 0; color: var(--weft-text-muted); }
+.networking-panel__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.networking-panel__list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.networking-panel__list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.networking-panel__list button:not(.tactile-button) { border: 0; padding: 4px; background: none; color: var(--weft-text-muted); cursor: pointer; }
 .roster-link { display: inline-flex; align-items: center; gap: 5px; color: var(--weft-orange-deep); font-size: 11px; text-decoration: none; }
 .roster-link:hover { text-decoration: underline; }
 .roster-link:focus-visible { outline: none; border-radius: 6px; box-shadow: var(--weft-focus); }

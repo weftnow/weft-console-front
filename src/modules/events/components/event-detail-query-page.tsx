@@ -35,7 +35,7 @@ export function EventDetailQueryPage({ eventId, initialTab }: { eventId: string;
       event={query.data.event}
       initialTab={initialTab}
       key={eventId}
-      onImportSaved={() => refreshEventDetail(queryClient, scope, eventId)}
+      onRosterChanged={() => refreshEventDetail(queryClient, scope, eventId)}
       refreshNotice={query.isError ? <div className="event-detail-refresh-notice" role="status"><span>Could not refresh event. Showing the last loaded details.</span>{retry}</div> : undefined}
     />;
   }

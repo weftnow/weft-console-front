@@ -2,6 +2,7 @@ import { z } from "zod";
 import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES, EVENT_CITIES } from "./event-options";
 import { attendeeImportDtoSchema } from "./attendee-import-schemas";
 import { guestTypeSchema, uuidSchema } from "./event-schemas";
+import { exclusionReasonSchema, matchBlockDtoSchema } from "@/modules/attendees/networking-schemas";
 
 const guestSchema = z.strictObject({
   id: uuidSchema,
@@ -10,6 +11,12 @@ const guestSchema = z.strictObject({
   phone: z.string(), position: z.string(), profileType: z.string(),
   source: z.enum(["csv", "manual"]),
   importId: uuidSchema.nullable(),
+  networking: z.strictObject({
+    status: z.enum(["included", "excluded"]),
+    excludedAt: z.iso.datetime().nullable(),
+    reason: exclusionReasonSchema.nullable(),
+    version: z.number().int().min(1),
+  }),
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 });
 
@@ -28,6 +35,7 @@ export const eventDetailDtoSchema = z.strictObject({
     guests: z.array(guestSchema),
     imports: z.array(attendeeImportDtoSchema).max(20),
     importCount: z.number().int().min(0),
+    matchBlocks: z.array(matchBlockDtoSchema),
   }),
   staff: z.array(z.strictObject({ id: uuidSchema, name: z.string(), role: z.string(), avatar: z.string() })),
 }).superRefine((event, ctx) => {
