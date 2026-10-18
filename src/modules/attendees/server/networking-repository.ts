@@ -10,7 +10,7 @@ import type {
 } from "../networking-types";
 
 type Database = ReturnType<typeof getDatabase>;
-type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0];
+export type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0];
 
 export function toParticipationDto(guest: typeof eventGuests.$inferSelect): ParticipationDto {
   return {
@@ -32,7 +32,7 @@ export function toMatchBlockDto(block: typeof eventMatchBlocks.$inferSelect): Ma
 }
 
 /** Same lock order as attendee imports: membership, then event. Callers lock guest rows afterwards. */
-async function lockOperator(tx: Tx, userId: string, eventId: string): Promise<{ membership: NetworkingMembership; event: NetworkingEvent }> {
+export async function lockOperator(tx: Tx, userId: string, eventId: string): Promise<{ membership: NetworkingMembership; event: NetworkingEvent }> {
   const [initialEvent] = await tx.select({ organizationId: events.organizationId })
     .from(events).where(eq(events.id, eventId)).limit(1);
   if (!initialEvent) return { membership: null, event: null };
@@ -46,7 +46,7 @@ async function lockOperator(tx: Tx, userId: string, eventId: string): Promise<{ 
   return { membership: membership ?? null, event: { id: lockedEvent.id, organizationId: lockedEvent.organizationId } };
 }
 
-async function recordChange(tx: Tx, change: typeof eventMatchingChanges.$inferInsert) {
+export async function recordChange(tx: Tx, change: typeof eventMatchingChanges.$inferInsert) {
   await tx.insert(eventMatchingChanges).values(change);
   await tx.update(events).set({ updatedAt: new Date() }).where(eq(events.id, change.eventId));
 }

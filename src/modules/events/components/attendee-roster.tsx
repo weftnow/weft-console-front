@@ -15,11 +15,31 @@ import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { EXCLUSION_REASON_LABELS } from "@/modules/attendees/networking-schemas";
 import { NetworkingPanel } from "@/modules/attendees/components/networking-panel";
+import { ProfilePanel } from "@/modules/attendees/components/profile-panel";
 import { AttendeeImportPanel } from "./attendee-import-panel";
 import type { EventGuestType, EventRecord, SavedEventGuestRecord } from "../event-record";
 
 const PAGE_SIZE = 25;
 const GUEST_TYPES: EventGuestType[] = ["VIP", "Sponsor", "Attendee"];
+
+type ProfileFilter = "all" | "goals" | "background" | "linkedin";
+
+const PROFILE_FILTER_LABELS: Record<Exclude<ProfileFilter, "all">, string> = {
+  goals: "Missing goals",
+  background: "Missing background",
+  linkedin: "Missing LinkedIn details",
+};
+
+const PROFILE_CHIPS = [
+  { key: "goals", label: "Goals" },
+  { key: "background", label: "Background" },
+  { key: "linkedin", label: "LinkedIn" },
+] as const;
+
+/** LinkedIn details are missing unless supplied; a URL alone does not count. */
+function isProfileMissing(guest: SavedEventGuestRecord, filter: Exclude<ProfileFilter, "all">) {
+  return guest.profile.completeness[filter] !== "available";
+}
 
 type SortKey = "name" | "company" | "profileType";
 
@@ -74,7 +94,8 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
   const [guestType, setGuestType] = useState<EventGuestType | "all">("all");
   const [profileType, setProfileType] = useState("all");
   const [networking, setNetworking] = useState<"all" | "included" | "excluded">("all");
-  const [managedGuestId, setManagedGuestId] = useState<string | null>(null);
+  const [profileFilter, setProfileFilter] = useState<ProfileFilter>("all");
+  const [panel, setPanel] = useState<{ kind: "networking" | "profile"; guestId: string } | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(0);
@@ -83,7 +104,7 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
   const guests = event.attendees.guests;
   const latestImport = event.attendees.imports[0];
   const excludedCount = guests.filter((guest) => guest.networking.status === "excluded").length;
-  const managedGuest = managedGuestId ? guests.find((guest) => guest.id === managedGuestId) ?? null : null;
+  const panelGuest = panel ? guests.find((guest) => guest.id === panel.guestId) ?? null : null;
 
   const profileTypes = useMemo(
     () => [...new Set(guests.map((guest) => guest.profileType).filter(Boolean))].sort(),
@@ -96,6 +117,7 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
       if (guestType !== "all" && guest.guestType !== guestType) return false;
       if (profileType !== "all" && guest.profileType !== profileType) return false;
       if (networking !== "all" && guest.networking.status !== networking) return false;
+      if (profileFilter !== "all" && !isProfileMissing(guest, profileFilter)) return false;
       if (!needle) return true;
       return [fullName(guest), guest.email, guest.phone, guest.company, guest.position]
         .join(" ")
@@ -107,18 +129,19 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
       const result = sortValue(a, sortKey).localeCompare(sortValue(b, sortKey));
       return direction === "asc" ? result : -result;
     });
-  }, [direction, guestType, guests, networking, profileType, query, sortKey]);
+  }, [direction, guestType, guests, networking, profileFilter, profileType, query, sortKey]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount - 1);
   const visible = filtered.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
-  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all" || networking !== "all";
+  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all" || networking !== "all" || profileFilter !== "all";
 
   const clearFilters = () => {
     setQuery("");
     setGuestType("all");
     setProfileType("all");
     setNetworking("all");
+    setProfileFilter("all");
     setPage(0);
   };
 
@@ -199,6 +222,19 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                 <option value="excluded">Excluded</option>
               </select>
             </label>
+            <label className="roster-filter">
+              <span className="sr-only">Filter by missing profile information</span>
+              <select
+                onChange={(input) => {
+                  setProfileFilter(input.target.value as ProfileFilter);
+                  setPage(0);
+                }}
+                value={profileFilter}
+              >
+                <option value="all">All profile details</option>
+                {(Object.keys(PROFILE_FILTER_LABELS) as Exclude<ProfileFilter, "all">[]).map((key) => <option key={key} value={key}>{PROFILE_FILTER_LABELS[key]}</option>)}
+              </select>
+            </label>
             </> : null}
             <TactileButton aria-expanded={importOpen} onClick={() => setImportOpen(true)} variant="primary">Import CSV</TactileButton>
         </div>
@@ -215,15 +251,25 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
         />
       ) : null}
 
-      {managedGuest ? (
+      {panelGuest && panel?.kind === "networking" ? (
         <NetworkingPanel
           blocks={event.attendees.matchBlocks}
           eventId={event.id}
-          guest={managedGuest}
+          guest={panelGuest}
           guests={guests}
-          key={managedGuest.id}
+          key={panelGuest.id}
           onChanged={onRosterChanged}
-          onClose={() => setManagedGuestId(null)}
+          onClose={() => setPanel(null)}
+        />
+      ) : null}
+
+      {panelGuest && panel?.kind === "profile" ? (
+        <ProfilePanel
+          eventId={event.id}
+          guest={panelGuest}
+          key={panelGuest.id}
+          onChanged={onRosterChanged}
+          onClose={() => setPanel(null)}
         />
       ) : null}
 
@@ -272,6 +318,7 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                   <SortableHeader active={sortKey === "profileType"} direction={direction} onSort={onSort} sortKey="profileType" />
                   <th scope="col">Guest type</th>
                   <th scope="col">LinkedIn</th>
+                  <th scope="col">Profile</th>
                   <th scope="col">Networking</th>
                 </tr>
               </thead>
@@ -316,6 +363,21 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                       )}
                     </td>
                     <td>
+                      <div className="roster-profile">
+                        <div className="roster-profile__chips">
+                          {PROFILE_CHIPS.map(({ key, label }) => {
+                            const state = guest.profile.completeness[key];
+                            return (
+                              <span className={`status-pill profile-pill profile-pill--${state}`} key={key} title={state === "url_only" ? "LinkedIn URL on file, details not supplied" : undefined}>
+                                {label}: {state === "available" ? "available" : state === "url_only" ? "URL only" : "missing"}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        <button className="roster-link" onClick={() => setPanel({ kind: "profile", guestId: guest.id })} type="button">Profile</button>
+                      </div>
+                    </td>
+                    <td>
                       <div className="roster-networking">
                         <span
                           className={`status-pill networking-pill networking-pill--${guest.networking.status}`}
@@ -323,7 +385,7 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                         >
                           {guest.networking.status === "excluded" ? "Excluded" : "Included"}
                         </span>
-                        <button className="roster-link" onClick={() => setManagedGuestId(guest.id)} type="button">Manage</button>
+                        <button className="roster-link" onClick={() => setPanel({ kind: "networking", guestId: guest.id })} type="button">Manage</button>
                       </div>
                     </td>
                   </tr>

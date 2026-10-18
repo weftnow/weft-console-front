@@ -19,11 +19,11 @@ export class ParticipationConflictError extends ApplicationError {
   }
 }
 
-function validationFields(error: { issues: { path: PropertyKey[]; message: string }[] }): Record<string, string> {
+export function validationFields(error: { issues: { path: PropertyKey[]; message: string }[] }): Record<string, string> {
   return Object.fromEntries(error.issues.slice(0, 20).map((issue) => [issue.path.map(String).join(".") || "form", issue.message]));
 }
 
-function requireOperator(event: NetworkingEvent, membership: NetworkingMembership) {
+export function requireOperator(event: NetworkingEvent, membership: NetworkingMembership) {
   if (!event) throw new ApplicationError("NOT_FOUND", "Event not found.");
   if (!membership?.active || !["owner", "organizer"].includes(membership.role)) {
     throw new ApplicationError("FORBIDDEN", "You do not have access to this event or organization.");

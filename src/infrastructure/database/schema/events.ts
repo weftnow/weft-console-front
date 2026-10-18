@@ -10,7 +10,7 @@ export const guestType = pgEnum("event_guest_type", ["Attendee", "VIP", "Sponsor
 export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
 export const guestNetworkingStatus = pgEnum("event_guest_networking_status", ["included", "excluded"]);
 export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["guest_request", "organizer_decision", "not_attending", "other"]);
-export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed"]);
+export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated"]);
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -82,6 +82,8 @@ export const eventGuests = pgTable("event_guests", {
   networkingExcludedBy: uuid("networking_excluded_by").references(() => users.id, { onDelete: "restrict" }),
   networkingExclusionReason: guestExclusionReason("networking_exclusion_reason"),
   networkingVersion: integer("networking_version").default(1).notNull(),
+  /** Number of the current row in event_guest_profile_versions; 0 means no profile has been saved yet. */
+  profileVersion: integer("profile_version").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
@@ -97,6 +99,33 @@ export const eventGuests = pgTable("event_guests", {
   check("event_guests_email_normalized_valid", sql`${table.normalizedEmail} is not distinct from nullif(lower(btrim(${table.email})), '')`),
   check("event_guests_networking_valid", sql`(${table.networkingStatus} = 'excluded' and ${table.networkingExcludedAt} is not null and ${table.networkingExcludedBy} is not null and ${table.networkingExclusionReason} is not null) or (${table.networkingStatus} = 'included' and ${table.networkingExcludedAt} is null and ${table.networkingExcludedBy} is null and ${table.networkingExclusionReason} is null)`),
   check("event_guests_networking_version_valid", sql`${table.networkingVersion} >= 1`),
+  check("event_guests_profile_version_valid", sql`${table.profileVersion} >= 0`),
+]);
+
+const PROFILE_MATCHING_KEYS = "ARRAY['goals','offers','desiredConnections','avoid','background','linkedinDetails','missingDetails']::text[]";
+
+/** Append-only profile history. Rows are never updated or deleted, so (guest_id, version) can be pinned by matching and introductions. */
+export const eventGuestProfileVersions = pgTable("event_guest_profile_versions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull(),
+  guestId: uuid("guest_id").notNull(),
+  version: integer("version").notNull(),
+  summary: text("summary"),
+  goals: text("goals"), offers: text("offers"), desiredConnections: text("desired_connections"),
+  avoid: text("avoid"), background: text("background"),
+  linkedinDetails: text("linkedin_details"), missingDetails: text("missing_details"),
+  /** Matching fields hidden from the shareable summary. They still feed matching. */
+  organizerOnlyFields: text("organizer_only_fields").array().default(sql`ARRAY[]::text[]`).notNull(),
+  createdBy: uuid("created_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  foreignKey({ columns: [table.guestId, table.eventId], foreignColumns: [eventGuests.id, eventGuests.eventId], name: "event_guest_profile_versions_guest_fk" }).onDelete("cascade"),
+  unique("event_guest_profile_versions_guest_version_unique").on(table.guestId, table.version),
+  index("event_guest_profile_versions_current_idx").on(table.eventId, table.guestId, table.version.desc()),
+  check("event_guest_profile_versions_version_valid", sql`${table.version} >= 1`),
+  check("event_guest_profile_versions_summary_valid", sql`${table.summary} is null or (length(${table.summary}) between 1 and 500 and ${table.summary} = btrim(${table.summary}))`),
+  check("event_guest_profile_versions_fields_valid", sql`(${table.goals} is null or (length(${table.goals}) between 1 and 2000 and ${table.goals} = btrim(${table.goals}))) and (${table.offers} is null or (length(${table.offers}) between 1 and 2000 and ${table.offers} = btrim(${table.offers}))) and (${table.desiredConnections} is null or (length(${table.desiredConnections}) between 1 and 2000 and ${table.desiredConnections} = btrim(${table.desiredConnections}))) and (${table.avoid} is null or (length(${table.avoid}) between 1 and 2000 and ${table.avoid} = btrim(${table.avoid}))) and (${table.background} is null or (length(${table.background}) between 1 and 2000 and ${table.background} = btrim(${table.background}))) and (${table.linkedinDetails} is null or (length(${table.linkedinDetails}) between 1 and 2000 and ${table.linkedinDetails} = btrim(${table.linkedinDetails}))) and (${table.missingDetails} is null or (length(${table.missingDetails}) between 1 and 2000 and ${table.missingDetails} = btrim(${table.missingDetails})))`),
+  check("event_guest_profile_versions_organizer_only_valid", sql`${table.organizerOnlyFields} <@ ${sql.raw(PROFILE_MATCHING_KEYS)}`),
 ]);
 
 /** Do-not-match pairs. The pair is stored in canonical order, so A+B and B+A are one row and a guest cannot block themself. */

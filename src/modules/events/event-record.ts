@@ -2,6 +2,7 @@ import { deriveScheduleStatus } from "./event-schedule";
 import { z } from "zod";
 import type { AttendeeImportDto } from "./attendee-import-schemas";
 import type { ExclusionReason, MatchBlockDto } from "@/modules/attendees/networking-schemas";
+import type { ProfileCompleteness } from "@/modules/attendees/profile-schemas";
 export { EVENT_AUDIENCE_OPTIONS } from "./event-options";
 
 export type EventGuestType = "Attendee" | "VIP" | "Sponsor";
@@ -25,6 +26,7 @@ export interface SavedEventGuestRecord extends EventGuestRecord {
   id: string;
   importId: string | null;
   networking: { status: "included" | "excluded"; excludedAt: string | null; reason: ExclusionReason | null; version: number };
+  profile: { version: number; completeness: ProfileCompleteness };
   updatedAt: string;
 }
 
