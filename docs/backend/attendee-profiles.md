@@ -10,7 +10,7 @@ Each row holds eight optional free-text fields: `summary` (the shareable intro, 
 
 `event_guests.profile_version` points at the current row. `0` means no profile has been saved, and no version row exists. Existing guests migrate to `0`. The current profile is the row where `version = event_guests.profile_version`. Versions are bound to the guest's event by a composite foreign key on `event_guests(id, event_id)`.
 
-Every save also writes an `event_matching_changes` row of kind `profile_updated` with `guest_ids = [guestId]`, in the same transaction. This is the F07 notification. The log shape is still a placeholder, not an agreed F07 contract.
+Every save also writes an `event_matching_changes` row of kind `profile_updated` with `guest_ids = [guestId]`, in the same transaction. F07 consumes these rows; see [networking participation](networking-participation.md).
 
 ## Completeness
 
@@ -48,10 +48,10 @@ The attendee roster has a **Profile** column (Goals, Background and LinkedIn chi
 
 ## Boundaries
 
-Not built here: matching, the F07 consumer of `profile_updated`, version history browsing, automatic profile extraction, and duplicate merge (F03). Open items:
+Not built here: matching, version history browsing, automatic profile extraction, and duplicate merge (F03). Open items:
 
 - F06 needs to confirm the profile and completeness format it reads.
-- F07 should read the current version at run time. F07/F08 must pin accepted or active introductions to the version they were created with.
+- F07 reads the current version at run time (each automatic run takes a fresh Console snapshot). F07/F08 must pin accepted or active introductions to the version they were created with.
 - A duplicate merge (F03) should keep the newest profile version on the main record and keep the other record's versions linked.
 
 ## Rollout

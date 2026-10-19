@@ -35,6 +35,7 @@ import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
 import { EventSettingsPanel } from "./event-settings-panel";
 import { EventWeftersPanel } from "./event-wefters-panel";
+import { MatchingStatusPanel } from "@/modules/network/components/matching-status-panel";
 import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
@@ -402,6 +403,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
               <div className="event-detail-overview-grid">
                 <div className="event-detail-primary-column">
                   <EventSummary event={event} />
+                  {event.attendees.canManage ? <MatchingStatusPanel eventId={event.id} /> : null}
                   <RecentActivity event={event} />
                 </div>
                 <aside className="event-detail-rail" aria-label="Event operations">

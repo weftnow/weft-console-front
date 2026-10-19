@@ -29,7 +29,8 @@ test("merged migration chain preserves applied SQL hashes and timestamps from bo
       assert.equal(snapshot.prevId, previous.id);
     }
   }
-  assert.equal(journal.entries.at(-1).tag, "0011_reconcile_console_history");
+  assert.equal(journal.entries[11].tag, "0011_reconcile_console_history");
+  assert.equal(journal.entries.at(-1).tag, "0012_f07_matching_change_kinds");
 });
 
 test("contact conflict snapshots remain valid independently of networking and profile summaries", () => {

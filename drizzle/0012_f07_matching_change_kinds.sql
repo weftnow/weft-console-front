@@ -1,0 +1,5 @@
+ALTER TYPE "public"."event_matching_change_kind" ADD VALUE 'attendees_imported';--> statement-breakpoint
+ALTER TYPE "public"."event_matching_change_kind" ADD VALUE 'attendee_corrected';--> statement-breakpoint
+ALTER TYPE "public"."event_matching_change_kind" ADD VALUE 'identity_linked';--> statement-breakpoint
+ALTER TABLE "event_matching_changes" DROP CONSTRAINT "event_matching_changes_guests_valid";--> statement-breakpoint
+ALTER TABLE "event_matching_changes" ADD CONSTRAINT "event_matching_changes_guests_valid" CHECK (("event_matching_changes"."kind"::text in ('attendees_imported', 'identity_linked') and cardinality("event_matching_changes"."guest_ids") = 0) or ("event_matching_changes"."kind"::text not in ('attendees_imported', 'identity_linked') and cardinality("event_matching_changes"."guest_ids") between 1 and 2));
