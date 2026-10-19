@@ -12,7 +12,9 @@ Before browser acceptance, confirm the configured Clerk development instance and
 
 ### Local production build and start
 
-`pnpm build` explicitly uses Next.js's supported Webpack production bundler (`next build --webpack`). The pre-push hook and Vercel wrapper both invoke this same command. Turbopack's loader worker fails to bind its local IPC port in the current macOS execution environment, including approved runs, while Webpack completes the full production build. Keep development on `next dev`; no hook or validation is skipped. Reassess Turbopack separately when the upstream environment issue is resolved.
+`pnpm dev` and `pnpm build` retain Next.js's default Turbopack bundler. In restricted local runners where Turbopack's plugin child processes cannot bind their IPC sockets, set `WEFT_LOCAL_PLUGIN_THREADS=1` for the command. The installed Next.js version supports `experimental.turbopackPluginRuntimeStrategy: "workerThreads"`, which runs the same plugin work in threads without that socket. The option is off by default and ignored when `VERCEL=1`, so deployed builds retain their existing configuration. This is a local execution option, not a skipped build or a bundler fallback; keep all hooks enabled. Recheck the option against installed Next.js types when upgrading, since it is experimental.
+
+The same local option can be used for an authorized push: `WEFT_LOCAL_PLUGIN_THREADS=1 git push origin <branch>`. The unchanged hook still runs `pnpm verify` and `pnpm build`. Do not use `NEXT_TURBOPACK_USE_WORKER=0` as the repair: that diagnostic compiled successfully but hung during shutdown in this environment.
 
 An ignored `.env.production.local` file takes precedence over `.env.local` during production builds/startup. Next resolves existing process environment first, followed by `.env.production.local`, `.env.local`, `.env.production`, and `.env` for these commands. Inspect which files exist without dumping their contents. `NEXT_PUBLIC_` values are embedded at build time, so changing only runtime configuration cannot repair an artifact built with live Clerk keys.
 

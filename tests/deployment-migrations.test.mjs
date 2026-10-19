@@ -16,12 +16,12 @@ const preview = {
   DATABASE_URL: "postgresql://app:secret@ep-dev-pooler.neon.tech/weft_console_test?sslmode=require",
 };
 
-test("Vercel invokes the migration-aware build while ordinary builds use Webpack without migrations", () => {
+test("Vercel invokes the migration-aware build while ordinary builds remain unchanged", () => {
   const config = JSON.parse(readFileSync("vercel.json", "utf8"));
   const pkg = JSON.parse(readFileSync("package.json", "utf8"));
   assert.equal(config.buildCommand, "pnpm build:vercel");
   assert.equal(pkg.scripts["build:vercel"], "node scripts/vercel-build.mjs");
-  assert.equal(pkg.scripts.build, "next build --webpack");
+  assert.equal(pkg.scripts.build, "next build");
 });
 
 test("production and preview accept their matching direct migration and pooled runtime targets", () => {
