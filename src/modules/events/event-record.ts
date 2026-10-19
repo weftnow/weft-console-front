@@ -72,7 +72,7 @@ export interface EventMetrics {
 }
 
 export type EventStatus = "upcoming" | "live" | "completed";
-const EVENT_DETAIL_TABS = ["overview", "attendees", "kami", "staff", "settings", "insights"] as const;
+const EVENT_DETAIL_TABS = ["overview", "attendees", "matches", "kami", "staff", "settings", "insights"] as const;
 export type EventDetailTab = (typeof EVENT_DETAIL_TABS)[number];
 
 export const EVENT_COVER_PLACEHOLDER_ART = {

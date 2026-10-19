@@ -5,10 +5,10 @@ import { engineMatchingStatusSchema, type MatchingStatusResult } from "../matchi
 const MAX_RESPONSE_BYTES = 64 * 1024;
 const DEFAULT_TIMEOUT_MS = 5_000;
 
-type Environment = Record<string, string | undefined>;
+export type Environment = Record<string, string | undefined>;
 type Options = { fetcher?: typeof fetch; env?: Environment; timeoutMs?: number };
 
-function engineBaseUrl(value: string | undefined): URL | null {
+export function engineBaseUrl(value: string | undefined): URL | null {
   if (!value) return null;
   let url: URL;
   try { url = new URL(value); } catch { return null; }

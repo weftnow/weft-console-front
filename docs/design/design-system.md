@@ -893,6 +893,10 @@ A table may live inside a flatter or inset region within a raised panel.
 
 ---
 
+### Implementation note: Matches tab (F08)
+
+The Matches panel reuses the roster's language rather than adding primitives: a raised `Surface` panel, `event-table` with an inset `table-body-well`, `status-pill` (`match-pill--active` green, `match-pill--revoked` muted, never a failure red because a revoked match is information, not an error), `event-text-action` for "View details", and `ConsoleDialog` for detail. Filters are pill toggle buttons with `aria-pressed` and counts. Below 620px the table collapses to stacked rows with `data-label` captions, as the roster does. The detail dialog reads as a document: pair meta line, then one column per guest (two columns on desktop, one on narrow), then pair-level sections. Copy never implies acceptance or a meeting; a stale-engine note uses the soft orange tint. Styles are `match-*` in `globals.css`.
+
 ## 26. Dialogs, sheets, menus, and popovers
 
 Use shadcn primitives for behavior.

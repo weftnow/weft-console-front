@@ -23,6 +23,7 @@ import {
   ClockIcon,
   DocumentIcon,
   EditIcon,
+  LinkIcon,
   LocationIcon,
   OutcomesIcon,
   PeopleIcon,
@@ -35,6 +36,7 @@ import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
 import { EventSettingsPanel } from "./event-settings-panel";
 import { EventWeftersPanel } from "./event-wefters-panel";
+import { MatchesPanel } from "@/modules/network/components/matches-panel";
 import { MatchingStatusPanel } from "@/modules/network/components/matching-status-panel";
 import type { EventDetailDto } from "../event-dto";
 import {
@@ -52,6 +54,7 @@ type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
   { id: "overview", label: "Overview", icon: CalendarIcon },
   { id: "attendees", label: "Attendees", icon: PeopleIcon },
+  { id: "matches", label: "Matches", icon: LinkIcon },
   { id: "kami", label: "Kami", icon: SparklesIcon },
   { id: "staff", label: "Staff", icon: StaffIcon },
   { id: "settings", label: "Settings", icon: EditIcon },
@@ -87,16 +90,18 @@ export function MissingEvent() {
 
 function EventTabs({
   activeTab,
+  canSeeMatches,
   eventId,
   onSelect,
 }: {
   activeTab: EventDetailTab;
+  canSeeMatches: boolean;
   eventId: string;
   onSelect: (tab: EventDetailTab) => void;
 }) {
   return (
     <nav aria-label="Event sections" className="event-detail-tabs surface-inset">
-      {tabs.map(({ icon: IconComponent, id, label }) => (
+      {tabs.filter(({ id }) => id !== "matches" || canSeeMatches).map(({ icon: IconComponent, id, label }) => (
         <Link
           aria-current={activeTab === id ? "page" : undefined}
           className="event-detail-tab"
@@ -300,7 +305,7 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
   );
 }
 
-function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "kami">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "matches" | "kami">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
   const tab = tabs.find((item) => item.id === activeTab)!;
   const IconComponent = tab.icon;
 
@@ -319,7 +324,9 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
 export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNotice }: {
   event: EventDetailDto; initialTab: EventDetailTab; onRosterChanged: () => Promise<void>; refreshNotice?: ReactNode;
 }) {
-  const [activeTab, setActiveTab] = useState<EventDetailTab>(initialTab);
+  const [requestedTab, setActiveTab] = useState<EventDetailTab>(initialTab);
+  // The Matches tab is for Owners and Organizers; anyone else is shown the overview.
+  const activeTab: EventDetailTab = requestedTab === "matches" && !event.attendees.canManage ? "overview" : requestedTab;
   // Synchronize Back/Forward tab changes without remounting the page on data refresh.
   const [previousInitialTab, setPreviousInitialTab] = useState(initialTab);
   if (previousInitialTab !== initialTab) {
@@ -390,7 +397,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
             )}
           </Surface>
 
-          <EventTabs activeTab={activeTab} eventId={event.id} onSelect={setActiveTab} />
+          <EventTabs activeTab={activeTab} canSeeMatches={event.attendees.canManage} eventId={event.id} onSelect={setActiveTab} />
 
           {activeTab === "overview" ? (
             <div className="event-detail-tab-content" key="overview">
@@ -417,6 +424,8 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
             <div className="event-detail-tab-content" key={activeTab}>
               <AttendeeRoster event={event} onRosterChanged={onRosterChanged} />
             </div>
+          ) : activeTab === "matches" ? (
+            <div className="event-detail-tab-content" key={activeTab}><MatchesPanel eventId={event.id} /></div>
           ) : activeTab === "kami" ? (
             <div className="event-detail-tab-content" key={activeTab}>
               <KamiWorkspace art={art} event={event} onNotice={showNotice} />
