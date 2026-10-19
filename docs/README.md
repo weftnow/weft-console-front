@@ -33,6 +33,7 @@
 - [Invitation onboarding](backend/invitation-onboarding.md): existing-customer Team invitations and provider organization bridge.
 - [Customer provisioning](backend/customer-provisioning.md): initial organization and Owner grant, explicit operator commands and recovery.
 - [Vercel deployment](backend/vercel-deployment.md): build and migration order, environment boundaries, rollback limits.
+- [Automatic matches](backend/matches.md): engine feed sync, stored pairs, revocation, Owner/Organizer API.
 - [Event settings and Wefter management](backend/event-settings.md): persisted settings, schedules, API contracts, and F12 integration boundary.
 
 ## Documentation maintenance

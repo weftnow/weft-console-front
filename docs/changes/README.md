@@ -12,6 +12,8 @@ Use `docs/changes/YYYY-MM-DD-short-name.md` with: Status, linked plan, problem, 
 - [F02 Event settings and Wefter management](2026-10-18-f02-event-settings-wefter-management.md): agreed specification; implementation in progress, with database and signed-in browser acceptance pending.
 - [F03 Attendee records and contact corrections](2026-10-18-f03-attendee-records-contact-corrections.md): complete; development database, signed-in browser, aggregate verification, and build acceptance passed.
 
+- [F08 Automatic match creation and match list](2026-10-19-f08-automatic-matches.md): Ready; implementation in progress, with database and signed-in browser acceptance pending.
+
 ## Imported specifications
 
 The following existing design specifications were migrated from the previous planning tree. Their original status and assumptions are retained as historical evidence; inspect current canonical docs and implementation before using them. None was newly approved or verified by the harness migration.

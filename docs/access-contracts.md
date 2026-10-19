@@ -20,7 +20,7 @@ Owners and Organizers retain organization-wide event access. Both manage event g
 
 `organizationId` is the local organization UUID; `eventId` is `events.id`; `guestId` is `event_guests.id`; `membershipId` is `organization_memberships.id`; `userId` is the authenticated local `users.id`. Event staff selections and `event.staff[].id` refer to membership IDs. Provider subject IDs and guest IDs are never interchangeable with local user IDs. JSON timestamps are UTC ISO 8601 instants; unknown optional values remain explicitly nullable.
 
-Network's `canonicalizePair(guestAId, guestBId)` lowercases valid UUIDs, orders them as `guestLowId` and `guestHighId`, and rejects self-pairs. F08 owns persisted pair rows and must enforce uniqueness on `(eventId, guestLowId, guestHighId)`, event-scoped guest references, and ordered IDs in PostgreSQL. F01 creates no pair table.
+Network's `canonicalizePair(guestAId, guestBId)` lowercases valid UUIDs, orders them as `guestLowId` and `guestHighId`, and rejects self-pairs. F08 owns persisted pair rows (`event_matches`, [automatic matches](backend/matches.md)) and enforces uniqueness on `(eventId, guestLowId, guestHighId)`, event-scoped guest references, and ordered IDs in PostgreSQL. F01 creates no pair table. Match reads are limited to active Owners and Organizers of the event's organization.
 
 ## Event access API and revisions
 

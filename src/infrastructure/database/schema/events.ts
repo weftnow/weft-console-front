@@ -11,6 +11,9 @@ export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
 export const eventConsoleAccess = pgEnum("event_console_access", ["operator", "wefter"]);
 export const guestNetworkingStatus = pgEnum("event_guest_networking_status", ["included", "excluded"]);
 export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["guest_request", "organizer_decision", "not_attending", "other"]);
+export const matchIntroductionPath = pgEnum("event_match_introduction_path", ["sms_coordination", "wefter"]);
+export const matchStatus = pgEnum("event_match_status", ["active", "revoked"]);
+export const matchRevocationReason = pgEnum("event_match_revocation_reason", ["guest_excluded", "pair_blocked", "identity_resolution_required", "guest_missing"]);
 export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated", "attendees_imported", "attendee_corrected", "identity_linked"]);
 
 export const events = pgTable("events", {
@@ -162,6 +165,61 @@ export const eventMatchBlocks = pgTable("event_guest_match_blocks", {
   index("event_guest_match_blocks_high_idx").on(table.eventId, table.guestHighId),
   check("event_guest_match_blocks_order_valid", sql`${table.guestLowId} < ${table.guestHighId}`),
   check("event_guest_match_blocks_reason_valid", sql`${table.reason} is null or length(${table.reason}) <= 500`),
+]);
+
+type PerGuest<T> = Record<string, T>;
+
+/**
+ * One automatically selected pair per event, stored in canonical order. A match is a selection only: it records no guest
+ * acceptance, meeting or Wefter assignment (F10-F13). JSON columns are keyed by guest id, as in the engine feed.
+ */
+export const eventMatches = pgTable("event_matches", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+  guestLowId: uuid("guest_low_id").notNull(),
+  guestHighId: uuid("guest_high_id").notNull(),
+  engineRecommendationId: uuid("engine_recommendation_id").notNull(),
+  sourceRunId: uuid("source_run_id"),
+  profileVersionLow: integer("profile_version_low").notNull(),
+  profileVersionHigh: integer("profile_version_high").notNull(),
+  scoreLow: integer("score_low").notNull(),
+  scoreHigh: integer("score_high").notNull(),
+  pairScore: integer("pair_score").notNull(),
+  benefits: jsonb("benefits").$type<PerGuest<string | null>>().notNull(),
+  shareableReasons: jsonb("shareable_reasons").$type<PerGuest<string | null>>().notNull(),
+  missingInformation: jsonb("missing_information").$type<PerGuest<string[]>>().notNull(),
+  evidence: jsonb("evidence").$type<Array<Record<string, string>>>().notNull(),
+  uncertainty: text("uncertainty").notNull(),
+  /** Fixed when the match is created so a later guest-type correction does not silently change who coordinates it. */
+  introductionPath: matchIntroductionPath("introduction_path").notNull(),
+  status: matchStatus("status").default("active").notNull(),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  revocationReason: matchRevocationReason("revocation_reason"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  foreignKey({ columns: [table.guestLowId, table.eventId], foreignColumns: [eventGuests.id, eventGuests.eventId], name: "event_matches_low_guest_fk" }).onDelete("cascade"),
+  foreignKey({ columns: [table.guestHighId, table.eventId], foreignColumns: [eventGuests.id, eventGuests.eventId], name: "event_matches_high_guest_fk" }).onDelete("cascade"),
+  unique("event_matches_pair_unique").on(table.eventId, table.guestLowId, table.guestHighId),
+  unique("event_matches_recommendation_unique").on(table.eventId, table.engineRecommendationId),
+  unique("event_matches_id_event_unique").on(table.id, table.eventId),
+  index("event_matches_event_status_idx").on(table.eventId, table.status, table.createdAt.desc()),
+  index("event_matches_high_idx").on(table.eventId, table.guestHighId),
+  check("event_matches_order_valid", sql`${table.guestLowId} < ${table.guestHighId}`),
+  check("event_matches_scores_valid", sql`${table.scoreLow} between 0 and 100 and ${table.scoreHigh} between 0 and 100 and ${table.pairScore} between 0 and 100`),
+  check("event_matches_profile_versions_valid", sql`${table.profileVersionLow} >= 0 and ${table.profileVersionHigh} >= 0`),
+  check("event_matches_revocation_valid", sql`(${table.status} = 'active' and ${table.revokedAt} is null and ${table.revocationReason} is null) or (${table.status} = 'revoked' and ${table.revokedAt} is not null and ${table.revocationReason} is not null)`),
+]);
+
+/** Per-event position in the engine feed. Only advanced in the transaction that applies the page. */
+export const eventMatchFeedCursors = pgTable("event_match_feed_cursors", {
+  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
+  lastSeq: integer("last_seq").default(0).notNull(),
+  /** Last finished engine run the Console has fully synced, so the status poll syncs once per run. */
+  checkedThroughRunId: uuid("checked_through_run_id"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  check("event_match_feed_cursors_seq_valid", sql`${table.lastSeq} >= 0`),
 ]);
 
 /** Append-only log of networking changes, written in the same transaction as each change. Automatic matching only sets processed_at. */
