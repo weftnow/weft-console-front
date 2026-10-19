@@ -7,7 +7,7 @@ As inspected on 2026-10-17, this repository runs Next.js 16.3.5 App Router, Reac
 - `src/app/` owns routes, layouts, API adapters, and server actions. `src/proxy.ts` integrates Clerk request authentication.
 - `src/modules/events/` owns event validation, schedules, CSV parsing, server services/repositories, versioned staff event grants, client queries/mutations, and event screens. `src/modules/network/pair-contract.ts` owns pure pair ordering; F08 owns persisted pairs.
 - `src/modules/organizations/` owns local memberships, Console eligibility, Team invitations, and initial customer/Owner provisioning.
-- `src/modules/attendees/`, `network/`, `insights/`, and `sponsors/` currently expose screens; their empty states must not be mistaken for persisted networking or reporting capabilities.
+- `src/modules/attendees/` owns networking participation, do-not-match pairs, versioned profiles and their server/API boundaries. `network/`, `insights/`, and `sponsors/` currently expose screens; their empty states must not be mistaken for persisted networking or reporting capabilities.
 - `src/infrastructure/` owns Clerk identity resolution, HTTP handlers/errors, and the shared PostgreSQL client/schema. `src/shared/ui/` owns shared visual primitives.
 - `drizzle/` contains generated migration SQL and metadata; `scripts/` contains explicit migration, provisioning, build, and harness commands. There is no dedicated staff module today.
 

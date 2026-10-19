@@ -5,7 +5,7 @@ This map summarizes existing [product intent](product.md) and [implemented archi
 | Capability | Current ownership | Delivery boundary |
 | --- | --- | --- |
 | Events | `src/modules/events/` | Creation, detail, schedule validation, covers, event list, versioned staff grants, persisted networking settings, named Wefters and administrator-managed availability |
-| Attendees | Event CSV and attendee-record code in `src/modules/events/`, plus `src/modules/attendees/` | Event guest/import records and event-local canonical identities belong to Events; authorized Owners/Organizers correct details and review exact-contact duplicates. The global People screen remains an empty state |
+| Attendees | Event CSV and attendee-record code in `src/modules/events/`, plus `src/modules/attendees/` | Event guest/import records and event-local canonical identities belong to Events; authorized Owners/Organizers correct details and review exact-contact duplicates. `src/modules/attendees/` owns networking participation and versioned profiles; the global People screen remains an empty state |
 | Organizations | `src/modules/organizations/` | Local memberships, Console access, Team invitations, initial customer/Owner provisioning |
 | Network | `src/modules/network/` | Screen boundary; relationship exploration and introductions remain product direction |
 | Insights | `src/modules/insights/` | Overview screen and visual components; no fabricated outcome metrics |

@@ -26,6 +26,9 @@
 - [Event creation](backend/create-event.md): validation, persistence, API and rollout limits.
 - [Attendee CSV imports](backend/attendee-imports.md): append-only imports, duplicates, replay, capacity and isolation.
 - [Attendee records and contact corrections](backend/attendee-records.md): event-local identities, corrected details, exact-contact review, and revisions.
+- [Networking participation](backend/networking-participation.md): inclusion, exclusions and event-local do-not-match pairs.
+- [Attendee profiles](backend/attendee-profiles.md): versioned profile details, completeness and organizer-only text.
+- [Divergent migration histories](backend/migration-history-reconciliation.md): the F01–F05 merge, applied SQL compatibility and upgrade validation.
 - [Authentication](backend/authentication.md): Clerk identity to local user mapping and local authorization.
 - [Invitation onboarding](backend/invitation-onboarding.md): existing-customer Team invitations and provider organization bridge.
 - [Customer provisioning](backend/customer-provisioning.md): initial organization and Owner grant, explicit operator commands and recovery.

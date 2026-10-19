@@ -64,6 +64,27 @@
       "when": 1792306996645,
       "tag": "0008_attendee_contact_corrections",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792336518894,
+      "tag": "0009_networking_inclusion",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792350213497,
+      "tag": "0010_profile_versions",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792391774945,
+      "tag": "0011_reconcile_console_history",
+      "breakpoints": true
     }
   ]
 }

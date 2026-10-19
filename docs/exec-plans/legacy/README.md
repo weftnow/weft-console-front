@@ -19,3 +19,8 @@ These 13 plans were moved from the previous planning structure on 2026-10-17. Su
 | [Production customer provisioning](2026-10-05-production-customer-provisioning.md) | Pre-existing untracked plan preserved; records 5 failing baseline tests and outstanding full-suite acceptance |
 
 To resume an item, create an active plan that links this history and records current requirements and remaining acceptance. Do not rerun old commits, installations, migrations, provider operations, or delegated workflows merely because they appear in an imported plan.
+
+## Plans imported with the main merge on 2026-10-19
+
+- [F04 networking inclusion](2026-10-18-f04-networking-inclusion.md): original feature plan preserved; implementation is present on main, but its old verification directives are historical.
+- [F05 attendee profiles](2026-10-19-f05-attendee-profiles.md): original feature plan preserved; implementation is present on main, but its old verification directives are historical.

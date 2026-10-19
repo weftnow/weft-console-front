@@ -2,6 +2,8 @@ import { z } from "zod";
 import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES, EVENT_CITIES } from "./event-options";
 import { attendeeImportDtoSchema } from "./attendee-import-schemas";
 import { guestTypeSchema, uuidSchema } from "./event-schemas";
+import { exclusionReasonSchema, matchBlockDtoSchema } from "@/modules/attendees/networking-schemas";
+import { profileCompletenessSchema } from "@/modules/attendees/profile-schemas";
 
 const guestSchema = z.strictObject({
   id: uuidSchema,
@@ -12,10 +14,19 @@ const guestSchema = z.strictObject({
   importId: uuidSchema.nullable(),
   personId: uuidSchema,
   revision: z.number().int().min(1),
+  networking: z.strictObject({
+    status: z.enum(["included", "excluded"]),
+    excludedAt: z.iso.datetime().nullable(),
+    reason: exclusionReasonSchema.nullable(),
+    version: z.number().int().min(1),
+  }),
+  /** Light summary only; the full text loads from the profile endpoint. */
+  profile: z.strictObject({ version: z.number().int().min(0), completeness: profileCompletenessSchema }),
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 });
 
-export const savedEventGuestDtoSchema = guestSchema;
+// Corrections return contact details only; independent networking/profile state stays in its own DTOs.
+export const savedEventGuestDtoSchema = guestSchema.omit({ networking: true, profile: true });
 
 export const eventDetailDtoSchema = z.strictObject({
   id: uuidSchema,
@@ -33,6 +44,7 @@ export const eventDetailDtoSchema = z.strictObject({
     guests: z.array(guestSchema),
     imports: z.array(attendeeImportDtoSchema).max(20),
     importCount: z.number().int().min(0),
+    matchBlocks: z.array(matchBlockDtoSchema),
   }),
   staff: z.array(z.strictObject({ id: uuidSchema, name: z.string(), role: z.string(), avatar: z.string() })),
 }).superRefine((event, ctx) => {

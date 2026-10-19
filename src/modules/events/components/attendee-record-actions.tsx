@@ -15,7 +15,7 @@ const fields = [
   ["firstName", "First name", 100], ["lastName", "Last name", 100], ["email", "Email", 254], ["phone", "Phone", 40],
   ["company", "Company", 200], ["position", "Position", 200], ["profileType", "Profile type", 100], ["linkedin", "LinkedIn URL", 500],
 ] as const;
-function guestDraft(guest: SavedEventGuestRecord): Draft {
+function guestDraft(guest: Draft): Draft {
   return { firstName: guest.firstName, lastName: guest.lastName, email: guest.email, phone: guest.phone, company: guest.company, position: guest.position, profileType: guest.profileType, guestType: guest.guestType, linkedin: guest.linkedin };
 }
 function name(guest: { firstName: string; lastName: string }) { return [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Unnamed attendee"; }
@@ -29,7 +29,7 @@ export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSav
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [pending, setPending] = useState(false);
-  const [current, setCurrent] = useState<SavedEventGuestRecord | null>(null);
+  const [current, setCurrent] = useState<Omit<SavedEventGuestRecord, "networking" | "profile"> | null>(null);
   const [candidates, setCandidates] = useState<Candidate[] | null>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [confirmed, setConfirmed] = useState(false);

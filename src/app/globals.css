@@ -1519,6 +1519,16 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .guest-pill--attendee { background: rgba(87,78,67,.08); color: var(--weft-text-muted); }
 .guest-pill--sponsor { background: rgba(21,115,77,.1); color: var(--weft-green); }
 .guest-pill--vip { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.networking-pill--included { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.networking-pill--excluded { background: rgba(87,78,67,.12); color: var(--weft-text-muted); }
+.roster-networking { display: flex; align-items: center; gap: 10px; }
+.roster-networking .roster-link { border: 0; padding: 0; background: none; cursor: pointer; font: inherit; }
+.networking-panel__section { display: grid; gap: 8px; border-top: 1px solid rgba(87,78,67,.1); padding-top: 12px; font-size: 11px; }
+.networking-panel__section p { margin: 0; color: var(--weft-text-muted); }
+.networking-panel__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.networking-panel__list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.networking-panel__list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.networking-panel__list button:not(.tactile-button) { border: 0; padding: 4px; background: none; color: var(--weft-text-muted); cursor: pointer; }
 .roster-link { display: inline-flex; align-items: center; gap: 5px; color: var(--weft-orange-deep); font-size: 11px; text-decoration: none; }
 .roster-link:hover { text-decoration: underline; }
 .roster-link:focus-visible { outline: none; border-radius: 6px; box-shadow: var(--weft-focus); }
@@ -1979,3 +1989,31 @@ fieldset.event-form-grid, .event-staff-member fieldset { min-width: 0; margin: 0
   .roster-panel .empty-state { padding-inline: 8px; }
   .roster-import-action { min-height: 40px; padding: 9px 14px; font-size: 12px; }
 }
+.profile-panel__saved { margin: 0; color: var(--weft-text-muted); font-size: 11px; }
+.profile-panel__fields { display: grid; gap: 14px; border-top: 1px solid rgba(87,78,67,.1); padding-top: 12px; }
+.profile-panel__textarea { min-height: 64px; }
+.profile-panel__private { display: flex; align-items: center; gap: 8px; color: var(--weft-text-muted); font-size: 11px; }
+.profile-panel__summary { display: grid; gap: 8px; margin: 0; font-size: 11px; }
+.profile-panel__summary dt { font-weight: 600; }
+.profile-panel__summary dd { margin: 2px 0 0; color: var(--weft-text-muted); white-space: pre-wrap; }
+.profile-pill--available { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.profile-pill--missing { background: rgba(87,78,67,.12); color: var(--weft-text-muted); }
+.profile-pill--url_only { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.roster-profile { display: grid; gap: 6px; }
+.roster-profile__chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.roster-profile__chips .status-pill { padding: 2px 8px; font-size: 10px; }
+.roster-profile .roster-link { width: fit-content; border: 0; padding: 0; background: none; cursor: pointer; font: inherit; }
+
+/* Keep networking/profile summaries within the grouped roster. */
+.roster-networking-counts { display: block; margin-top: 4px; }
+.roster-toolbar__filters { flex: 1; }
+.roster-toolbar .search-field { flex: 0 1 280px; }
+.roster-networking-action { display: block; margin-left: auto; }
+.roster-type-cell .status-pill { display: table; margin-block: 4px; }
+.roster-profile .event-text-action { width: fit-content; padding: 0; text-align: left; }
+.console-dialog .networking-panel { margin: 0; border: 0; padding: 0; background: transparent; box-shadow: none; }
+@media (max-width: 620px) { .roster-toolbar .search-field { flex-basis: auto; } .roster-type-cell .networking-pill { position: static; } }
+
+.roster-filter--details select { max-width: 220px; }
+.console-dialog .networking-panel > .attendee-import-panel__heading h3, .console-dialog .networking-panel > .attendee-import-panel__heading > button { display: none; }
+@media (max-width: 760px) { .roster-filter--details select { max-width: none; } }

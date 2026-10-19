@@ -2,7 +2,8 @@ import "server-only";
 import { and, count, desc, eq, inArray, isNotNull, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
-import { eventAttendeeImports, eventCovers, eventGuests, eventPeople, events, eventStaff } from "@/infrastructure/database/schema/events";
+import { eventAttendeeImports, eventCovers, eventGuestProfileVersions, eventGuests, eventMatchBlocks, eventPeople, events, eventStaff } from "@/infrastructure/database/schema/events";
+import { EMPTY_PRESENCE, profileCompleteness } from "@/modules/attendees/profile-completeness";
 import { canAssignStaff, canCreateEvent } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
@@ -80,11 +81,24 @@ export async function findById(eventId: string, organizationId: string): Promise
   const [event] = await database.select().from(events)
     .where(and(eq(events.id, eventId), eq(events.organizationId, organizationId))).limit(1);
   if (!event) return null;
-  const [guests, imports, importTotals, staff, covers] = await Promise.all([
+  const [guests, profiles, imports, importTotals, matchBlocks, staff, covers] = await Promise.all([
     database.select().from(eventGuests).where(eq(eventGuests.eventId, eventId)).orderBy(eventGuests.position),
+    // Presence flags only: profile text stays out of the roster payload.
+    database.select({
+      guestId: eventGuestProfileVersions.guestId,
+      goals: sql<boolean>`${eventGuestProfileVersions.goals} is not null`,
+      offers: sql<boolean>`${eventGuestProfileVersions.offers} is not null`,
+      desiredConnections: sql<boolean>`${eventGuestProfileVersions.desiredConnections} is not null`,
+      background: sql<boolean>`${eventGuestProfileVersions.background} is not null`,
+      linkedinDetails: sql<boolean>`${eventGuestProfileVersions.linkedinDetails} is not null`,
+    }).from(eventGuestProfileVersions)
+      .innerJoin(eventGuests, and(eq(eventGuestProfileVersions.guestId, eventGuests.id), eq(eventGuestProfileVersions.version, eventGuests.profileVersion)))
+      .where(eq(eventGuestProfileVersions.eventId, eventId)),
     database.select().from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId))
       .orderBy(desc(eventAttendeeImports.importedAt), desc(eventAttendeeImports.id)).limit(20),
     database.select({ total: count() }).from(eventAttendeeImports).where(eq(eventAttendeeImports.eventId, eventId)),
+    database.select().from(eventMatchBlocks).where(eq(eventMatchBlocks.eventId, eventId))
+      .orderBy(eventMatchBlocks.createdAt, eventMatchBlocks.id),
     database.select({ id: organizationMemberships.id, name: users.displayName, role: organizationMemberships.role, avatar: users.avatarUrl })
       .from(eventStaff)
       .innerJoin(organizationMemberships, eq(eventStaff.membershipId, organizationMemberships.id))
@@ -92,6 +106,7 @@ export async function findById(eventId: string, organizationId: string): Promise
       .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId), isNotNull(eventStaff.consoleAccess), eq(organizationMemberships.active, true), eq(organizationMemberships.role, "staff"))),
     database.select({ eventId: eventCovers.eventId }).from(eventCovers).where(eq(eventCovers.eventId, eventId)).limit(1),
   ]);
+  const presenceByGuest = new Map(profiles.map((row) => [row.guestId, row]));
   return {
     id: event.id, organizationId: event.organizationId, name: event.name,
     city: event.city as EventDetailDto["city"], venue: event.venue ?? "",
@@ -112,6 +127,14 @@ export async function findById(eventId: string, organizationId: string): Promise
         guestType: guest.guestType, lastName: guest.lastName, linkedin: guest.linkedin,
         phone: guest.phone, position: guest.jobPosition, profileType: guest.profileType,
         source: guest.source,
+        networking: {
+          status: guest.networkingStatus, excludedAt: guest.networkingExcludedAt?.toISOString() ?? null,
+          reason: guest.networkingExclusionReason, version: guest.networkingVersion,
+        },
+        profile: {
+          version: guest.profileVersion,
+          completeness: profileCompleteness(guest, presenceByGuest.get(guest.id) ?? EMPTY_PRESENCE),
+        },
       })),
       imports: imports.map((batch) => ({
         id: batch.id, eventId: batch.eventId, fileName: batch.fileName,
@@ -121,6 +144,10 @@ export async function findById(eventId: string, organizationId: string): Promise
         importedAt: batch.importedAt.toISOString(),
       })),
       importCount: importTotals[0]?.total ?? 0,
+      matchBlocks: matchBlocks.map((block) => ({
+        id: block.id, guestIds: [block.guestLowId, block.guestHighId], reason: block.reason,
+        createdAt: block.createdAt.toISOString(),
+      })),
     },
     staff: staff.map((member) => ({ id: member.id, name: member.name, role: member.role, avatar: member.avatar ?? "" })),
   };

@@ -1,6 +1,8 @@
 import { deriveScheduleStatus } from "./event-schedule";
 import { z } from "zod";
 import type { AttendeeImportDto } from "./attendee-import-schemas";
+import type { ExclusionReason, MatchBlockDto } from "@/modules/attendees/networking-schemas";
+import type { ProfileCompleteness } from "@/modules/attendees/profile-schemas";
 export { EVENT_AUDIENCE_OPTIONS } from "./event-options";
 
 export type EventGuestType = "Attendee" | "VIP" | "Sponsor";
@@ -25,6 +27,8 @@ export interface SavedEventGuestRecord extends EventGuestRecord {
   importId: string | null;
   personId: string;
   revision: number;
+  networking: { status: "included" | "excluded"; excludedAt: string | null; reason: ExclusionReason | null; version: number };
+  profile: { version: number; completeness: ProfileCompleteness };
   updatedAt: string;
 }
 
@@ -36,7 +40,7 @@ export interface EventStaffRecord {
 }
 
 export interface EventRecord {
-  attendees: { canManage: boolean; guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number };
+  attendees: { canManage: boolean; guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number; matchBlocks: MatchBlockDto[] };
   categories: string[];
   city: string;
   coverImage: string | null;

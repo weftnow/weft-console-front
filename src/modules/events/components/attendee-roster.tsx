@@ -14,9 +14,13 @@ import {
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { ConsoleDialog } from "@/shared/ui/console-dialog";
+import { NetworkingPanel } from "@/modules/attendees/components/networking-panel";
+import { ProfilePanel } from "@/modules/attendees/components/profile-panel";
+import { EXCLUSION_REASON_LABELS } from "@/modules/attendees/networking-schemas";
 import { AttendeeImportPanel } from "./attendee-import-panel";
 import { AttendeeRecordActions } from "./attendee-record-actions";
-import type { EventGuestRecord, EventGuestType, EventRecord } from "../event-record";
+import type { SavedEventGuestRecord, EventGuestType, EventRecord } from "../event-record";
 import { attendeeContactFlags } from "../attendee-contact";
 
 const PAGE_SIZE = 25;
@@ -38,11 +42,11 @@ const SORT_LABELS: Record<SortKey, string> = {
   profileType: "Profile type",
 };
 
-function fullName(guest: EventGuestRecord) {
+function fullName(guest: SavedEventGuestRecord) {
   return `${guest.firstName} ${guest.lastName}`.trim();
 }
 
-function sortValue(guest: EventGuestRecord, key: SortKey) {
+function sortValue(guest: SavedEventGuestRecord, key: SortKey) {
   if (key === "name") return `${guest.lastName} ${guest.firstName}`.trim().toLowerCase();
   return guest[key].toLowerCase();
 }
@@ -94,11 +98,15 @@ function ImportHistory({ event }: { event: EventRecord }) {
   </details>;
 }
 
-export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; onImportSaved: () => void | Promise<void> }) {
+export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord; onRosterChanged: () => void | Promise<void> }) {
   const compact = useSyncExternalStore(subscribeCompactRoster, isCompactRoster, serverCompactRoster);
   const [query, setQuery] = useState("");
   const [guestType, setGuestType] = useState<EventGuestType | "all">("all");
   const [profileType, setProfileType] = useState("all");
+  const [networking, setNetworking] = useState<"all" | "included" | "excluded">("all");
+  const [missingProfile, setMissingProfile] = useState<"all" | "goals" | "background" | "linkedin">("all");
+  const [panelBusy, setPanelBusy] = useState(false);
+  const [panel, setPanel] = useState<{ kind: "networking" | "profile"; guestId: string } | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(0);
@@ -111,6 +119,8 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
     return counts;
   }, [guests]);
   const peopleCount = identityCounts.size;
+  const excludedCount = guests.filter((guest) => guest.networking.status === "excluded").length;
+  const panelGuest = panel ? guests.find((guest) => guest.id === panel.guestId) : undefined;
 
   const profileTypes = useMemo(
     () => [...new Set(guests.map((guest) => guest.profileType).filter(Boolean))].sort(),
@@ -122,6 +132,8 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
     const matches = guests.filter((guest) => {
       if (guestType !== "all" && guest.guestType !== guestType) return false;
       if (profileType !== "all" && guest.profileType !== profileType) return false;
+      if (networking !== "all" && guest.networking.status !== networking) return false;
+      if (missingProfile !== "all" && guest.profile.completeness[missingProfile] === "available") return false;
       if (!needle) return true;
       return [fullName(guest), guest.email, guest.phone, guest.company, guest.position]
         .join(" ")
@@ -133,17 +145,19 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
       const result = sortValue(a, sortKey).localeCompare(sortValue(b, sortKey));
       return direction === "asc" ? result : -result;
     });
-  }, [direction, guestType, guests, profileType, query, sortKey]);
+  }, [direction, guestType, guests, networking, missingProfile, profileType, query, sortKey]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount - 1);
   const visible = filtered.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
-  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all";
+  const filtersActive = query.trim() !== "" || guestType !== "all" || profileType !== "all" || networking !== "all" || missingProfile !== "all";
 
   const clearFilters = () => {
     setQuery("");
     setGuestType("all");
     setProfileType("all");
+    setNetworking("all");
+    setMissingProfile("all");
     setPage(0);
   };
 
@@ -166,6 +180,7 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                 : peopleCount === guests.length
                   ? `${peopleCount.toLocaleString()} ${peopleCount === 1 ? "attendee" : "attendees"}`
                   : `${peopleCount.toLocaleString()} ${peopleCount === 1 ? "person" : "people"} · ${guests.length.toLocaleString()} attendee records`}
+              {guests.length ? <span className="roster-networking-counts">{guests.length - excludedCount} included · {excludedCount} excluded</span> : null}
             </p>
           </div>
         </div>
@@ -216,6 +231,18 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                 <ChevronDownIcon className="roster-filter__chevron" />
               </label>
             ) : null}
+            <label className="roster-filter">
+              <span className="sr-only">Filter by networking status</span>
+              <select value={networking} onChange={(input) => { setNetworking(input.target.value as typeof networking); setPage(0); }}>
+                <option value="all">All networking</option><option value="included">Included</option><option value="excluded">Excluded</option>
+              </select><ChevronDownIcon className="roster-filter__chevron" />
+            </label>
+            <label className="roster-filter roster-filter--details">
+              <span className="sr-only">Filter by missing profile information</span>
+              <select value={missingProfile} onChange={(input) => { setMissingProfile(input.target.value as typeof missingProfile); setPage(0); }}>
+                <option value="all">All profile details</option><option value="goals">Missing goals</option><option value="background">Missing background</option><option value="linkedin">Missing LinkedIn details</option>
+              </select><ChevronDownIcon className="roster-filter__chevron" />
+            </label>
             <label className="roster-filter roster-mobile-sort">
               <span className="sr-only">Sort attendees</span>
               <select value={`${sortKey}:${direction}`} onChange={(input) => {
@@ -238,9 +265,13 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
           hasActiveFilters={filtersActive}
           onCancel={() => setImportOpen(false)}
           onClearFilters={clearFilters}
-          onSaved={onImportSaved}
+          onSaved={onRosterChanged}
         />
       ) : null}
+
+      {event.attendees.canManage ? <ConsoleDialog open={!!panelGuest} busy={panelBusy} onClose={() => setPanel(null)} title={panel?.kind === "profile" ? "Attendee profile" : "Networking"} description={panelGuest ? fullName(panelGuest) : undefined}>
+        {panelGuest ? panel?.kind === "profile" ? <ProfilePanel key={panelGuest.id} eventId={event.id} guest={panelGuest} onBusyChange={setPanelBusy} onChanged={onRosterChanged} onClose={() => setPanel(null)} /> : <NetworkingPanel key={panelGuest.id} eventId={event.id} guest={panelGuest} onBusyChange={setPanelBusy} guests={guests} blocks={event.attendees.matchBlocks} onChanged={onRosterChanged} onClose={() => setPanel(null)} /> : null}
+      </ConsoleDialog> : null}
 
       {guests.length === 0 ? (
         <EmptyState
@@ -285,14 +316,16 @@ export function AttendeeRoster({ event, onImportSaved }: { event: EventRecord; o
                       </div>
                     </td>
                     <td className="roster-company-cell" role="cell" data-label="Company"><div className="roster-company"><strong title={guest.company || undefined}>{guest.company || <span className="table-empty">Not added</span>}</strong>{guest.position ? <span title={guest.position}>{guest.position}</span> : null}</div></td>
-                    <td className="roster-profile-cell" role="cell" data-label="Profile">{guest.profileType || <span className="table-empty">Not set</span>}</td>
+                    <td className="roster-profile-cell" role="cell" data-label="Profile"><div className="roster-profile">{guest.profileType || <span className="table-empty">Not set</span>}{event.attendees.canManage ? <><div className="roster-profile__chips">{([['goals', 'Goals'], ['background', 'Background'], ['linkedin', 'LinkedIn']] as const).map(([key, label]) => <span className={`status-pill profile-pill--${guest.profile.completeness[key]}`} key={key} title={`${label}: ${guest.profile.completeness[key] === 'url_only' ? 'URL only, details not supplied' : guest.profile.completeness[key]}`}>{label}</span>)}</div><button className="event-text-action" onClick={() => setPanel({ kind: "profile", guestId: guest.id })} type="button">Edit profile</button></> : null}</div></td>
                     <td className="roster-type-cell" role="cell">
                       <span className={`status-pill guest-pill guest-pill--${guest.guestType.toLowerCase()}`}>
                         {guest.guestType}
                       </span>
+                      {event.attendees.canManage ? <span className={`status-pill networking-pill networking-pill--${guest.networking.status}`} title={guest.networking.reason ? EXCLUSION_REASON_LABELS[guest.networking.reason] : undefined}>{guest.networking.status === "excluded" ? "Excluded" : "Included"}</span> : null}
                     </td>
                     {event.attendees.canManage ? <td className="attendee-actions-cell" role="cell">
-                      <AttendeeRecordActions canManage={event.attendees.canManage} eventId={event.id} guest={guest} guests={guests} onSaved={onImportSaved} />
+                      <AttendeeRecordActions canManage={event.attendees.canManage} eventId={event.id} guest={guest} guests={guests} onSaved={onRosterChanged} />
+                      <button className="event-text-action roster-networking-action" type="button" onClick={() => setPanel({ kind: "networking", guestId: guest.id })}>Networking</button>
                     </td> : null}
                   </tr>;
                 })}

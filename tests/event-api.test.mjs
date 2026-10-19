@@ -13,7 +13,7 @@ const event = {
   startTime: "", endTime: "", timezone: "Asia/Singapore",
   startsAt: "2026-11-18T16:00:00.000Z", endsAt: "2026-11-19T16:00:00.000Z",
   createdAt: "2026-10-01T00:00:00.000Z", updatedAt: "2026-10-01T00:00:00.000Z",
-  coverImage: null, attendees: { canManage: true, guests: [], imports: [], importCount: 0 }, staff: [],
+  coverImage: null, attendees: { canManage: true, guests: [], imports: [], importCount: 0, matchBlocks: [] }, staff: [],
 };
 
 function request(body = "{}", headers = {}) {
