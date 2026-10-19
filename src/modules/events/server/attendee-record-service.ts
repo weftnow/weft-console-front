@@ -9,6 +9,7 @@ import { attendeeReplacementSchema, attendeeLinkSchema } from "../attendee-recor
 import { uuidSchema, zodFieldErrors } from "../event-schemas";
 import { normalizeLinkedin } from "../guest-csv-core";
 import { normalizeAttendeePhone, normalizeAttendeeEmail } from "../attendee-contact";
+import { recordChange } from "@/modules/attendees/server/networking-repository";
 
 type GuestRow = typeof eventGuests.$inferSelect;
 type Transaction = Parameters<Parameters<WeftDatabase["transaction"]>[0]>[0];
@@ -60,7 +61,9 @@ export async function replaceAttendee({ eventId, guestId, userId, data }: { even
       jobPosition: input.position, profileType: input.profileType, guestType: input.guestType,
       linkedin, revision: guest.revision + 1, updatedAt: now,
     }).where(and(eq(eventGuests.id, guestId), eq(eventGuests.eventId, eventId), eq(eventGuests.revision, input.expectedRevision))).returning();
-    return saved ? { kind: "saved" as const, guest: toSnapshot(saved) } : { kind: "conflict" as const, current: toSnapshot(guest) };
+    if (!saved) return { kind: "conflict" as const, current: toSnapshot(guest) };
+    await recordChange(tx, { eventId, actorId: userId, guestIds: [guestId], kind: "attendee_corrected", reason: null });
+    return { kind: "saved" as const, guest: toSnapshot(saved) };
   });
   if (result.kind === "missing") throw new ApplicationError("NOT_FOUND", "Attendee not found.");
   if (result.kind === "denied") throw new ApplicationError("FORBIDDEN", "You do not have access to manage attendees for this event.");
@@ -120,6 +123,8 @@ export async function linkAttendees({ eventId, userId, data }: { eventId: string
       .where(and(eq(eventGuests.eventId, eventId), eq(eventGuests.personId, duplicate.personId)));
     await tx.update(eventGuests).set({ personId: canonical.personId })
       .where(and(eq(eventGuests.eventId, eventId), eq(eventGuests.personId, duplicate.personId)));
+    // A linked group can exceed two guests, so the log records an event-level change.
+    await recordChange(tx, { eventId, actorId: userId, guestIds: [], kind: "identity_linked", reason: null });
     return { kind: "linked" as const, personId: canonical.personId, linkedGuestIds: linkedGuestIds.map((row) => row.id) };
   });
   if (result.kind === "missing") throw new ApplicationError("NOT_FOUND", "Attendee not found in this event.");

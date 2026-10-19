@@ -1193,6 +1193,13 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .event-activity li div span { margin-top: 3px; color: var(--weft-text-muted); font-size: 11px; }
 .event-activity time { color: var(--weft-text-muted); font-size: 11px; white-space: nowrap; }
 
+.matching-status__body { display: grid; justify-items: start; gap: 8px; }
+.matching-status__detail, .matching-status__source { margin: 0; color: var(--weft-text-muted); font-size: 12px; line-height: 1.5; }
+.matching-status__source { font-size: 11px; }
+.matching-status__pill--neutral { background: rgba(87,78,67,.08); color: var(--weft-text-muted); }
+.matching-status__pill--active { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
+.matching-status__pill--good { background: rgba(21,115,77,.1); color: var(--weft-green); }
+.matching-status__pill--problem { background: rgba(87,78,67,.14); color: var(--weft-text); }
 .event-kami-card { display: grid; justify-items: center; padding-top: 20px; text-align: center; }
 .event-kami-card__mark { display: grid; width: 60px; height: 60px; border-radius: 50%; color: var(--weft-orange-deep); place-items: center; }
 .event-kami-card h2 { margin: 12px 0 0; font-size: 16px; letter-spacing: -.035em; }

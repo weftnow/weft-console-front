@@ -7,6 +7,7 @@ import type { AttendeeImportDto } from "../attendee-import-schemas";
 import type { EventRosterSnapshot, ImportAttendeesResult, ImportDecision, PreparedCsvImport } from "../attendee-import-types";
 import type { EventGuestRecord } from "../event-record";
 import { normalizeAttendeePhone } from "../attendee-contact";
+import { recordChange } from "@/modules/attendees/server/networking-repository";
 
 type ImportArgs = { userId: string; eventId: string; prepared: PreparedCsvImport };
 type Decide = (snapshot: EventRosterSnapshot) => ImportDecision;
@@ -105,6 +106,8 @@ export async function withLockedEventRoster({ userId, eventId, prepared }: Impor
         personId: people[index], revision: 1,
         normalizedPhone: normalizeAttendeePhone(guest.phone),
       })));
+      // Event-level change: only an import that stored guests can alter matching inputs.
+      await recordChange(tx, { eventId, actorId: userId, guestIds: [], kind: "attendees_imported", reason: null });
     }
     const now = new Date();
     await tx.update(events).set({ updatedAt: now }).where(eq(events.id, eventId));

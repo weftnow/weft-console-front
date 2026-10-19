@@ -11,7 +11,7 @@ export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
 export const eventConsoleAccess = pgEnum("event_console_access", ["operator", "wefter"]);
 export const guestNetworkingStatus = pgEnum("event_guest_networking_status", ["included", "excluded"]);
 export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["guest_request", "organizer_decision", "not_attending", "other"]);
-export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated"]);
+export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated", "attendees_imported", "attendee_corrected", "identity_linked"]);
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -176,7 +176,8 @@ export const eventMatchingChanges = pgTable("event_matching_changes", {
   processedAt: timestamp("processed_at", { withTimezone: true }),
 }, (table) => [
   index("event_matching_changes_pending_idx").on(table.eventId, table.processedAt, table.createdAt),
-  check("event_matching_changes_guests_valid", sql`cardinality(${table.guestIds}) between 1 and 2`),
+  // Event-level kinds carry no guests; compare as text so the check does not use a just-added enum value in its own transaction.
+  check("event_matching_changes_guests_valid", sql`(${table.kind}::text in ('attendees_imported', 'identity_linked') and cardinality(${table.guestIds}) = 0) or (${table.kind}::text not in ('attendees_imported', 'identity_linked') and cardinality(${table.guestIds}) between 1 and 2)`),
   check("event_matching_changes_reason_valid", sql`${table.reason} is null or length(${table.reason}) <= 500`),
 ]);
 
