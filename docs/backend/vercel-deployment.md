@@ -63,5 +63,10 @@ history, connectivity and pending SQL using authorized operational access before
 retrying. Do not reset the database or edit migration history to silence an error.
 
 This change creates schema only. It does not bootstrap customers, grant roles, or
-send invitations. The customer provisioning CLI remains restricted to development
-and test; see [customer provisioning](customer-provisioning.md).
+send invitations. Customer provisioning is an explicit local operator workflow
+that supports development, test and production targets; Vercel environment values
+are not automatically loaded into a local terminal. See
+[customer provisioning](customer-provisioning.md) for the target guards and
+commands. The operator confirmed that production migrations and Clerk settings
+are deployed for provisioning; this deployment guide does not independently
+verify invitation delivery.

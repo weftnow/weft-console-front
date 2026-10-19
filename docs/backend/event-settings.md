@@ -1,0 +1,15 @@
+# Event settings and Wefter management
+
+F02 stores networking configuration in `event_networking_settings`, with a revision independent of `events.updated_at`. Valid partial settings are supported; missing values remain null or empty and consumers must treat them as unconfigured. Time intervals are UTC instants in JSON and are entered/displayed using the event timezone. Ambiguous and nonexistent local values are rejected by the Temporal conversion used by the UI.
+
+`event_staff.availability_windows` stores zero or more intervals for a named Wefter. It shares the row's revision with `console_access`, so F01 grant edits and F02 schedule edits conflict rather than overwrite one another. The authorized Owner/Organizer transaction locks membership rows before the event and grant rows. Removing Wefter access or changing the mode away from Wefter clears its schedule. Existing grants and schedules receive no suggested values or backfill.
+
+Administrative APIs are `GET/PUT /api/events/:eventId/settings`, `GET /api/events/:eventId/wefters`, and `PUT /api/events/:eventId/wefters/:membershipId`. Only active local Owners and Organizers in the event organization can use them. The Wefter mutation also grants restricted Wefter access atomically; it supports assigning, changing hours, converting an Operator, and removing access. The restricted Wefter page reads only the current actor's hours through a separate allowlisted projection. No Wefter schedule mutation or availability toggle exists.
+
+Internal server consumers may use `getNetworkingConfiguration(eventId)` and `getAuthorizedWefters(eventId)` from `src/modules/events/server/settings-service.ts`. Each consumer still authorizes its own operation and must check `missing` configuration before assignment eligibility. A Wefter with no hours has unconfigured availability.
+
+F12 must protect active introductions across schedule changes and access revocation, including writes made through F01's access API. That check must integrate with F12 assignment persistence and mutation transactions. F02 implements no assignment table, placeholder hook, automatic cancellation, or active-introduction protection.
+
+The Staff tab presents one staff list for both roster access and Wefter hours. “Roster access” maps to the unchanged internal `operator` mode. Wefter saves use the Wefter API; saving roster access or no access uses the existing F01 access API. The list and event summary refresh after saves. Unsaved drafts retain the revision they started with, and conflicts show readable saved/draft comparisons before a deliberate retry. Settings use grouped fields and local/server validation messages; valid partial configuration remains supported. A failed background refresh retains the visible draft. The event summary excludes revoked access rows and inactive/non-staff memberships from its staff count.
+
+Migration SQL is generated with `pnpm db:generate` and reviewed before an explicitly authorized migration operation. Database integration requires an explicitly authorized isolated target and test gate; default `pnpm test` skips database suites. See [Verification](../VERIFICATION.md).

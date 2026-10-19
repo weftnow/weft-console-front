@@ -9,6 +9,7 @@ import type { ConsoleContext } from "@/modules/organizations/types";
 import type { OrganizationRole } from "@/modules/organizations/types";
 import { getCreateEventContext } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
+import { listGrantedEventsForUser } from "@/modules/events/server/access-repository";
 
 const selectionCookie = "weft_organization_id";
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -53,7 +54,10 @@ export async function getCreateEventPageContexts(user: AuthenticatedUser) {
   const selectedMembership = selected?.userId === user.id
     ? eligible.find((membership) => membership.organizationId === selected.organizationId)
     : undefined;
-  if (raw && (!selected || selected.userId !== user.id || !selectedMembership)) cookieStore.delete(selectionCookie);
+  if (raw && (!selected || selected.userId !== user.id || !selectedMembership)) redirect("/select-organization");
+  if (!raw && eligible.length > 1) redirect("/select-organization");
+  // Server Component rendering is read-only for cookies. A stale selection is
+  // cleared only by an authenticated action or explicit switch.
   const displayMembership = selectedMembership ?? eligible[0];
   if (!displayMembership) return { formContext: await getCreateEventContext(user), consoleContext: null, selectedOrganizationId: undefined };
   const formContext = await getCreateEventContext(user);
@@ -68,16 +72,26 @@ export async function getCreateEventPageContexts(user: AuthenticatedUser) {
   };
 }
 
-export async function requireOrganizerPageContext(options: { cleanupInvalidSelection?: boolean } = {}): Promise<ConsoleContext> {
+export async function requireOrganizerPageContext(): Promise<ConsoleContext> {
   const user = await requireLocalActor();
   const cookieStore = await cookies();
   const rawSelection = cookieStore.get(selectionCookie)?.value;
   const parsed = parseOrganizationSelection(rawSelection);
   const selection = parsed?.userId === user.id ? parsed : null;
-  if (options.cleanupInvalidSelection !== false && rawSelection && !selection) cookieStore.delete(selectionCookie);
+  // Cookie mutation belongs in a Server Action; rendering never changes it.
   const memberships = await listActorMemberships(user);
-  const result = resolveConsoleAccess({ memberships, selectedOrganizationId: selection?.organizationId ?? null, userId: user.id });
-  if (result.kind === "no-access") redirect("/access-required");
+  const result = resolveConsoleAccess({
+    memberships,
+    // Preserve the difference between no selection and a stale/forged cookie:
+    // the latter requires an explicit user choice, even with one membership.
+    selectedOrganizationId: rawSelection ? selection?.organizationId ?? "__invalid_selection__" : null,
+    userId: user.id,
+  });
+  if (result.kind === "select") redirect("/select-organization");
+  if (result.kind === "no-access") {
+    if (await listGrantedEventsForUser(user.id).then((grants) => grants.length > 0)) redirect("/select-organization");
+    redirect("/access-required");
+  }
   return {
     user,
     organization: { id: result.membership.organizationId, name: result.membership.organizationName ?? "" },

@@ -33,6 +33,8 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
+import { EventSettingsPanel } from "./event-settings-panel";
+import { EventWeftersPanel } from "./event-wefters-panel";
 import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
@@ -51,12 +53,14 @@ const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
   { id: "attendees", label: "Attendees", icon: PeopleIcon },
   { id: "kami", label: "Kami", icon: SparklesIcon },
   { id: "staff", label: "Staff", icon: StaffIcon },
+  { id: "settings", label: "Settings", icon: EditIcon },
   { id: "insights", label: "Insights", icon: OutcomesIcon },
 ];
 
 const tabDescriptions = {
   insights: "Event insights appear once introductions start.",
-  staff: "Staff coordination arrives in a future release.",
+  staff: "Manage who can access this event and what they can see.",
+  settings: "Configure networking windows and event operating limits.",
 } as const;
 
 const statusLabels = {
@@ -196,7 +200,7 @@ function ReadinessCard({ event }: { event: EventRecord }) {
       ready: Boolean(event.description && event.categories.length),
     },
     { detail: "Complete", label: "Attendees imported", ready: metrics.attendees > 0 },
-    { detail: "Complete", label: "Staff assigned", ready: metrics.staff > 0 },
+    { detail: "Complete", label: "Staff access", ready: metrics.staff > 0 },
   ];
 
   return (
@@ -246,33 +250,14 @@ function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: 
 }
 
 function RecentActivity({ event }: { event: EventRecord }) {
-  const actualAttendees = deriveEventMetrics(event).attendees;
   const activities: { detail: string; icon: Icon; label: string; timestamp: string }[] = [];
 
-  if (actualAttendees > 0) {
+  for (const batch of event.attendees.imports) {
     activities.push({
-      detail: `${actualAttendees.toLocaleString()} attendees added to the event`,
+      detail: `${batch.storedCount.toLocaleString()} attendee records added · ${batch.fileName}`,
       icon: DocumentIcon,
       label: "Attendee list imported",
-      timestamp: event.updatedAt,
-    });
-  }
-  if (event.staff.length) {
-    activities.push({
-      detail: event.staff.length === 1
-        ? `${event.staff[0].name} assigned`
-        : `${event.staff[0].name} and ${event.staff.length - 1} more assigned`,
-      icon: StaffIcon,
-      label: "Staff assigned",
-      timestamp: event.updatedAt,
-    });
-  }
-  if (event.name && event.city && event.startDate && event.endDate) {
-    activities.push({
-      detail: "Dates and location confirmed",
-      icon: EditIcon,
-      label: "Event details updated",
-      timestamp: event.updatedAt,
+      timestamp: batch.importedAt,
     });
   }
   activities.push({
@@ -289,7 +274,7 @@ function RecentActivity({ event }: { event: EventRecord }) {
         <h2 id="event-activity-title">Recent activity</h2>
       </div>
       <ul>
-        {activities.slice(0, 4).map(({ detail, icon: IconComponent, label, timestamp }) => (
+        {activities.sort((a, b) => b.timestamp.localeCompare(a.timestamp)).slice(0, 4).map(({ detail, icon: IconComponent, label, timestamp }) => (
           <li key={`${label}-${timestamp}`}>
             <span className="event-activity__icon"><IconComponent height="15" width="15" /></span>
             <div><strong>{label}</strong><span>{detail}</span></div>
@@ -306,7 +291,7 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
     <Surface as="section" className="event-detail-panel event-kami-card" depth="raised" aria-labelledby="event-kami-title">
       <Surface className="event-kami-card__mark" depth="inset"><SparklesIcon height="25" width="25" /></Surface>
       <h2 id="event-kami-title">Kami for this event</h2>
-      <p>Kami introduces guests to each other using this event&apos;s details and guest list.</p>
+      <p>Preview Kami’s conversation style and event context.</p>
       <Link className="tactile-button event-kami-card__action" href={`/events/${eventId}?tab=kami`} onClick={() => onSelect("kami")}>
         View Kami settings <ArrowRightIcon height="14" width="14" />
       </Link>
@@ -409,10 +394,10 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
           {activeTab === "overview" ? (
             <div className="event-detail-tab-content" key="overview">
               <div className="event-detail-metrics">
-                <MetricCard icon={PeopleIcon} label={metrics.attendeesAreExpected ? "Expected attendees" : "Attendees"} value={metrics.attendees} />
-                <MetricCard icon={StarIcon} label="VIPs" value={metrics.vips} />
-                <MetricCard icon={OutcomesIcon} label="Sponsors" value={metrics.sponsors} />
-                <MetricCard icon={StaffIcon} label="Staff assigned" value={metrics.staff} />
+                <MetricCard icon={PeopleIcon} label={metrics.attendeesAreExpected ? "Expected attendees" : "Attendee records"} value={metrics.attendees} />
+                <MetricCard icon={StarIcon} label="VIP records" value={metrics.vips} />
+                <MetricCard icon={OutcomesIcon} label="Sponsor records" value={metrics.sponsors} />
+                <MetricCard icon={StaffIcon} label="Staff with access" value={metrics.staff} />
               </div>
               <div className="event-detail-overview-grid">
                 <div className="event-detail-primary-column">
@@ -434,6 +419,10 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
             <div className="event-detail-tab-content" key={activeTab}>
               <KamiWorkspace art={art} event={event} onNotice={showNotice} />
             </div>
+          ) : activeTab === "staff" ? (
+            <div className="event-detail-tab-content" key={activeTab}><EventWeftersPanel eventId={event.id} onSaved={onRosterChanged} /></div>
+          ) : activeTab === "settings" ? (
+            <div className="event-detail-tab-content" key={activeTab}><EventSettingsPanel eventId={event.id} /></div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>
               <EventTabPlaceholder activeTab={activeTab} eventId={event.id} onSelect={setActiveTab} />

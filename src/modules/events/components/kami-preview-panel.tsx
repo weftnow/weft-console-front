@@ -259,7 +259,7 @@ export function KamiPreviewPanel({
       <Surface className="kami-ready" depth="raised">
         <span className="kami-ready__glyph"><OutcomesIcon height="19" width="19" /></span>
         <div>
-          <p>Kami uses the configuration above for this event.</p>
+          <p>These examples use your preview preferences.</p>
         </div>
       </Surface>
     </div>

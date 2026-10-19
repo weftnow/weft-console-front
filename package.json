@@ -10,6 +10,10 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs && pnpm typecheck",
+    "check:docs": "node scripts/check-harness.mjs",
+    "test:harness": "node --test tests/harness.test.mjs tests/harness-hooks.test.mjs",
+    "verify:fast": "pnpm check:docs && pnpm lint && pnpm typecheck",
+    "verify": "pnpm verify:fast && pnpm test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/migrate.mjs",
     "provision:customer": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/provision-customer.ts"

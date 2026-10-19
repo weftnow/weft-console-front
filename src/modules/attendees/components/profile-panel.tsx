@@ -16,6 +16,7 @@ type Props = {
   eventId: string;
   guest: SavedEventGuestRecord;
   onClose: () => void;
+  onBusyChange?: (busy: boolean) => void;
   onChanged: () => void | Promise<void>;
 };
 
@@ -55,13 +56,14 @@ function describeSaved(profile: ProfileDto) {
   return profile.version === 0 ? "No profile saved yet." : `Last saved v${profile.version}${profile.savedBy ? ` by ${profile.savedBy}` : ""}${profile.savedAt ? ` on ${new Date(profile.savedAt).toLocaleString()}` : ""}.`;
 }
 
-export function ProfilePanel({ eventId, guest, onClose, onChanged }: Props) {
+export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange }: Props) {
   const [saved, setSaved] = useState<ProfileDto | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   /** The version the next save is based on. After a conflict the user may rebase onto the latest version. */
   const [baseVersion, setBaseVersion] = useState(0);
   const [loadError, setLoadError] = useState("");
   const [pending, setPending] = useState(false);
+  useEffect(() => { onBusyChange?.(pending); }, [pending, onBusyChange]);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [latest, setLatest] = useState<ProfileDto | null>(null);
@@ -150,9 +152,9 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged }: Props) {
       <div className="attendee-import-panel__heading">
         <div>
           <h3 id="profile-panel-title">Profile for {guestName(guest)}</h3>
-          <p>Missing information does not stop matching. Saved changes update matching automatically.</p>
+          <p>Missing information stays marked as unknown. Saved details are available for future matching.</p>
         </div>
-        <TactileButton aria-label="Close profile panel" iconOnly onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
+        <TactileButton aria-label="Close profile panel" iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
       </div>
 
       {loadError ? <p className="upload-error" role="alert">{loadError}</p> : null}
@@ -163,7 +165,7 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged }: Props) {
           <p className="profile-panel__saved">{describeSaved(saved)}</p>
 
           <div className="networking-panel__section">
-            <strong>What matching has</strong>
+            <strong>Profile completeness</strong>
             <ul className="networking-panel__list profile-panel__completeness">
               {COMPLETENESS_LABELS.map(({ key, label }) => (
                 <li key={key}>

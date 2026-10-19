@@ -56,4 +56,4 @@ Not built here: matching, the F07 consumer of `profile_updated`, version history
 
 ## Rollout
 
-Migration `drizzle/0006_profile_versions.sql` is additive; it adds the `profile_updated` enum value, the version table and `event_guests.profile_version` (default 0). Follow the shared-database rules in [Attendee CSV imports](attendee-imports.md) before applying it. The database tests in `tests/profile-database.test.mjs` run only with `WEFT_DATABASE_TEST=1`.
+Migration `drizzle/0010_profile_versions.sql` is additive; it adds the `profile_updated` enum value, the version table and `event_guests.profile_version` (default 0). Follow the shared-database rules in [Attendee CSV imports](attendee-imports.md) before applying it. The database tests in `tests/profile-database.test.mjs` run only with `WEFT_DATABASE_TEST=1`.

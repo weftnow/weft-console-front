@@ -2,10 +2,11 @@ import "server-only";
 import { and, count, eq, inArray, max } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships } from "@/infrastructure/database/schema/identity";
-import { eventAttendeeImports, eventGuests, events } from "@/infrastructure/database/schema/events";
+import { eventAttendeeImports, eventGuests, eventPeople, events } from "@/infrastructure/database/schema/events";
 import type { AttendeeImportDto } from "../attendee-import-schemas";
 import type { EventRosterSnapshot, ImportAttendeesResult, ImportDecision, PreparedCsvImport } from "../attendee-import-types";
 import type { EventGuestRecord } from "../event-record";
+import { normalizeAttendeePhone } from "../attendee-contact";
 
 type ImportArgs = { userId: string; eventId: string; prepared: PreparedCsvImport };
 type Decide = (snapshot: EventRosterSnapshot) => ImportDecision;
@@ -97,7 +98,13 @@ export async function withLockedEventRoster({ userId, eventId, prepared }: Impor
       sponsorCount: decision.counts.sponsorCount,
     }).returning();
     if (decision.guests.length) {
-      await tx.insert(eventGuests).values(decision.guests.map((guest, index) => guestInsert(eventId, batch.id, guest, decision.firstPosition + index)));
+      const people = decision.guests.map(() => crypto.randomUUID());
+      await tx.insert(eventPeople).values(people.map((id) => ({ id, eventId })));
+      await tx.insert(eventGuests).values(decision.guests.map((guest, index) => ({
+        ...guestInsert(eventId, batch.id, guest, decision.firstPosition + index),
+        personId: people[index], revision: 1,
+        normalizedPhone: normalizeAttendeePhone(guest.phone),
+      })));
     }
     const now = new Date();
     await tx.update(events).set({ updatedAt: now }).where(eq(events.id, eventId));

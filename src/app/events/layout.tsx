@@ -5,6 +5,6 @@ import { EventsShell } from "@/modules/events/components/events-shell";
 
 export default async function EventsLayout({ children }: LayoutProps<"/events">) {
   const { subject } = await requireClerkSession();
-  const context = await requireOrganizerPageContext({ cleanupInvalidSelection: false });
+  const context = await requireOrganizerPageContext();
   return <EventsQueryProvider context={context} clerkSubject={subject}><EventsShell context={context}>{children}</EventsShell></EventsQueryProvider>;
 }

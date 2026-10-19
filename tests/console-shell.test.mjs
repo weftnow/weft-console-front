@@ -71,7 +71,7 @@ test("event pages and fallbacks leave shell ownership to the Events layout", () 
   }
   const layout = readFileSync("src/app/events/layout.tsx", "utf8");
   assert.match(layout, /requireOrganizerPageContext/u);
-  assert.match(layout, /cleanupInvalidSelection:\s*false/u);
+  assert.doesNotMatch(layout, /cleanupInvalidSelection/u);
 });
 
 test("event access fallback stays in the one main landmark", () => {
@@ -88,6 +88,6 @@ test("event access fallback stays in the one main landmark", () => {
 test("detail API checks event authorization against the event organization independently of shell context", () => {
   const route = readFileSync("src/infrastructure/http/get-event-handler.ts", "utf8");
   assert.match(route, /getEvent\(\{ userId: actor\.id, eventId \}\)/u);
-  assert.match(route, /requireOrganizationContext\(\{ user: actor, organizationId: event\.organizationId, allowedRoles: \["owner", "organizer"\] \}\)/u);
+  assert.match(route, /requireEventReaderAccess\(\{ userId: actor\.id, eventId, organizationId: event\.organizationId \}\)/u);
   assert.ok(route.indexOf("getEvent({ userId: actor.id, eventId })") < route.indexOf("organizationId: event.organizationId"));
 });

@@ -35,7 +35,7 @@ test("every business page checks the server session before rendering", () => {
   const unguarded = routePages().filter((file) => {
     if (publicRoutes.has(file)) return false;
     const source = readFileSync(file, "utf8");
-    return !source.includes("requireClerkSession(") && !source.includes("requireOrganizerPageContext(");
+    return !source.includes("requireClerkSession(") && !source.includes("requireOrganizerPageContext(") && !source.includes("requireLocalActor(");
   });
   assert.deepEqual(unguarded, [], `unguarded business routes: ${unguarded.map((file) => path.relative(appRoot, file)).join(", ")}`);
 });

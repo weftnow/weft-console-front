@@ -1,5 +1,15 @@
 # Product
 
+## Current delivery boundary
+
+The following product vision covers organizers, staff, and sponsors. F01 includes organizer event creation/detail, attendee CSV imports, local organization selection, Owner-managed Team invitations, and versioned event grants. F02 adds persisted event networking settings, named Wefters, and Owner/Organizer-managed availability intervals. F03 adds Owner/Organizer attendee detail corrections and explicit event-local identity links based on exact normalized email or phone matches. F04 adds networking inclusion/exclusion and do-not-match pairs. F05 adds versioned profile editing, completeness and organizer-only fields. Owner and Organizer access remains organization-wide; staff requires a per-event grant; sponsor memberships remain denied operational event access.
+
+Overview, Network, People, and Partner Report have production empty states rather than fabricated metrics or operational networking results. F03's exact-contact candidate review does not create matching outcomes or cross-event people data. Wefters see only their own read-only availability hours. Assignment storage/screens, recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows and must protect active introductions across availability/access changes; F08 owns persisted pair uniqueness. Initial customer admission and invitation workflows have automated local coverage; live database, provider delivery, and signed-in acceptance require the separate checks in [verification](VERIFICATION.md). Existing documentation is not proof of live deployment behavior.
+
+Event administration uses one Staff list for access and Wefter hours, and grouped networking settings. “Roster access” is the user-facing label for the internal staff operator mode. Attendee correction/duplicate review uses focused dialogs, explicit same-person confirmation and readable conflict comparisons. The roster distinguishes unique people from attendee records; event overview metrics are labeled as records and its activity list uses saved import/creation timestamps. Kami configuration remains a browser-local preview and must not claim that calls or introductions are running.
+
+Wefter assignment storage/screens, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows; F08 owns persisted pair uniqueness. See [domain ownership](domain.md) and [shared access contracts](access-contracts.md) for the implemented boundaries and consumer obligations.
+
 ## Weft
 
 Weft is the networking layer for business events.

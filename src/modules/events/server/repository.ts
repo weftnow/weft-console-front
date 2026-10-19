@@ -1,13 +1,14 @@
 import "server-only";
-import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, isNotNull, or, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, users } from "@/infrastructure/database/schema/identity";
-import { eventAttendeeImports, eventCovers, eventGuestProfileVersions, eventGuests, eventMatchBlocks, events, eventStaff } from "@/infrastructure/database/schema/events";
+import { eventAttendeeImports, eventCovers, eventGuestProfileVersions, eventGuests, eventMatchBlocks, eventPeople, events, eventStaff } from "@/infrastructure/database/schema/events";
 import { EMPTY_PRESENCE, profileCompleteness } from "@/modules/attendees/profile-completeness";
 import { canAssignStaff, canCreateEvent } from "@/modules/organizations/service";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
 import type { PreparedEvent } from "./service";
+import { normalizeAttendeePhone } from "../attendee-contact";
 
 export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
   const { data, schedule, guests, imported, cover, userId, organizationId } = prepared;
@@ -45,13 +46,19 @@ export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
       }).returning({ id: eventAttendeeImports.id });
       importId = batch.id;
     }
-    if (guests.length) await tx.insert(eventGuests).values(guests.map((guest, position) => ({
-      eventId: inserted.id, position, firstName: guest.firstName, lastName: guest.lastName,
-      email: guest.email, normalizedEmail: guest.email || null, phone: guest.phone,
-      company: guest.company, jobPosition: guest.position, profileType: guest.profileType,
-      linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
-      importId: guest.source === "csv" ? importId : null,
-    })));
+    if (guests.length) {
+      const people = guests.map(() => crypto.randomUUID());
+      await tx.insert(eventPeople).values(people.map((id) => ({ id, eventId: inserted.id })));
+      await tx.insert(eventGuests).values(guests.map((guest, position) => ({
+        personId: people[position], revision: 1,
+        eventId: inserted.id, position, firstName: guest.firstName, lastName: guest.lastName,
+        email: guest.email, normalizedEmail: guest.email || null, phone: guest.phone,
+        normalizedPhone: normalizeAttendeePhone(guest.phone),
+        company: guest.company, jobPosition: guest.position, profileType: guest.profileType,
+        linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
+        importId: guest.source === "csv" ? importId : null,
+      })));
+    }
     if (selectedIds.length) await tx.insert(eventStaff).values(selectedIds.map((membershipId) => ({
       eventId: inserted.id, organizationId, membershipId,
     })));
@@ -96,7 +103,7 @@ export async function findById(eventId: string, organizationId: string): Promise
       .from(eventStaff)
       .innerJoin(organizationMemberships, eq(eventStaff.membershipId, organizationMemberships.id))
       .innerJoin(users, eq(organizationMemberships.userId, users.id))
-      .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId))),
+      .where(and(eq(eventStaff.eventId, eventId), eq(eventStaff.organizationId, organizationId), isNotNull(eventStaff.consoleAccess), eq(organizationMemberships.active, true), eq(organizationMemberships.role, "staff"))),
     database.select({ eventId: eventCovers.eventId }).from(eventCovers).where(eq(eventCovers.eventId, eventId)).limit(1),
   ]);
   const presenceByGuest = new Map(profiles.map((row) => [row.guestId, row]));
@@ -112,8 +119,10 @@ export async function findById(eventId: string, organizationId: string): Promise
     createdAt: event.createdAt.toISOString(), updatedAt: event.updatedAt.toISOString(),
     coverImage: covers.length ? `/api/events/${event.id}/cover` : null,
     attendees: {
+      canManage: true,
       guests: guests.map((guest) => ({
         id: guest.id, createdAt: guest.createdAt.toISOString(), updatedAt: guest.updatedAt.toISOString(), importId: guest.importId,
+        personId: guest.personId, revision: guest.revision,
         company: guest.company, email: guest.email, firstName: guest.firstName,
         guestType: guest.guestType, lastName: guest.lastName, linkedin: guest.linkedin,
         phone: guest.phone, position: guest.jobPosition, profileType: guest.profileType,
@@ -157,7 +166,7 @@ export type EventSummaryRow = {
   startsAt: Date; endsAt: Date; guestCount: number; hasCover: boolean;
 };
 
-/** Events of one organization the user may operate: active owner or organizer membership only. */
+/** Organization-wide organizer events plus explicitly granted operator events. */
 export async function listForUser(userId: string, organizationId: string): Promise<EventSummaryRow[]> {
   return getDatabase().select({
     id: events.id, name: events.name, city: events.city, venue: events.venue,
@@ -170,7 +179,10 @@ export async function listForUser(userId: string, organizationId: string): Promi
       eq(organizationMemberships.organizationId, events.organizationId),
       eq(organizationMemberships.userId, userId),
       eq(organizationMemberships.active, true),
-      inArray(organizationMemberships.role, ["owner", "organizer"]),
+      or(
+        inArray(organizationMemberships.role, ["owner", "organizer"]),
+        sql`exists (select 1 from ${eventStaff} where ${eventStaff.eventId} = ${events.id} and ${eventStaff.organizationId} = ${events.organizationId} and ${eventStaff.membershipId} = ${organizationMemberships.id} and ${eventStaff.consoleAccess} = 'operator')`,
+      ),
     ))
     .where(eq(events.organizationId, organizationId))
     .orderBy(desc(events.startsAt));

@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const sql = readFileSync("drizzle/0006_profile_versions.sql", "utf8");
+const sql = readFileSync("drizzle/0010_profile_versions.sql", "utf8");
 const journal = JSON.parse(readFileSync("drizzle/meta/_journal.json", "utf8"));
 
-test("migration 0006 is journaled after 0005", () => {
-  assert.equal(journal.entries[6].tag, "0006_profile_versions");
-  assert.equal(journal.entries[5].tag, "0005_networking_inclusion");
+test("migration 0010 is journaled after 0009", () => {
+  assert.equal(journal.entries[10].tag, "0010_profile_versions");
+  assert.equal(journal.entries[9].tag, "0009_networking_inclusion");
 });
 
 test("existing guests start without a profile (version 0) and the log gains profile_updated", () => {

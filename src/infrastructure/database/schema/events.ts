@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
-  check, customType, date, foreignKey, index, integer, pgEnum, pgTable,
+  check, customType, date, foreignKey, index, integer, jsonb, pgEnum, pgTable,
   primaryKey, text, time, timestamp, unique, uniqueIndex, uuid,
 } from "drizzle-orm/pg-core";
 import { organizationMemberships, organizations, users } from "./identity.ts";
@@ -8,6 +8,7 @@ import { organizationMemberships, organizations, users } from "./identity.ts";
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
 export const guestType = pgEnum("event_guest_type", ["Attendee", "VIP", "Sponsor"]);
 export const guestSource = pgEnum("event_guest_source", ["csv", "manual"]);
+export const eventConsoleAccess = pgEnum("event_console_access", ["operator", "wefter"]);
 export const guestNetworkingStatus = pgEnum("event_guest_networking_status", ["included", "excluded"]);
 export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["guest_request", "organizer_decision", "not_attending", "other"]);
 export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated"]);
@@ -66,6 +67,16 @@ export const eventAttendeeImports = pgTable("event_attendee_imports", {
   check("event_import_counts_valid", sql`${table.importedCount} between 0 and 2000 and ${table.storedCount} between 0 and 2000 and ${table.duplicateCount} >= 0 and ${table.blankCount} >= 0 and ${table.importedCount} = ${table.storedCount} + ${table.duplicateCount} and ${table.vipCount} >= 0 and ${table.sponsorCount} >= 0 and ${table.vipCount} + ${table.sponsorCount} <= ${table.storedCount}`),
 ]);
 
+/** Event-local identity. Guest rows remain the durable participation/source records. */
+export const eventPeople = pgTable("event_people", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  unique("event_people_id_event_unique").on(table.id, table.eventId),
+  foreignKey({ columns: [table.eventId], foreignColumns: [events.id], name: "event_people_event_fk" }).onDelete("cascade"),
+]);
+
 export const eventGuests = pgTable("event_guests", {
   id: uuid("id").defaultRandom().primaryKey(),
   eventId: uuid("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
@@ -77,6 +88,9 @@ export const eventGuests = pgTable("event_guests", {
   linkedin: text("linkedin").notNull(),
   guestType: guestType("guest_type").notNull(), source: guestSource("source").notNull(),
   importId: uuid("import_id"),
+  personId: uuid("person_id").notNull(),
+  revision: integer("revision").default(1).notNull(),
+  normalizedPhone: text("normalized_phone"),
   networkingStatus: guestNetworkingStatus("networking_status").default("included").notNull(),
   networkingExcludedAt: timestamp("networking_excluded_at", { withTimezone: true }),
   networkingExcludedBy: uuid("networking_excluded_by").references(() => users.id, { onDelete: "restrict" }),
@@ -90,13 +104,17 @@ export const eventGuests = pgTable("event_guests", {
   unique("event_guests_id_event_unique").on(table.id, table.eventId),
   index("event_guests_event_position_idx").on(table.eventId, table.position),
   unique("event_guests_event_position_unique").on(table.eventId, table.position),
-  uniqueIndex("event_guests_event_email_unique").on(table.eventId, table.normalizedEmail).where(sql`${table.normalizedEmail} is not null`),
+  index("event_guests_event_email_idx").on(table.eventId, table.normalizedEmail),
+  index("event_guests_event_phone_idx").on(table.eventId, table.normalizedPhone),
   foreignKey({ columns: [table.importId, table.eventId], foreignColumns: [eventAttendeeImports.id, eventAttendeeImports.eventId], name: "event_guests_import_event_fk" }).onDelete("no action"),
+  foreignKey({ columns: [table.personId, table.eventId], foreignColumns: [eventPeople.id, eventPeople.eventId], name: "event_guests_person_event_fk" }).onDelete("restrict"),
   check("event_guests_position_valid", sql`${table.position} >= 0`),
   check("event_guests_name_valid", sql`length(${table.firstName}) <= 100 and length(${table.lastName}) <= 100 and length(btrim(${table.firstName} || ${table.lastName})) > 0`),
   check("event_guests_contact_valid", sql`length(${table.email}) <= 254 and length(${table.phone}) <= 40 and length(${table.company}) <= 200 and length(${table.jobPosition}) <= 200 and length(${table.profileType}) <= 100 and length(${table.linkedin}) <= 500`),
   check("event_guests_source_import_valid", sql`(${table.source} = 'csv' and ${table.importId} is not null) or (${table.source} = 'manual' and ${table.importId} is null)`),
   check("event_guests_email_normalized_valid", sql`${table.normalizedEmail} is not distinct from nullif(lower(btrim(${table.email})), '')`),
+  check("event_guests_phone_normalized_valid", sql`${table.normalizedPhone} is not distinct from case when ${table.phone} ~ '^\\+?[0-9]([0-9 ()().-]*[0-9])?$' and length(regexp_replace(${table.phone}, '[^0-9]', '', 'g')) between 7 and 15 then nullif(regexp_replace(${table.phone}, '[^+0-9]', '', 'g'), '') else null end`),
+  check("event_guests_revision_positive", sql`${table.revision} >= 1`),
   check("event_guests_networking_valid", sql`(${table.networkingStatus} = 'excluded' and ${table.networkingExcludedAt} is not null and ${table.networkingExcludedBy} is not null and ${table.networkingExclusionReason} is not null) or (${table.networkingStatus} = 'included' and ${table.networkingExcludedAt} is null and ${table.networkingExcludedBy} is null and ${table.networkingExclusionReason} is null)`),
   check("event_guests_networking_version_valid", sql`${table.networkingVersion} >= 1`),
   check("event_guests_profile_version_valid", sql`${table.profileVersion} >= 0`),
@@ -166,12 +184,34 @@ export const eventStaff = pgTable("event_staff", {
   eventId: uuid("event_id").notNull(),
   organizationId: uuid("organization_id").notNull(),
   membershipId: uuid("membership_id").notNull(),
+  consoleAccess: eventConsoleAccess("console_access"),
+  revision: integer("revision").default(1).notNull(),
+  availabilityWindows: jsonb("availability_windows").$type<Array<{ startsAt: string; endsAt: string }>>().default(sql`'[]'::jsonb`).notNull(),
+  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "restrict" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   primaryKey({ columns: [table.eventId, table.membershipId] }),
   foreignKey({ columns: [table.eventId, table.organizationId], foreignColumns: [events.id, events.organizationId], name: "event_staff_event_org_fk" }).onDelete("cascade"),
   foreignKey({ columns: [table.membershipId, table.organizationId], foreignColumns: [organizationMemberships.id, organizationMemberships.organizationId], name: "event_staff_membership_org_fk" }).onDelete("restrict"),
   index("event_staff_membership_idx").on(table.membershipId),
+  check("event_staff_revision_positive", sql`${table.revision} >= 1`),
 ]);
+
+export const eventNetworkingSettings = pgTable("event_networking_settings", {
+  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
+  revision: integer("revision").default(1).notNull(),
+  settings: jsonb("settings").$type<{
+    networkingWindows: Array<{ startsAt: string; endsAt: string }>;
+    stopNewIntroductionsAt: string | null;
+    landmarks: Array<{ id: string; name: string; directions: string | null }>;
+    softMaxIntroductionsPerGuest: number | null;
+    locationFreshnessMinutes: number | null;
+    dispatchAcknowledgmentMinutes: number | null;
+    missedMeetingMinutes: number | null;
+  }>().notNull(),
+  updatedBy: uuid("updated_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [check("event_networking_settings_revision_positive", sql`${table.revision} >= 1`)]);
 
 export const eventCovers = pgTable("event_covers", {
   eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),

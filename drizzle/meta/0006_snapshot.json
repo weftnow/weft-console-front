@@ -1,6 +1,6 @@
 {
-  "id": "39b47257-d30a-4a33-a580-72c649d4bdaa",
-  "prevId": "9a44d8df-c6dd-4235-952f-cb7191a4141d",
+  "id": "9b2ce461-a5e4-4a63-b587-d280bfbb8340",
+  "prevId": "9b7de9ec-e0dd-4780-b903-2b1a61f530fe",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -579,195 +579,6 @@
       },
       "isRLSEnabled": false
     },
-    "public.event_guest_profile_versions": {
-      "name": "event_guest_profile_versions",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "event_id": {
-          "name": "event_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "guest_id": {
-          "name": "guest_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "version": {
-          "name": "version",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "summary": {
-          "name": "summary",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "goals": {
-          "name": "goals",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "offers": {
-          "name": "offers",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "desired_connections": {
-          "name": "desired_connections",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "avoid": {
-          "name": "avoid",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "background": {
-          "name": "background",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "linkedin_details": {
-          "name": "linkedin_details",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "missing_details": {
-          "name": "missing_details",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "organizer_only_fields": {
-          "name": "organizer_only_fields",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "ARRAY[]::text[]"
-        },
-        "created_by": {
-          "name": "created_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "event_guest_profile_versions_current_idx": {
-          "name": "event_guest_profile_versions_current_idx",
-          "columns": [
-            {
-              "expression": "event_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "guest_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "version",
-              "isExpression": false,
-              "asc": false,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "event_guest_profile_versions_created_by_users_id_fk": {
-          "name": "event_guest_profile_versions_created_by_users_id_fk",
-          "tableFrom": "event_guest_profile_versions",
-          "tableTo": "users",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
-        "event_guest_profile_versions_guest_fk": {
-          "name": "event_guest_profile_versions_guest_fk",
-          "tableFrom": "event_guest_profile_versions",
-          "tableTo": "event_guests",
-          "columnsFrom": [
-            "guest_id",
-            "event_id"
-          ],
-          "columnsTo": [
-            "id",
-            "event_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "event_guest_profile_versions_guest_version_unique": {
-          "name": "event_guest_profile_versions_guest_version_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "guest_id",
-            "version"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {
-        "event_guest_profile_versions_version_valid": {
-          "name": "event_guest_profile_versions_version_valid",
-          "value": "\"event_guest_profile_versions\".\"version\" >= 1"
-        },
-        "event_guest_profile_versions_summary_valid": {
-          "name": "event_guest_profile_versions_summary_valid",
-          "value": "\"event_guest_profile_versions\".\"summary\" is null or (length(\"event_guest_profile_versions\".\"summary\") between 1 and 500 and \"event_guest_profile_versions\".\"summary\" = btrim(\"event_guest_profile_versions\".\"summary\"))"
-        },
-        "event_guest_profile_versions_fields_valid": {
-          "name": "event_guest_profile_versions_fields_valid",
-          "value": "(\"event_guest_profile_versions\".\"goals\" is null or (length(\"event_guest_profile_versions\".\"goals\") between 1 and 2000 and \"event_guest_profile_versions\".\"goals\" = btrim(\"event_guest_profile_versions\".\"goals\"))) and (\"event_guest_profile_versions\".\"offers\" is null or (length(\"event_guest_profile_versions\".\"offers\") between 1 and 2000 and \"event_guest_profile_versions\".\"offers\" = btrim(\"event_guest_profile_versions\".\"offers\"))) and (\"event_guest_profile_versions\".\"desired_connections\" is null or (length(\"event_guest_profile_versions\".\"desired_connections\") between 1 and 2000 and \"event_guest_profile_versions\".\"desired_connections\" = btrim(\"event_guest_profile_versions\".\"desired_connections\"))) and (\"event_guest_profile_versions\".\"avoid\" is null or (length(\"event_guest_profile_versions\".\"avoid\") between 1 and 2000 and \"event_guest_profile_versions\".\"avoid\" = btrim(\"event_guest_profile_versions\".\"avoid\"))) and (\"event_guest_profile_versions\".\"background\" is null or (length(\"event_guest_profile_versions\".\"background\") between 1 and 2000 and \"event_guest_profile_versions\".\"background\" = btrim(\"event_guest_profile_versions\".\"background\"))) and (\"event_guest_profile_versions\".\"linkedin_details\" is null or (length(\"event_guest_profile_versions\".\"linkedin_details\") between 1 and 2000 and \"event_guest_profile_versions\".\"linkedin_details\" = btrim(\"event_guest_profile_versions\".\"linkedin_details\"))) and (\"event_guest_profile_versions\".\"missing_details\" is null or (length(\"event_guest_profile_versions\".\"missing_details\") between 1 and 2000 and \"event_guest_profile_versions\".\"missing_details\" = btrim(\"event_guest_profile_versions\".\"missing_details\")))"
-        },
-        "event_guest_profile_versions_organizer_only_valid": {
-          "name": "event_guest_profile_versions_organizer_only_valid",
-          "value": "\"event_guest_profile_versions\".\"organizer_only_fields\" <@ ARRAY['goals','offers','desiredConnections','avoid','background','linkedinDetails','missingDetails']::text[]"
-        }
-      },
-      "isRLSEnabled": false
-    },
     "public.event_guests": {
       "name": "event_guests",
       "schema": "",
@@ -865,47 +676,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "networking_status": {
-          "name": "networking_status",
-          "type": "event_guest_networking_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'included'"
-        },
-        "networking_excluded_at": {
-          "name": "networking_excluded_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "networking_excluded_by": {
-          "name": "networking_excluded_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "networking_exclusion_reason": {
-          "name": "networking_exclusion_reason",
-          "type": "event_guest_exclusion_reason",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "networking_version": {
-          "name": "networking_version",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 1
-        },
-        "profile_version": {
-          "name": "profile_version",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -980,19 +750,6 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "event_guests_networking_excluded_by_users_id_fk": {
-          "name": "event_guests_networking_excluded_by_users_id_fk",
-          "tableFrom": "event_guests",
-          "tableTo": "users",
-          "columnsFrom": [
-            "networking_excluded_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
         "event_guests_import_event_fk": {
           "name": "event_guests_import_event_fk",
           "tableFrom": "event_guests",
@@ -1011,14 +768,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "event_guests_id_event_unique": {
-          "name": "event_guests_id_event_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "id",
-            "event_id"
-          ]
-        },
         "event_guests_event_position_unique": {
           "name": "event_guests_event_position_unique",
           "nullsNotDistinct": false,
@@ -1049,301 +798,6 @@
         "event_guests_email_normalized_valid": {
           "name": "event_guests_email_normalized_valid",
           "value": "\"event_guests\".\"normalized_email\" is not distinct from nullif(lower(btrim(\"event_guests\".\"email\")), '')"
-        },
-        "event_guests_networking_valid": {
-          "name": "event_guests_networking_valid",
-          "value": "(\"event_guests\".\"networking_status\" = 'excluded' and \"event_guests\".\"networking_excluded_at\" is not null and \"event_guests\".\"networking_excluded_by\" is not null and \"event_guests\".\"networking_exclusion_reason\" is not null) or (\"event_guests\".\"networking_status\" = 'included' and \"event_guests\".\"networking_excluded_at\" is null and \"event_guests\".\"networking_excluded_by\" is null and \"event_guests\".\"networking_exclusion_reason\" is null)"
-        },
-        "event_guests_networking_version_valid": {
-          "name": "event_guests_networking_version_valid",
-          "value": "\"event_guests\".\"networking_version\" >= 1"
-        },
-        "event_guests_profile_version_valid": {
-          "name": "event_guests_profile_version_valid",
-          "value": "\"event_guests\".\"profile_version\" >= 0"
-        }
-      },
-      "isRLSEnabled": false
-    },
-    "public.event_guest_match_blocks": {
-      "name": "event_guest_match_blocks",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "event_id": {
-          "name": "event_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "guest_low_id": {
-          "name": "guest_low_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "guest_high_id": {
-          "name": "guest_high_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "reason": {
-          "name": "reason",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_by": {
-          "name": "created_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "event_guest_match_blocks_high_idx": {
-          "name": "event_guest_match_blocks_high_idx",
-          "columns": [
-            {
-              "expression": "event_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "guest_high_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "event_guest_match_blocks_event_id_events_id_fk": {
-          "name": "event_guest_match_blocks_event_id_events_id_fk",
-          "tableFrom": "event_guest_match_blocks",
-          "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "event_guest_match_blocks_created_by_users_id_fk": {
-          "name": "event_guest_match_blocks_created_by_users_id_fk",
-          "tableFrom": "event_guest_match_blocks",
-          "tableTo": "users",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
-        "event_guest_match_blocks_low_guest_fk": {
-          "name": "event_guest_match_blocks_low_guest_fk",
-          "tableFrom": "event_guest_match_blocks",
-          "tableTo": "event_guests",
-          "columnsFrom": [
-            "guest_low_id",
-            "event_id"
-          ],
-          "columnsTo": [
-            "id",
-            "event_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "event_guest_match_blocks_high_guest_fk": {
-          "name": "event_guest_match_blocks_high_guest_fk",
-          "tableFrom": "event_guest_match_blocks",
-          "tableTo": "event_guests",
-          "columnsFrom": [
-            "guest_high_id",
-            "event_id"
-          ],
-          "columnsTo": [
-            "id",
-            "event_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "event_guest_match_blocks_pair_unique": {
-          "name": "event_guest_match_blocks_pair_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "event_id",
-            "guest_low_id",
-            "guest_high_id"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {
-        "event_guest_match_blocks_order_valid": {
-          "name": "event_guest_match_blocks_order_valid",
-          "value": "\"event_guest_match_blocks\".\"guest_low_id\" < \"event_guest_match_blocks\".\"guest_high_id\""
-        },
-        "event_guest_match_blocks_reason_valid": {
-          "name": "event_guest_match_blocks_reason_valid",
-          "value": "\"event_guest_match_blocks\".\"reason\" is null or length(\"event_guest_match_blocks\".\"reason\") <= 500"
-        }
-      },
-      "isRLSEnabled": false
-    },
-    "public.event_matching_changes": {
-      "name": "event_matching_changes",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "event_id": {
-          "name": "event_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "kind": {
-          "name": "kind",
-          "type": "event_matching_change_kind",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "guest_ids": {
-          "name": "guest_ids",
-          "type": "uuid[]",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "actor_id": {
-          "name": "actor_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "reason": {
-          "name": "reason",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "processed_at": {
-          "name": "processed_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "event_matching_changes_pending_idx": {
-          "name": "event_matching_changes_pending_idx",
-          "columns": [
-            {
-              "expression": "event_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "processed_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "event_matching_changes_event_id_events_id_fk": {
-          "name": "event_matching_changes_event_id_events_id_fk",
-          "tableFrom": "event_matching_changes",
-          "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "event_matching_changes_actor_id_users_id_fk": {
-          "name": "event_matching_changes_actor_id_users_id_fk",
-          "tableFrom": "event_matching_changes",
-          "tableTo": "users",
-          "columnsFrom": [
-            "actor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {
-        "event_matching_changes_guests_valid": {
-          "name": "event_matching_changes_guests_valid",
-          "value": "cardinality(\"event_matching_changes\".\"guest_ids\") between 1 and 2"
-        },
-        "event_matching_changes_reason_valid": {
-          "name": "event_matching_changes_reason_valid",
-          "value": "\"event_matching_changes\".\"reason\" is null or length(\"event_matching_changes\".\"reason\") <= 500"
         }
       },
       "isRLSEnabled": false
@@ -1369,6 +823,20 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "console_access": {
+          "name": "console_access",
+          "type": "event_console_access",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
         }
       },
       "indexes": {
@@ -1431,7 +899,12 @@
       },
       "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
+      "checkConstraints": {
+        "event_staff_revision_positive": {
+          "name": "event_staff_revision_positive",
+          "value": "\"event_staff\".\"revision\" >= 1"
+        }
+      },
       "isRLSEnabled": false
     },
     "public.events": {
@@ -2022,7 +1495,7 @@
         },
         "organization_invitations_role_check": {
           "name": "organization_invitations_role_check",
-          "value": "\"organization_invitations\".\"role\" in ('owner', 'organizer')"
+          "value": "\"organization_invitations\".\"role\" in ('owner', 'organizer', 'staff')"
         },
         "organization_invitations_status_check": {
           "name": "organization_invitations_status_check",
@@ -2473,22 +1946,12 @@
         "sponsor"
       ]
     },
-    "public.event_guest_exclusion_reason": {
-      "name": "event_guest_exclusion_reason",
+    "public.event_console_access": {
+      "name": "event_console_access",
       "schema": "public",
       "values": [
-        "guest_request",
-        "organizer_decision",
-        "not_attending",
-        "other"
-      ]
-    },
-    "public.event_guest_networking_status": {
-      "name": "event_guest_networking_status",
-      "schema": "public",
-      "values": [
-        "included",
-        "excluded"
+        "operator",
+        "wefter"
       ]
     },
     "public.event_guest_source": {
@@ -2506,17 +1969,6 @@
         "Attendee",
         "VIP",
         "Sponsor"
-      ]
-    },
-    "public.event_matching_change_kind": {
-      "name": "event_matching_change_kind",
-      "schema": "public",
-      "values": [
-        "guest_excluded",
-        "guest_restored",
-        "match_block_added",
-        "match_block_removed",
-        "profile_updated"
       ]
     }
   },

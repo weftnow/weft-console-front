@@ -42,6 +42,6 @@ test("selector and access-required routes check Clerk directly", async () => {
   const fs = await import("node:fs");
   const selector = fs.readFileSync(new URL("../src/app/select-organization/page.tsx", import.meta.url), "utf8");
   const access = fs.readFileSync(new URL("../src/app/access-required/page.tsx", import.meta.url), "utf8");
-  assert.match(selector, /requireClerkSession\(/);
+  assert.match(selector, /requireLocalActor\(/);
   assert.match(access, /requireClerkSession\(/);
 });

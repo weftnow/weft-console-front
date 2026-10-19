@@ -20,7 +20,8 @@ export function AllEventsTable({ events }: { events: EventSummaryDto[] }) {
       </div>
       <div className="table-scroll">
         <table className="event-table all-events-table">
-          <thead><tr><th>Event</th><th>City</th><th>Date</th><th>Status</th><th>Guests</th><th><span className="chart-summary">Open</span></th></tr></thead>
+          <colgroup><col className="events-col-name" /><col className="events-col-city" /><col className="events-col-date" /><col className="events-col-status" /><col className="events-col-count" /><col className="events-col-open" /></colgroup>
+          <thead><tr><th scope="col">Event</th><th scope="col">City</th><th scope="col">Date</th><th scope="col">Status</th><th className="cell-number" scope="col">Guests</th><th scope="col"><span className="sr-only">Open event</span></th></tr></thead>
           <tbody className="table-body-well" data-depth="inset">
             {events.map((event) => (
               <tr key={event.id}>
@@ -28,7 +29,7 @@ export function AllEventsTable({ events }: { events: EventSummaryDto[] }) {
                 <td className="cell-muted">{event.city}</td>
                 <td className="cell-muted">{formatEventDateRange(event.startDate, event.endDate)}</td>
                 <td><span className={`status-pill status-pill--${event.status}`}>{statusLabels[event.status]}</span></td>
-                <td>{event.guestCount.toLocaleString()}</td>
+                <td className="cell-number">{event.guestCount.toLocaleString()}</td>
                 <td className="cell-action"><Link aria-label={`Open ${event.name}`} href={`/events/${event.id}`}><ChevronRightIcon height="15" width="15" /></Link></td>
               </tr>
             ))}

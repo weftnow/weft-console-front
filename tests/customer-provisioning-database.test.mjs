@@ -96,8 +96,11 @@ test("customer reservation is atomic and idempotent without creating an identity
     requestIds.push(disabledRequestId);
     const disabled = await repository.reserveCustomer({ ...input, requestId: disabledRequestId, organizationName: "Disabled Mapping Test" }, now);
     organizationIds.push(disabled.provisioning.organizationId);
+    const disabledIdentityUserId = randomUUID();
+    provisionedUserIds.push(disabledIdentityUserId);
+    await setup.query("INSERT INTO users (id, display_name) VALUES ($1, 'Disabled Identity Profile')", [disabledIdentityUserId]);
     const disabledSubject = `user_${randomUUID().replaceAll("-", "")}`;
-    await setup.query("INSERT INTO user_auth_identities (user_id, provider, instance_id, subject, disabled_at) VALUES ($1, 'clerk', $2, $3, now())", [existingUserId, input.instanceId, disabledSubject]);
+    await setup.query("INSERT INTO user_auth_identities (user_id, provider, instance_id, subject, disabled_at) VALUES ($1, 'clerk', $2, $3, now())", [disabledIdentityUserId, input.instanceId, disabledSubject]);
     await repository.saveOrganizationIdentity({ organizationId: disabled.provisioning.organizationId, instanceId: input.instanceId, organizationSubject: "provider_org_disabled_test" });
     const disabledResult = await repository.commitInitialOwner({ instanceId: input.instanceId, invitationId: disabled.invitation.id, evidence: {
       subject: disabledSubject, organizationSubject: "provider_org_disabled_test", membershipId: "disabled_membership",

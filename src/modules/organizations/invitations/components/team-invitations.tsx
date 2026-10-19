@@ -53,6 +53,7 @@ export function TeamInvitations({ invitations: initialInvitations }: { invitatio
           <select className="team-control team-control--select" id="invite-role" name="role" defaultValue="organizer">
             <option value="owner">Owner</option>
             <option value="organizer">Organizer</option>
+            <option value="staff">Staff</option>
           </select>
         </div>
         <button className="tactile-button tactile-button--primary team-invite-submit" type="submit" disabled={pending !== null}>
@@ -76,7 +77,7 @@ export function TeamInvitations({ invitations: initialInvitations }: { invitatio
             <Surface depth="raised" className="team-invitation-row">
               <div className="team-invitation-row__content">
                 <p className="team-invitation-row__email">{invitation.email}</p>
-                <p className="team-invitation-row__meta"><span>{invitation.role === "owner" ? "Owner" : "Organizer"}</span><span aria-hidden="true">·</span><span>Expires <time dateTime={invitation.expiresAt}>{new Date(invitation.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</time></span></p>
+                <p className="team-invitation-row__meta"><span>{invitation.role === "owner" ? "Owner" : invitation.role === "staff" ? "Staff" : "Organizer"}</span><span aria-hidden="true">·</span><span>Expires <time dateTime={invitation.expiresAt}>{new Date(invitation.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</time></span></p>
                 <div className="team-invitation-row__statuses" aria-label="Invitation status">
                   <span className="team-status"><span>Access</span><strong>{stateLabels[invitation.status]}</strong></span>
                   <span className="team-status"><span>Delivery</span><strong>{stateLabels[invitation.deliveryState]}</strong></span>

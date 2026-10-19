@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const sql = readFileSync("drizzle/0005_networking_inclusion.sql", "utf8");
+const sql = readFileSync("drizzle/0009_networking_inclusion.sql", "utf8");
 const journal = JSON.parse(readFileSync("drizzle/meta/_journal.json", "utf8"));
 
-test("migration 0005 is journaled after the existing migrations", () => {
-  assert.equal(journal.entries[5].tag, "0005_networking_inclusion");
-  assert.equal(journal.entries[4].tag, "0004_gigantic_taskmaster");
+test("migration 0009 is journaled after the existing migrations", () => {
+  assert.equal(journal.entries[9].tag, "0009_networking_inclusion");
+  assert.equal(journal.entries[8].tag, "0008_attendee_contact_corrections");
 });
 
 test("existing guests default to included at version 1", () => {

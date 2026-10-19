@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { CheckIcon, CloseIcon, SearchIcon, TrashIcon } from "@/shared/ui/icons";
+import { useEffect, useMemo, useState } from "react";
+import { CheckIcon, ChevronDownIcon, CloseIcon, SearchIcon, TrashIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { ApplicationError } from "@/shared/lib/application-error";
@@ -19,6 +19,7 @@ type Props = {
   guests: SavedEventGuestRecord[];
   blocks: MatchBlockDto[];
   onClose: () => void;
+  onBusyChange?: (busy: boolean) => void;
   onChanged: () => void | Promise<void>;
 };
 
@@ -32,9 +33,10 @@ function describeState(state: Pick<ParticipationDto, "status" | "reason">) {
     : state.status === "excluded" ? "Excluded" : "Included";
 }
 
-export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onChanged }: Props) {
+export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onChanged, onBusyChange }: Props) {
   const [reason, setReason] = useState<ExclusionReason | "">("");
   const [pending, setPending] = useState(false);
+  useEffect(() => { onBusyChange?.(pending); }, [pending, onBusyChange]);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [latest, setLatest] = useState<ParticipationDto | null>(null);
@@ -89,7 +91,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
           <h3 id="networking-panel-title">Networking for {guestName(guest)}</h3>
           <p>Excluded guests stay on the roster but are not matched. Saved changes apply to future matching.</p>
         </div>
-        <TactileButton aria-label="Close networking panel" iconOnly onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
+        <TactileButton aria-label="Close networking panel" iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
       </div>
 
       <div className="networking-panel__section">
@@ -104,7 +106,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
               <select disabled={pending} onChange={(input) => setReason(input.target.value as ExclusionReason | "")} value={reason}>
                 <option value="">Choose a reason…</option>
                 {EXCLUSION_REASONS.map((value) => <option key={value} value={value}>{EXCLUSION_REASON_LABELS[value]}</option>)}
-              </select>
+              </select><ChevronDownIcon className="roster-filter__chevron" />
             </label>
             <TactileButton disabled={pending || !reason} onClick={() => void changeParticipation()}>{pending ? "Saving…" : "Exclude from matching"}</TactileButton>
           </div>

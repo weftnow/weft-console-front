@@ -9,9 +9,10 @@ test("invitation input normalizes case and whitespace while preserving email ali
   });
 });
 
-test("invitation input accepts only owner and organizer and enforces email limits", () => {
+test("invitation input admits staff without accepting provider roles and enforces email limits", () => {
   const { parseInvitationInput } = loadTs("src/modules/organizations/invitations/validation.ts");
-  for (const role of ["staff", "sponsor", "org:admin", "owner;organizer", null]) {
+  assert.equal(parseInvitationInput({ email: "staff@example.com", role: "staff" }).role, "staff");
+  for (const role of ["sponsor", "org:admin", "owner;organizer", null]) {
     assert.throws(() => parseInvitationInput({ email: "ada@example.com", role }));
   }
   assert.throws(() => parseInvitationInput({ email: `a${"x".repeat(250)}@example.com`, role: "owner" }));

@@ -8,6 +8,7 @@ export class ApplicationError extends Error {
     public readonly code: ApplicationErrorCode,
     message: string,
     public readonly fields?: Record<string, string>,
+    public readonly details?: unknown,
   ) {
     super(message);
     this.name = "ApplicationError";

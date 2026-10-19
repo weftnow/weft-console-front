@@ -75,10 +75,11 @@ test("detail roster refresh is an awaited cache callback and does not refresh th
   assert.doesNotMatch(source, /router\.refresh|useRouter/);
 });
 
-test("roster shows a Networking column, an Included/Excluded filter and a Manage panel", async () => {
+test("grouped roster exposes networking status, its filter and the management panel", async () => {
   const { readFileSync } = await import("node:fs");
   const source = readFileSync("src/modules/events/components/attendee-roster.tsx", "utf8");
-  assert.match(source, /<th scope="col">Networking<\/th>/);
+  assert.match(source, /networking-pill--/);
+  assert.match(source, />Networking<\/button>/);
   assert.match(source, /Filter by networking status/);
   assert.match(source, /<NetworkingPanel/);
   assert.match(source, /included · /);

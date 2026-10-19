@@ -30,4 +30,4 @@ Not built here: automatic matching, match records and cancellation, duplicate ha
 
 ## Rollout
 
-Migration `drizzle/0005_networking_inclusion.sql` is additive; existing guests become included at version 1. Follow the shared-database rules in [Attendee CSV imports](attendee-imports.md) before applying it. The database tests in `tests/networking-database.test.mjs` run only with `WEFT_DATABASE_TEST=1`.
+Migration `drizzle/0009_networking_inclusion.sql` is additive; existing guests become included at version 1. Follow the shared-database rules in [Attendee CSV imports](attendee-imports.md) before applying it. The database tests in `tests/networking-database.test.mjs` run only with `WEFT_DATABASE_TEST=1`.

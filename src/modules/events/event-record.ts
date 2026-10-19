@@ -25,6 +25,8 @@ export interface SavedEventGuestRecord extends EventGuestRecord {
   createdAt: string;
   id: string;
   importId: string | null;
+  personId: string;
+  revision: number;
   networking: { status: "included" | "excluded"; excludedAt: string | null; reason: ExclusionReason | null; version: number };
   profile: { version: number; completeness: ProfileCompleteness };
   updatedAt: string;
@@ -38,7 +40,7 @@ export interface EventStaffRecord {
 }
 
 export interface EventRecord {
-  attendees: { guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number; matchBlocks: MatchBlockDto[] };
+  attendees: { canManage: boolean; guests: SavedEventGuestRecord[]; imports: AttendeeImportDto[]; importCount: number; matchBlocks: MatchBlockDto[] };
   categories: string[];
   city: string;
   coverImage: string | null;
@@ -70,7 +72,7 @@ export interface EventMetrics {
 }
 
 export type EventStatus = "upcoming" | "live" | "completed";
-const EVENT_DETAIL_TABS = ["overview", "attendees", "kami", "staff", "insights"] as const;
+const EVENT_DETAIL_TABS = ["overview", "attendees", "kami", "staff", "settings", "insights"] as const;
 export type EventDetailTab = (typeof EVENT_DETAIL_TABS)[number];
 
 export const EVENT_COVER_PLACEHOLDER_ART = {

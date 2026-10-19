@@ -12,6 +12,8 @@ const guestSchema = z.strictObject({
   phone: z.string(), position: z.string(), profileType: z.string(),
   source: z.enum(["csv", "manual"]),
   importId: uuidSchema.nullable(),
+  personId: uuidSchema,
+  revision: z.number().int().min(1),
   networking: z.strictObject({
     status: z.enum(["included", "excluded"]),
     excludedAt: z.iso.datetime().nullable(),
@@ -22,6 +24,9 @@ const guestSchema = z.strictObject({
   profile: z.strictObject({ version: z.number().int().min(0), completeness: profileCompletenessSchema }),
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 });
+
+// Corrections return contact details only; independent networking/profile state stays in its own DTOs.
+export const savedEventGuestDtoSchema = guestSchema.omit({ networking: true, profile: true });
 
 export const eventDetailDtoSchema = z.strictObject({
   id: uuidSchema,
@@ -35,6 +40,7 @@ export const eventDetailDtoSchema = z.strictObject({
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
   coverImage: z.string().nullable(),
   attendees: z.strictObject({
+    canManage: z.boolean(),
     guests: z.array(guestSchema),
     imports: z.array(attendeeImportDtoSchema).max(20),
     importCount: z.number().int().min(0),

@@ -124,11 +124,12 @@ test("replacement DTO drives current guest rows, metrics, activity and readiness
   const guest = (id, guestType) => ({
     id, guestType, firstName: id, lastName: "Guest", email: `${id}@example.test`, company: "Weft",
     position: "Founder", linkedin: "", phone: "", profileType: "Investor", source: "csv",
-    importId: event.id, createdAt: event.createdAt, updatedAt: event.updatedAt,
+    importId: event.id, personId: event.id, revision: 1, createdAt: event.createdAt, updatedAt: event.updatedAt,
   });
   const imported = {
     ...event,
     attendees: {
+      canManage: true,
       guests: [guest("guest-1", "VIP"), guest("guest-2", "Sponsor")],
       imports: [{ id: event.id, eventId: event.id, fileName: "guests.csv", importedCount: 2, storedCount: 2,
         duplicateCount: 0, blankCount: 0, vipCount: 1, sponsorCount: 1, importedAt: event.updatedAt }],

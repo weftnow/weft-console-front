@@ -9,6 +9,7 @@ import { EventAccessState } from "./event-access-state";
 
 const ScopeContext = createContext<EventQueryScope | null>(null);
 const SessionEndContext = createContext<(() => void) | null>(null);
+const CanInviteStaffContext = createContext(false);
 
 function ScopedQueryProvider({ scope, children }: { scope: EventQueryScope; children: ReactNode }) {
   const [client] = useState(() => new QueryClient());
@@ -42,8 +43,10 @@ export function EventsQueryProvider({ context, clerkSubject, children }: {
   const scope: EventQueryScope = {
     actorId: context.user.id, sessionId: auth.sessionId, activeOrganizationId: context.organization.id,
   };
-  return <ScopedQueryProvider key={JSON.stringify([scope.actorId, scope.sessionId, scope.activeOrganizationId])} scope={scope}>{children}</ScopedQueryProvider>;
+  return <CanInviteStaffContext.Provider value={context.membership.role === "owner"}><ScopedQueryProvider key={JSON.stringify([scope.actorId, scope.sessionId, scope.activeOrganizationId])} scope={scope}>{children}</ScopedQueryProvider></CanInviteStaffContext.Provider>;
 }
+
+export function useCanInviteStaff() { return useContext(CanInviteStaffContext); }
 
 export function useEventQueryScope(): EventQueryScope {
   const scope = useContext(ScopeContext);
