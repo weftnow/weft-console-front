@@ -52,11 +52,47 @@ const complement = {
   Brands: ["Creators", "Media", "Athletes"], Sponsors: ["Founders", "Brands", "Executives"], Creators: ["Brands", "Media"], Media: ["Creators", "Athletes", "Brands"],
   Athletes: ["Brands", "Service Providers", "Media"], Government: ["Service Providers", "Executives"], "Service Providers": ["Executives", "Government", "Athletes"],
 };
-const need = {
-  Founders: "funding and introductions to investors", Investors: "promising early-stage companies", "Family Offices": "long-term investment opportunities", Brands: "creative partners who can reach new audiences",
-  Creators: "brand partnerships", Media: "stories and access to industry leaders", Executives: "partners and suppliers for their business", "Service Providers": "new clients",
-  Government: "industry perspectives on policy", Sponsors: "visible partnerships with the event community", Athletes: "sponsors and brand deals",
+// What `other` offers `me`, for every complementary pairing in both directions. Each entry gives:
+// - benefit: for the organizer, why this introduction helps `me` (names both people and companies);
+// - share: a sentence that could be told to `me`, written so it also reads on its own in the match list.
+const who = (o) => `${o.first} (${o.position}, ${o.company})`;
+const reasons = {
+  "Founders>Investors": [(m, o) => `${who(o)} invests in young companies and can tell ${m.first} whether ${m.company} fits what ${o.company} backs.`, (m, o) => `${o.first} invests at ${o.company} and could be an early backer of ${m.company}.`],
+  "Founders>Family Offices": [(m, o) => `${who(o)} invests family money for the long term, a patient kind of investor for ${m.company}.`, (m, o) => `${o.first} invests for ${o.company} with a long time horizon and could back ${m.company}.`],
+  "Founders>Executives": [(m, o) => `${who(o)} helps run an established company that could become an early customer or pilot partner for ${m.company}.`, (m, o) => `${o.first}'s company ${o.company} could pilot or buy from ${m.company}.`],
+  "Founders>Sponsors": [(m, o) => `${who(o)} runs partnerships for an event sponsor that supports young companies like ${m.company}.`, (m, o) => `${o.first}'s company ${o.company} partners with young companies like ${m.company}.`],
+  "Investors>Founders": [(m, o) => `${who(o)} is building a young company, an early look for ${m.first} before it raises widely.`, (m, o) => `${o.first} is building ${o.company}, a company ${m.company} could back.`],
+  "Family Offices>Founders": [(m, o) => `${who(o)} is building a young company that wants patient, long-term capital like ${m.company}'s.`, (m, o) => `${o.first} is building ${o.company} and wants long-term investors like ${m.company}.`],
+  "Family Offices>Executives": [(m, o) => `${who(o)} helps run an established business that ${m.company} could take a long-term stake in.`, (m, o) => `${o.first} helps run ${o.company}, a mature business ${m.company} could invest in.`],
+  "Executives>Founders": [(m, o) => `${who(o)} is building a product that could help ${m.company} work faster or cheaper.`, (m, o) => `${o.first}'s company ${o.company} builds something ${m.company} could use.`],
+  "Executives>Service Providers": [(m, o) => `${who(o)} advises companies on projects that ${m.company} may not have the skills for in-house.`, (m, o) => `${o.first}'s firm ${o.company} advises companies like ${m.company}.`],
+  "Executives>Sponsors": [(m, o) => `${who(o)} looks for business partners for an event sponsor; ${m.company} could be one.`, (m, o) => `${o.first}'s company ${o.company} looks for business partners like ${m.company}.`],
+  "Executives>Family Offices": [(m, o) => `${who(o)} takes long-term stakes in established companies like ${m.company}.`, (m, o) => `${o.first} invests for ${o.company}, which backs established companies like ${m.company}.`],
+  "Executives>Government": [(m, o) => `${who(o)} works on rules and trade programmes that affect ${m.company}.`, (m, o) => `${o.first} works on policy at ${o.company}, which affects businesses like ${m.company}.`],
+  "Brands>Creators": [(m, o) => `${who(o)} makes creative work that could become campaign content for ${m.company}.`, (m, o) => `${o.first}'s studio ${o.company} makes content for brands like ${m.company}.`],
+  "Brands>Media": [(m, o) => `${who(o)} works at a media outlet that could cover ${m.company}'s next launch.`, (m, o) => `${o.first} works at ${o.company}, which covers brands like ${m.company}.`],
+  "Brands>Athletes": [(m, o) => `${who(o)} runs a sports business looking for brand partners; a sponsorship could put ${m.company} in front of fans.`, (m, o) => `${o.first}'s sports group ${o.company} looks for brand partners like ${m.company}.`],
+  "Brands>Sponsors": [(m, o) => `${who(o)} runs partnerships for an event sponsor that could co-fund a campaign with ${m.company}.`, (m, o) => `${o.first}'s company ${o.company} runs joint campaigns with brands like ${m.company}.`],
+  "Sponsors>Founders": [(m, o) => `${who(o)} is building a young company that ${m.company} could support and get early access to.`, (m, o) => `${o.first} is building ${o.company}, a young company ${m.company} could partner with.`],
+  "Sponsors>Brands": [(m, o) => `${who(o)} runs a brand that ${m.company} could run a joint campaign with.`, (m, o) => `${o.first}'s brand ${o.company} is a possible campaign partner for ${m.company}.`],
+  "Sponsors>Executives": [(m, o) => `${who(o)} helps run a company that could become a customer or partner of ${m.company}.`, (m, o) => `${o.first} helps run ${o.company}, a possible customer or partner of ${m.company}.`],
+  "Creators>Brands": [(m, o) => `${who(o)} commissions creative work, so ${o.company} is a possible client for ${m.company}.`, (m, o) => `${o.first}'s brand ${o.company} hires studios like ${m.company}.`],
+  "Creators>Media": [(m, o) => `${who(o)} works at a media outlet that could feature or distribute ${m.company}'s work.`, (m, o) => `${o.first}'s outlet ${o.company} features work by studios like ${m.company}.`],
+  "Media>Creators": [(m, o) => `${who(o)} makes creative work that could be a story for ${m.company}.`, (m, o) => `${o.first}'s studio ${o.company} makes work ${m.company} could cover.`],
+  "Media>Athletes": [(m, o) => `${who(o)} runs a sports business with stories and access ${m.company} could use.`, (m, o) => `${o.first}'s sports group ${o.company} has stories ${m.company} could cover.`],
+  "Media>Brands": [(m, o) => `${who(o)} runs a brand with launches ${m.company} could cover.`, (m, o) => `${o.first}'s brand ${o.company} has news ${m.company} could cover.`],
+  "Athletes>Brands": [(m, o) => `${who(o)} runs a brand that could sponsor ${m.company}.`, (m, o) => `${o.first}'s brand ${o.company} could sponsor ${m.company}.`],
+  "Athletes>Service Providers": [(m, o) => `${who(o)} advises businesses and could help ${m.company} with contracts and growth.`, (m, o) => `${o.first}'s firm ${o.company} advises sports businesses like ${m.company}.`],
+  "Athletes>Media": [(m, o) => `${who(o)} works at a media outlet that could cover ${m.company}.`, (m, o) => `${o.first}'s outlet ${o.company} could cover ${m.company}.`],
+  "Government>Service Providers": [(m, o) => `${who(o)} sees day to day how rules affect companies, useful input for ${m.company}'s policy work.`, (m, o) => `${o.first}'s firm ${o.company} advises companies affected by the policy ${m.company} works on.`],
+  "Government>Executives": [(m, o) => `${who(o)} can give ${m.company} a first-hand industry view on policy.`, (m, o) => `${o.first} helps run ${o.company} and can share an industry view with ${m.company}.`],
+  "Service Providers>Executives": [(m, o) => `${who(o)} helps run a company that could hire ${m.company}.`, (m, o) => `${o.first} helps run ${o.company}, which may need ${m.company}'s services.`],
+  "Service Providers>Government": [(m, o) => `${who(o)} shapes rules that ${m.company}'s clients must follow.`, (m, o) => `${o.first} works on policy at ${o.company}, which affects ${m.company}'s clients.`],
+  "Service Providers>Athletes": [(m, o) => `${who(o)} runs a sports business that could become a client of ${m.company}.`, (m, o) => `${o.first}'s sports group ${o.company} could become a client of ${m.company}.`],
 };
+for (const [profile, partners] of Object.entries(complement)) for (const partner of partners) {
+  for (const key of [`${profile}>${partner}`, `${partner}>${profile}`]) if (!reasons[key]) throw new Error(`No reason text for ${key}`);
+}
 // A smaller pool of guests gets several matches each (cap 2 to 5), so the demo shows busy and quiet guests.
 const generated = shuffle(guests.filter((guest) => guest.generated));
 const MAX_PER_GUEST = 5;
@@ -76,11 +112,11 @@ for (let poolSize = 60; pairs.length < GENERATED_PAIRS && poolSize <= generated.
   const base = 60 + Math.floor(random() * 33);
   const side = (me, other) => ({
     score: Math.min(100, base + Math.floor(random() * 7) - 3),
-    benefit: `${other.first} is ${other.position} at ${other.company} and is a useful contact for ${need[me.profile]}.`,
-    shareableReason: `${other.first} works at ${other.company}, which is relevant to ${need[me.profile]}.`,
-    missingInformation: ["Specific goals for this event"],
+    benefit: reasons[`${me.profile}>${other.profile}`][0](me, other),
+    shareableReason: reasons[`${me.profile}>${other.profile}`][1](me, other),
+    missingInformation: [`${me.first}'s own goals for the event (no profile saved yet)`],
   });
-  pairs.push({ a: a.email, b: b.email, pairScore: base, uncertainty: "Based on role and company only; no profile details were available.",
+  pairs.push({ a: a.email, b: b.email, pairScore: base, uncertainty: "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     evidence: [{ who: "a", field: "position", quote: `${a.position}, ${a.company}` }, { who: "b", field: "position", quote: `${b.position}, ${b.company}` }],
     forA: side(a, b), forB: side(b, a) });
   }

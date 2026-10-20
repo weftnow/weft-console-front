@@ -6,7 +6,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "pablo.ibarra@demo.weft.example",
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 61,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -21,18 +21,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 60,
-      "benefit": "Mina is Head of Partnerships at Kestrel Sports Group and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Mina works at Kestrel Sports Group, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) runs a sports business looking for brand partners; a sponsorship could put Fable Collective in front of fans.",
+      "shareableReason": "Mina's sports group Kestrel Sports Group looks for brand partners like Fable Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 64,
-      "benefit": "Pablo is Head of Partnerships at Fable Collective and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Pablo works at Fable Collective, which is relevant to sponsors and brand deals.",
+      "benefit": "Pablo (Head of Partnerships, Fable Collective) runs a brand that could sponsor Kestrel Sports Group.",
+      "shareableReason": "Pablo's brand Fable Collective could sponsor Kestrel Sports Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -40,7 +40,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "helena.hosseini@demo.weft.example",
     "b": "dmitri.rossi@demo.weft.example",
     "pairScore": 84,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -55,18 +55,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 86,
-      "benefit": "Dmitri is Marketing Director at Fable Studio and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Dmitri works at Fable Studio, which is relevant to stories and access to industry leaders.",
+      "benefit": "Dmitri (Marketing Director, Fable Studio) runs a brand with launches Harbor Media could cover.",
+      "shareableReason": "Dmitri's brand Fable Studio has news Harbor Media could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Helena's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Helena is Editor at Harbor Media and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Helena works at Harbor Media, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Helena (Editor, Harbor Media) works at a media outlet that could cover Fable Studio's next launch.",
+      "shareableReason": "Helena works at Harbor Media, which covers brands like Fable Studio.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -74,7 +74,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "greta.nasser@demo.weft.example",
     "b": "talia.ostrowski@demo.weft.example",
     "pairScore": 63,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -89,18 +89,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 62,
-      "benefit": "Talia is Head of Sponsorships at Kestrel Cloud and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Talia works at Kestrel Cloud, which is relevant to partners and suppliers for their business.",
+      "benefit": "Talia (Head of Sponsorships, Kestrel Cloud) looks for business partners for an event sponsor; Nimbus Group could be one.",
+      "shareableReason": "Talia's company Kestrel Cloud looks for business partners like Nimbus Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Greta's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 66,
-      "benefit": "Greta is Chief Operating Officer at Nimbus Group and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Greta works at Nimbus Group, which is relevant to visible partnerships with the event community.",
+      "benefit": "Greta (Chief Operating Officer, Nimbus Group) helps run a company that could become a customer or partner of Kestrel Cloud.",
+      "shareableReason": "Greta helps run Nimbus Group, a possible customer or partner of Kestrel Cloud.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Talia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -108,7 +108,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "sven.ibarra@demo.weft.example",
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 66,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -123,18 +123,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 64,
-      "benefit": "Beatriz is Co-Founder & CEO at Glade Works and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Beatriz works at Glade Works, which is relevant to long-term investment opportunities.",
+      "benefit": "Beatriz (Co-Founder & CEO, Glade Works) is building a young company that wants patient, long-term capital like Glade Holdings's.",
+      "shareableReason": "Beatriz is building Glade Works and wants long-term investors like Glade Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Sven's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 69,
-      "benefit": "Sven is Head of Direct Investments at Glade Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Sven works at Glade Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Sven (Head of Direct Investments, Glade Holdings) invests family money for the long term, a patient kind of investor for Glade Works.",
+      "shareableReason": "Sven invests for Glade Holdings with a long time horizon and could back Glade Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Beatriz's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -142,7 +142,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.petrov@demo.weft.example",
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 82,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -157,18 +157,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 81,
-      "benefit": "Beatriz is Co-Founder & CEO at Glade Works and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Beatriz works at Glade Works, which is relevant to promising early-stage companies.",
+      "benefit": "Beatriz (Co-Founder & CEO, Glade Works) is building a young company, an early look for Petra before it raises widely.",
+      "shareableReason": "Beatriz is building Glade Works, a company Indigo Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 85,
-      "benefit": "Petra is Partner at Indigo Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Petra works at Indigo Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Petra (Partner, Indigo Partners) invests in young companies and can tell Beatriz whether Glade Works fits what Indigo Partners backs.",
+      "shareableReason": "Petra invests at Indigo Partners and could be an early backer of Glade Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Beatriz's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -176,7 +176,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mateo.perrin@demo.weft.example",
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 91,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -191,18 +191,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 90,
-      "benefit": "Clara is VP of Strategy at Fable Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Clara works at Fable Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Clara (VP of Strategy, Fable Group) helps run an established company that could become an early customer or pilot partner for Tundra Works.",
+      "shareableReason": "Clara's company Fable Group could pilot or buy from Tundra Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mateo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 92,
-      "benefit": "Mateo is Founder at Tundra Works and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Mateo works at Tundra Works, which is relevant to partners and suppliers for their business.",
+      "benefit": "Mateo (Founder, Tundra Works) is building a product that could help Fable Group work faster or cheaper.",
+      "shareableReason": "Mateo's company Tundra Works builds something Fable Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Clara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -210,7 +210,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.jovanovic@demo.weft.example",
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 65,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -225,18 +225,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 66,
-      "benefit": "Gideon is Founder at Ember Labs and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Gideon works at Ember Labs, which is relevant to partners and suppliers for their business.",
+      "benefit": "Gideon (Founder, Ember Labs) is building a product that could help Ridge Industries work faster or cheaper.",
+      "shareableReason": "Gideon's company Ember Labs builds something Ridge Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 62,
-      "benefit": "Hassan is Chief Financial Officer at Ridge Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Hassan works at Ridge Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Hassan (Chief Financial Officer, Ridge Industries) helps run an established company that could become an early customer or pilot partner for Ember Labs.",
+      "shareableReason": "Hassan's company Ridge Industries could pilot or buy from Ember Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -244,7 +244,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "clara.quinn@demo.weft.example",
     "b": "talia.ostrowski@demo.weft.example",
     "pairScore": 62,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -259,18 +259,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 61,
-      "benefit": "Talia is Head of Sponsorships at Kestrel Cloud and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Talia works at Kestrel Cloud, which is relevant to partners and suppliers for their business.",
+      "benefit": "Talia (Head of Sponsorships, Kestrel Cloud) looks for business partners for an event sponsor; Fable Group could be one.",
+      "shareableReason": "Talia's company Kestrel Cloud looks for business partners like Fable Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Clara's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 60,
-      "benefit": "Clara is VP of Strategy at Fable Group and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Clara works at Fable Group, which is relevant to visible partnerships with the event community.",
+      "benefit": "Clara (VP of Strategy, Fable Group) helps run a company that could become a customer or partner of Kestrel Cloud.",
+      "shareableReason": "Clara helps run Fable Group, a possible customer or partner of Kestrel Cloud.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Talia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -278,7 +278,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.petrov@demo.weft.example",
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 70,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -293,18 +293,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 70,
-      "benefit": "Dalia is Managing Director at Lantern Athletics and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Dalia works at Lantern Athletics, which is relevant to stories and access to industry leaders.",
+      "benefit": "Dalia (Managing Director, Lantern Athletics) runs a sports business with stories and access Marlow Press could use.",
+      "shareableReason": "Dalia's sports group Lantern Athletics has stories Marlow Press could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 67,
-      "benefit": "Dmitri is Editor at Marlow Press and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Dmitri works at Marlow Press, which is relevant to sponsors and brand deals.",
+      "benefit": "Dmitri (Editor, Marlow Press) works at a media outlet that could cover Lantern Athletics.",
+      "shareableReason": "Dmitri's outlet Marlow Press could cover Lantern Athletics.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -312,7 +312,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "esra.lombardi@demo.weft.example",
     "b": "hassan.jovanovic@demo.weft.example",
     "pairScore": 80,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -327,18 +327,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 77,
-      "benefit": "Hassan is Chief Financial Officer at Ridge Industries and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Hassan works at Ridge Industries, which is relevant to industry perspectives on policy.",
+      "benefit": "Hassan (Chief Financial Officer, Ridge Industries) can give Ember Agency a first-hand industry view on policy.",
+      "shareableReason": "Hassan helps run Ridge Industries and can share an industry view with Ember Agency.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Esra is Policy Advisor at Ember Agency and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Esra works at Ember Agency, which is relevant to partners and suppliers for their business.",
+      "benefit": "Esra (Policy Advisor, Ember Agency) works on rules and trade programmes that affect Ridge Industries.",
+      "shareableReason": "Esra works on policy at Ember Agency, which affects businesses like Ridge Industries.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -346,7 +346,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.ibarra@demo.weft.example",
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 71,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -361,18 +361,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 72,
-      "benefit": "Kofi is Founder at Tundra Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Kofi works at Tundra Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Kofi (Founder, Tundra Systems) is building a product that could help Juniper Group work faster or cheaper.",
+      "shareableReason": "Kofi's company Tundra Systems builds something Juniper Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 70,
-      "benefit": "Hassan is Chief Operating Officer at Juniper Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Hassan works at Juniper Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Hassan (Chief Operating Officer, Juniper Group) helps run an established company that could become an early customer or pilot partner for Tundra Systems.",
+      "shareableReason": "Hassan's company Juniper Group could pilot or buy from Tundra Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -380,7 +380,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.jovanovic@demo.weft.example",
     "b": "pablo.jankowski@demo.weft.example",
     "pairScore": 79,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -395,18 +395,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 79,
-      "benefit": "Pablo is VP of Strategy at Cinder Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Pablo works at Cinder Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Pablo (VP of Strategy, Cinder Group) helps run an established company that could become an early customer or pilot partner for Juniper Systems.",
+      "shareableReason": "Pablo's company Cinder Group could pilot or buy from Juniper Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 77,
-      "benefit": "Dmitri is Founder at Juniper Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Dmitri works at Juniper Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Dmitri (Founder, Juniper Systems) is building a product that could help Cinder Group work faster or cheaper.",
+      "shareableReason": "Dmitri's company Juniper Systems builds something Cinder Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -414,7 +414,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "nora.vasquez@demo.weft.example",
     "b": "bilal.lombardi@demo.weft.example",
     "pairScore": 64,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -429,18 +429,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 62,
-      "benefit": "Bilal is VP of Strategy at Glade Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Bilal works at Glade Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Bilal (VP of Strategy, Glade Industries) helps run an established company that could become an early customer or pilot partner for Vertex Systems.",
+      "shareableReason": "Bilal's company Glade Industries could pilot or buy from Vertex Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 67,
-      "benefit": "Nora is Co-Founder & CEO at Vertex Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Nora works at Vertex Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Nora (Co-Founder & CEO, Vertex Systems) is building a product that could help Glade Industries work faster or cheaper.",
+      "shareableReason": "Nora's company Vertex Systems builds something Glade Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Bilal's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -448,7 +448,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "imani.gallagher@demo.weft.example",
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 75,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -463,18 +463,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 72,
-      "benefit": "Yara is Head of Sponsorships at Lantern Cloud and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Yara works at Lantern Cloud, which is relevant to funding and introductions to investors.",
+      "benefit": "Yara (Head of Sponsorships, Lantern Cloud) runs partnerships for an event sponsor that supports young companies like Alder Systems.",
+      "shareableReason": "Yara's company Lantern Cloud partners with young companies like Alder Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Imani's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 78,
-      "benefit": "Imani is Co-Founder & CEO at Alder Systems and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Imani works at Alder Systems, which is relevant to visible partnerships with the event community.",
+      "benefit": "Imani (Co-Founder & CEO, Alder Systems) is building a young company that Lantern Cloud could support and get early access to.",
+      "shareableReason": "Imani is building Alder Systems, a young company Lantern Cloud could partner with.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -482,7 +482,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "omar.quinn@demo.weft.example",
     "b": "greta.nasser@demo.weft.example",
     "pairScore": 85,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -497,18 +497,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 85,
-      "benefit": "Greta is Chief Operating Officer at Nimbus Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Greta works at Nimbus Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Greta (Chief Operating Officer, Nimbus Group) helps run an established company that could become an early customer or pilot partner for Orbit Works.",
+      "shareableReason": "Greta's company Nimbus Group could pilot or buy from Orbit Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Omar's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 87,
-      "benefit": "Omar is Founder at Orbit Works and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Omar works at Orbit Works, which is relevant to partners and suppliers for their business.",
+      "benefit": "Omar (Founder, Orbit Works) is building a product that could help Nimbus Group work faster or cheaper.",
+      "shareableReason": "Omar's company Orbit Works builds something Nimbus Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Greta's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -516,7 +516,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "esra.keller@demo.weft.example",
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 79,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -531,18 +531,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 77,
-      "benefit": "Elena is Managing Partner at Willow Consulting and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Elena works at Willow Consulting, which is relevant to partners and suppliers for their business.",
+      "benefit": "Elena (Managing Partner, Willow Consulting) advises companies on projects that Willow Global may not have the skills for in-house.",
+      "shareableReason": "Elena's firm Willow Consulting advises companies like Willow Global.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 77,
-      "benefit": "Esra is VP of Strategy at Willow Global and is a useful contact for new clients.",
-      "shareableReason": "Esra works at Willow Global, which is relevant to new clients.",
+      "benefit": "Esra (VP of Strategy, Willow Global) helps run a company that could hire Willow Consulting.",
+      "shareableReason": "Esra helps run Willow Global, which may need Willow Consulting's services.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Elena's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -550,7 +550,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "carlos.ahmadi@demo.weft.example",
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 89,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -565,18 +565,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 89,
-      "benefit": "Gideon is Founder at Ember Labs and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Gideon works at Ember Labs, which is relevant to long-term investment opportunities.",
+      "benefit": "Gideon (Founder, Ember Labs) is building a young company that wants patient, long-term capital like Tundra Holdings's.",
+      "shareableReason": "Gideon is building Ember Labs and wants long-term investors like Tundra Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Carlos's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 88,
-      "benefit": "Carlos is Head of Direct Investments at Tundra Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Carlos works at Tundra Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) invests family money for the long term, a patient kind of investor for Ember Labs.",
+      "shareableReason": "Carlos invests for Tundra Holdings with a long time horizon and could back Ember Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -584,7 +584,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.whitlock@demo.weft.example",
     "b": "tessa.varga@demo.weft.example",
     "pairScore": 68,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -599,18 +599,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 70,
-      "benefit": "Tessa is Head of Partnerships at Lantern & Co and is a useful contact for brand partnerships.",
-      "shareableReason": "Tessa works at Lantern & Co, which is relevant to brand partnerships.",
+      "benefit": "Tessa (Head of Partnerships, Lantern & Co) commissions creative work, so Lantern & Co is a possible client for Cinder Studios.",
+      "shareableReason": "Tessa's brand Lantern & Co hires studios like Cinder Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 68,
-      "benefit": "Petra is Founder at Cinder Studios and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Petra works at Cinder Studios, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Petra (Founder, Cinder Studios) makes creative work that could become campaign content for Lantern & Co.",
+      "shareableReason": "Petra's studio Cinder Studios makes content for brands like Lantern & Co.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Tessa's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -618,7 +618,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "nora.moreau@demo.weft.example",
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 85,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -633,18 +633,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 86,
-      "benefit": "Petra is Founder & CTO at Nimbus Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Petra works at Nimbus Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Petra (Founder & CTO, Nimbus Labs) is building a young company, an early look for Nora before it raises widely.",
+      "shareableReason": "Petra is building Nimbus Labs, a company Quarry Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 84,
-      "benefit": "Nora is Principal at Quarry Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Nora works at Quarry Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Nora (Principal, Quarry Partners) invests in young companies and can tell Petra whether Nimbus Labs fits what Quarry Partners backs.",
+      "shareableReason": "Nora invests at Quarry Partners and could be an early backer of Nimbus Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -652,7 +652,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "nora.vasquez@demo.weft.example",
     "b": "hassan.ibarra@demo.weft.example",
     "pairScore": 73,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -667,18 +667,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 72,
-      "benefit": "Hassan is Chief Operating Officer at Juniper Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Hassan works at Juniper Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Hassan (Chief Operating Officer, Juniper Group) helps run an established company that could become an early customer or pilot partner for Vertex Systems.",
+      "shareableReason": "Hassan's company Juniper Group could pilot or buy from Vertex Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 75,
-      "benefit": "Nora is Co-Founder & CEO at Vertex Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Nora works at Vertex Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Nora (Co-Founder & CEO, Vertex Systems) is building a product that could help Juniper Group work faster or cheaper.",
+      "shareableReason": "Nora's company Vertex Systems builds something Juniper Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -686,7 +686,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "esra.perrin@demo.weft.example",
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -701,18 +701,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 77,
-      "benefit": "Elena is Managing Partner at Willow Consulting and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Elena works at Willow Consulting, which is relevant to partners and suppliers for their business.",
+      "benefit": "Elena (Managing Partner, Willow Consulting) advises companies on projects that Tundra Industries may not have the skills for in-house.",
+      "shareableReason": "Elena's firm Willow Consulting advises companies like Tundra Industries.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 71,
-      "benefit": "Esra is Chief Financial Officer at Tundra Industries and is a useful contact for new clients.",
-      "shareableReason": "Esra works at Tundra Industries, which is relevant to new clients.",
+      "benefit": "Esra (Chief Financial Officer, Tundra Industries) helps run a company that could hire Willow Consulting.",
+      "shareableReason": "Esra helps run Tundra Industries, which may need Willow Consulting's services.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Elena's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -720,7 +720,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.jovanovic@demo.weft.example",
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 60,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -735,18 +735,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 57,
-      "benefit": "Yara is Head of Sponsorships at Lantern Cloud and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Yara works at Lantern Cloud, which is relevant to partners and suppliers for their business.",
+      "benefit": "Yara (Head of Sponsorships, Lantern Cloud) looks for business partners for an event sponsor; Ridge Industries could be one.",
+      "shareableReason": "Yara's company Lantern Cloud looks for business partners like Ridge Industries.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 58,
-      "benefit": "Hassan is Chief Financial Officer at Ridge Industries and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Hassan works at Ridge Industries, which is relevant to visible partnerships with the event community.",
+      "benefit": "Hassan (Chief Financial Officer, Ridge Industries) helps run a company that could become a customer or partner of Lantern Cloud.",
+      "shareableReason": "Hassan helps run Ridge Industries, a possible customer or partner of Lantern Cloud.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -754,7 +754,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.petrov@demo.weft.example",
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 72,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -769,18 +769,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 69,
-      "benefit": "Zane is Founder & CTO at Cinder Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Zane works at Cinder Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Zane (Founder & CTO, Cinder Labs) is building a young company, an early look for Petra before it raises widely.",
+      "shareableReason": "Zane is building Cinder Labs, a company Indigo Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 75,
-      "benefit": "Petra is Partner at Indigo Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Petra works at Indigo Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Petra (Partner, Indigo Partners) invests in young companies and can tell Zane whether Cinder Labs fits what Indigo Partners backs.",
+      "shareableReason": "Petra invests at Indigo Partners and could be an early backer of Cinder Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Zane's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -788,7 +788,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "bilal.lombardi@demo.weft.example",
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 67,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -803,18 +803,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 70,
-      "benefit": "Esra is Policy Advisor at Ember Agency and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Esra works at Ember Agency, which is relevant to partners and suppliers for their business.",
+      "benefit": "Esra (Policy Advisor, Ember Agency) works on rules and trade programmes that affect Glade Industries.",
+      "shareableReason": "Esra works on policy at Ember Agency, which affects businesses like Glade Industries.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Bilal's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 64,
-      "benefit": "Bilal is VP of Strategy at Glade Industries and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Bilal works at Glade Industries, which is relevant to industry perspectives on policy.",
+      "benefit": "Bilal (VP of Strategy, Glade Industries) can give Ember Agency a first-hand industry view on policy.",
+      "shareableReason": "Bilal helps run Glade Industries and can share an industry view with Ember Agency.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -822,7 +822,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "yara.nasser@demo.weft.example",
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 87,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -837,18 +837,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 86,
-      "benefit": "Yara is Head of Sponsorships at Lantern Cloud and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Yara works at Lantern Cloud, which is relevant to funding and introductions to investors.",
+      "benefit": "Yara (Head of Sponsorships, Lantern Cloud) runs partnerships for an event sponsor that supports young companies like Marlow Labs.",
+      "shareableReason": "Yara's company Lantern Cloud partners with young companies like Marlow Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 84,
-      "benefit": "Yara is Founder at Marlow Labs and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Yara works at Marlow Labs, which is relevant to visible partnerships with the event community.",
+      "benefit": "Yara (Founder, Marlow Labs) is building a young company that Lantern Cloud could support and get early access to.",
+      "shareableReason": "Yara is building Marlow Labs, a young company Lantern Cloud could partner with.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -856,7 +856,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.rossi@demo.weft.example",
     "b": "kofi.ostrowski@demo.weft.example",
     "pairScore": 86,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -871,18 +871,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Kofi is Creative Director at Alder Studios and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Kofi works at Alder Studios, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Kofi (Creative Director, Alder Studios) makes creative work that could become campaign content for Fable Studio.",
+      "shareableReason": "Kofi's studio Alder Studios makes content for brands like Fable Studio.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 84,
-      "benefit": "Dmitri is Marketing Director at Fable Studio and is a useful contact for brand partnerships.",
-      "shareableReason": "Dmitri works at Fable Studio, which is relevant to brand partnerships.",
+      "benefit": "Dmitri (Marketing Director, Fable Studio) commissions creative work, so Fable Studio is a possible client for Alder Studios.",
+      "shareableReason": "Dmitri's brand Fable Studio hires studios like Alder Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -890,7 +890,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.ibarra@demo.weft.example",
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 62,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -905,18 +905,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 62,
-      "benefit": "Dalia is Founder at Marlow Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Dalia works at Marlow Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Dalia (Founder, Marlow Systems) is building a product that could help Juniper Group work faster or cheaper.",
+      "shareableReason": "Dalia's company Marlow Systems builds something Juniper Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 65,
-      "benefit": "Hassan is Chief Operating Officer at Juniper Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Hassan works at Juniper Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Hassan (Chief Operating Officer, Juniper Group) helps run an established company that could become an early customer or pilot partner for Marlow Systems.",
+      "shareableReason": "Hassan's company Juniper Group could pilot or buy from Marlow Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -924,7 +924,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "aiden.ibarra@demo.weft.example",
     "b": "kofi.bergstrom@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -939,18 +939,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 75,
-      "benefit": "Kofi is Founder at Ember Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Kofi works at Ember Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Kofi (Founder, Ember Systems) is building a young company, an early look for Aiden before it raises widely.",
+      "shareableReason": "Kofi is building Ember Systems, a company Lantern Ventures could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Aiden's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 77,
-      "benefit": "Aiden is Partner at Lantern Ventures and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Aiden works at Lantern Ventures, which is relevant to funding and introductions to investors.",
+      "benefit": "Aiden (Partner, Lantern Ventures) invests in young companies and can tell Kofi whether Ember Systems fits what Lantern Ventures backs.",
+      "shareableReason": "Aiden invests at Lantern Ventures and could be an early backer of Ember Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -958,7 +958,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.rossi@demo.weft.example",
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 75,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -973,18 +973,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 75,
-      "benefit": "Yara is Head of Sponsorships at Lantern Cloud and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Yara works at Lantern Cloud, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Yara (Head of Sponsorships, Lantern Cloud) runs partnerships for an event sponsor that could co-fund a campaign with Fable Studio.",
+      "shareableReason": "Yara's company Lantern Cloud runs joint campaigns with brands like Fable Studio.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 73,
-      "benefit": "Dmitri is Marketing Director at Fable Studio and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Dmitri works at Fable Studio, which is relevant to visible partnerships with the event community.",
+      "benefit": "Dmitri (Marketing Director, Fable Studio) runs a brand that Lantern Cloud could run a joint campaign with.",
+      "shareableReason": "Dmitri's brand Fable Studio is a possible campaign partner for Lantern Cloud.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -992,7 +992,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "clara.quinn@demo.weft.example",
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 76,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1007,18 +1007,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 79,
-      "benefit": "Elena is Managing Partner at Willow Consulting and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Elena works at Willow Consulting, which is relevant to partners and suppliers for their business.",
+      "benefit": "Elena (Managing Partner, Willow Consulting) advises companies on projects that Fable Group may not have the skills for in-house.",
+      "shareableReason": "Elena's firm Willow Consulting advises companies like Fable Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Clara's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 79,
-      "benefit": "Clara is VP of Strategy at Fable Group and is a useful contact for new clients.",
-      "shareableReason": "Clara works at Fable Group, which is relevant to new clients.",
+      "benefit": "Clara (VP of Strategy, Fable Group) helps run a company that could hire Willow Consulting.",
+      "shareableReason": "Clara helps run Fable Group, which may need Willow Consulting's services.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Elena's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1026,7 +1026,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "pablo.ibarra@demo.weft.example",
     "b": "kofi.ostrowski@demo.weft.example",
     "pairScore": 79,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1041,18 +1041,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 82,
-      "benefit": "Kofi is Creative Director at Alder Studios and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Kofi works at Alder Studios, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Kofi (Creative Director, Alder Studios) makes creative work that could become campaign content for Fable Collective.",
+      "shareableReason": "Kofi's studio Alder Studios makes content for brands like Fable Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 78,
-      "benefit": "Pablo is Head of Partnerships at Fable Collective and is a useful contact for brand partnerships.",
-      "shareableReason": "Pablo works at Fable Collective, which is relevant to brand partnerships.",
+      "benefit": "Pablo (Head of Partnerships, Fable Collective) commissions creative work, so Fable Collective is a possible client for Alder Studios.",
+      "shareableReason": "Pablo's brand Fable Collective hires studios like Alder Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1060,7 +1060,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "pablo.jankowski@demo.weft.example",
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 73,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1075,18 +1075,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 71,
-      "benefit": "Kofi is Founder at Tundra Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Kofi works at Tundra Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Kofi (Founder, Tundra Systems) is building a product that could help Cinder Group work faster or cheaper.",
+      "shareableReason": "Kofi's company Tundra Systems builds something Cinder Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 73,
-      "benefit": "Pablo is VP of Strategy at Cinder Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Pablo works at Cinder Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Pablo (VP of Strategy, Cinder Group) helps run an established company that could become an early customer or pilot partner for Tundra Systems.",
+      "shareableReason": "Pablo's company Cinder Group could pilot or buy from Tundra Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1094,7 +1094,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "bilal.lombardi@demo.weft.example",
     "b": "kofi.bergstrom@demo.weft.example",
     "pairScore": 90,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1109,18 +1109,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 87,
-      "benefit": "Kofi is Founder at Ember Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Kofi works at Ember Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Kofi (Founder, Ember Systems) is building a product that could help Glade Industries work faster or cheaper.",
+      "shareableReason": "Kofi's company Ember Systems builds something Glade Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Bilal's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 92,
-      "benefit": "Bilal is VP of Strategy at Glade Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Bilal works at Glade Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Bilal (VP of Strategy, Glade Industries) helps run an established company that could become an early customer or pilot partner for Ember Systems.",
+      "shareableReason": "Bilal's company Glade Industries could pilot or buy from Ember Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1128,7 +1128,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "esra.perrin@demo.weft.example",
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 84,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1143,18 +1143,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Kofi is Founder at Tundra Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Kofi works at Tundra Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Kofi (Founder, Tundra Systems) is building a product that could help Tundra Industries work faster or cheaper.",
+      "shareableReason": "Kofi's company Tundra Systems builds something Tundra Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Esra is Chief Financial Officer at Tundra Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Esra works at Tundra Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Esra (Chief Financial Officer, Tundra Industries) helps run an established company that could become an early customer or pilot partner for Tundra Systems.",
+      "shareableReason": "Esra's company Tundra Industries could pilot or buy from Tundra Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Kofi's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1162,7 +1162,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "sven.ibarra@demo.weft.example",
     "b": "camila.gutierrez@demo.weft.example",
     "pairScore": 61,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1177,18 +1177,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 60,
-      "benefit": "Camila is Founder at Quarry Labs and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Camila works at Quarry Labs, which is relevant to long-term investment opportunities.",
+      "benefit": "Camila (Founder, Quarry Labs) is building a young company that wants patient, long-term capital like Glade Holdings's.",
+      "shareableReason": "Camila is building Quarry Labs and wants long-term investors like Glade Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Sven's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 60,
-      "benefit": "Sven is Head of Direct Investments at Glade Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Sven works at Glade Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Sven (Head of Direct Investments, Glade Holdings) invests family money for the long term, a patient kind of investor for Quarry Labs.",
+      "shareableReason": "Sven invests for Glade Holdings with a long time horizon and could back Quarry Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Camila's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1196,7 +1196,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mina.jovanovic@demo.weft.example",
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 92,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1211,18 +1211,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 90,
-      "benefit": "Clara is VP of Strategy at Fable Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Clara works at Fable Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Clara (VP of Strategy, Fable Group) helps run an established company that could become an early customer or pilot partner for Vertex Works.",
+      "shareableReason": "Clara's company Fable Group could pilot or buy from Vertex Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 90,
-      "benefit": "Mina is Co-Founder & CEO at Vertex Works and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Mina works at Vertex Works, which is relevant to partners and suppliers for their business.",
+      "benefit": "Mina (Co-Founder & CEO, Vertex Works) is building a product that could help Fable Group work faster or cheaper.",
+      "shareableReason": "Mina's company Vertex Works builds something Fable Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Clara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1230,7 +1230,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "gideon.whitlock@demo.weft.example",
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 86,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1245,18 +1245,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Beatriz is Co-Founder & CEO at Glade Works and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Beatriz works at Glade Works, which is relevant to promising early-stage companies.",
+      "benefit": "Beatriz (Co-Founder & CEO, Glade Works) is building a young company, an early look for Gideon before it raises widely.",
+      "shareableReason": "Beatriz is building Glade Works, a company Orbit Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Gideon is Partner at Orbit Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Gideon works at Orbit Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Gideon (Partner, Orbit Partners) invests in young companies and can tell Beatriz whether Glade Works fits what Orbit Partners backs.",
+      "shareableReason": "Gideon invests at Orbit Partners and could be an early backer of Glade Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Beatriz's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1264,7 +1264,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dalia.whitlock@demo.weft.example",
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 89,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1279,18 +1279,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 91,
-      "benefit": "Anika is Brand Director at Indigo & Co and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Anika works at Indigo & Co, which is relevant to visible partnerships with the event community.",
+      "benefit": "Anika (Brand Director, Indigo & Co) runs a brand that Lantern Bank could run a joint campaign with.",
+      "shareableReason": "Anika's brand Indigo & Co is a possible campaign partner for Lantern Bank.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 90,
-      "benefit": "Dalia is Head of Sponsorships at Lantern Bank and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Dalia works at Lantern Bank, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Dalia (Head of Sponsorships, Lantern Bank) runs partnerships for an event sponsor that could co-fund a campaign with Indigo & Co.",
+      "shareableReason": "Dalia's company Lantern Bank runs joint campaigns with brands like Indigo & Co.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Anika's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1298,7 +1298,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "ivy.ahmadi@demo.weft.example",
     "b": "pablo.delacroix@demo.weft.example",
     "pairScore": 67,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1313,18 +1313,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 66,
-      "benefit": "Pablo is Founder & CTO at Sable Labs and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Pablo works at Sable Labs, which is relevant to partners and suppliers for their business.",
+      "benefit": "Pablo (Founder & CTO, Sable Labs) is building a product that could help Glade Global work faster or cheaper.",
+      "shareableReason": "Pablo's company Sable Labs builds something Glade Global could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Ivy's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 65,
-      "benefit": "Ivy is Chief Operating Officer at Glade Global and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Ivy works at Glade Global, which is relevant to funding and introductions to investors.",
+      "benefit": "Ivy (Chief Operating Officer, Glade Global) helps run an established company that could become an early customer or pilot partner for Sable Labs.",
+      "shareableReason": "Ivy's company Glade Global could pilot or buy from Sable Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1332,7 +1332,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "bilal.lombardi@demo.weft.example",
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 75,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1347,18 +1347,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 76,
-      "benefit": "Dalia is Founder at Marlow Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Dalia works at Marlow Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Dalia (Founder, Marlow Systems) is building a product that could help Glade Industries work faster or cheaper.",
+      "shareableReason": "Dalia's company Marlow Systems builds something Glade Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Bilal's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 78,
-      "benefit": "Bilal is VP of Strategy at Glade Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Bilal works at Glade Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Bilal (VP of Strategy, Glade Industries) helps run an established company that could become an early customer or pilot partner for Marlow Systems.",
+      "shareableReason": "Bilal's company Glade Industries could pilot or buy from Marlow Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1366,7 +1366,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "zoe.mbeki@demo.weft.example",
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 66,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1381,18 +1381,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 66,
-      "benefit": "Esra is Policy Advisor at Ember Agency and is a useful contact for new clients.",
-      "shareableReason": "Esra works at Ember Agency, which is relevant to new clients.",
+      "benefit": "Esra (Policy Advisor, Ember Agency) shapes rules that Indigo Advisors's clients must follow.",
+      "shareableReason": "Esra works on policy at Ember Agency, which affects Indigo Advisors's clients.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Zoe's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 63,
-      "benefit": "Zoe is Principal Consultant at Indigo Advisors and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Zoe works at Indigo Advisors, which is relevant to industry perspectives on policy.",
+      "benefit": "Zoe (Principal Consultant, Indigo Advisors) sees day to day how rules affect companies, useful input for Ember Agency's policy work.",
+      "shareableReason": "Zoe's firm Indigo Advisors advises companies affected by the policy Ember Agency works on.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1400,7 +1400,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "beatriz.lindgren@demo.weft.example",
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 81,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1415,18 +1415,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 78,
-      "benefit": "Clara is VP of Strategy at Fable Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Clara works at Fable Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Clara (VP of Strategy, Fable Group) helps run an established company that could become an early customer or pilot partner for Glade Works.",
+      "shareableReason": "Clara's company Fable Group could pilot or buy from Glade Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Beatriz's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 84,
-      "benefit": "Beatriz is Co-Founder & CEO at Glade Works and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Beatriz works at Glade Works, which is relevant to partners and suppliers for their business.",
+      "benefit": "Beatriz (Co-Founder & CEO, Glade Works) is building a product that could help Fable Group work faster or cheaper.",
+      "shareableReason": "Beatriz's company Glade Works builds something Fable Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Clara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1434,7 +1434,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "bilal.lombardi@demo.weft.example",
     "b": "gia.winter@demo.weft.example",
     "pairScore": 90,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1449,18 +1449,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 92,
-      "benefit": "Gia is Founder at Harbor Labs and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Gia works at Harbor Labs, which is relevant to partners and suppliers for their business.",
+      "benefit": "Gia (Founder, Harbor Labs) is building a product that could help Glade Industries work faster or cheaper.",
+      "shareableReason": "Gia's company Harbor Labs builds something Glade Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Bilal's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 88,
-      "benefit": "Bilal is VP of Strategy at Glade Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Bilal works at Glade Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Bilal (VP of Strategy, Glade Industries) helps run an established company that could become an early customer or pilot partner for Harbor Labs.",
+      "shareableReason": "Bilal's company Glade Industries could pilot or buy from Harbor Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1468,7 +1468,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "gideon.whitlock@demo.weft.example",
     "b": "pablo.delacroix@demo.weft.example",
     "pairScore": 68,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1483,18 +1483,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 69,
-      "benefit": "Pablo is Founder & CTO at Sable Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Pablo works at Sable Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Pablo (Founder & CTO, Sable Labs) is building a young company, an early look for Gideon before it raises widely.",
+      "shareableReason": "Pablo is building Sable Labs, a company Orbit Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 70,
-      "benefit": "Gideon is Partner at Orbit Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Gideon works at Orbit Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Gideon (Partner, Orbit Partners) invests in young companies and can tell Pablo whether Sable Labs fits what Orbit Partners backs.",
+      "shareableReason": "Gideon invests at Orbit Partners and could be an early backer of Sable Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1502,7 +1502,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "aiden.ibarra@demo.weft.example",
     "b": "gia.winter@demo.weft.example",
     "pairScore": 91,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1517,18 +1517,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 88,
-      "benefit": "Gia is Founder at Harbor Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Gia works at Harbor Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Gia (Founder, Harbor Labs) is building a young company, an early look for Aiden before it raises widely.",
+      "shareableReason": "Gia is building Harbor Labs, a company Lantern Ventures could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Aiden's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 90,
-      "benefit": "Aiden is Partner at Lantern Ventures and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Aiden works at Lantern Ventures, which is relevant to funding and introductions to investors.",
+      "benefit": "Aiden (Partner, Lantern Ventures) invests in young companies and can tell Gia whether Harbor Labs fits what Lantern Ventures backs.",
+      "shareableReason": "Aiden invests at Lantern Ventures and could be an early backer of Harbor Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1536,7 +1536,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.ibarra@demo.weft.example",
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 92,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1551,18 +1551,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 89,
-      "benefit": "Imani is Co-Founder & CEO at Alder Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Imani works at Alder Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Imani (Co-Founder & CEO, Alder Systems) is building a product that could help Juniper Group work faster or cheaper.",
+      "shareableReason": "Imani's company Alder Systems builds something Juniper Group could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 92,
-      "benefit": "Hassan is Chief Operating Officer at Juniper Group and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Hassan works at Juniper Group, which is relevant to funding and introductions to investors.",
+      "benefit": "Hassan (Chief Operating Officer, Juniper Group) helps run an established company that could become an early customer or pilot partner for Alder Systems.",
+      "shareableReason": "Hassan's company Juniper Group could pilot or buy from Alder Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Imani's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1570,7 +1570,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "nora.moreau@demo.weft.example",
     "b": "farah.fontaine@demo.weft.example",
     "pairScore": 79,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1585,18 +1585,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 76,
-      "benefit": "Farah is Co-Founder & CEO at Willow Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Farah works at Willow Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Farah (Co-Founder & CEO, Willow Systems) is building a young company, an early look for Nora before it raises widely.",
+      "shareableReason": "Farah is building Willow Systems, a company Quarry Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 78,
-      "benefit": "Nora is Principal at Quarry Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Nora works at Quarry Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Nora (Principal, Quarry Partners) invests in young companies and can tell Farah whether Willow Systems fits what Quarry Partners backs.",
+      "shareableReason": "Nora invests at Quarry Partners and could be an early backer of Willow Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Farah's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1604,7 +1604,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.petrov@demo.weft.example",
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 72,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1619,18 +1619,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 69,
-      "benefit": "Petra is Founder & CTO at Nimbus Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Petra works at Nimbus Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Petra (Founder & CTO, Nimbus Labs) is building a young company, an early look for Petra before it raises widely.",
+      "shareableReason": "Petra is building Nimbus Labs, a company Indigo Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 72,
-      "benefit": "Petra is Partner at Indigo Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Petra works at Indigo Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Petra (Partner, Indigo Partners) invests in young companies and can tell Petra whether Nimbus Labs fits what Indigo Partners backs.",
+      "shareableReason": "Petra invests at Indigo Partners and could be an early backer of Nimbus Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1638,7 +1638,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "omar.quinn@demo.weft.example",
     "b": "gideon.whitlock@demo.weft.example",
     "pairScore": 82,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1653,18 +1653,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Gideon is Partner at Orbit Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Gideon works at Orbit Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Gideon (Partner, Orbit Partners) invests in young companies and can tell Omar whether Orbit Works fits what Orbit Partners backs.",
+      "shareableReason": "Gideon invests at Orbit Partners and could be an early backer of Orbit Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Omar's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 82,
-      "benefit": "Omar is Founder at Orbit Works and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Omar works at Orbit Works, which is relevant to promising early-stage companies.",
+      "benefit": "Omar (Founder, Orbit Works) is building a young company, an early look for Gideon before it raises widely.",
+      "shareableReason": "Omar is building Orbit Works, a company Orbit Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1672,7 +1672,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "sven.ibarra@demo.weft.example",
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 92,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1687,18 +1687,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 89,
-      "benefit": "Petra is Founder & CTO at Nimbus Labs and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Petra works at Nimbus Labs, which is relevant to long-term investment opportunities.",
+      "benefit": "Petra (Founder & CTO, Nimbus Labs) is building a young company that wants patient, long-term capital like Glade Holdings's.",
+      "shareableReason": "Petra is building Nimbus Labs and wants long-term investors like Glade Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Sven's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 90,
-      "benefit": "Sven is Head of Direct Investments at Glade Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Sven works at Glade Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Sven (Head of Direct Investments, Glade Holdings) invests family money for the long term, a patient kind of investor for Nimbus Labs.",
+      "shareableReason": "Sven invests for Glade Holdings with a long time horizon and could back Nimbus Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1706,7 +1706,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "sven.ibarra@demo.weft.example",
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 67,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1721,18 +1721,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 66,
-      "benefit": "Gideon is Founder at Ember Labs and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Gideon works at Ember Labs, which is relevant to long-term investment opportunities.",
+      "benefit": "Gideon (Founder, Ember Labs) is building a young company that wants patient, long-term capital like Glade Holdings's.",
+      "shareableReason": "Gideon is building Ember Labs and wants long-term investors like Glade Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Sven's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 66,
-      "benefit": "Sven is Head of Direct Investments at Glade Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Sven works at Glade Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Sven (Head of Direct Investments, Glade Holdings) invests family money for the long term, a patient kind of investor for Ember Labs.",
+      "shareableReason": "Sven invests for Glade Holdings with a long time horizon and could back Ember Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1740,7 +1740,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "carlos.ahmadi@demo.weft.example",
     "b": "esra.keller@demo.weft.example",
     "pairScore": 86,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1755,18 +1755,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 85,
-      "benefit": "Esra is VP of Strategy at Willow Global and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Esra works at Willow Global, which is relevant to long-term investment opportunities.",
+      "benefit": "Esra (VP of Strategy, Willow Global) helps run an established business that Tundra Holdings could take a long-term stake in.",
+      "shareableReason": "Esra helps run Willow Global, a mature business Tundra Holdings could invest in.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Carlos's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 86,
-      "benefit": "Carlos is Head of Direct Investments at Tundra Holdings and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Carlos works at Tundra Holdings, which is relevant to partners and suppliers for their business.",
+      "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) takes long-term stakes in established companies like Willow Global.",
+      "shareableReason": "Carlos invests for Tundra Holdings, which backs established companies like Willow Global.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1774,7 +1774,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jin.reyes@demo.weft.example",
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 71,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1789,18 +1789,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 69,
-      "benefit": "Elena is Managing Partner at Willow Consulting and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Elena works at Willow Consulting, which is relevant to partners and suppliers for their business.",
+      "benefit": "Elena (Managing Partner, Willow Consulting) advises companies on projects that Quarry Industries may not have the skills for in-house.",
+      "shareableReason": "Elena's firm Willow Consulting advises companies like Quarry Industries.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jin's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 68,
-      "benefit": "Jin is Chief Financial Officer at Quarry Industries and is a useful contact for new clients.",
-      "shareableReason": "Jin works at Quarry Industries, which is relevant to new clients.",
+      "benefit": "Jin (Chief Financial Officer, Quarry Industries) helps run a company that could hire Willow Consulting.",
+      "shareableReason": "Jin helps run Quarry Industries, which may need Willow Consulting's services.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Elena's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1808,7 +1808,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "ivy.ahmadi@demo.weft.example",
     "b": "emeka.bergstrom@demo.weft.example",
     "pairScore": 63,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1823,18 +1823,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 65,
-      "benefit": "Emeka is Founder & CTO at Harbor Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Emeka works at Harbor Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Emeka (Founder & CTO, Harbor Systems) is building a product that could help Glade Global work faster or cheaper.",
+      "shareableReason": "Emeka's company Harbor Systems builds something Glade Global could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Ivy's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 62,
-      "benefit": "Ivy is Chief Operating Officer at Glade Global and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Ivy works at Glade Global, which is relevant to funding and introductions to investors.",
+      "benefit": "Ivy (Chief Operating Officer, Glade Global) helps run an established company that could become an early customer or pilot partner for Harbor Systems.",
+      "shareableReason": "Ivy's company Glade Global could pilot or buy from Harbor Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Emeka's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1842,7 +1842,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mina.chaudhry@demo.weft.example",
     "b": "yara.ahmadi@demo.weft.example",
     "pairScore": 92,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1857,18 +1857,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 94,
-      "benefit": "Yara is Managing Partner at Willow Advisors and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Yara works at Willow Advisors, which is relevant to sponsors and brand deals.",
+      "benefit": "Yara (Managing Partner, Willow Advisors) advises businesses and could help Kestrel Sports Group with contracts and growth.",
+      "shareableReason": "Yara's firm Willow Advisors advises sports businesses like Kestrel Sports Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 95,
-      "benefit": "Mina is Head of Partnerships at Kestrel Sports Group and is a useful contact for new clients.",
-      "shareableReason": "Mina works at Kestrel Sports Group, which is relevant to new clients.",
+      "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) runs a sports business that could become a client of Willow Advisors.",
+      "shareableReason": "Mina's sports group Kestrel Sports Group could become a client of Willow Advisors.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1876,7 +1876,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "aiden.ibarra@demo.weft.example",
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 88,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1891,18 +1891,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 85,
-      "benefit": "Zane is Founder & CTO at Cinder Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Zane works at Cinder Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Zane (Founder & CTO, Cinder Labs) is building a young company, an early look for Aiden before it raises widely.",
+      "shareableReason": "Zane is building Cinder Labs, a company Lantern Ventures could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Aiden's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 85,
-      "benefit": "Aiden is Partner at Lantern Ventures and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Aiden works at Lantern Ventures, which is relevant to funding and introductions to investors.",
+      "benefit": "Aiden (Partner, Lantern Ventures) invests in young companies and can tell Zane whether Cinder Labs fits what Lantern Ventures backs.",
+      "shareableReason": "Aiden invests at Lantern Ventures and could be an early backer of Cinder Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Zane's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1910,7 +1910,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.jovanovic@demo.weft.example",
     "b": "aiden.ibarra@demo.weft.example",
     "pairScore": 92,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1925,18 +1925,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 93,
-      "benefit": "Aiden is Partner at Lantern Ventures and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Aiden works at Lantern Ventures, which is relevant to funding and introductions to investors.",
+      "benefit": "Aiden (Partner, Lantern Ventures) invests in young companies and can tell Dmitri whether Juniper Systems fits what Lantern Ventures backs.",
+      "shareableReason": "Aiden invests at Lantern Ventures and could be an early backer of Juniper Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 95,
-      "benefit": "Dmitri is Founder at Juniper Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Dmitri works at Juniper Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Dmitri (Founder, Juniper Systems) is building a young company, an early look for Aiden before it raises widely.",
+      "shareableReason": "Dmitri is building Juniper Systems, a company Lantern Ventures could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Aiden's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1944,7 +1944,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jasmine.iyer@demo.weft.example",
     "b": "carlos.ahmadi@demo.weft.example",
     "pairScore": 85,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1959,18 +1959,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 82,
-      "benefit": "Carlos is Head of Direct Investments at Tundra Holdings and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Carlos works at Tundra Holdings, which is relevant to funding and introductions to investors.",
+      "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) invests family money for the long term, a patient kind of investor for Tundra Systems.",
+      "shareableReason": "Carlos invests for Tundra Holdings with a long time horizon and could back Tundra Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jasmine's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 87,
-      "benefit": "Jasmine is Founder at Tundra Systems and is a useful contact for long-term investment opportunities.",
-      "shareableReason": "Jasmine works at Tundra Systems, which is relevant to long-term investment opportunities.",
+      "benefit": "Jasmine (Founder, Tundra Systems) is building a young company that wants patient, long-term capital like Tundra Holdings's.",
+      "shareableReason": "Jasmine is building Tundra Systems and wants long-term investors like Tundra Holdings.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Carlos's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -1978,7 +1978,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "aiden.ibarra@demo.weft.example",
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 90,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -1993,18 +1993,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 92,
-      "benefit": "Imani is Co-Founder & CEO at Alder Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Imani works at Alder Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Imani (Co-Founder & CEO, Alder Systems) is building a young company, an early look for Aiden before it raises widely.",
+      "shareableReason": "Imani is building Alder Systems, a company Lantern Ventures could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Aiden's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 91,
-      "benefit": "Aiden is Partner at Lantern Ventures and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Aiden works at Lantern Ventures, which is relevant to funding and introductions to investors.",
+      "benefit": "Aiden (Partner, Lantern Ventures) invests in young companies and can tell Imani whether Alder Systems fits what Lantern Ventures backs.",
+      "shareableReason": "Aiden invests at Lantern Ventures and could be an early backer of Alder Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Imani's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2012,7 +2012,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "ivy.ahmadi@demo.weft.example",
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 86,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2027,18 +2027,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 84,
-      "benefit": "Esra is Policy Advisor at Ember Agency and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Esra works at Ember Agency, which is relevant to partners and suppliers for their business.",
+      "benefit": "Esra (Policy Advisor, Ember Agency) works on rules and trade programmes that affect Glade Global.",
+      "shareableReason": "Esra works on policy at Ember Agency, which affects businesses like Glade Global.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Ivy's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 87,
-      "benefit": "Ivy is Chief Operating Officer at Glade Global and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Ivy works at Glade Global, which is relevant to industry perspectives on policy.",
+      "benefit": "Ivy (Chief Operating Officer, Glade Global) can give Ember Agency a first-hand industry view on policy.",
+      "shareableReason": "Ivy helps run Glade Global and can share an industry view with Ember Agency.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2046,7 +2046,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.abbott@demo.weft.example",
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 66,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2061,18 +2061,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 65,
-      "benefit": "Anika is Brand Director at Indigo & Co and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Anika works at Indigo & Co, which is relevant to stories and access to industry leaders.",
+      "benefit": "Anika (Brand Director, Indigo & Co) runs a brand with launches Nimbus Network could cover.",
+      "shareableReason": "Anika's brand Indigo & Co has news Nimbus Network could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 69,
-      "benefit": "Dmitri is Editor at Nimbus Network and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Dmitri works at Nimbus Network, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Dmitri (Editor, Nimbus Network) works at a media outlet that could cover Indigo & Co's next launch.",
+      "shareableReason": "Dmitri works at Nimbus Network, which covers brands like Indigo & Co.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Anika's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2080,7 +2080,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jonas.yilmaz@demo.weft.example",
     "b": "pablo.ibarra@demo.weft.example",
     "pairScore": 77,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2095,18 +2095,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 74,
-      "benefit": "Pablo is Head of Partnerships at Fable Collective and is a useful contact for brand partnerships.",
-      "shareableReason": "Pablo works at Fable Collective, which is relevant to brand partnerships.",
+      "benefit": "Pablo (Head of Partnerships, Fable Collective) commissions creative work, so Fable Collective is a possible client for Zephyr Studios.",
+      "shareableReason": "Pablo's brand Fable Collective hires studios like Zephyr Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jonas's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 80,
-      "benefit": "Jonas is Founder at Zephyr Studios and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Jonas works at Zephyr Studios, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Jonas (Founder, Zephyr Studios) makes creative work that could become campaign content for Fable Collective.",
+      "shareableReason": "Jonas's studio Zephyr Studios makes content for brands like Fable Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2114,7 +2114,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "helena.hosseini@demo.weft.example",
     "b": "pablo.ibarra@demo.weft.example",
     "pairScore": 61,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2129,18 +2129,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 64,
-      "benefit": "Pablo is Head of Partnerships at Fable Collective and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Pablo works at Fable Collective, which is relevant to stories and access to industry leaders.",
+      "benefit": "Pablo (Head of Partnerships, Fable Collective) runs a brand with launches Harbor Media could cover.",
+      "shareableReason": "Pablo's brand Fable Collective has news Harbor Media could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Helena's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 62,
-      "benefit": "Helena is Editor at Harbor Media and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Helena works at Harbor Media, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Helena (Editor, Harbor Media) works at a media outlet that could cover Fable Collective's next launch.",
+      "shareableReason": "Helena works at Harbor Media, which covers brands like Fable Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2148,7 +2148,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.jovanovic@demo.weft.example",
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 71,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2163,18 +2163,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 70,
-      "benefit": "Jin is Chief Financial Officer at Quarry Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Jin works at Quarry Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Jin (Chief Financial Officer, Quarry Industries) helps run an established company that could become an early customer or pilot partner for Juniper Systems.",
+      "shareableReason": "Jin's company Quarry Industries could pilot or buy from Juniper Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 72,
-      "benefit": "Dmitri is Founder at Juniper Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Dmitri works at Juniper Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Dmitri (Founder, Juniper Systems) is building a product that could help Quarry Industries work faster or cheaper.",
+      "shareableReason": "Dmitri's company Juniper Systems builds something Quarry Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jin's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2182,7 +2182,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "tessa.salazar@demo.weft.example",
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 70,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2197,18 +2197,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 72,
-      "benefit": "Dmitri is Editor at Marlow Press and is a useful contact for brand partnerships.",
-      "shareableReason": "Dmitri works at Marlow Press, which is relevant to brand partnerships.",
+      "benefit": "Dmitri (Editor, Marlow Press) works at a media outlet that could feature or distribute Umber Studios's work.",
+      "shareableReason": "Dmitri's outlet Marlow Press features work by studios like Umber Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Tessa's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 71,
-      "benefit": "Tessa is Creative Director at Umber Studios and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Tessa works at Umber Studios, which is relevant to stories and access to industry leaders.",
+      "benefit": "Tessa (Creative Director, Umber Studios) makes creative work that could be a story for Marlow Press.",
+      "shareableReason": "Tessa's studio Umber Studios makes work Marlow Press could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2216,7 +2216,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jonas.yilmaz@demo.weft.example",
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 81,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2231,18 +2231,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 79,
-      "benefit": "Anika is Brand Director at Indigo & Co and is a useful contact for brand partnerships.",
-      "shareableReason": "Anika works at Indigo & Co, which is relevant to brand partnerships.",
+      "benefit": "Anika (Brand Director, Indigo & Co) commissions creative work, so Indigo & Co is a possible client for Zephyr Studios.",
+      "shareableReason": "Anika's brand Indigo & Co hires studios like Zephyr Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jonas's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 79,
-      "benefit": "Jonas is Founder at Zephyr Studios and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Jonas works at Zephyr Studios, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Jonas (Founder, Zephyr Studios) makes creative work that could become campaign content for Indigo & Co.",
+      "shareableReason": "Jonas's studio Zephyr Studios makes content for brands like Indigo & Co.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Anika's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2250,7 +2250,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "pablo.ibarra@demo.weft.example",
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 84,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2265,18 +2265,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 84,
-      "benefit": "Dmitri is Editor at Marlow Press and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Dmitri works at Marlow Press, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Dmitri (Editor, Marlow Press) works at a media outlet that could cover Fable Collective's next launch.",
+      "shareableReason": "Dmitri works at Marlow Press, which covers brands like Fable Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Pablo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Pablo is Head of Partnerships at Fable Collective and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Pablo works at Fable Collective, which is relevant to stories and access to industry leaders.",
+      "benefit": "Pablo (Head of Partnerships, Fable Collective) runs a brand with launches Marlow Press could cover.",
+      "shareableReason": "Pablo's brand Fable Collective has news Marlow Press could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2284,7 +2284,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.chaudhry@demo.weft.example",
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2299,18 +2299,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 77,
-      "benefit": "Jin is Chief Financial Officer at Quarry Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Jin works at Quarry Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Jin (Chief Financial Officer, Quarry Industries) helps run an established company that could become an early customer or pilot partner for Nimbus Labs.",
+      "shareableReason": "Jin's company Quarry Industries could pilot or buy from Nimbus Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 71,
-      "benefit": "Petra is Founder & CTO at Nimbus Labs and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Petra works at Nimbus Labs, which is relevant to partners and suppliers for their business.",
+      "benefit": "Petra (Founder & CTO, Nimbus Labs) is building a product that could help Quarry Industries work faster or cheaper.",
+      "shareableReason": "Petra's company Nimbus Labs builds something Quarry Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jin's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2318,7 +2318,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "omar.quinn@demo.weft.example",
     "b": "nora.moreau@demo.weft.example",
     "pairScore": 80,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2333,18 +2333,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Nora is Principal at Quarry Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Nora works at Quarry Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Nora (Principal, Quarry Partners) invests in young companies and can tell Omar whether Orbit Works fits what Quarry Partners backs.",
+      "shareableReason": "Nora invests at Quarry Partners and could be an early backer of Orbit Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Omar's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 82,
-      "benefit": "Omar is Founder at Orbit Works and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Omar works at Orbit Works, which is relevant to promising early-stage companies.",
+      "benefit": "Omar (Founder, Orbit Works) is building a young company, an early look for Nora before it raises widely.",
+      "shareableReason": "Omar is building Orbit Works, a company Quarry Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2352,7 +2352,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jasmine.iyer@demo.weft.example",
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2367,18 +2367,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 75,
-      "benefit": "Jin is Chief Financial Officer at Quarry Industries and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Jin works at Quarry Industries, which is relevant to funding and introductions to investors.",
+      "benefit": "Jin (Chief Financial Officer, Quarry Industries) helps run an established company that could become an early customer or pilot partner for Tundra Systems.",
+      "shareableReason": "Jin's company Quarry Industries could pilot or buy from Tundra Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jasmine's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 72,
-      "benefit": "Jasmine is Founder at Tundra Systems and is a useful contact for partners and suppliers for their business.",
-      "shareableReason": "Jasmine works at Tundra Systems, which is relevant to partners and suppliers for their business.",
+      "benefit": "Jasmine (Founder, Tundra Systems) is building a product that could help Quarry Industries work faster or cheaper.",
+      "shareableReason": "Jasmine's company Tundra Systems builds something Quarry Industries could use.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jin's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2386,7 +2386,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "gideon.whitlock@demo.weft.example",
     "b": "camila.gutierrez@demo.weft.example",
     "pairScore": 61,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2401,18 +2401,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 58,
-      "benefit": "Camila is Founder at Quarry Labs and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Camila works at Quarry Labs, which is relevant to promising early-stage companies.",
+      "benefit": "Camila (Founder, Quarry Labs) is building a young company, an early look for Gideon before it raises widely.",
+      "shareableReason": "Camila is building Quarry Labs, a company Orbit Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 59,
-      "benefit": "Gideon is Partner at Orbit Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Gideon works at Orbit Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Gideon (Partner, Orbit Partners) invests in young companies and can tell Camila whether Quarry Labs fits what Orbit Partners backs.",
+      "shareableReason": "Gideon invests at Orbit Partners and could be an early backer of Quarry Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Camila's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2420,7 +2420,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mateo.zielinski@demo.weft.example",
     "b": "dev.lombardi@demo.weft.example",
     "pairScore": 81,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2435,18 +2435,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 78,
-      "benefit": "Dev is Programme Lead at Kestrel Agency and is a useful contact for new clients.",
-      "shareableReason": "Dev works at Kestrel Agency, which is relevant to new clients.",
+      "benefit": "Dev (Programme Lead, Kestrel Agency) shapes rules that Glade Consulting's clients must follow.",
+      "shareableReason": "Dev works on policy at Kestrel Agency, which affects Glade Consulting's clients.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mateo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 82,
-      "benefit": "Mateo is Managing Partner at Glade Consulting and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Mateo works at Glade Consulting, which is relevant to industry perspectives on policy.",
+      "benefit": "Mateo (Managing Partner, Glade Consulting) sees day to day how rules affect companies, useful input for Kestrel Agency's policy work.",
+      "shareableReason": "Mateo's firm Glade Consulting advises companies affected by the policy Kestrel Agency works on.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dev's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2454,7 +2454,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "gideon.whitlock@demo.weft.example",
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 76,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2469,18 +2469,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 79,
-      "benefit": "Dalia is Founder at Marlow Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Dalia works at Marlow Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Dalia (Founder, Marlow Systems) is building a young company, an early look for Gideon before it raises widely.",
+      "shareableReason": "Dalia is building Marlow Systems, a company Orbit Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gideon's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 77,
-      "benefit": "Gideon is Partner at Orbit Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Gideon works at Orbit Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Gideon (Partner, Orbit Partners) invests in young companies and can tell Dalia whether Marlow Systems fits what Orbit Partners backs.",
+      "shareableReason": "Gideon invests at Orbit Partners and could be an early backer of Marlow Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2488,7 +2488,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mina.jovanovic@demo.weft.example",
     "b": "nora.moreau@demo.weft.example",
     "pairScore": 77,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2503,18 +2503,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 79,
-      "benefit": "Nora is Principal at Quarry Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Nora works at Quarry Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Nora (Principal, Quarry Partners) invests in young companies and can tell Mina whether Vertex Works fits what Quarry Partners backs.",
+      "shareableReason": "Nora invests at Quarry Partners and could be an early backer of Vertex Works.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 76,
-      "benefit": "Mina is Co-Founder & CEO at Vertex Works and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Mina works at Vertex Works, which is relevant to promising early-stage companies.",
+      "benefit": "Mina (Co-Founder & CEO, Vertex Works) is building a young company, an early look for Nora before it raises widely.",
+      "shareableReason": "Mina is building Vertex Works, a company Quarry Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Nora's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2522,7 +2522,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "zoe.mbeki@demo.weft.example",
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 84,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2537,18 +2537,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Mina is Head of Partnerships at Kestrel Sports Group and is a useful contact for new clients.",
-      "shareableReason": "Mina works at Kestrel Sports Group, which is relevant to new clients.",
+      "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) runs a sports business that could become a client of Indigo Advisors.",
+      "shareableReason": "Mina's sports group Kestrel Sports Group could become a client of Indigo Advisors.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Zoe's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 82,
-      "benefit": "Zoe is Principal Consultant at Indigo Advisors and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Zoe works at Indigo Advisors, which is relevant to sponsors and brand deals.",
+      "benefit": "Zoe (Principal Consultant, Indigo Advisors) advises businesses and could help Kestrel Sports Group with contracts and growth.",
+      "shareableReason": "Zoe's firm Indigo Advisors advises sports businesses like Kestrel Sports Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2556,7 +2556,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dmitri.abbott@demo.weft.example",
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2571,18 +2571,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 76,
-      "benefit": "Dalia is Managing Director at Lantern Athletics and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Dalia works at Lantern Athletics, which is relevant to stories and access to industry leaders.",
+      "benefit": "Dalia (Managing Director, Lantern Athletics) runs a sports business with stories and access Nimbus Network could use.",
+      "shareableReason": "Dalia's sports group Lantern Athletics has stories Nimbus Network could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 71,
-      "benefit": "Dmitri is Editor at Nimbus Network and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Dmitri works at Nimbus Network, which is relevant to sponsors and brand deals.",
+      "benefit": "Dmitri (Editor, Nimbus Network) works at a media outlet that could cover Lantern Athletics.",
+      "shareableReason": "Dmitri's outlet Nimbus Network could cover Lantern Athletics.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2590,7 +2590,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "tessa.salazar@demo.weft.example",
     "b": "dmitri.abbott@demo.weft.example",
     "pairScore": 68,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2605,18 +2605,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 71,
-      "benefit": "Dmitri is Editor at Nimbus Network and is a useful contact for brand partnerships.",
-      "shareableReason": "Dmitri works at Nimbus Network, which is relevant to brand partnerships.",
+      "benefit": "Dmitri (Editor, Nimbus Network) works at a media outlet that could feature or distribute Umber Studios's work.",
+      "shareableReason": "Dmitri's outlet Nimbus Network features work by studios like Umber Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Tessa's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 69,
-      "benefit": "Tessa is Creative Director at Umber Studios and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Tessa works at Umber Studios, which is relevant to stories and access to industry leaders.",
+      "benefit": "Tessa (Creative Director, Umber Studios) makes creative work that could be a story for Nimbus Network.",
+      "shareableReason": "Tessa's studio Umber Studios makes work Nimbus Network could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2624,7 +2624,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.whitlock@demo.weft.example",
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 65,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2639,18 +2639,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 62,
-      "benefit": "Dmitri is Editor at Marlow Press and is a useful contact for brand partnerships.",
-      "shareableReason": "Dmitri works at Marlow Press, which is relevant to brand partnerships.",
+      "benefit": "Dmitri (Editor, Marlow Press) works at a media outlet that could feature or distribute Cinder Studios's work.",
+      "shareableReason": "Dmitri's outlet Marlow Press features work by studios like Cinder Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 64,
-      "benefit": "Petra is Founder at Cinder Studios and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Petra works at Cinder Studios, which is relevant to stories and access to industry leaders.",
+      "benefit": "Petra (Founder, Cinder Studios) makes creative work that could be a story for Marlow Press.",
+      "shareableReason": "Petra's studio Cinder Studios makes work Marlow Press could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2658,7 +2658,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.chaudhry@demo.weft.example",
     "b": "dalia.whitlock@demo.weft.example",
     "pairScore": 74,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2673,18 +2673,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 76,
-      "benefit": "Dalia is Head of Sponsorships at Lantern Bank and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Dalia works at Lantern Bank, which is relevant to funding and introductions to investors.",
+      "benefit": "Dalia (Head of Sponsorships, Lantern Bank) runs partnerships for an event sponsor that supports young companies like Nimbus Labs.",
+      "shareableReason": "Dalia's company Lantern Bank partners with young companies like Nimbus Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 77,
-      "benefit": "Petra is Founder & CTO at Nimbus Labs and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Petra works at Nimbus Labs, which is relevant to visible partnerships with the event community.",
+      "benefit": "Petra (Founder & CTO, Nimbus Labs) is building a young company that Lantern Bank could support and get early access to.",
+      "shareableReason": "Petra is building Nimbus Labs, a young company Lantern Bank could partner with.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2692,7 +2692,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "jonas.yilmaz@demo.weft.example",
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 82,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2707,18 +2707,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 84,
-      "benefit": "Dmitri is Editor at Marlow Press and is a useful contact for brand partnerships.",
-      "shareableReason": "Dmitri works at Marlow Press, which is relevant to brand partnerships.",
+      "benefit": "Dmitri (Editor, Marlow Press) works at a media outlet that could feature or distribute Zephyr Studios's work.",
+      "shareableReason": "Dmitri's outlet Marlow Press features work by studios like Zephyr Studios.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Jonas's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 83,
-      "benefit": "Jonas is Founder at Zephyr Studios and is a useful contact for stories and access to industry leaders.",
-      "shareableReason": "Jonas works at Zephyr Studios, which is relevant to stories and access to industry leaders.",
+      "benefit": "Jonas (Founder, Zephyr Studios) makes creative work that could be a story for Marlow Press.",
+      "shareableReason": "Jonas's studio Zephyr Studios makes work Marlow Press could cover.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dmitri's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2726,7 +2726,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "dalia.whitlock@demo.weft.example",
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 85,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2741,18 +2741,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 83,
-      "benefit": "Zane is Founder & CTO at Cinder Labs and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Zane works at Cinder Labs, which is relevant to visible partnerships with the event community.",
+      "benefit": "Zane (Founder & CTO, Cinder Labs) is building a young company that Lantern Bank could support and get early access to.",
+      "shareableReason": "Zane is building Cinder Labs, a young company Lantern Bank could partner with.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 85,
-      "benefit": "Dalia is Head of Sponsorships at Lantern Bank and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Dalia works at Lantern Bank, which is relevant to funding and introductions to investors.",
+      "benefit": "Dalia (Head of Sponsorships, Lantern Bank) runs partnerships for an event sponsor that supports young companies like Cinder Labs.",
+      "shareableReason": "Dalia's company Lantern Bank partners with young companies like Cinder Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Zane's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2760,7 +2760,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "petra.petrov@demo.weft.example",
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 89,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2775,18 +2775,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 92,
-      "benefit": "Imani is Co-Founder & CEO at Alder Systems and is a useful contact for promising early-stage companies.",
-      "shareableReason": "Imani works at Alder Systems, which is relevant to promising early-stage companies.",
+      "benefit": "Imani (Co-Founder & CEO, Alder Systems) is building a young company, an early look for Petra before it raises widely.",
+      "shareableReason": "Imani is building Alder Systems, a company Indigo Partners could back.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Petra's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 89,
-      "benefit": "Petra is Partner at Indigo Partners and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Petra works at Indigo Partners, which is relevant to funding and introductions to investors.",
+      "benefit": "Petra (Partner, Indigo Partners) invests in young companies and can tell Imani whether Alder Systems fits what Indigo Partners backs.",
+      "shareableReason": "Petra invests at Indigo Partners and could be an early backer of Alder Systems.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Imani's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2794,7 +2794,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "hassan.winter@demo.weft.example",
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 91,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2809,18 +2809,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 89,
-      "benefit": "Mina is Head of Partnerships at Kestrel Sports Group and is a useful contact for creative partners who can reach new audiences.",
-      "shareableReason": "Mina works at Kestrel Sports Group, which is relevant to creative partners who can reach new audiences.",
+      "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) runs a sports business looking for brand partners; a sponsorship could put Beacon Collective in front of fans.",
+      "shareableReason": "Mina's sports group Kestrel Sports Group looks for brand partners like Beacon Collective.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Hassan's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 91,
-      "benefit": "Hassan is Brand Director at Beacon Collective and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Hassan works at Beacon Collective, which is relevant to sponsors and brand deals.",
+      "benefit": "Hassan (Brand Director, Beacon Collective) runs a brand that could sponsor Kestrel Sports Group.",
+      "shareableReason": "Hassan's brand Beacon Collective could sponsor Kestrel Sports Group.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mina's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2828,7 +2828,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "yara.ahmadi@demo.weft.example",
     "b": "dev.lombardi@demo.weft.example",
     "pairScore": 60,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2843,18 +2843,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 58,
-      "benefit": "Dev is Programme Lead at Kestrel Agency and is a useful contact for new clients.",
-      "shareableReason": "Dev works at Kestrel Agency, which is relevant to new clients.",
+      "benefit": "Dev (Programme Lead, Kestrel Agency) shapes rules that Willow Advisors's clients must follow.",
+      "shareableReason": "Dev works on policy at Kestrel Agency, which affects Willow Advisors's clients.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Yara's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 60,
-      "benefit": "Yara is Managing Partner at Willow Advisors and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Yara works at Willow Advisors, which is relevant to industry perspectives on policy.",
+      "benefit": "Yara (Managing Partner, Willow Advisors) sees day to day how rules affect companies, useful input for Kestrel Agency's policy work.",
+      "shareableReason": "Yara's firm Willow Advisors advises companies affected by the policy Kestrel Agency works on.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dev's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2862,7 +2862,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "mateo.zielinski@demo.weft.example",
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 88,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2877,18 +2877,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 88,
-      "benefit": "Esra is Policy Advisor at Ember Agency and is a useful contact for new clients.",
-      "shareableReason": "Esra works at Ember Agency, which is relevant to new clients.",
+      "benefit": "Esra (Policy Advisor, Ember Agency) shapes rules that Glade Consulting's clients must follow.",
+      "shareableReason": "Esra works on policy at Ember Agency, which affects Glade Consulting's clients.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Mateo's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 87,
-      "benefit": "Mateo is Managing Partner at Glade Consulting and is a useful contact for industry perspectives on policy.",
-      "shareableReason": "Mateo works at Glade Consulting, which is relevant to industry perspectives on policy.",
+      "benefit": "Mateo (Managing Partner, Glade Consulting) sees day to day how rules affect companies, useful input for Ember Agency's policy work.",
+      "shareableReason": "Mateo's firm Glade Consulting advises companies affected by the policy Ember Agency works on.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Esra's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2896,7 +2896,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "gia.winter@demo.weft.example",
     "b": "dalia.whitlock@demo.weft.example",
     "pairScore": 62,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2911,18 +2911,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 60,
-      "benefit": "Dalia is Head of Sponsorships at Lantern Bank and is a useful contact for funding and introductions to investors.",
-      "shareableReason": "Dalia works at Lantern Bank, which is relevant to funding and introductions to investors.",
+      "benefit": "Dalia (Head of Sponsorships, Lantern Bank) runs partnerships for an event sponsor that supports young companies like Harbor Labs.",
+      "shareableReason": "Dalia's company Lantern Bank partners with young companies like Harbor Labs.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Gia's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 65,
-      "benefit": "Gia is Founder at Harbor Labs and is a useful contact for visible partnerships with the event community.",
-      "shareableReason": "Gia works at Harbor Labs, which is relevant to visible partnerships with the event community.",
+      "benefit": "Gia (Founder, Harbor Labs) is building a young company that Lantern Bank could support and get early access to.",
+      "shareableReason": "Gia is building Harbor Labs, a young company Lantern Bank could partner with.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   },
@@ -2930,7 +2930,7 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "a": "elena.reyes@demo.weft.example",
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 86,
-    "uncertainty": "Based on role and company only; no profile details were available.",
+    "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
     "evidence": [
       {
         "who": "a",
@@ -2945,18 +2945,18 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     ],
     "forA": {
       "score": 88,
-      "benefit": "Dalia is Managing Director at Lantern Athletics and is a useful contact for new clients.",
-      "shareableReason": "Dalia works at Lantern Athletics, which is relevant to new clients.",
+      "benefit": "Dalia (Managing Director, Lantern Athletics) runs a sports business that could become a client of Willow Consulting.",
+      "shareableReason": "Dalia's sports group Lantern Athletics could become a client of Willow Consulting.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Elena's own goals for the event (no profile saved yet)"
       ]
     },
     "forB": {
       "score": 84,
-      "benefit": "Elena is Managing Partner at Willow Consulting and is a useful contact for sponsors and brand deals.",
-      "shareableReason": "Elena works at Willow Consulting, which is relevant to sponsors and brand deals.",
+      "benefit": "Elena (Managing Partner, Willow Consulting) advises businesses and could help Lantern Athletics with contracts and growth.",
+      "shareableReason": "Elena's firm Willow Consulting advises sports businesses like Lantern Athletics.",
       "missingInformation": [
-        "Specific goals for this event"
+        "Dalia's own goals for the event (no profile saved yet)"
       ]
     }
   }
