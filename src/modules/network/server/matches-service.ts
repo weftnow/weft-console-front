@@ -7,6 +7,7 @@ import { requireEventCreator } from "@/modules/organizations/service";
 import { toMatchDetail, toMatchSummary, type ProfileFields } from "../match-dtos";
 import type { MatchDetailDto, MatchListDto, MatchStatus } from "../matches-schemas";
 import * as repository from "./match-repository";
+import { matchingEngineMode } from "./engine-mode";
 import { syncEventMatches } from "./match-sync-service";
 
 type Dependencies = {
@@ -16,6 +17,8 @@ type Dependencies = {
   listMatches: typeof repository.listEventMatches;
   findMatch: typeof repository.findEventMatch;
   findProfile: typeof profileRepository.findProfile;
+  /** Optional: true while the Console runs the matching simulation. */
+  isSimulated?: () => boolean;
 };
 const defaults: Dependencies = {
   findOrganizationId: eventRepository.findOrganizationId,
@@ -24,6 +27,7 @@ const defaults: Dependencies = {
   listMatches: repository.listEventMatches,
   findMatch: repository.findEventMatch,
   findProfile: profileRepository.findProfile,
+  isSimulated: () => matchingEngineMode() === "simulation",
 };
 
 /** Owners and Organizers of the event's organization only. Nothing is read or requested for anyone else. */
@@ -48,7 +52,7 @@ export async function listMatches(
     const high = guests.get(row.guestHighId);
     return low && high ? [toMatchSummary(row, low, high)] : [];
   });
-  return { matches, counts, sync };
+  return { matches, counts, sync, ...(dependencies.isSimulated?.() ? { simulated: true as const } : {}) };
 }
 
 function profileFields(found: Awaited<ReturnType<typeof profileRepository.findProfile>>): ProfileFields | null {

@@ -4,7 +4,8 @@ import { uuidSchema } from "@/modules/events/event-schemas";
 import * as eventRepository from "@/modules/events/server/repository";
 import { requireEventCreator } from "@/modules/organizations/service";
 import type { MatchingStatusResult } from "../matching-status-schemas";
-import { readEngineMatchingStatus } from "./matching-engine-client";
+import type { readEngineMatchingStatus } from "./matching-engine-client";
+import { selectStatusReader } from "./engine-mode";
 import { syncAfterFinishedRun } from "./match-sync-service";
 
 type Dependencies = {
@@ -17,7 +18,7 @@ type Dependencies = {
 const defaults: Dependencies = {
   findOrganizationId: eventRepository.findOrganizationId,
   requireCreator: requireEventCreator,
-  readStatus: readEngineMatchingStatus,
+  readStatus: (input) => selectStatusReader()(input),
   syncFinishedRun: syncAfterFinishedRun,
 };
 

@@ -32,4 +32,6 @@ Contact details are never returned. The list read triggers a sync; the detail re
 
 ## Limits
 
+With `WEFT_ENGINE_MODE=simulation` (never on Vercel production) the status and feed readers are replaced by a simulator; sync, the cursor and `applyFeedPage` are unchanged. See the [simulation specification](../changes/2026-10-20-matching-simulation.md).
+
 No pagination beyond 1000 rows, no cron (a revocation with no run is seen on the next list read), and no Console lifecycle input to the engine. See the [debt tracker](../exec-plans/tech-debt-tracker.md).

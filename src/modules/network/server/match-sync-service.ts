@@ -1,7 +1,8 @@
 import "server-only";
 import type { MatchingFeedResult } from "../matching-feed-schemas";
 import type { MatchSyncNote } from "../matches-schemas";
-import { FEED_PAGE_LIMIT, readEngineMatchingFeed } from "./matching-feed-client";
+import { FEED_PAGE_LIMIT } from "./matching-feed-client";
+import { selectFeedReader } from "./engine-mode";
 import * as repository from "./match-repository";
 
 /** Ten full pages per call; a longer backlog continues on the next read. */
@@ -15,7 +16,7 @@ type Dependencies = {
 };
 const defaults: Dependencies = {
   readCursor: repository.readCursor,
-  readFeed: readEngineMatchingFeed,
+  readFeed: (input) => selectFeedReader()(input),
   applyPage: repository.applyFeedPage,
   markCheckedThrough: repository.markCheckedThrough,
 };

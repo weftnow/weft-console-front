@@ -14,9 +14,10 @@ test("no source file contains demo data or demo branding", () => {
   assert.deepEqual(offenders, []);
 });
 
-test("public/ ships only the Weft brand mark (demo assets stay gone)", () => {
+test("public/ ships only the Weft brand mark and the matching-simulation demo CSVs (other demo assets stay gone)", () => {
   const shipped = existsSync("public") ? files("public").filter((path) => !path.split("/").pop().startsWith(".")) : [];
-  assert.deepEqual(shipped, ["public/weft-mark.svg"]);
+  // The CSVs are the fixed uploads for the demo-only matching simulation (docs/changes/2026-10-20-matching-simulation.md).
+  assert.deepEqual(shipped, ["public/demo/weft-demo-attendees-300.csv", "public/demo/weft-demo-attendees.csv", "public/weft-mark.svg"]);
 });
 
 test("source never references deleted demo images", () => {

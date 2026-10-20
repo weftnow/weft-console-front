@@ -93,9 +93,9 @@ export function MatchesList({ list, filter, onFilter, onOpen }: MatchesViewProps
   );
 }
 
-export function MatchesPanelView(props: { body: React.ReactNode; summary: string | null }) {
+export function MatchesPanelView(props: { body: React.ReactNode; summary: string | null; simulated?: boolean }) {
   return (
-    <Surface as="section" className="panel table-panel roster-panel match-panel" depth="raised" aria-labelledby="matches-title">
+    <Surface as="section" className="panel table-panel roster-panel match-panel" data-simulated={props.simulated ? "true" : undefined} depth="raised" aria-labelledby="matches-title">
       <div className="panel-heading">
         <div className="section-head">
           <PeopleIcon className="section-head__icon" height="19" width="19" />
@@ -194,7 +194,10 @@ function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; mat
 export function MatchesPanel({ eventId }: { eventId: string }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [openId, setOpenId] = useState<string | null>(null);
-  const query = useQuery({ queryKey: eventMatchesKey(eventId), queryFn: () => fetchEventMatches(eventId), retry: false, refetchInterval: 30_000 });
+  const query = useQuery({ queryKey: eventMatchesKey(eventId), queryFn: () => fetchEventMatches(eventId), retry: false,
+    // Simulated runs finish within seconds, so poll faster than the usual quiet interval.
+    refetchInterval: (current) => (current.state.data?.simulated ? 5_000 : 30_000),
+  });
   const retry = () => void query.refetch();
   let body;
   if (query.data) body = <MatchesList list={query.data} filter={filter} onFilter={setFilter} onOpen={setOpenId} onRetry={retry} />;
@@ -203,7 +206,7 @@ export function MatchesPanel({ eventId }: { eventId: string }) {
   const counts = query.data?.counts;
   return (
     <>
-      <MatchesPanelView body={body} summary={counts ? `${counts.active} active · ${counts.revoked} revoked` : null} />
+      <MatchesPanelView body={body} simulated={query.data?.simulated === true} summary={counts ? `${counts.active} active · ${counts.revoked} revoked` : null} />
       <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} />
     </>
   );

@@ -1,10 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { ClockIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { formatRelativeActivity } from "@/modules/events/event-record";
 import { fetchEventMatchingStatus } from "../queries/matching-status";
+import { eventMatchesKey } from "../queries/matches";
 import { describeMatchingStatus } from "../matching-status-copy";
 import type { MatchingStatusResult } from "../matching-status-schemas";
 
@@ -44,8 +46,9 @@ export function MatchingStatusView(props: MatchingStatusViewProps) {
       </>
     );
   }
+  const simulated = props.kind === "result" && props.result.availability === "available" && props.result.simulated === true;
   return (
-    <Surface as="section" className="event-detail-panel matching-status" depth="raised" aria-labelledby="matching-status-title">
+    <Surface as="section" className="event-detail-panel matching-status" data-simulated={simulated ? "true" : undefined} depth="raised" aria-labelledby="matching-status-title">
       <div className="event-detail-panel__heading">
         <ClockIcon height="20" width="20" />
         <h2 id="matching-status-title">Matching status</h2>
@@ -59,6 +62,7 @@ const ACTIVE_REFRESH_MS = 5_000;
 const IDLE_REFRESH_MS = 30_000;
 
 export function MatchingStatusPanel({ eventId }: { eventId: string }) {
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["matching-status", eventId],
     queryFn: () => fetchEventMatchingStatus(eventId),
@@ -69,6 +73,11 @@ export function MatchingStatusPanel({ eventId }: { eventId: string }) {
     },
     retry: false,
   });
+  // A finished run means the server has pulled new matches, so a mounted or cached Matches tab must reload them.
+  const finishedRunId = query.data?.availability === "available" ? query.data.status.lastFinishedRunId : null;
+  useEffect(() => {
+    if (finishedRunId) void queryClient.invalidateQueries({ queryKey: eventMatchesKey(eventId) });
+  }, [eventId, finishedRunId, queryClient]);
   const retry = () => void query.refetch();
   if (query.data) return <MatchingStatusView kind="result" onRetry={retry} result={query.data} />;
   if (query.isError) return <MatchingStatusView kind="error" onRetry={retry} />;

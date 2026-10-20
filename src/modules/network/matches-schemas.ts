@@ -75,6 +75,8 @@ export const matchListSchema = z.strictObject({
   matches: z.array(matchSummarySchema),
   counts: z.strictObject({ active: z.number().int().min(0), revoked: z.number().int().min(0) }),
   sync: matchSyncNoteSchema,
+  /** Present only while the Console runs the matching simulation (demo data). */
+  simulated: z.literal(true).optional(),
 });
 export type MatchListDto = z.infer<typeof matchListSchema>;
 
