@@ -104,6 +104,8 @@ test("isolated database persists the authorized event and rolls back failed chil
     assert.equal(created.attendees.guests[1].importId, null);
     assert.ok(created.attendees.guests[0].createdAt);
     assert.equal((await getEvent({ userId, eventId: created.id })).attendees.importCount, 1);
+    const changes = await pool.query("select kind::text as kind, cardinality(guest_ids) as guests from event_matching_changes where event_id = $1", [created.id]);
+    assert.deepEqual(changes.rows, [{ kind: "attendees_imported", guests: 0 }], "an initial roster records one import change");
     assert.equal(created.staff.length, 1);
     assert.equal(created.coverImage, `/api/events/${created.id}/cover`);
     const fresh = await pool.query("select id from events where id = $1", [created.id]);

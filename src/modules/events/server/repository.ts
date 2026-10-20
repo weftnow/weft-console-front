@@ -9,6 +9,7 @@ import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
 import type { PreparedEvent } from "./service";
 import { normalizeAttendeePhone } from "../attendee-contact";
+import { recordChange } from "@/modules/attendees/server/networking-repository";
 
 export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
   const { data, schedule, guests, imported, cover, userId, organizationId } = prepared;
@@ -58,6 +59,8 @@ export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
         linkedin: guest.linkedin, guestType: guest.guestType, source: guest.source,
         importId: guest.source === "csv" ? importId : null,
       })));
+      // Same event-level change a later import records, so the initial roster also starts automatic matching.
+      await recordChange(tx, { eventId: inserted.id, actorId: userId, guestIds: [], kind: "attendees_imported", reason: null });
     }
     if (selectedIds.length) await tx.insert(eventStaff).values(selectedIds.map((membershipId) => ({
       eventId: inserted.id, organizationId, membershipId,
