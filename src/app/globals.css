@@ -1467,11 +1467,11 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .roster-filter:hover, .roster-filter:focus-within { color: var(--weft-text); }
 .roster-filter select:focus-visible { border-color: rgba(255,90,31,.24); box-shadow: var(--weft-shadow-floating), var(--weft-focus); }
 
-.roster-table { min-width: 820px; table-layout: fixed; font-size: 13px; }
-.roster-col-person { width: 30%; }
-.roster-col-company { width: 24%; }
-.roster-col-profile { width: 16%; }
-.roster-col-type { width: 12%; }
+.roster-table { min-width: 880px; table-layout: fixed; font-size: 13px; }
+.roster-col-person { width: 28%; }
+.roster-col-company { width: 22%; }
+.roster-col-profile { width: 18%; }
+.roster-col-type { width: 14%; }
 .roster-col-actions { width: 18%; }
 .roster-table--readonly .roster-col-person { width: 34%; }
 .roster-table--readonly .roster-col-company { width: 30%; }
@@ -1485,9 +1485,13 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .roster-table td.attendee-actions-cell { overflow-wrap: normal; }
 .attendee-record-actions { display: grid; gap: 6px; min-width: 0; }
 .attendee-record-actions__buttons { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; gap: 6px; }
-.attendee-record-actions__buttons .tactile-button { width: auto; min-height: 36px; padding: 6px 10px; font-size: 12px; white-space: nowrap; }
-.attendee-record-actions__buttons .event-text-action { min-height: 36px; padding: 6px 4px; }
-.roster-edit-action:hover { background: var(--weft-surface); }
+.attendee-record-actions__buttons .tactile-button { width: auto; min-height: 36px; gap: 5px; border: 1px solid var(--weft-border); border-radius: 9px; padding: 6px 10px; background: var(--weft-surface); font-size: 12px; white-space: nowrap; }
+.attendee-record-actions__buttons .tactile-button:hover { background: var(--weft-canvas); }
+.roster-actions-popover { position: fixed; inset: auto; width: 184px; margin: 0; border: 1px solid var(--weft-border); border-radius: var(--weft-radius-sm); padding: 6px; color: var(--weft-text); }
+.roster-actions-popover:popover-open { display: grid; gap: 2px; }
+.roster-actions-popover button { display: flex; align-items: center; min-height: 40px; border: 0; border-radius: 6px; padding: 8px 12px; background: transparent; color: inherit; text-align: left; font-size: 12px; font-weight: 550; cursor: pointer; }
+.roster-actions-popover button:hover { background: var(--weft-canvas); }
+.roster-actions-popover button:focus-visible { outline: none; box-shadow: var(--weft-focus); }
 .roster-sort { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; font: inherit; transition: color 150ms ease; }
 .roster-sort:hover { color: var(--weft-text); }
 .roster-sort svg { opacity: .4; transition: opacity 150ms ease, color 150ms ease; }
@@ -1509,7 +1513,9 @@ select.event-control { appearance: none; background-image: linear-gradient(45deg
 .roster-company strong { font-size: 13px; font-weight: 550; line-height: 1.5; }
 .roster-company > span { color: var(--weft-text-muted); font-size: 12px; line-height: 1.5; }
 .roster-profile-cell { color: var(--weft-text-soft); }
-.roster-type-cell .status-pill { font-size: 11px; white-space: nowrap; }
+.roster-badges { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.roster-type-cell .status-pill { display: inline-flex; min-height: 26px; padding: 5px 11px; font-size: 11px; line-height: 16px; white-space: nowrap; }
+.roster-type-cell .guest-pill::before { display: none; }
 .all-events-table { table-layout: fixed; min-width: 740px; }
 .events-col-name { width: 32%; }
 .events-col-city { width: 18%; }
@@ -1984,11 +1990,12 @@ fieldset.event-form-grid, .event-staff-member fieldset { min-width: 0; margin: 0
   .roster-table tbody tr { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px 12px; border-top: 1px solid var(--weft-border); padding: 20px 0; }
   .roster-table td, .roster-table th:first-child, .roster-table td:first-child, .roster-table td:last-child { display: block; width: auto; height: auto; min-width: 0; border: 0; border-radius: 0; padding: 0; }
   .roster-person-cell, .roster-company-cell { grid-column: 1/-1; }
-  .roster-guest__name { padding-right: 82px; }
+  .roster-guest__name { padding-right: 0; }
   .roster-guest strong { font-size: 14px; }
   .roster-company-cell::before, .roster-profile-cell::before { display: block; margin-bottom: 5px; color: var(--weft-text-muted); font-size: 11px; content: attr(data-label); }
-  .roster-table .roster-type-cell { position: absolute; top: 22px; right: 0; }
-  .roster-table .attendee-actions-cell { align-self: end; }
+  .roster-table .roster-type-cell { grid-column: 1/-1; grid-row: 3; }
+  .roster-badges { flex-direction: row; flex-wrap: wrap; }
+  .roster-table .attendee-actions-cell { align-self: center; }
   .roster-table .attendee-record-actions { width: auto; }
   .roster-table .attendee-record-actions__buttons .tactile-button, .roster-table .attendee-record-actions__buttons .event-text-action { min-height: 40px; }
   .roster-table--readonly .roster-profile-cell { grid-column: 1/-1; }
@@ -2007,17 +2014,15 @@ fieldset.event-form-grid, .event-staff-member fieldset { min-width: 0; margin: 0
 .profile-pill--missing { background: rgba(87,78,67,.12); color: var(--weft-text-muted); }
 .profile-pill--url_only { background: var(--weft-orange-soft); color: var(--weft-orange-deep); }
 .roster-profile { display: grid; gap: 6px; }
-.roster-profile__chips { display: flex; flex-wrap: wrap; gap: 4px; }
-.roster-profile__chips .status-pill { padding: 2px 8px; font-size: 10px; }
-.roster-profile .roster-link { width: fit-content; border: 0; padding: 0; background: none; cursor: pointer; font: inherit; }
+.roster-profile__summary { display: inline-flex; align-items: center; gap: 6px; width: fit-content; min-height: 28px; margin: -4px -6px; border: 0; border-radius: 6px; padding: 4px 6px; background: transparent; color: var(--weft-text-muted); font-size: 11px; line-height: 20px; cursor: pointer; }
+.roster-profile__summary:hover { background: var(--weft-surface); color: var(--weft-text); }
+.roster-profile__summary:focus-visible { outline: none; box-shadow: var(--weft-focus); }
+@media (max-width: 620px) { .roster-profile__summary { min-height: 40px; } }
 
 /* Keep networking/profile summaries within the grouped roster. */
 .roster-networking-counts { display: block; margin-top: 4px; }
 .roster-toolbar__filters { flex: 1; }
 .roster-toolbar .search-field { flex: 0 1 280px; }
-.roster-networking-action { display: block; margin-left: auto; }
-.roster-type-cell .status-pill { display: table; margin-block: 4px; }
-.roster-profile .event-text-action { width: fit-content; padding: 0; text-align: left; }
 .console-dialog .networking-panel { margin: 0; border: 0; padding: 0; background: transparent; box-shadow: none; }
 @media (max-width: 620px) { .roster-toolbar .search-field { flex-basis: auto; } .roster-type-cell .networking-pill { position: static; } }
 

@@ -79,7 +79,7 @@ test("grouped roster exposes networking status, its filter and the management pa
   const { readFileSync } = await import("node:fs");
   const source = readFileSync("src/modules/events/components/attendee-roster.tsx", "utf8");
   assert.match(source, /networking-pill--/);
-  assert.match(source, />Networking<\/button>/);
+  assert.match(source, /onNetworking=\{/);
   assert.match(source, /Filter by networking status/);
   assert.match(source, /<NetworkingPanel/);
   assert.match(source, /included · /);
