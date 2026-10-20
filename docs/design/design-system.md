@@ -39,6 +39,8 @@ Text buttons have a shared padded, centered baseline; icon-only and pagination c
 
 Roster filter and sort pills retain native select behavior with the browser arrow suppressed. The shared chevron is centered vertically and inset 14px, with 40px of right padding reserved for text clearance. The decorative icon ignores pointer input; keyboard focus remains on the select.
 
+The profile column shows the profile type and one quiet summary counting available goals, background and LinkedIn details; a LinkedIn URL alone does not count as supplied details. The summary opens the existing profile dialog, where individual completeness states remain visible. Row actions use aligned, bordered Edit and More controls. More opens a native auto popover containing profile editing, networking and duplicate review; it dismisses with Escape or an outside click and returns dialog focus to its visible trigger. Guest and networking badges use explicit padding and a consistent gap. Phone rows put badges on their own line so they cannot overlap contact details.
+
 Conflict screens compare saved values and the user's draft with readable labels. Revisions remain internal; background refetches cannot advance an unsaved draft's revision. An explicit review choice is required before retrying. Keep the existing server concurrency checks. Account actions belong in the compact account menu rather than in the identity row. Product copy must describe current capabilities; local Kami previews do not imply calls, introductions or assignment tooling are running.
 
 ---

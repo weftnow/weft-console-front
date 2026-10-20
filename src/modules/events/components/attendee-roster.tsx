@@ -306,6 +306,10 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                 {visible.map((guest) => {
                   const flags = attendeeContactFlags(guest.email, guest.phone);
                   const linkedCount = (identityCounts.get(guest.personId) ?? 1) - 1;
+                  const profileDetails = ([['goals', 'Goals'], ['background', 'Background'], ['linkedin', 'LinkedIn']] as const)
+                    .map(([key, label]) => ({ label, state: guest.profile.completeness[key] }));
+                  const availableDetails = profileDetails.filter((detail) => detail.state === "available").length;
+                  const profileDescription = profileDetails.map(({ label, state }) => `${label}: ${state === "url_only" ? "URL only, details not supplied" : state}`).join(" · ");
                   return <tr key={guest.id} role="row">
                     <td className="roster-person-cell" role="cell">
                       <div className="roster-guest">
@@ -316,16 +320,24 @@ export function AttendeeRoster({ event, onRosterChanged }: { event: EventRecord;
                       </div>
                     </td>
                     <td className="roster-company-cell" role="cell" data-label="Company"><div className="roster-company"><strong title={guest.company || undefined}>{guest.company || <span className="table-empty">Not added</span>}</strong>{guest.position ? <span title={guest.position}>{guest.position}</span> : null}</div></td>
-                    <td className="roster-profile-cell" role="cell" data-label="Profile"><div className="roster-profile">{guest.profileType || <span className="table-empty">Not set</span>}{event.attendees.canManage ? <><div className="roster-profile__chips">{([['goals', 'Goals'], ['background', 'Background'], ['linkedin', 'LinkedIn']] as const).map(([key, label]) => <span className={`status-pill profile-pill--${guest.profile.completeness[key]}`} key={key} title={`${label}: ${guest.profile.completeness[key] === 'url_only' ? 'URL only, details not supplied' : guest.profile.completeness[key]}`}>{label}</span>)}</div><button className="event-text-action" onClick={() => setPanel({ kind: "profile", guestId: guest.id })} type="button">Edit profile</button></> : null}</div></td>
+                    <td className="roster-profile-cell" role="cell" data-label="Profile">
+                      <div className="roster-profile">
+                        <span>{guest.profileType || <span className="table-empty">Not set</span>}</span>
+                        {event.attendees.canManage ? <button className="roster-profile__summary" title={profileDescription} aria-label={`Edit profile for ${fullName(guest) || "attendee"}: ${availableDetails} of 3 details available. ${profileDescription}`} onClick={() => setPanel({ kind: "profile", guestId: guest.id })} type="button">
+                          <span>{availableDetails} of 3 details</span><ArrowRightIcon height="12" width="12" />
+                        </button> : null}
+                      </div>
+                    </td>
                     <td className="roster-type-cell" role="cell">
+                      <div className="roster-badges">
                       <span className={`status-pill guest-pill guest-pill--${guest.guestType.toLowerCase()}`}>
                         {guest.guestType}
                       </span>
                       {event.attendees.canManage ? <span className={`status-pill networking-pill networking-pill--${guest.networking.status}`} title={guest.networking.reason ? EXCLUSION_REASON_LABELS[guest.networking.reason] : undefined}>{guest.networking.status === "excluded" ? "Excluded" : "Included"}</span> : null}
+                      </div>
                     </td>
                     {event.attendees.canManage ? <td className="attendee-actions-cell" role="cell">
-                      <AttendeeRecordActions canManage={event.attendees.canManage} eventId={event.id} guest={guest} guests={guests} onSaved={onRosterChanged} />
-                      <button className="event-text-action roster-networking-action" type="button" onClick={() => setPanel({ kind: "networking", guestId: guest.id })}>Networking</button>
+                      <AttendeeRecordActions canManage={event.attendees.canManage} eventId={event.id} guest={guest} guests={guests} onSaved={onRosterChanged} onEditProfile={() => setPanel({ kind: "profile", guestId: guest.id })} onNetworking={() => setPanel({ kind: "networking", guestId: guest.id })} />
                     </td> : null}
                   </tr>;
                 })}

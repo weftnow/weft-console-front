@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { SavedEventGuestRecord, EventGuestType } from "../event-record";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { ConsoleDialog } from "@/shared/ui/console-dialog";
@@ -8,6 +8,7 @@ import { attendeeCandidateResponseSchema, attendeeReplacementSchema } from "../a
 import { eventFormErrorSchema } from "../event-form";
 import { savedEventGuestDtoSchema } from "../event-dto";
 import { EventField } from "./event-form-controls";
+import { ChevronDownIcon } from "@/shared/ui/icons";
 
 type Draft = { firstName: string; lastName: string; email: string; phone: string; company: string; position: string; profileType: string; guestType: EventGuestType; linkedin: string };
 type Candidate = ReturnType<typeof attendeeCandidateResponseSchema.parse>["data"]["candidates"][number];
@@ -20,9 +21,34 @@ function guestDraft(guest: Draft): Draft {
 }
 function name(guest: { firstName: string; lastName: string }) { return [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Unnamed attendee"; }
 
-export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSaved }: {
+export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSaved, onEditProfile, onNetworking }: {
   eventId: string; guest: SavedEventGuestRecord; guests: SavedEventGuestRecord[]; canManage: boolean; onSaved: () => void | Promise<void>;
+  onEditProfile: () => void; onNetworking: () => void;
 }) {
+  const menuId = useId();
+  const menu = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const placeMenu = useCallback(() => {
+    if (!menu.current?.matches(":popover-open") || !trigger.current) return;
+    const anchor = trigger.current.getBoundingClientRect();
+    const { width, height } = menu.current.getBoundingClientRect();
+    menu.current.style.left = `${Math.max(12, Math.min(anchor.right - width, window.innerWidth - width - 12))}px`;
+    menu.current.style.top = `${anchor.bottom + height + 8 < window.innerHeight - 12 ? anchor.bottom + 8 : Math.max(12, anchor.top - height - 8)}px`;
+  }, []);
+  useEffect(() => {
+    window.addEventListener("resize", placeMenu);
+    document.addEventListener("scroll", placeMenu, true);
+    return () => {
+      window.removeEventListener("resize", placeMenu);
+      document.removeEventListener("scroll", placeMenu, true);
+    };
+  }, [placeMenu]);
+  const runAction = (action: () => void) => {
+    menu.current?.hidePopover();
+    // Dialogs return focus to a visible row control rather than a hidden popover item.
+    trigger.current?.focus();
+    action();
+  };
   const [view, setView] = useState<"edit" | "duplicates" | null>(null);
   const [draft, setDraft] = useState(guestDraft(guest));
   const [revision, setRevision] = useState(guest.revision);
@@ -80,7 +106,15 @@ export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSav
     finally { setPending(false); }
   };
   return <div className="attendee-record-actions">
-    {canManage ? <div className="attendee-record-actions__buttons"><TactileButton className="roster-edit-action" variant="ghost" aria-label="Edit details" onClick={() => { setDraft(guestDraft(guest)); setRevision(guest.revision); setError(""); setFieldErrors({}); setCurrent(null); setView("edit"); }}>Edit</TactileButton><button className="event-text-action" aria-label="Review duplicates" type="button" onClick={() => { setView("duplicates"); void loadCandidates(); }}>Duplicates</button></div> : null}
+    {canManage ? <div className="attendee-record-actions__buttons">
+      <TactileButton className="roster-edit-action" variant="ghost" aria-label={`Edit details for ${name(guest)}`} onClick={() => { setDraft(guestDraft(guest)); setRevision(guest.revision); setError(""); setFieldErrors({}); setCurrent(null); setView("edit"); }}>Edit</TactileButton>
+      <button className="tactile-button tactile-button--ghost" type="button" aria-label={`More actions for ${name(guest)}`} popoverTarget={menuId} ref={trigger}>More <ChevronDownIcon height="13" width="13" /></button>
+      <div id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="roster-actions-popover surface-floating" role="group" aria-label={`Actions for ${name(guest)}`}>
+        <button type="button" onClick={() => runAction(onEditProfile)}>Edit profile</button>
+        <button type="button" onClick={() => runAction(onNetworking)}>Networking</button>
+        <button type="button" onClick={() => runAction(() => { setView("duplicates"); void loadCandidates(); })}>Review duplicates</button>
+      </div>
+    </div> : null}
     {notice ? <span className="attendee-action-status" role="status">{notice}</span> : null}
     {canManage ? <ConsoleDialog open={view !== null} onClose={() => setView(null)} busy={pending} title={view === "edit" ? "Edit attendee details" : "Review duplicates"} description={name(guest)}>
       {view === "edit" ? <form className="attendee-details-form" onSubmit={(event) => { event.preventDefault(); void save(); }}>
