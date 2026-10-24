@@ -8,8 +8,15 @@ export const matchStatusSchema = z.enum(MATCH_STATUSES);
 export type MatchStatus = z.infer<typeof matchStatusSchema>;
 export const INTRODUCTION_PATHS = ["sms_coordination", "wefter"] as const;
 export const introductionPathSchema = z.enum(INTRODUCTION_PATHS);
+export type IntroductionPath = z.infer<typeof introductionPathSchema>;
 
-export const matchListQuerySchema = z.object({ status: matchStatusSchema.optional() });
+export const matchListQuerySchema = z.object({
+  search: z.string().trim().max(200).default(""),
+  page: z.coerce.number().int().min(1).max(1_000_000).default(1),
+  status: matchStatusSchema.optional(),
+  introductionPath: introductionPathSchema.optional(),
+  locale: z.enum(["en", "es"]).default("en"),
+});
 
 const timestamp = z.iso.datetime({ offset: true });
 const guestTypeSchema = z.enum(["Attendee", "VIP", "Sponsor"]);
@@ -74,6 +81,8 @@ export type MatchSyncNote = z.infer<typeof matchSyncNoteSchema>;
 export const matchListSchema = z.strictObject({
   matches: z.array(matchSummarySchema),
   counts: z.strictObject({ active: z.number().int().min(0), revoked: z.number().int().min(0) }),
+  pagination: z.strictObject({ page: z.number().int().min(1), pageSize: z.number().int().min(1), total: z.number().int().min(0) })
+    .default({ page: 1, pageSize: 25, total: 0 }),
   sync: matchSyncNoteSchema,
   /** Present only while the Console runs the matching simulation (demo data). */
   simulated: z.literal(true).optional(),

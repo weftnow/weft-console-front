@@ -24,9 +24,16 @@ export async function handleListMatches(
   try {
     const actor = await requireActor(dependencies);
     if (!uuidSchema.safeParse(eventId).success) throw new ApplicationError("INVALID_JSON", "Enter a valid event ID.");
-    const query = matchListQuerySchema.safeParse({ status: new URL(request.url).searchParams.get("status") ?? undefined });
-    if (!query.success) throw new ApplicationError("VALIDATION_ERROR", "Choose active or revoked matches.");
-    const data = await dependencies.listMatches({ userId: actor.id, eventId, status: query.data.status });
+    const params = new URL(request.url).searchParams;
+    const query = matchListQuerySchema.safeParse({
+      status: params.get("status") ?? undefined,
+      search: params.get("search") ?? undefined,
+      page: params.get("page") ?? undefined,
+      introductionPath: params.get("introductionPath") ?? undefined,
+      locale: params.get("locale") ?? undefined,
+    });
+    if (!query.success) throw new ApplicationError("VALIDATION_ERROR", "Choose valid match filters.");
+    const data = await dependencies.listMatches({ userId: actor.id, eventId, ...query.data });
     return Response.json(matchListResponseSchema.parse({ data }), { status: 200, headers: { ...headers, ...engineModeHeaders() } });
   } catch (error) {
     return errorResponse(error, "list_matches", "Something went wrong while loading matches. Please try again.");

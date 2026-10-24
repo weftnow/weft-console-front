@@ -8,6 +8,12 @@ const DEFAULT_TIMEOUT_MS = 5_000;
 export type Environment = Record<string, string | undefined>;
 type Options = { fetcher?: typeof fetch; env?: Environment; timeoutMs?: number };
 
+export function createRequestTimeout(timeoutMs: number) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException("The request timed out.", "TimeoutError")), timeoutMs);
+  return { signal: controller.signal, clear: () => clearTimeout(timer) };
+}
+
 export function engineBaseUrl(value: string | undefined): URL | null {
   if (!value) return null;
   let url: URL;
@@ -34,13 +40,14 @@ export async function readEngineMatchingStatus(
   }
   const url = new URL(base);
   url.pathname = `${base.pathname.replace(/\/+$/, "")}/v1/organizations/${organizationId}/events/${eventId}/matching/status`;
+  const timeout = createRequestTimeout(timeoutMs);
   try {
     const response = await fetcher(url, {
       method: "GET",
       headers: { Accept: "application/json", "X-Weft-Service-Token": token },
       cache: "no-store",
       redirect: "error",
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: timeout.signal,
     });
     if (!response.ok) {
       console.warn("weft_matching_engine_unavailable", { status: response.status });
@@ -58,5 +65,7 @@ export async function readEngineMatchingStatus(
     // Log the failure class only: messages can contain the engine address.
     console.warn("weft_matching_engine_unavailable", { error: error instanceof Error ? error.name : "unknown" });
     return { availability: "unavailable", reason: error instanceof SyntaxError ? "invalid_response" : "unreachable" };
+  } finally {
+    timeout.clear();
   }
 }

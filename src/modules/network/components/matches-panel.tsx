@@ -6,91 +6,118 @@ import { PeopleIcon } from "@/shared/ui/icons";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { ConsoleDialog } from "@/shared/ui/console-dialog";
-import { formatRelativeActivity } from "@/modules/events/event-record";
-import { eventMatchKey, eventMatchesKey, fetchEventMatch, fetchEventMatches } from "../queries/matches";
+import { eventMatchKey, eventMatchesKey, fetchEventMatch, fetchEventMatches, type MatchListOptions } from "../queries/matches";
 import {
   MATCHES_SUBTITLE, describeSync, emptyMatchesCopy, introductionPathHints, introductionPathLabels,
   revocationReasonCopy, statusLabels,
 } from "../matches-copy";
-import type { MatchDetailDto, MatchListDto, MatchStatus, MatchSummaryDto } from "../matches-schemas";
+import type { MatchListDto, MatchStatus, MatchSummaryDto } from "../matches-schemas";
+import { MatchDetailLoader, MatchDetailView } from "./match-detail-view";
+
+export { MatchDetailView };
 
 type Filter = MatchStatus | "all";
+type IntroductionFilter = "all" | "sms_coordination" | "wefter";
 const FILTERS: { id: Filter; label: string }[] = [{ id: "all", label: "All" }, { id: "active", label: "Active" }, { id: "revoked", label: "Revoked" }];
+const INTRODUCTION_FILTERS: { id: IntroductionFilter; label: string }[] = [
+  { id: "all", label: "All introduction methods" },
+  { id: "sms_coordination", label: introductionPathLabels.sms_coordination },
+  { id: "wefter", label: introductionPathLabels.wefter },
+];
 
 function StatusPill({ match }: { match: Pick<MatchSummaryDto, "status" | "revocationReason"> }) {
   return <span className={`status-pill match-pill match-pill--${match.status}`}>{statusLabels[match.status]}</span>;
 }
 
-function GuestLine({ guest }: { guest: MatchSummaryDto["guests"][number] }) {
-  const detail = [guest.jobPosition, guest.company].filter(Boolean).join(" · ");
-  return (
-    <div className="match-guest">
-      <strong>{guest.name || "Unnamed guest"}</strong>
-      {detail ? <span>{detail}</span> : null}
-    </div>
-  );
-}
-
 export type MatchesViewProps = {
   list: MatchListDto;
   filter: Filter;
+  search?: string;
+  introductionPath?: IntroductionFilter;
   onFilter: (filter: Filter) => void;
+  onSearch?: (search: string) => void;
+  onIntroductionPath?: (path: IntroductionFilter) => void;
+  onPage?: (page: number) => void;
   onOpen: (matchId: string) => void;
-  onRetry: () => void;
 };
 
-export function MatchesList({ list, filter, onFilter, onOpen }: MatchesViewProps) {
-  const total = list.counts.active + list.counts.revoked;
+function countText(value: number) {
+  return new Intl.NumberFormat("en").format(value);
+}
+
+export function MatchesList({ list, filter, search = "", introductionPath = "all", onFilter, onSearch = () => {}, onIntroductionPath = () => {}, onPage = () => {}, onOpen }: MatchesViewProps) {
+  const totalMatches = list.counts.active + list.counts.revoked;
+  const { page, pageSize, total } = list.pagination ?? { page: 1, pageSize: 25, total: list.matches.length };
   const visible = list.matches.filter((match) => filter === "all" || match.status === filter);
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const first = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const last = Math.min(page * pageSize, total);
   const syncNote = describeSync(list.sync);
-  const empty = emptyMatchesCopy(filter, total);
+  const empty = search ? { title: "No matches found", description: "Search matches by attendee or company, or clear your search." } : emptyMatchesCopy(filter, totalMatches);
   return (
     <>
       {syncNote ? <p className="match-sync-note" role="status">{syncNote}</p> : null}
-      {total > 0 ? (
+      <div className="match-browse-controls">
+        <label className="match-search-label" htmlFor="match-search">Search matches by attendee or company</label>
+        <input id="match-search" className="match-search" type="search" value={search} maxLength={200} placeholder="Search matches by attendee or company" onChange={(event) => onSearch(event.target.value)} />
+        <label className="sr-only" htmlFor="match-introduction">Filter by introduction method</label>
+        <select id="match-introduction" className="match-introduction-filter" value={introductionPath} onChange={(event) => onIntroductionPath(event.target.value as IntroductionFilter)}>
+          {INTRODUCTION_FILTERS.map(({ id, label }) => <option key={id} value={id}>{label}</option>)}
+        </select>
+      </div>
+      {totalMatches > 0 ? (
         <div className="match-toolbar" role="group" aria-label="Filter matches by status">
           {FILTERS.map(({ id, label }) => (
             <button aria-pressed={filter === id} className="match-filter" key={id} onClick={() => onFilter(id)} type="button">
-              {label}<span>{id === "all" ? total : list.counts[id]}</span>
+              {label}<span>{countText(id === "all" ? totalMatches : list.counts[id])}</span>
             </button>
           ))}
         </div>
       ) : null}
       {visible.length === 0 ? (
-        <EmptyState icon={PeopleIcon} size="panel" title={empty.title} description={empty.description} />
+        <>
+          <EmptyState icon={PeopleIcon} size="panel" title={empty.title} description={empty.description} />
+          {search ? <p className="match-result-count">0 matches</p> : null}
+        </>
       ) : (
         <div className="table-scroll">
           <table className="event-table match-table" role="table">
             <caption className="sr-only">Matches selected for this event</caption>
             <thead role="rowgroup">
               <tr role="row">
-                <th scope="col">Pair</th><th scope="col">Introduction</th><th scope="col">Why they were selected</th><th scope="col">Status</th><th className="match-actions-heading" scope="col">Details</th>
+                <th scope="col">Attendee</th><th scope="col">Matched with</th><th scope="col">Introduction</th><th scope="col">Why they were selected</th>
+                {filter === "all" ? <th scope="col">Status</th> : null}<th className="match-actions-heading" scope="col">Details</th>
               </tr>
             </thead>
             <tbody className="table-body-well" role="rowgroup" data-depth="inset">
-              {visible.map((match) => {
-                const names = `${match.guests[0].name} and ${match.guests[1].name}`;
-                return (
-                  <tr key={match.id} role="row" data-status={match.status}>
-                    <td className="match-pair-cell" role="cell"><GuestLine guest={match.guests[0]} /><GuestLine guest={match.guests[1]} /></td>
-                    <td data-label="Introduction" role="cell"><span title={introductionPathHints[match.introductionPath]}>{introductionPathLabels[match.introductionPath]}</span></td>
-                    <td data-label="Why" role="cell" className="match-reason-cell">{match.reasonPreview ?? <span className="table-empty">No reason recorded</span>}</td>
-                    <td data-label="Status" role="cell">
-                      <StatusPill match={match} />
-                      {match.revocationReason ? <span className="match-reason-note">{revocationReasonCopy[match.revocationReason]}</span> : null}
-                    </td>
-                    <td className="match-actions-cell" role="cell">
-                      <button aria-label={`View match details for ${names}`} className="event-text-action" onClick={() => onOpen(match.id)} type="button">View details</button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {visible.map((match) => <MatchRow key={match.id} match={match} showStatus={filter === "all"} onOpen={onOpen} />)}
             </tbody>
           </table>
         </div>
       )}
+      <div className="match-pagination" aria-label="Match result pages">
+        <span className="match-result-count">{countText(first)}–{countText(last)} of {countText(total)} matches</span>
+        <div>
+          <button className="event-text-action" type="button" disabled={page <= 1} onClick={() => onPage(page - 1)}>Previous</button>
+          <span aria-live="polite">Page {page} of {pageCount}</span>
+          <button className="event-text-action" type="button" disabled={page >= pageCount} onClick={() => onPage(page + 1)}>Next</button>
+        </div>
+      </div>
     </>
   );
+}
+
+function MatchRow({ match, showStatus, onOpen }: { match: MatchSummaryDto; showStatus: boolean; onOpen: (id: string) => void }) {
+  const [attendee, other] = match.guests;
+  const names = `${attendee.name} and ${other.name}`;
+  return <tr key={match.id} role="row" data-status={match.status}>
+    <td data-label="Attendee" role="cell"><strong>{attendee.name || "Unnamed guest"}</strong></td>
+    <td data-label="Matched with" role="cell"><strong>{other.name || "Unnamed guest"}</strong></td>
+    <td data-label="Introduction" role="cell"><span title={introductionPathHints[match.introductionPath]}>{introductionPathLabels[match.introductionPath]}</span></td>
+    <td data-label="Why" role="cell" className="match-reason-cell">{match.reasonPreview ?? <span className="table-empty">No reason recorded</span>}</td>
+    {showStatus ? <td data-label="Status" role="cell"><StatusPill match={match} />{match.revocationReason ? <span className="match-reason-note">{revocationReasonCopy[match.revocationReason]}</span> : null}</td> : null}
+    <td className="match-actions-cell" role="cell"><button aria-haspopup="dialog" aria-label={`View match details for ${names}`} className="event-text-action" onClick={() => onOpen(match.id)} type="button">View details</button></td>
+  </tr>;
 }
 
 export function MatchesPanelView(props: { body: React.ReactNode; summary: string | null; simulated?: boolean }) {
@@ -111,72 +138,6 @@ export function MatchesPanelView(props: { body: React.ReactNode; summary: string
   );
 }
 
-function ProfileBlock({ profile }: { profile: NonNullable<MatchDetailDto["guests"][number]["profile"]> }) {
-  const rows = ([["Summary", profile.summary], ["Goals", profile.goals], ["Offers", profile.offers], ["Wants to meet", profile.desiredConnections], ["Background", profile.background]] as [string, string | null][])
-    .flatMap(([label, value]) => (value ? [[label, value] as [string, string]] : []));
-  if (rows.length === 0) return <p className="match-muted">No profile details saved yet.</p>;
-  return <dl className="match-facts">{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>;
-}
-
-/** Everything the organizer needs to judge a pair. Contact details are never shown. */
-export function MatchDetailView({ match }: { match: MatchDetailDto }) {
-  return (
-    <div className="match-detail">
-      <div className="match-detail__meta">
-        <StatusPill match={match} />
-        <span>{introductionPathLabels[match.introductionPath]}</span>
-        <span>Pair score {match.pairScore}/100</span>
-        <span>Selected {formatRelativeActivity(match.createdAt)}</span>
-      </div>
-      {match.revocationReason ? (
-        <p className="match-revoked-note" role="note"><strong>Revoked.</strong> {revocationReasonCopy[match.revocationReason]}</p>
-      ) : null}
-      <p className="match-muted">{introductionPathHints[match.introductionPath]} This is an automatic selection: no guest has been asked or has agreed to anything.</p>
-      <div className="match-detail__guests">
-        {match.guests.map((guest) => (
-          <section aria-labelledby={`match-guest-${guest.id}`} className="match-detail__guest" key={guest.id}>
-            <h3 id={`match-guest-${guest.id}`}>{guest.name || "Unnamed guest"}</h3>
-            <p className="match-muted">{[guest.jobPosition, guest.company].filter(Boolean).join(" · ") || "No role or company"} · {guest.guestType}{guest.participation === "excluded" ? " · Excluded from networking" : ""}</p>
-            <h4>Why this helps {guest.name.split(" ")[0] || "them"}</h4>
-            <p>{guest.benefit ?? <span className="match-muted">No reason recorded.</span>}</p>
-            {guest.shareableReason ? <><h4>What can be shared with them</h4><p>{guest.shareableReason}</p></> : null}
-            {guest.missingInformation.length > 0 ? <><h4>Missing information</h4><ul>{guest.missingInformation.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
-            <h4>Profile</h4>
-            {guest.profile ? <ProfileBlock profile={guest.profile} /> : <p className="match-muted">No profile saved.</p>}
-            <p className="match-muted">
-              Selected using profile version {guest.pinnedProfileVersion}
-              {guest.currentProfileVersion > guest.pinnedProfileVersion ? `; profile edited since (now version ${guest.currentProfileVersion})` : ""}. Fit {guest.directionalScore}/100.
-            </p>
-          </section>
-        ))}
-      </div>
-      <section aria-labelledby="match-uncertainty"><h4 id="match-uncertainty">Uncertainty</h4><p>{match.uncertainty || <span className="match-muted">None noted.</span>}</p></section>
-      {match.evidence.length > 0 ? (
-        <section aria-labelledby="match-evidence"><h4 id="match-evidence">Supporting evidence</h4>
-          <ul>{match.evidence.map((item, index) => <li key={index}>{item.quote ?? Object.values(item).join(" · ")}</li>)}</ul>
-        </section>
-      ) : null}
-      <section aria-labelledby="match-restrictions"><h4 id="match-restrictions">Restrictions</h4>
-        {match.restrictions.length === 0 ? <p className="match-muted">Neither guest has a do-not-match pair.</p> : (
-          <ul>{match.restrictions.map((r, index) => {
-            const owner = match.guests.find((guest) => guest.id === r.guestId)?.name ?? "A guest";
-            return <li key={index}>{owner} shouldn’t be matched with {r.otherGuestName}{r.reason ? ` — ${r.reason}` : ""}</li>;
-          })}</ul>
-        )}
-      </section>
-      <section aria-labelledby="match-earlier"><h4 id="match-earlier">Earlier introductions at this event</h4>
-        {match.earlierIntroductions.length === 0 ? <p className="match-muted">Neither guest has another match in this event.</p> : (
-          <ul>{match.earlierIntroductions.map((e) => {
-            const owner = match.guests.find((guest) => guest.id === e.guestId)?.name ?? "A guest";
-            return <li key={e.matchId}>{owner} with {e.otherGuestName} · {statusLabels[e.status].toLowerCase()}</li>;
-          })}</ul>
-        )}
-      </section>
-      <p className="match-muted match-detail__source">{match.sourceRunId ? `Matching run ${match.sourceRunId}` : "Not tied to a matching run"}</p>
-    </div>
-  );
-}
-
 function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; matchId: string | null; onClose: () => void }) {
   const query = useQuery({
     queryKey: eventMatchKey(eventId, matchId ?? "none"),
@@ -187,26 +148,32 @@ function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; mat
   let body;
   if (query.data) body = <MatchDetailView match={query.data} />;
   else if (query.isError) body = <p className="match-muted" role="alert">{query.error.message} <button className="event-text-action" onClick={() => void query.refetch()} type="button">Try again</button></p>;
-  else body = <p className="match-muted">Loading match…</p>;
+  else body = <MatchDetailLoader />;
   return <ConsoleDialog open={matchId !== null} onClose={onClose} title={title} description="Why this pair was selected. Nothing here is a guest decision.">{body}</ConsoleDialog>;
 }
 
 export function MatchesPanel({ eventId }: { eventId: string }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
+  const [introductionPath, setIntroductionPath] = useState<IntroductionFilter>("all");
+  const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<string | null>(null);
-  const query = useQuery({ queryKey: eventMatchesKey(eventId), queryFn: () => fetchEventMatches(eventId), retry: false,
-    // Simulated runs finish within seconds, so poll faster than the usual quiet interval.
+  const options: MatchListOptions = { status: filter, search, introductionPath, page };
+  const query = useQuery({ queryKey: eventMatchesKey(eventId, options), queryFn: () => fetchEventMatches(eventId, fetch, options), retry: false,
     refetchInterval: (current) => (current.state.data?.simulated ? 5_000 : 30_000),
   });
   const retry = () => void query.refetch();
+  const changeFilter = (value: Filter) => { setFilter(value); setPage(1); };
+  const changeSearch = (value: string) => { setSearch(value); setPage(1); };
+  const changeIntroductionPath = (value: IntroductionFilter) => { setIntroductionPath(value); setPage(1); };
   let body;
-  if (query.data) body = <MatchesList list={query.data} filter={filter} onFilter={setFilter} onOpen={setOpenId} onRetry={retry} />;
+  if (query.data) body = <MatchesList list={query.data} filter={filter} search={search} introductionPath={introductionPath} onSearch={changeSearch} onFilter={changeFilter} onIntroductionPath={changeIntroductionPath} onPage={setPage} onOpen={setOpenId} />;
   else if (query.isError) body = <p className="match-muted" role="alert">Matches couldn’t be loaded. <button className="event-text-action" onClick={retry} type="button">Try again</button></p>;
   else body = <p className="match-muted">Loading matches…</p>;
   const counts = query.data?.counts;
   return (
     <>
-      <MatchesPanelView body={body} simulated={query.data?.simulated === true} summary={counts ? `${counts.active} active · ${counts.revoked} revoked` : null} />
+      <MatchesPanelView body={body} simulated={query.data?.simulated === true} summary={counts ? `${countText(counts.active)} active · ${countText(counts.revoked)} revoked` : null} />
       <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} />
     </>
   );
