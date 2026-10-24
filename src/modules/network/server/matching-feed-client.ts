@@ -1,7 +1,7 @@
 import "server-only";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { engineMatchingFeedSchema, type MatchingFeedResult } from "../matching-feed-schemas";
-import { engineBaseUrl, type Environment } from "./matching-engine-client";
+import { createRequestTimeout, engineBaseUrl, type Environment } from "./matching-engine-client";
 
 /** 200 entries carry evidence quotes, so the cap is larger than the status client's. */
 const MAX_RESPONSE_BYTES = 1024 * 1024;
@@ -29,13 +29,14 @@ export async function readEngineMatchingFeed(
   url.pathname = `${base.pathname.replace(/\/+$/, "")}/v1/organizations/${organizationId}/events/${eventId}/matching/feed`;
   url.searchParams.set("after", String(after));
   url.searchParams.set("limit", String(limit));
+  const timeout = createRequestTimeout(timeoutMs);
   try {
     const response = await fetcher(url, {
       method: "GET",
       headers: { Accept: "application/json", "X-Weft-Service-Token": token },
       cache: "no-store",
       redirect: "error",
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: timeout.signal,
     });
     if (!response.ok) {
       console.warn("weft_matching_feed_unavailable", { status: response.status });
@@ -53,5 +54,7 @@ export async function readEngineMatchingFeed(
     // Log the failure class only: messages can contain the engine address.
     console.warn("weft_matching_feed_unavailable", { error: error instanceof Error ? error.name : "unknown" });
     return { availability: "unavailable", reason: error instanceof SyntaxError ? "invalid_response" : "unreachable" };
+  } finally {
+    timeout.clear();
   }
 }

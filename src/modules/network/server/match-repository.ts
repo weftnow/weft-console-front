@@ -93,23 +93,51 @@ const guestColumns = {
   profileVersion: eventGuests.profileVersion, personId: eventGuests.personId,
 };
 
-const MAX_LIST = 1000;
+const PAGE_SIZE = 25;
 
-export async function listEventMatches(eventId: string, status?: "active" | "revoked"): Promise<{
+export type MatchListOptions = {
+  status?: "active" | "revoked";
+  introductionPath?: "sms_coordination" | "wefter";
+  search?: string;
+  page?: number;
+};
+
+function matchListConditions(eventId: string, options: MatchListOptions) {
+  const conditions = [eq(eventMatches.eventId, eventId)];
+  if (options.status) conditions.push(eq(eventMatches.status, options.status));
+  if (options.introductionPath) conditions.push(eq(eventMatches.introductionPath, options.introductionPath));
+  const search = options.search?.trim();
+  if (search) conditions.push(sql`exists (
+    select 1 from ${eventGuests}
+    where ${eventGuests.eventId} = ${eventMatches.eventId}
+      and (${eventGuests.id} = ${eventMatches.guestLowId} or ${eventGuests.id} = ${eventMatches.guestHighId})
+      and strpos(lower(concat_ws(' ', ${eventGuests.firstName}, ${eventGuests.lastName}, ${eventGuests.company}, ${eventGuests.jobPosition})), lower(${search})) > 0
+  )`);
+  return and(...conditions)!;
+}
+
+export async function listEventMatches(eventId: string, input?: MatchListOptions | "active" | "revoked"): Promise<{
   rows: MatchRow[]; guests: Map<string, GuestRow>; counts: { active: number; revoked: number };
+  pagination: { page: number; pageSize: number; total: number };
 }> {
+  const options: MatchListOptions = typeof input === "string" ? { status: input } : input ?? {};
   const database = getDatabase();
   const all = await database.select({ status: eventMatches.status, count: sql<number>`count(*)::int` })
     .from(eventMatches).where(eq(eventMatches.eventId, eventId)).groupBy(eventMatches.status);
   const counts = { active: 0, revoked: 0 };
   for (const row of all) counts[row.status] = row.count;
-  const rows = await database.select().from(eventMatches)
-    .where(status ? and(eq(eventMatches.eventId, eventId), eq(eventMatches.status, status)) : eq(eventMatches.eventId, eventId))
-    .orderBy(desc(eventMatches.createdAt), desc(eventMatches.id)).limit(MAX_LIST);
+  const conditions = matchListConditions(eventId, options);
+  const [totalRow] = await database.select({ total: sql<number>`count(*)::int` }).from(eventMatches).where(conditions);
+  const total = totalRow?.total ?? 0;
+  const pageSize = PAGE_SIZE;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(options.page ?? 1, pageCount);
+  const rows = await database.select().from(eventMatches).where(conditions)
+    .orderBy(desc(eventMatches.createdAt), desc(eventMatches.id)).limit(pageSize).offset((page - 1) * pageSize);
   const ids = [...new Set(rows.flatMap((row) => [row.guestLowId, row.guestHighId]))];
   const guestRows = ids.length === 0 ? [] : await database.select(guestColumns).from(eventGuests)
     .where(and(eq(eventGuests.eventId, eventId), inArray(eventGuests.id, ids)));
-  return { rows, guests: new Map(guestRows.map((row) => [row.id, row])), counts };
+  return { rows, guests: new Map(guestRows.map((row) => [row.id, row])), counts, pagination: { page, pageSize, total } };
 }
 
 export async function findEventMatch(eventId: string, matchId: string): Promise<{

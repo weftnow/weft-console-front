@@ -15,6 +15,7 @@ The Console saves valid selected pairs from the engine feed as matches and shows
 - Invalid entries are stored revoked with a reason; revoked entries revoke stored matches.
 - `GET /api/events/{eventId}/matches` and `.../matches/{matchId}` are limited to active Owners/Organizers of the event's organization.
 - The Matches tab lists matches (active/revoked filter), opens a `ConsoleDialog` detail, and has loading, empty, error and "engine not connected" states. No copy implies acceptance or a meeting.
+- Match browsing supports literal attendee/company search, introduction-method filtering, and bounded 25-row pages. Search and filters remain event-scoped; status counts remain global to the event.
 - `pnpm verify` and `pnpm build` pass; skipped suites are reported.
 
 **Out of scope:** F10, F11, F12, F13, manual pairs, messaging, engine changes, cron sync.
@@ -37,6 +38,7 @@ The Console saves valid selected pairs from the engine feed as matches and shows
 - [x] **5. Tests.** Client, schema, sync, handler/service role matrix, copy, rendering, migration regex, gated database suite (written, not run).
 - [x] **6. Verification.** `pnpm verify`, `pnpm build` passed.
 - [x] **7a. Scratch database run (2026-10-19):** throwaway local Postgres 14 on port 55432, database `weft_f08_scratch`; `pnpm db:migrate` applied all migrations including 0013; `tests/matches-database.test.mjs` passed (1 passed, 0 failed, 0 skipped) after fixing a fixture bug (empty email needs a null normalized email). Post-run counts of matches, cursors, events, users and organizations were all 0.
+- [x] **8. Browse and detail improvements.** Literal attendee/company search, introduction-method filters, stable 25-row pagination with clamped pages, compact pair rows, and a pair-first detail view.
 - [ ] **7b. Not yet run:** signed-in browser acceptance against an engine; applying 0013 to the shared development database (needs explicit approval).
 
 ## Decisions and discoveries
@@ -46,6 +48,8 @@ The Console saves valid selected pairs from the engine feed as matches and shows
 - **2026-10-19: the status trigger uses `checked_through_run_id`** on the cursor row so a poll syncs once per newly finished run, not on every poll.
 - **2026-10-19: Matches tab hidden for non-managers.** `activeTab` falls back to Overview when `?tab=matches` is requested without `attendees.canManage`; the API enforces the real rule.
 - **2026-10-19: query key is `["event-matches", eventId]`**, matching the other event panels; actor scoping is by the server-side authorization and per-session query client.
+- **2026-10-24:** browse state is part of the query key; event-wide status counts stay global while filtered totals and pages reflect status, method, and literal search. Search considers either attendee's name, company, or position within the event.
+- **2026-10-24: UI-only branch extraction.** `feat/console-ui-ux-improvements` starts at updated `origin/main` (`a970113`) and cherry-picks only `5e75d07`, `aee6985`, and `10e65a5`, in that order. Conflicts in the browsing commit retain search, filters, pagination, and detail integration while omitting simulation headers, flags, and polling. The simulation and initial-import tracking commits are excluded.
 
 ## Verification
 
@@ -54,9 +58,11 @@ Run on 2026-10-19 (no database, provider or engine contacted):
 - `pnpm verify` (docs check, lint, typecheck, tests) → 360 tests: 332 passed, 0 failed, 28 skipped. Skips are database-gated suites, including the new `tests/matches-database.test.mjs`. New: `tests/matches.test.mjs` (18 tests), `tests/matches-migration.test.mjs` (5); `tests/merge-contracts.test.mjs` pin updated to journal entry 13.
 - `pnpm build` → success; the route table lists `/api/events/[eventId]/matches` and `/matches/[matchId]`.
 - Database suite: see step 7a. **Not run:** applying 0013 to any shared database, signed-in browser acceptance (desktop/narrow, keyboard, reduced motion), end-to-end with a real engine.
+- Run on the original simulation branch on 2026-10-24 after browse/detail improvements: `pnpm verify` passed (379 tests: 351 passed, 0 failed, 28 database-gated skipped); `pnpm build` passed. Focused match browsing, F08, simulation, and matching-status suites passed. Signed-in browser acceptance remains pending.
+- UI-only extraction on 2026-10-24: `pnpm verify` passed (365 tests: 337 passed, 0 failed, 28 database-gated skipped), including browsing, F08, matching-status, and authorization tests. `pnpm build` passed with development configuration preloaded and `WEFT_LOCAL_PLUGIN_THREADS=1`. An initial conflict-resolution script truncated three files; lint/build caught it, the files were restored from the source commit with only simulation dependencies removed, and both checks then passed. No live database suites or signed-in browser acceptance were run for the extraction.
 
 ## Handoff or outcome
 
 **Next action:** do signed-in browser acceptance of the Matches tab with the engine configured.
 
-**Known limits:** list unpaginated (1000 max); pull-only sync; guests missing from the event are skipped; a feed page naming a pinned profile version newer than the Console's blocks the cursor until fixed (surfaced as an invalid-response note). Identity-link effects on stored matches rely on the engine issuing a revocation.
+**Known limits:** pull-only sync; guests missing from the event are skipped; a feed page naming a pinned profile version newer than the Console's blocks the cursor until fixed (surfaced as an invalid-response note). Identity-link effects on stored matches rely on the engine issuing a revocation.

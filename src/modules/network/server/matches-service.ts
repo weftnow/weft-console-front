@@ -5,7 +5,7 @@ import * as eventRepository from "@/modules/events/server/repository";
 import * as profileRepository from "@/modules/attendees/server/profile-repository";
 import { requireEventCreator } from "@/modules/organizations/service";
 import { toMatchDetail, toMatchSummary, type ProfileFields } from "../match-dtos";
-import type { MatchDetailDto, MatchListDto, MatchStatus } from "../matches-schemas";
+import type { IntroductionPath, MatchDetailDto, MatchListDto, MatchStatus } from "../matches-schemas";
 import * as repository from "./match-repository";
 import { syncEventMatches } from "./match-sync-service";
 
@@ -37,18 +37,20 @@ async function authorize(userId: string, eventId: string, dependencies: Dependen
 
 /** Pulls the engine feed first, then lists stored matches whether or not the engine answered. */
 export async function listMatches(
-  { userId, eventId, status }: { userId: string; eventId: string; status?: MatchStatus },
+  { userId, eventId, status, introductionPath, search = "", page = 1 }: { userId: string; eventId: string; status?: MatchStatus; introductionPath?: IntroductionPath; search?: string; page?: number },
   dependencies: Dependencies = defaults,
 ): Promise<MatchListDto> {
   const organizationId = await authorize(userId, eventId, dependencies);
   const sync = await dependencies.sync({ organizationId, eventId });
-  const { rows, guests, counts } = await dependencies.listMatches(eventId, status);
+  const filters = { status, introductionPath, search, page };
+  const hasBrowsingFilters = Boolean(introductionPath || search || page !== 1);
+  const { rows, guests, counts, pagination } = await dependencies.listMatches(eventId, hasBrowsingFilters ? filters : status);
   const matches = rows.flatMap((row) => {
     const low = guests.get(row.guestLowId);
     const high = guests.get(row.guestHighId);
     return low && high ? [toMatchSummary(row, low, high)] : [];
   });
-  return { matches, counts, sync };
+  return { matches, counts, pagination: pagination ?? { page: 1, pageSize: 25, total: matches.length }, sync };
 }
 
 function profileFields(found: Awaited<ReturnType<typeof profileRepository.findProfile>>): ProfileFields | null {
