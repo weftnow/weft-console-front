@@ -54,6 +54,8 @@ export function localizeFieldMessage(i18n: Pick<I18n, "dict" | "t">, text: strin
   if (repeats) return t(fields.emailRepeats, { row: repeats[1] });
   const omitted = /^(\d+) additional row errors were omitted\.$/.exec(text);
   if (omitted) return t(fields.omitted, { count: omitted[1] });
+  const limit = /^Use ([\d,]+) characters or fewer\.$/.exec(text);
+  if (limit) return t(fields.characterLimit, { count: limit[1] });
   const row = /^Row (\d+): (.*?)(?: \((\d+) row errors\))?$/.exec(text);
   if (row) {
     const suffix = row[3] ? t(fields.rowErrors, { count: row[3] }) : "";

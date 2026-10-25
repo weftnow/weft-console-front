@@ -37,6 +37,7 @@ export const errors = {
     windowsWithin: "Las horas deben estar dentro del evento y los horarios no pueden superponerse.",
     intervalsOrdered: "Los intervalos deben estar ordenados, sin superponerse y dentro de las fechas del evento.",
     accessModeRevision: "Elige un modo de acceso y una revisión válidos.",
+    characterLimit: "Usa {count} caracteres o menos.",
     row: "Fila {row}: {message}",
     rowErrors: " ({count} errores de fila)",
     emailRepeats: "El correo también aparece en el registro {row}.",

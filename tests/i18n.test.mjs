@@ -128,8 +128,6 @@ const PENDING = new Set([
   "src/modules/events/components/kami-call-modal.tsx",
   "src/modules/events/components/kami-preview-panel.tsx",
   "src/modules/events/components/kami-workspace.tsx",
-  "src/modules/attendees/components/networking-panel.tsx",
-  "src/modules/attendees/components/profile-panel.tsx",
 ]);
 
 test("no hardcoded English in component JSX outside the pending list", () => {

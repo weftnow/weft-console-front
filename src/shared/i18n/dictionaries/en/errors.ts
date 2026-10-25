@@ -35,6 +35,7 @@ export const errors = {
     windowsWithin: "Times must be within the event and windows cannot overlap.",
     intervalsOrdered: "Intervals must be ordered, non-overlapping, and within the event dates.",
     accessModeRevision: "Choose a valid access mode and revision.",
+    characterLimit: "Use {count} characters or fewer.",
     row: "Row {row}: {message}",
     rowErrors: " ({count} row errors)",
     emailRepeats: "Email also appears on record {row}.",
