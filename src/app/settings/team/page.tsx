@@ -2,11 +2,13 @@ import { requireOrganizerPageContext } from "@/infrastructure/auth/console-page-
 import { listInvitations } from "@/modules/organizations/invitations/service";
 import { TeamInvitations } from "@/modules/organizations/invitations/components/team-invitations";
 import { ApplicationError } from "@/shared/lib/application-error";
+import { getI18n } from "@/shared/i18n/get-locale";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
+  const { dict } = await getI18n();
   const context = await requireOrganizerPageContext();
   if (context.membership.role !== "owner") throw new ApplicationError("FORBIDDEN", "Only organization owners can manage invitations.");
   const invitations = await listInvitations({ userId: context.user.id, organizationId: context.organization.id });
@@ -15,8 +17,8 @@ export default async function TeamPage() {
     <main className="dashboard-main">
       <header className="events-header"><div className="events-header__copy">
         <p className="events-header__subtitle">{context.organization.name}</p>
-        <h1 className="events-header__title">Team</h1>
-        <p className="events-header__subtitle">Invite owners, organizers, and staff to work in this organization.</p>
+        <h1 className="events-header__title">{dict.organizations.team.title}</h1>
+        <p className="events-header__subtitle">{dict.organizations.team.description}</p>
       </div></header>
       <div className="content-stack"><TeamInvitations invitations={invitations} /></div>
     </main>
