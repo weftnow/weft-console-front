@@ -2,6 +2,7 @@ import { z } from "zod";
 import { attendeeImportInputSchema, importAttendeesResultSchema } from "../attendee-import-schemas";
 import type { AttendeeImportInput, ImportAttendeesResult } from "../attendee-import-schemas";
 import { uuidSchema } from "../event-schemas";
+import type { I18n } from "@/shared/i18n/i18n";
 import { ApplicationError } from "@/shared/lib/application-error";
 
 const apiErrorSchema = z.object({ error: z.object({
@@ -51,15 +52,16 @@ export async function submitImportOnce(guard: { current: boolean }, operation: (
   finally { guard.current = false; }
 }
 
-export async function refreshAfterImport(onSaved: () => void | Promise<void>): Promise<string | null> {
+export async function refreshAfterImport(i18n: I18n, onSaved: () => void | Promise<void>): Promise<string | null> {
   try { await onSaved(); return null; }
-  catch { return "Import saved; refresh to load the updated roster."; }
+  catch { return i18n.dict.events.import.refreshFailed; }
 }
 
-export function importSuccessMessage(result: ImportAttendeesResult, hasActiveFilters: boolean): string {
-  if (result.replayed) return "This file was already imported; no attendees were added again.";
+export function importSuccessMessage(i18n: I18n, result: ImportAttendeesResult, hasActiveFilters: boolean): string {
+  const copy = i18n.dict.events.import;
+  if (result.replayed) return copy.replayed;
   const added = result.import.storedCount;
   const skipped = result.import.duplicateCount;
-  const base = `Import saved: ${added.toLocaleString()} added, ${skipped.toLocaleString()} already on this event and skipped.`;
-  return hasActiveFilters && added > 0 ? `${base} Some new attendees may be hidden by the current search or filters.` : base;
+  const base = i18n.t(copy.success, { added: i18n.number(added), skipped: i18n.number(skipped) });
+  return hasActiveFilters && added > 0 ? `${base}${copy.hiddenByFilters}` : base;
 }

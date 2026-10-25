@@ -1,1 +1,21 @@
-export const insights = {} as const;
+export const insights = {
+  overview: "Overview",
+  title: "Your event network",
+  events: { one: "{count} event", other: "{count} events" },
+  cities: { one: "{count} city", other: "{count} cities" },
+  across: "{events} across {cities}",
+  next: "Next: {name}, {dates}",
+  emptyDescription: "Create your first event to start measuring networking outcomes.",
+  metricsLabel: "Network overview metrics",
+  metrics: { events: "Events", guests: "Guests", upcoming: "Upcoming", cities: "Cities" },
+  outcomesLabel: "Networking outcomes",
+  noData: "Not enough data yet",
+  noDataDescription: "Outcomes appear here once your events have introductions.",
+  table: { heading: "Your events", event: "Event", city: "City", date: "Date", guests: "Guests", open: "Open" },
+  showing: { one: "Showing {shown} of {count} event", other: "Showing {shown} of {count} events" },
+  viewAll: "View all events",
+  upcomingHeading: "Upcoming events",
+  noUpcoming: "No upcoming events",
+  guests: { one: "{count} guest", other: "{count} guests" },
+  openNamed: "Open {name}",
+} as const;

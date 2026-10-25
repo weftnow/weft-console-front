@@ -4,6 +4,9 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs } from "./load-ts.mjs";
+import { stubI18n } from "./i18n-stub.mjs";
+
+stubI18n();
 
 const eventId = "22222222-2222-4222-8222-222222222222";
 const organizationId = "33333333-3333-4333-8333-333333333333";

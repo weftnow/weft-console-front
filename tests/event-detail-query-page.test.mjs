@@ -51,8 +51,9 @@ test("query boundary retains cached data on refresh errors and exposes a first-l
   const source = require("node:fs").readFileSync("src/modules/events/components/event-detail-query-page.tsx", "utf8");
   assert.match(source, /query\.data\?\.kind === "ready"/);
   assert.match(source, /query\.isError \? <div className="event-detail-refresh-notice"/);
-  assert.match(source, /Could not refresh event\. Showing the last loaded details\./);
+  assert.match(source, /copy\.refreshFailed/);
+  assert.match(stubI18n().dict.events.detail.refreshFailed, /Could not refresh event\. Showing the last loaded details\./);
   assert.match(source, /if \(query\.isPending\) return <EventDetailSkeleton \/>/);
-  assert.match(source, /Could not load event/);
-  assert.match(source, /Try again/);
+  assert.match(source, /copy\.loadFailed/);
+  assert.match(source, /actions\.retry/);
 });

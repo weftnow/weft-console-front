@@ -1,6 +1,6 @@
 # English and Spanish translations (Console + Engine)
 
-Status: Active — steps 1–4 done; step 5 in progress (shared/ui, app shells, organizations done)
+Status: Active — steps 1–4 done; step 5 in progress (shared/ui, app shells, organizations, most of events, network, insights, sponsors, people done; Kami, create-event page, CSV/validation server text, attendees panels pending)
 Owner: current agent
 Created: 2026-10-25
 Specification: [English and Spanish translations](../../changes/2026-10-25-console-translations.md)
@@ -51,7 +51,7 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
   - A change records an `event_matching_changes` row; follow the kind pattern in `drizzle/0012_f07_matching_change_kinds.sql`.
   - Add Spanish templates to `modules/network/simulation/demo-matches.ts`.
   - Remove the unused matches `locale` query param.
-- [ ] 5. String extraction (2026-10-25 progress: `shared/ui`, app shells, `organizations` committed; next `events`), one commit per module in this order: `shared/ui` → app shells (sign-in, sign-up, access-required, select-organization, onboarding, accept-invitation, `error.tsx`) → `organizations` → `events` → `attendees` → `network` → `insights` → `sponsors` → `wefter`. Rules:
+- [ ] 5. String extraction (2026-10-25 progress: `shared/ui`, app shells, `organizations`, then `events` (list, detail, roster, record actions, CSV import, settings, staff, language), `network` (matches, status), `insights`, `sponsors`, people page committed. Remaining: events Kami (`kami-*`, `use-dictation`), `create-event-page.tsx`, `events-query-provider`; `attendees` (`networking-panel`, `profile-panel`, `profile-schemas`, `networking-schemas` messages); `wefter` pages (`app/wefter`, `app/operator`)), one commit per module in this order: `shared/ui` → app shells (sign-in, sign-up, access-required, select-organization, onboarding, accept-invitation, `error.tsx`) → `organizations` → `events` → `attendees` → `network` → `insights` → `sponsors` → `wefter`. Rules:
   - `ApplicationError` keeps a stable `code`. The client maps the code to an `errors.*` message, and server logs stay in English.
   - Zod messages shown to users become codes rendered from dictionaries (for example `attendees/profile-schemas.ts`).
   - Enum label maps (revocation reasons, unavailable reasons, guest types, roles) move to dictionaries keyed by enum value.
@@ -84,6 +84,10 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
 - 2026-10-25: Removed the unused matches `locale` query param (schema, handler, client query, test).
 
 - 2026-10-25: Extraction conventions in use. Server components call `getI18n()` (`dict`, `t`, `date`, ...); client components call `useI18n()`. The sidebar became a client component for that reason. Rendering tests call `stubI18n()` from `tests/i18n-stub.mjs`. Server action results carry a stable `code` (for example team invitation results) and the client renders `dict...results[code]` with `{email}`/`{role}` params; the English `message` stays for logs and tests. Role labels live in `common.roles`; metadata titles in `nav.pageTitle`.
+
+- 2026-10-25: Validation text. Instead of rewriting every Zod message into a code, English message text is the stable id and `localizeFieldMessage()` (`src/shared/i18n/field-messages.ts`) maps it, plus the row-numbered CSV patterns, to `errors.fields.*`. Unknown text falls back to the original. Client-side `ApplicationError`s shown in UI use `localizeErrorCode()` or a module key. Known gap: server field messages not yet in the registry (for example attendee profile schemas) still show English.
+- 2026-10-25: Commit granularity. Changing `formatEventDateRange`, `formatCountdown`, `formatRelativeActivity`, `describeSetting` to take an `I18n` made events, insights and network a single compile unit, so they went in one commit instead of one per module.
+- 2026-10-25: Some components without hooks became client components so they can call `useI18n()` (events list panels, insights overview, people/network/partner pages). Rendering tests call `stubI18n()`.
 
 ## Verification
 

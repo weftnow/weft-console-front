@@ -3,6 +3,9 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs } from "./load-ts.mjs";
+import { stubI18n } from "./i18n-stub.mjs";
+
+const i18n = stubI18n();
 
 const actor = { id: "11111111-1111-4111-8111-111111111111", displayName: "Ada", avatarUrl: null };
 const eventId = "22222222-2222-4222-8222-222222222222";
@@ -23,7 +26,7 @@ const { InvalidFeedError } = loadTs("src/modules/network/server/match-repository
 const { listMatches, getMatch } = loadTs("src/modules/network/server/matches-service.ts");
 const { handleListMatches, handleGetMatch } = loadTs("src/infrastructure/http/matches-handler.ts");
 const { requireEventCreator } = loadTs("src/modules/organizations/service.ts");
-const { describeSync, emptyMatchesCopy, revocationReasonCopy, MATCHES_SUBTITLE, introductionPathLabels } = loadTs("src/modules/network/matches-copy.ts");
+const { describeSync, emptyMatchesCopy } = loadTs("src/modules/network/matches-copy.ts");
 const { MatchesList, MatchDetailView, MatchesPanelView } = loadTs("src/modules/network/components/matches-panel.tsx");
 const { getEventDetailTab } = loadTs("src/modules/events/event-record.ts");
 
@@ -260,11 +263,12 @@ test("handlers return 401, 400 and 422 before reaching the service and mark resp
 });
 
 test("copy never claims acceptance or a meeting and maps every reason", () => {
-  const all = [MATCHES_SUBTITLE, ...Object.values(revocationReasonCopy), ...Object.values(introductionPathLabels), emptyMatchesCopy("all", 0).description, describeSync({ state: "unavailable", reason: "unreachable" })].join(" ");
+  const copy = i18n.dict.network.matches;
+  const all = [copy.subtitle, ...Object.values(copy.revocation), ...Object.values(copy.introPaths).map((path) => path.label), emptyMatchesCopy(i18n, "all", 0).description, describeSync(i18n, { state: "unavailable", reason: "unreachable" })].join(" ");
   assert.doesNotMatch(all, /accepted|agreed|confirmed|scheduled|booked/i);
-  assert.equal(Object.keys(revocationReasonCopy).length, 4);
-  assert.equal(describeSync({ state: "synced" }), null);
-  assert.match(emptyMatchesCopy("revoked", 3).title, /revoked/i);
+  assert.equal(Object.keys(copy.revocation).length, 4);
+  assert.equal(describeSync(i18n, { state: "synced" }), null);
+  assert.match(emptyMatchesCopy(i18n, "revoked", 3).title, /revoked/i);
 });
 
 test("the list and detail render pairs, statuses, reasons and states without contact details", () => {

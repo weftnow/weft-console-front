@@ -13,6 +13,7 @@ import {
   useState,
 } from "react";
 
+import { useI18n } from "@/shared/i18n/I18nProvider";
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import {
   ArrowLeftIcon,
@@ -52,37 +53,26 @@ import {
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-const tabs: { icon: Icon; id: EventDetailTab; label: string }[] = [
-  { id: "overview", label: "Overview", icon: CalendarIcon },
-  { id: "attendees", label: "Attendees", icon: PeopleIcon },
-  { id: "matches", label: "Matches", icon: LinkIcon },
-  { id: "kami", label: "Kami", icon: SparklesIcon },
-  { id: "staff", label: "Staff", icon: StaffIcon },
-  { id: "settings", label: "Settings", icon: EditIcon },
-  { id: "insights", label: "Insights", icon: OutcomesIcon },
+const tabs: { icon: Icon; id: EventDetailTab }[] = [
+  { id: "overview", icon: CalendarIcon },
+  { id: "attendees", icon: PeopleIcon },
+  { id: "matches", icon: LinkIcon },
+  { id: "kami", icon: SparklesIcon },
+  { id: "staff", icon: StaffIcon },
+  { id: "settings", icon: EditIcon },
+  { id: "insights", icon: OutcomesIcon },
 ];
 
-const tabDescriptions = {
-  insights: "Event insights appear once introductions start.",
-  staff: "Manage who can access this event and what they can see.",
-  settings: "Configure networking windows and event operating limits.",
-} as const;
-
-const statusLabels = {
-  completed: "Completed",
-  live: "Live",
-  upcoming: "Upcoming",
-} as const;
-
 export function MissingEvent() {
+  const { dict } = useI18n();
   return (
         <main className="dashboard-main event-detail-main">
           <Surface className="event-detail-missing" depth="raised">
             <span className="event-detail-missing__icon"><CalendarIcon height="24" width="24" /></span>
-            <h1>Event not found</h1>
-            <p>This event is unavailable.</p>
+            <h1>{dict.events.detail.missing.title}</h1>
+            <p>{dict.events.detail.missing.description}</p>
             <Link className="tactile-button tactile-button--graphite event-detail-missing__action" href="/events">
-              <ArrowLeftIcon height="15" width="15" /> Back to events
+              <ArrowLeftIcon height="15" width="15" /> {dict.events.access.back}
             </Link>
           </Surface>
         </main>
@@ -100,9 +90,10 @@ function EventTabs({
   eventId: string;
   onSelect: (tab: EventDetailTab) => void;
 }) {
+  const { dict } = useI18n();
   return (
-    <nav aria-label="Event sections" className="event-detail-tabs surface-inset">
-      {tabs.filter(({ id }) => id !== "matches" || canSeeMatches).map(({ icon: IconComponent, id, label }) => (
+    <nav aria-label={dict.events.detail.tabsLabel} className="event-detail-tabs surface-inset">
+      {tabs.filter(({ id }) => id !== "matches" || canSeeMatches).map(({ icon: IconComponent, id }) => (
         <Link
           aria-current={activeTab === id ? "page" : undefined}
           className="event-detail-tab"
@@ -111,7 +102,7 @@ function EventTabs({
           onClick={() => onSelect(id)}
         >
           <IconComponent height="15" width="15" />
-          <span>{label}</span>
+          <span>{dict.events.detail.tabs[id]}</span>
         </Link>
       ))}
     </nav>
@@ -119,13 +110,14 @@ function EventTabs({
 }
 
 function MetricCard({ icon: IconComponent, label, value }: { icon: Icon; label: string; value: number }) {
+  const { number } = useI18n();
   return (
     <Surface as="article" className="event-detail-metric" depth="raised">
       <Surface className="event-detail-metric__icon" depth="inset">
         <IconComponent height="18" width="18" />
       </Surface>
       <div>
-        <strong className="event-detail-metric__value" key={value}>{value.toLocaleString()}</strong>
+        <strong className="event-detail-metric__value" key={value}>{number(value)}</strong>
         <span>{label}</span>
       </div>
     </Surface>
@@ -137,55 +129,58 @@ function EmptyChips({ children }: { children: string }) {
 }
 
 function EventSummary({ event }: { event: EventRecord }) {
+  const i18n = useI18n();
+  const { dict } = i18n;
+  const copy = dict.events.detail.summary;
   return (
     <Surface as="section" className="event-detail-panel event-detail-summary" depth="raised" aria-labelledby="event-summary-title">
       <div className="event-detail-panel__heading">
         <DocumentIcon height="20" width="20" />
-        <h2 id="event-summary-title">Event summary</h2>
+        <h2 id="event-summary-title">{copy.heading}</h2>
       </div>
       <Surface className="event-detail-summary__well" depth="inset">
         <div className="event-detail-summary__topline">
           <div className="event-detail-summary__item">
             <CalendarIcon height="18" width="18" />
-            <div><span>Date</span><strong>{formatEventDateRange(event.startDate, event.endDate)}</strong></div>
+            <div><span>{copy.date}</span><strong>{formatEventDateRange(i18n, event.startDate, event.endDate)}</strong></div>
           </div>
           <div className="event-detail-summary__item">
             <LocationIcon height="18" width="18" />
             <div>
-              <span>Venue</span>
-              <strong>{event.venue || "No venue added"}</strong>
-              <small>{event.city || "No city added"}</small>
+              <span>{copy.venue}</span>
+              <strong>{event.venue || copy.noVenue}</strong>
+              <small>{event.city ? (dict.events.options.cities[event.city as keyof typeof dict.events.options.cities] ?? event.city) : copy.noCity}</small>
               </div>
           </div>
           <div className="event-detail-summary__item">
             <PeopleIcon height="18" width="18" />
             <div>
-              <span>Expected attendees</span>
-              <strong>{event.expectedAttendees === null ? "No estimate added" : event.expectedAttendees.toLocaleString()}</strong>
+              <span>{copy.expected}</span>
+              <strong>{event.expectedAttendees === null ? copy.noEstimate : i18n.number(event.expectedAttendees)}</strong>
             </div>
           </div>
         </div>
         <div className="event-detail-summary__row">
           <DocumentIcon height="18" width="18" />
-          <span>Description</span>
-          <p>{event.description || "No description added."}</p>
+          <span>{copy.description}</span>
+          <p>{event.description || copy.noDescription}</p>
         </div>
         <div className="event-detail-summary__row event-detail-summary__row--chips">
           <SparklesIcon height="18" width="18" />
-          <span>Categories</span>
+          <span>{copy.categories}</span>
           <div className="event-detail-chips">
             {event.categories.length
-              ? event.categories.map((category) => <span key={category}>{category}</span>)
-              : <EmptyChips>No categories selected</EmptyChips>}
+              ? event.categories.map((category) => <span key={category}>{dict.events.options.categories[category as keyof typeof dict.events.options.categories] ?? category}</span>)
+              : <EmptyChips>{copy.noCategories}</EmptyChips>}
           </div>
         </div>
         <div className="event-detail-summary__row event-detail-summary__row--chips">
           <PeopleIcon height="18" width="18" />
-          <span>Expected audience</span>
+          <span>{copy.audience}</span>
           <div className="event-detail-chips">
             {event.expectedAudience.length
-              ? event.expectedAudience.map((profile) => <span key={profile}>{profile}</span>)
-              : <EmptyChips>No audience profiles selected</EmptyChips>}
+              ? event.expectedAudience.map((profile) => <span key={profile}>{dict.events.options.audiences[profile as keyof typeof dict.events.options.audiences] ?? profile}</span>)
+              : <EmptyChips>{copy.noAudience}</EmptyChips>}
           </div>
         </div>
       </Surface>
@@ -194,34 +189,36 @@ function EventSummary({ event }: { event: EventRecord }) {
 }
 
 function ReadinessCard({ event }: { event: EventRecord }) {
+  const { dict } = useI18n();
+  const copy = dict.events.detail.readiness;
   const metrics = deriveEventMetrics(event);
   const readiness = [
     {
-      detail: "Complete",
-      label: "Event details",
+      detail: copy.complete,
+      label: copy.details,
       ready: Boolean(event.name && event.city && event.startDate && event.endDate),
     },
     {
-      detail: "Complete",
-      label: "Event context",
+      detail: copy.complete,
+      label: copy.context,
       ready: Boolean(event.description && event.categories.length),
     },
-    { detail: "Complete", label: "Attendees imported", ready: metrics.attendees > 0 },
-    { detail: "Complete", label: "Staff access", ready: metrics.staff > 0 },
+    { detail: copy.complete, label: copy.attendeesImported, ready: metrics.attendees > 0 },
+    { detail: copy.complete, label: copy.staffAccess, ready: metrics.staff > 0 },
   ];
 
   return (
     <Surface as="section" className="event-detail-panel event-readiness" depth="raised" aria-labelledby="event-readiness-title">
       <div className="event-detail-panel__heading">
         <CheckIcon height="20" width="20" />
-        <h2 id="event-readiness-title">Event readiness</h2>
+        <h2 id="event-readiness-title">{copy.heading}</h2>
       </div>
       <ul>
         {readiness.map((item, index) => (
           <li className={item.ready ? "event-readiness__item event-readiness__item--ready" : "event-readiness__item"} key={item.label} style={{ "--readiness-index": index } as CSSProperties}>
             <span className="event-readiness__check"><CheckIcon height="13" width="13" /></span>
             <strong>{item.label}</strong>
-            <span>{item.ready ? item.detail : "Needs attention"}</span>
+            <span>{item.ready ? item.detail : copy.needsAttention}</span>
           </li>
         ))}
       </ul>
@@ -230,18 +227,20 @@ function ReadinessCard({ event }: { event: EventRecord }) {
 }
 
 function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+  const { dict } = useI18n();
+  const copy = dict.events.detail.quickActions;
   const actions: { icon: Icon; label: string; tab: EventDetailTab }[] = [
-    { icon: PeopleIcon, label: "Manage attendees", tab: "attendees" },
-    { icon: DocumentIcon, label: "View attendee list", tab: "attendees" },
-    { icon: StaffIcon, label: "Manage staff", tab: "staff" },
-    { icon: OutcomesIcon, label: "View event insights", tab: "insights" },
+    { icon: PeopleIcon, label: copy.manageAttendees, tab: "attendees" },
+    { icon: DocumentIcon, label: copy.viewList, tab: "attendees" },
+    { icon: StaffIcon, label: copy.manageStaff, tab: "staff" },
+    { icon: OutcomesIcon, label: copy.viewInsights, tab: "insights" },
   ];
 
   return (
     <Surface as="section" className="event-detail-panel event-quick-actions" depth="raised" aria-labelledby="event-quick-actions-title">
       <div className="event-detail-panel__heading">
         <SparklesIcon height="20" width="20" />
-        <h2 id="event-quick-actions-title">Quick actions</h2>
+        <h2 id="event-quick-actions-title">{copy.heading}</h2>
       </div>
       <div className="event-quick-actions__list">
         {actions.map(({ icon: IconComponent, label, tab }) => (
@@ -257,20 +256,22 @@ function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: 
 }
 
 function RecentActivity({ event }: { event: EventRecord }) {
+  const i18n = useI18n();
+  const copy = i18n.dict.events.detail.activity;
   const activities: { detail: string; icon: Icon; label: string; timestamp: string }[] = [];
 
   for (const batch of event.attendees.imports) {
     activities.push({
-      detail: `${batch.storedCount.toLocaleString()} attendee records added · ${batch.fileName}`,
+      detail: i18n.plural(copy.recordsAdded, batch.storedCount, { count: i18n.number(batch.storedCount), file: batch.fileName }),
       icon: DocumentIcon,
-      label: "Attendee list imported",
+      label: copy.imported,
       timestamp: batch.importedAt,
     });
   }
   activities.push({
     detail: event.name,
     icon: CalendarIcon,
-    label: "Event created",
+    label: copy.created,
     timestamp: event.createdAt,
   });
 
@@ -278,14 +279,14 @@ function RecentActivity({ event }: { event: EventRecord }) {
     <Surface as="section" className="event-detail-panel event-activity" depth="raised" aria-labelledby="event-activity-title">
       <div className="event-detail-panel__heading">
         <ClockIcon height="20" width="20" />
-        <h2 id="event-activity-title">Recent activity</h2>
+        <h2 id="event-activity-title">{copy.heading}</h2>
       </div>
       <ul>
         {activities.sort((a, b) => b.timestamp.localeCompare(a.timestamp)).slice(0, 4).map(({ detail, icon: IconComponent, label, timestamp }) => (
           <li key={`${label}-${timestamp}`}>
             <span className="event-activity__icon"><IconComponent height="15" width="15" /></span>
             <div><strong>{label}</strong><span>{detail}</span></div>
-            <time dateTime={timestamp}>{formatRelativeActivity(timestamp)}</time>
+            <time dateTime={timestamp}>{formatRelativeActivity(i18n, timestamp)}</time>
           </li>
         ))}
       </ul>
@@ -294,29 +295,31 @@ function RecentActivity({ event }: { event: EventRecord }) {
 }
 
 function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+  const copy = useI18n().dict.events.detail.kamiCard;
   return (
     <Surface as="section" className="event-detail-panel event-kami-card" depth="raised" aria-labelledby="event-kami-title">
       <Surface className="event-kami-card__mark" depth="inset"><SparklesIcon height="25" width="25" /></Surface>
-      <h2 id="event-kami-title">Kami for this event</h2>
-      <p>Preview Kami’s conversation style and event context.</p>
+      <h2 id="event-kami-title">{copy.heading}</h2>
+      <p>{copy.description}</p>
       <Link className="tactile-button event-kami-card__action" href={`/events/${eventId}?tab=kami`} onClick={() => onSelect("kami")}>
-        View Kami settings <ArrowRightIcon height="14" width="14" />
+        {copy.action} <ArrowRightIcon height="14" width="14" />
       </Link>
     </Surface>
   );
 }
 
 function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "matches" | "kami">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+  const { dict } = useI18n();
   const tab = tabs.find((item) => item.id === activeTab)!;
   const IconComponent = tab.icon;
 
   return (
     <Surface className="event-tab-placeholder" depth="raised">
       <Surface className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
-      <h2>Coming soon</h2>
-      <p>{tabDescriptions[activeTab]}</p>
+      <h2>{dict.events.detail.placeholder.title}</h2>
+      <p>{dict.events.detail.tabDescriptions[activeTab]}</p>
       <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>
-        Return to overview <ArrowRightIcon height="15" width="15" />
+        {dict.events.detail.placeholder.back} <ArrowRightIcon height="15" width="15" />
       </Link>
     </Surface>
   );
@@ -325,6 +328,9 @@ function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Excl
 export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNotice }: {
   event: EventDetailDto; initialTab: EventDetailTab; onRosterChanged: () => Promise<void>; refreshNotice?: ReactNode;
 }) {
+  const i18n = useI18n();
+  const { dict } = i18n;
+  const header = dict.events.detail.header;
   const [requestedTab, setActiveTab] = useState<EventDetailTab>(initialTab);
   // The Matches tab is for Owners and Organizers; anyone else is shown the overview.
   const activeTab: EventDetailTab = requestedTab === "matches" && !event.attendees.canManage ? "overview" : requestedTab;
@@ -355,9 +361,9 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
   const copyEventLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      showNotice("Event link copied.");
+      showNotice(header.linkCopied);
     } catch {
-      showNotice("The event link could not be copied in this browser.");
+      showNotice(header.linkCopyFailed);
     }
   };
 
@@ -366,22 +372,22 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
           {refreshNotice}
           <header className="event-detail-header">
             <div className="event-detail-header__copy">
-              <Link className="create-back-link" href="/events"><ArrowLeftIcon height="15" width="15" /> Events</Link>
+              <Link className="create-back-link" href="/events"><ArrowLeftIcon height="15" width="15" /> {header.events}</Link>
               <div className="event-detail-title-row">
                 <h1>{event.name}</h1>
-                <span className={`event-detail-status event-detail-status--${status}`}>{statusLabels[status]}</span>
+                <span className={`event-detail-status event-detail-status--${status}`}>{dict.events.status[status]}</span>
               </div>
               <p className="event-detail-header__meta">
-                <span>{formatEventDateRange(event.startDate, event.endDate)}</span>
-                <span>{event.venue || "Venue not added"}</span>
-                <span>{event.city || "City not added"}</span>
+                <span>{formatEventDateRange(i18n, event.startDate, event.endDate)}</span>
+                <span>{event.venue || header.venueNotAdded}</span>
+                <span>{event.city ? (dict.events.options.cities[event.city as keyof typeof dict.events.options.cities] ?? event.city) : header.cityNotAdded}</span>
               </p>
             </div>
             <div className="event-detail-header__actions">
               <details className="event-detail-more">
-                <summary className="tactile-button event-detail-header__action">More <ChevronDownIcon height="15" width="15" /></summary>
+                <summary className="tactile-button event-detail-header__action">{header.more} <ChevronDownIcon height="15" width="15" /></summary>
                 <Surface className="event-detail-more__menu" depth="floating">
-                  <button aria-label="Copy event link" onClick={() => void copyEventLink()} type="button">Copy event link</button>
+                  <button aria-label={header.copyLink} onClick={() => void copyEventLink()} type="button">{header.copyLink}</button>
                 </Surface>
               </details>
             </div>
@@ -389,11 +395,11 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
 
           <Surface className="event-detail-hero" depth="raised">
             {event.coverImage ? (
-              <Image alt={`Cover for ${event.name}`} fill priority sizes="(max-width: 760px) 100vw, calc(100vw - 260px)" src={event.coverImage} unoptimized />
+              <Image alt={i18n.t(header.cover, { name: event.name })} fill priority sizes="(max-width: 760px) 100vw, calc(100vw - 260px)" src={event.coverImage} unoptimized />
             ) : (
               <CityArtwork art={art} className="city-art--photo event-detail-hero__art" eager>
                 <span className="event-detail-hero__scrim" />
-                <span className="event-detail-hero__fallback-label">No cover image</span>
+                <span className="event-detail-hero__fallback-label">{header.noCover}</span>
               </CityArtwork>
             )}
           </Surface>
@@ -403,10 +409,10 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
           {activeTab === "overview" ? (
             <div className="event-detail-tab-content" key="overview">
               <div className="event-detail-metrics">
-                <MetricCard icon={PeopleIcon} label={metrics.attendeesAreExpected ? "Expected attendees" : "Attendee records"} value={metrics.attendees} />
-                <MetricCard icon={StarIcon} label="VIP records" value={metrics.vips} />
-                <MetricCard icon={OutcomesIcon} label="Sponsor records" value={metrics.sponsors} />
-                <MetricCard icon={StaffIcon} label="Staff with access" value={metrics.staff} />
+                <MetricCard icon={PeopleIcon} label={metrics.attendeesAreExpected ? dict.events.detail.metrics.expected : dict.events.detail.metrics.records} value={metrics.attendees} />
+                <MetricCard icon={StarIcon} label={dict.events.detail.metrics.vips} value={metrics.vips} />
+                <MetricCard icon={OutcomesIcon} label={dict.events.detail.metrics.sponsors} value={metrics.sponsors} />
+                <MetricCard icon={StaffIcon} label={dict.events.detail.metrics.staff} value={metrics.staff} />
               </div>
               <div className="event-detail-overview-grid">
                 <div className="event-detail-primary-column">
@@ -414,7 +420,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
                   {event.attendees.canManage ? <MatchingStatusPanel eventId={event.id} /> : null}
                   <RecentActivity event={event} />
                 </div>
-                <aside className="event-detail-rail" aria-label="Event operations">
+                <aside className="event-detail-rail" aria-label={header.operations}>
                   <ReadinessCard event={event} />
                   <QuickActions eventId={event.id} onSelect={setActiveTab} />
                   <KamiCard eventId={event.id} onSelect={setActiveTab} />
