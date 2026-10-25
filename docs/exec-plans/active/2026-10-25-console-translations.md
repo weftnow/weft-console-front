@@ -1,6 +1,6 @@
 # English and Spanish translations (Console + Engine)
 
-Status: Active — steps 1–4 done; step 5 in progress (shared/ui, app shells, organizations, most of events, network, insights, sponsors, people done; Kami, create-event page, CSV/validation server text, attendees panels pending)
+Status: Active — steps 1–4, 6 done; step 5 in progress (shared/ui, app shells, organizations, most of events, network, insights, sponsors, people done; Kami, create-event page, CSV/validation server text, attendees panels pending)
 Owner: current agent
 Created: 2026-10-25
 Specification: [English and Spanish translations](../../changes/2026-10-25-console-translations.md)
@@ -91,20 +91,21 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
 
 ## Verification
 
-Step 1: `pnpm check:docs` (Console) and `python3 scripts/check_harness.py` (engine worktree) passed. `make check-docs` in the engine worktree failed only because pyenv lacks Python 3.14 there.
+Actual results, 2026-10-25:
 
-Required when implementing:
-
-- Console: `pnpm verify` and `pnpm build`. Run `pnpm dev --hostname localhost --port 3000` and check:
-  - With `Accept-Language: es`, sign-in shows Spanish and `lang="es"`.
-  - The switcher persists the choice across sign-out/sign-in.
-  - Organizer flows work in both locales: create event, CSV import, roster, matches list and detail, invitations, settings.
-  - No raw keys appear and dates and numbers are localized.
-  - The permission checks from the acceptance criteria hold.
-  - Simulation shows Spanish reasons for a Spanish event.
-- Engine: `make verify`. On an isolated database, run a Spanish event and confirm Spanish reasons, verbatim quotes, and provenance `language: "es"`. Do an expert sample review following `docs/matching-quality.md`.
-- Migrations are generated and reviewed, never applied at startup.
+- Console `pnpm verify`: docs check, lint, typecheck passed; `node --test`: 395 tests, 367 passed, 0 failed, 28 skipped (database suites).
+- Console `pnpm build`: succeeded (all routes listed, including `/api/events/[eventId]/language`).
+- Migrations 0014 and 0015 applied with `scripts/migrate.mjs` (`WEFT_MIGRATION_TARGET=development`) to the local dev Postgres on 127.0.0.1:54329 (`weft_console_test`); it went from 14 to 16 migrations, with existing users defaulting to `en` and events to `en`. Neon was not touched.
+- Signed-out check with `pnpm dev --hostname localhost --port 3000` and curl on `/sign-in`: `Accept-Language: es` gives `<html lang="es">`, the switcher labelled "Idioma" with Español pressed; `en` gives `lang="en"`; `fr-FR` falls back to `en`.
+- Engine (worktree): ruff check, ruff format --check, mypy and pytest (100 passed, 24 skipped) run through the main checkout's venv; `make verify` itself fails here only because pyenv lacks Python 3.14.
+- NOT run: any signed-in browser flow (the Chrome extension was not connected and no Clerk login is available to the agent): switcher persistence across sign-out/in, create event, CSV import, roster, matches, invitations, settings in both locales, permission checks, Spanish simulation. Clerk's own Spanish text on sign-in was not viewed. No Spanish layout check at 620px. Engine database suites, an isolated-database Spanish run and the expert sample review were not run.
 
 ## Handoff or outcome
 
-Next action: step 5, module 1 (`shared/ui` string extraction), then the remaining modules in the listed order. Engine plan: `weft-engine-translations/docs/exec-plans/active/2026-10-25-event-language.md`.
+Branches: Console `feat/console-translations` (based on `feat/matching-simulation`, not pushed); engine `feat/console-translations` in worktree `/Users/shearytan/Documents/SurnX/weft-engine-translations` (based on origin/main, not pushed). The main engine checkout still has the user's uncommitted DeepSeek edits, untouched.
+
+Remaining step 5 work (the PENDING list in `tests/i18n.test.mjs` shows it; remove each file from it as it is done):
+1. `src/modules/events/components/create-event-page.tsx` (~1000 lines, form copy, toasts, validation text, option lists via `dict.events.options`), and `events-query-provider.tsx` (two strings).
+2. Kami: `kami-config.ts`, `kami-preview.ts`, `kami-workspace.tsx`, `kami-preview-panel.tsx`, `kami-call-modal.tsx`, `kami-controls.tsx`, `hooks/use-dictation.ts`. Decide whether default Kami messages follow the event language (suggested) or the UI language.
+3. Server field messages not yet in `src/shared/i18n/field-messages.ts`.
+Then: finish step 7 (JSX check has no pending files), run the signed-in browser checks listed above, Spanish length review, `pnpm verify`/`pnpm build` again, and native review of Spanish strings. Also apply the Console migrations to an isolated database before running the engine database suites. Do not merge before `feat/matching-simulation` lands.
