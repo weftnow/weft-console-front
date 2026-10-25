@@ -17,6 +17,8 @@ import {
   useState,
 } from "react";
 
+import { useI18n } from "@/shared/i18n/I18nProvider";
+import { LOCALES, localeSchema, type Locale } from "@/shared/i18n/locales";
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import {
   ArrowLeftIcon,
@@ -59,6 +61,7 @@ type EventForm = {
   description: string;
   endDate: string;
   endTime: string;
+  language: Locale;
   name: string;
   profiles: string[];
   startDate: string;
@@ -91,6 +94,7 @@ const INITIAL_FORM: EventForm = {
   description: "",
   endDate: "",
   endTime: "",
+  language: "en",
   name: "",
   profiles: [],
   startDate: "",
@@ -236,7 +240,9 @@ export function CreateEventPage({ context, selectedOrganizationId }: { context: 
   const queryClient = useQueryClient();
   const scope = useEventQueryScope();
   const [organizationId, setOrganizationId] = useState(selectedOrganizationId ?? context.organizations[0]?.id ?? "");
-  const [form, setForm] = useState<EventForm>(INITIAL_FORM);
+  const { locale, dict } = useI18n();
+  // New events default to the creator's own language.
+  const [form, setForm] = useState<EventForm>({ ...INITIAL_FORM, language: locale });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [coverDragging, setCoverDragging] = useState(false);
@@ -464,6 +470,7 @@ export function CreateEventPage({ context, selectedOrganizationId }: { context: 
         startTime: form.startTime,
         endTime: form.endTime,
         description: form.description,
+        language: form.language,
         categories: form.categories,
         expectedAudience: form.profiles,
         attendeeImport: csvImport && csvText !== null ? { fileName: csvImport.file.name, csvText } : null,
@@ -497,7 +504,7 @@ export function CreateEventPage({ context, selectedOrganizationId }: { context: 
       });
       if (appError.fields) requestAnimationFrame(() => {
         const first = Object.keys(appError.fields ?? {})[0];
-        const id = ({ organizationId: "event-organization", name: "event-name", city: "event-city", venue: "event-venue", expectedAttendees: "event-attendees", startDate: "event-start-date", startTime: "event-start-time", endDate: "event-end-date", endTime: "event-end-time", description: "event-description", categories: "event-categories" } as Record<string, string>)[first];
+        const id = ({ organizationId: "event-organization", name: "event-name", city: "event-city", venue: "event-venue", expectedAttendees: "event-attendees", startDate: "event-start-date", startTime: "event-start-time", endDate: "event-end-date", endTime: "event-end-time", description: "event-description", language: "event-language", categories: "event-categories" } as Record<string, string>)[first];
         (id ? document.getElementById(id) : document.querySelector<HTMLElement>(".create-event-form [aria-invalid='true']"))?.focus();
       });
     }
@@ -730,6 +737,11 @@ export function CreateEventPage({ context, selectedOrganizationId }: { context: 
                     />
                     <span>{form.description.length}/500</span>
                   </div>
+                </FormField>
+                <FormField error={fieldErrors.language} id="event-language" label={dict.events.language.label}>
+                  <select className="event-control" id="event-language" onChange={(event) => { const next = localeSchema.safeParse(event.target.value); if (next.success) updateField("language", next.data); }} value={form.language}>
+                    {LOCALES.map((option) => <option key={option} lang={option} value={option}>{dict.common.language[option]}</option>)}
+                  </select>
                 </FormField>
                 <div className="selector-field">
                   <div className="selector-field__heading">

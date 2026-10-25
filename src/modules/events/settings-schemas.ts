@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { localeSchema } from "@/shared/i18n/locales";
 import { uuidSchema } from "./event-schemas";
 
 export const intervalSchema = z.strictObject({ startsAt: z.iso.datetime(), endsAt: z.iso.datetime() });
@@ -15,6 +16,10 @@ export const networkingSettingsSchema = z.strictObject({
 export const settingsUpdateSchema = z.strictObject({ expectedRevision: z.number().int().min(0).max(2_147_483_646), settings: networkingSettingsSchema });
 export const settingsDtoSchema = z.strictObject({ eventId: uuidSchema, revision: z.number().int().min(0), settings: networkingSettingsSchema, missing: z.array(z.string()), updatedAt: z.iso.datetime().nullable(), timezone: z.string() });
 export const settingsResponseSchema = z.strictObject({ data: z.strictObject({ settings: settingsDtoSchema }) });
+
+/** Language of the match reasons the engine writes for this event. */
+export const eventLanguageUpdateSchema = z.strictObject({ language: localeSchema });
+export const eventLanguageResponseSchema = z.strictObject({ data: z.strictObject({ language: localeSchema, changed: z.boolean() }) });
 
 export const wefterAssignmentSchema = z.strictObject({ expectedRevision: z.number().int().min(0).max(2_147_483_646), availabilityWindows: z.array(intervalSchema).max(30), assigned: z.boolean() });
 export const wefterDtoSchema = z.strictObject({ eventId: uuidSchema, organizationId: uuidSchema, membershipId: uuidSchema, memberName: z.string(), role: z.literal("staff"), accessMode: z.enum(["operator", "wefter"]).nullable(), revision: z.number().int().min(0), availabilityWindows: z.array(intervalSchema), updatedAt: z.iso.datetime().nullable() });

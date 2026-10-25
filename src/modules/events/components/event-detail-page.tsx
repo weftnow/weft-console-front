@@ -34,6 +34,7 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { AttendeeRoster } from "./attendee-roster";
 import { KamiWorkspace } from "./kami-workspace";
+import { EventLanguagePanel } from "./event-language-panel";
 import { EventSettingsPanel } from "./event-settings-panel";
 import { EventWeftersPanel } from "./event-wefters-panel";
 import { MatchesPanel } from "@/modules/network/components/matches-panel";
@@ -433,7 +434,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
           ) : activeTab === "staff" ? (
             <div className="event-detail-tab-content" key={activeTab}><EventWeftersPanel eventId={event.id} onSaved={onRosterChanged} /></div>
           ) : activeTab === "settings" ? (
-            <div className="event-detail-tab-content" key={activeTab}><EventSettingsPanel eventId={event.id} /></div>
+            <div className="event-detail-tab-content" key={activeTab}><EventLanguagePanel eventId={event.id} language={event.language} onSaved={onRosterChanged} /><EventSettingsPanel eventId={event.id} /></div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>
               <EventTabPlaceholder activeTab={activeTab} eventId={event.id} onSelect={setActiveTab} />
