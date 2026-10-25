@@ -18,4 +18,5 @@ export const insights = {
   noUpcoming: "No upcoming events",
   guests: { one: "{count} guest", other: "{count} guests" },
   openNamed: "Open {name}",
+  repeat: { label: "{percentage}% of attendees returned to another event", line1: "of attendees", line2: "returned to another", line3: "event" },
 } as const;

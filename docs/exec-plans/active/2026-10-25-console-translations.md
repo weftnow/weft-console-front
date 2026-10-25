@@ -57,13 +57,13 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
   - Enum label maps (revocation reasons, unavailable reasons, guest types, roles) move to dictionaries keyed by enum value.
   - CSV header names stay in English because they are a data contract; help text is translated.
   - Check Spanish copy length at 620px and in tables, pills and buttons.
-- [ ] 6. Engine:
+- [x] 6. Engine (2026-10-25, worktree `weft-engine-translations`, see its plan for results):
   - In `console.py` `snapshot()`, select `language` and include it in the snapshot.
   - Add `language: Literal["en","es"]` to the schemas and record it in run provenance. An Alembic migration is needed only if provenance is a typed column.
   - In the `worker.py` verification prompt, require reasons in English or Spanish and keep quotes verbatim.
   - Bump `matching_prompt_version`.
   - Leave the evaluation prompts language-agnostic.
-- [ ] 7. Guardrails:
+- [ ] 7. Guardrails (2026-10-25: `tests/i18n.test.mjs` added and passing; the JSX literal check is a ratchet with a PENDING list until step 5 finishes; engine pytest added; assertion-updates for English copy done as modules were extracted):
   - Add `tests/i18n.test.mjs` covering: key parity, no empty strings, placeholder parity, valid plural leaves, `negotiateLocale`, and `translate`.
   - Add a JSX string-literal check for `src/modules/**/components`, with an allowlist for Weft, Wefter and Kami.
   - Update tests that assert English copy (`tests/matches-browsing.test.mjs`, `tests/attendee-import-client.test.mjs`).

@@ -20,4 +20,5 @@ export const insights = {
   noUpcoming: "No hay eventos próximos",
   guests: { one: "{count} invitado", other: "{count} invitados" },
   openNamed: "Abrir {name}",
+  repeat: { label: "{percentage} % de los asistentes volvió a otro evento", line1: "de los asistentes", line2: "volvió a otro", line3: "evento" },
 } satisfies Dictionary["insights"];
