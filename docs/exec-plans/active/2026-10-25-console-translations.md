@@ -1,6 +1,6 @@
 # English and Spanish translations (Console + Engine)
 
-Status: Active — step 1 done; implementation in progress
+Status: Active — steps 1–4 done; step 5 in progress (shared/ui, app shells, organizations done)
 Owner: current agent
 Created: 2026-10-25
 Specification: [English and Spanish translations](../../changes/2026-10-25-console-translations.md)
@@ -51,7 +51,7 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
   - A change records an `event_matching_changes` row; follow the kind pattern in `drizzle/0012_f07_matching_change_kinds.sql`.
   - Add Spanish templates to `modules/network/simulation/demo-matches.ts`.
   - Remove the unused matches `locale` query param.
-- [ ] 5. String extraction, one commit per module in this order: `shared/ui` → app shells (sign-in, sign-up, access-required, select-organization, onboarding, accept-invitation, `error.tsx`) → `organizations` → `events` → `attendees` → `network` → `insights` → `sponsors` → `wefter`. Rules:
+- [ ] 5. String extraction (2026-10-25 progress: `shared/ui`, app shells, `organizations` committed; next `events`), one commit per module in this order: `shared/ui` → app shells (sign-in, sign-up, access-required, select-organization, onboarding, accept-invitation, `error.tsx`) → `organizations` → `events` → `attendees` → `network` → `insights` → `sponsors` → `wefter`. Rules:
   - `ApplicationError` keeps a stable `code`. The client maps the code to an `errors.*` message, and server logs stay in English.
   - Zod messages shown to users become codes rendered from dictionaries (for example `attendees/profile-schemas.ts`).
   - Enum label maps (revocation reasons, unavailable reasons, guest types, roles) move to dictionaries keyed by enum value.
@@ -82,6 +82,8 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
 - 2026-10-25: Event language design. Migration `drizzle/0015_boring_the_fury.sql` (generated, not applied): `events.language text not null default 'en'` with check `events_language_valid`, new enum value `event_language_changed`, and the guests check extended so it is an event-level kind (text comparison, same pattern as 0012). Change goes through `PUT /api/events/[eventId]/language` (`language-service.ts` uses `requireEventCreator`; `language-repository.ts` locks the event row and records the change row only when the value actually changes). `createEventSchema.language` defaults to `en` at the API; the create form defaults to the creator's UI locale. The selector is a separate `EventLanguagePanel` at the top of the Settings tab rather than a field in `networkingSettingsSchema`, because settings are revisioned separately and language is an event attribute.
 - 2026-10-25: Simulation Spanish. `DemoMatch.es` is required, so a pair without Spanish fails typecheck. The 12 hand-written pairs have `HAND_WRITTEN_SPANISH`; the 87 generated pairs get `es` from `reasonsEs` in `scripts/generate-demo-roster.mjs`. Regeneration verified: the CSV is byte-identical and the English fields of the generated pairs are unchanged (compared before/after). Job titles and companies stay as in the roster. `simulated-engine.ts` reads `events.language` per feed read. The simulation anchor is the latest change row, so a language change restarts the simulated run.
 - 2026-10-25: Removed the unused matches `locale` query param (schema, handler, client query, test).
+
+- 2026-10-25: Extraction conventions in use. Server components call `getI18n()` (`dict`, `t`, `date`, ...); client components call `useI18n()`. The sidebar became a client component for that reason. Rendering tests call `stubI18n()` from `tests/i18n-stub.mjs`. Server action results carry a stable `code` (for example team invitation results) and the client renders `dict...results[code]` with `{email}`/`{role}` params; the English `message` stays for logs and tests. Role labels live in `common.roles`; metadata titles in `nav.pageTitle`.
 
 ## Verification
 
