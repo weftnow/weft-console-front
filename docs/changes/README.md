@@ -16,6 +16,8 @@ Use `docs/changes/YYYY-MM-DD-short-name.md` with: Status, linked plan, problem, 
 
 - [Matching simulation (demo mode)](2026-10-20-matching-simulation.md): Ready; implementation in progress, with browser acceptance pending.
 
+- [English and Spanish translations](2026-10-25-console-translations.md): Ready; implementation in progress, with browser acceptance pending.
+
 ## Imported specifications
 
 The following existing design specifications were migrated from the previous planning tree. Their original status and assumptions are retained as historical evidence; inspect current canonical docs and implementation before using them. None was newly approved or verified by the harness migration.
