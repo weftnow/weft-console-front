@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { clearOrganizationSelectionCookie, switchOrganization } from "@/app/account/actions";
 import { ChevronDownIcon } from "./icons";
+import { LocaleSwitcher } from "./locale-switcher";
 
 export function ConsoleAccount({ user, organization }: {
   user: { id: string; displayName: string };
@@ -43,6 +44,7 @@ export function ConsoleAccount({ user, organization }: {
       <nav id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="profile-menu__content surface-floating" aria-label="Account">
       {organization.role === "owner" ? <Link href="/settings/team">Manage team</Link> : null}
       <Link href="/onboarding">Accept invitation</Link>
+      <LocaleSwitcher />
       <form action={switchOrganization}><button type="submit">Switch organization</button></form>
       <button onClick={async () => {
         await clearOrganizationSelectionCookie();

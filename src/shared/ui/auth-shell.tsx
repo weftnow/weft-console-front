@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import styles from "./auth-shell.module.css";
+import { LocaleSwitcher } from "./locale-switcher";
 
 export function AuthShell({ children, title, description }: {
   children: ReactNode;
@@ -19,6 +20,7 @@ export function AuthShell({ children, title, description }: {
           {description && <p className={styles.description}>{description}</p>}
         </header>
         <div className={styles.form}>{children}</div>
+        <LocaleSwitcher className="locale-switcher--auth" />
       </div>
     </main>
   );

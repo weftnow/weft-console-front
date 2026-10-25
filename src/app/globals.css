@@ -1937,6 +1937,13 @@ fieldset.event-form-grid, .event-staff-member fieldset { min-width: 0; margin: 0
 .profile-menu__content:popover-open { display: grid; }
 .profile-menu__content a, .profile-menu__content button { display: block; width: 100%; min-height: 40px; border: 0; border-radius: 10px; padding: 10px 12px; background: transparent; color: var(--weft-text-soft); cursor: pointer; font-size: 13px; line-height: 1.5; text-align: left; text-decoration: none; }
 .profile-menu__content a:hover, .profile-menu__content button:hover { background: var(--weft-surface-inset); color: var(--weft-text); }
+.locale-switcher { display: flex; gap: 4px; }
+.locale-switcher button { border: 0; border-radius: 10px; padding: 8px 12px; background: transparent; color: var(--weft-text-soft); cursor: pointer; font-size: 13px; }
+.locale-switcher button[aria-pressed="true"] { background: var(--weft-surface-inset); color: var(--weft-text); font-weight: 600; }
+.locale-switcher button:not([aria-pressed="true"]):hover { background: var(--weft-surface-inset); color: var(--weft-text); }
+.profile-menu__content .locale-switcher { padding: 2px 0; }
+.profile-menu__content .locale-switcher button { width: auto; min-height: 36px; flex: 1; text-align: center; }
+.locale-switcher--auth { justify-content: center; }
 @media (max-width: 760px) {
   .profile { display: block; }
   .profile__identity { flex-wrap: nowrap; }
