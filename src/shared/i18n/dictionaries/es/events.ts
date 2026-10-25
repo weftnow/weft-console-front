@@ -1,6 +1,9 @@
 import type { Dictionary } from "../types";
 
 export const events = {
+  access: {
+    back: "Volver a eventos",
+  },
   language: {
     heading: "Idioma de las coincidencias",
     description: "Los motivos de coincidencia de este evento se escriben en este idioma. Al cambiarlo, el emparejamiento se ejecuta de nuevo.",

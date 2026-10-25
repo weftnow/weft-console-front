@@ -9,7 +9,6 @@ import {
   OutcomesIcon,
   PeopleIcon,
 } from "@/shared/ui/icons";
-import type { Dictionary } from "@/shared/i18n/dictionaries";
 import { Surface } from "@/shared/ui/surface";
 import { ConsoleAccount } from "@/shared/ui/console-account";
 import { useI18n } from "@/shared/i18n/I18nProvider";
@@ -19,7 +18,7 @@ export type ConsoleDestination = "overview" | "events" | "network" | "people" | 
 
 type NavigationItem = {
   key: ConsoleDestination | "outcomes";
-  label: keyof Dictionary["nav"];
+  label: "overview" | "events" | "network" | "people" | "team" | "outcomes";
   href: string;
   icon: typeof HomeIcon;
   supported: boolean;

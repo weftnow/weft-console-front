@@ -8,6 +8,9 @@ const require = createRequire(import.meta.url);
 const { QueryClient, QueryClientProvider } = require("@tanstack/react-query");
 import { loadTs, stubTs } from "./load-ts.mjs";
 import { event } from "./event-detail-fixture.mjs";
+import { stubI18n } from "./i18n-stub.mjs";
+
+stubI18n();
 const scope = { actorId: "actor", sessionId: "session", activeOrganizationId: "A" };
 stubTs("src/modules/events/components/events-query-provider.tsx", {
   useEventQueryScope: () => scope, useEndEventSession: () => () => {},

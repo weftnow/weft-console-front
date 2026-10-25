@@ -1,4 +1,7 @@
 export const events = {
+  access: {
+    back: "Back to events",
+  },
   language: {
     heading: "Match language",
     description: "Match reasons for this event are written in this language. Changing it runs matching again.",
