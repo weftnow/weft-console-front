@@ -31,7 +31,7 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
 ## Steps and progress
 
 - [x] 1. Docs (2026-10-25): write the change spec with a Spanish glossary (Evento, Asistente, Organizador, Patrocinador, VIP; "Wefter" and "Kami" are not translated). Update `docs/product.md`, `docs/domain.md`, `docs/engineering.md` (i18n conventions) and `docs/design/design-system.md`. In the engine repo, write a change spec and an active plan, and update `docs/matching-api.md` and `docs/matching-quality.md`.
-- [ ] 2. Foundation in `src/shared/i18n/`:
+- [x] 2. Foundation (2026-10-25; user step added in 3) in `src/shared/i18n/`:
   - `locales.ts`: `LOCALES`, `Locale`, `DEFAULT_LOCALE`, `localeSchema`, `hasLocale`.
   - `negotiate.ts`: a pure `Accept-Language` q-value parser.
   - `get-locale.ts`: `server-only` and React `cache`; order is user → cookie → header → `en`.
@@ -74,7 +74,9 @@ Spanish-speaking organizers can use the whole Console in Spanish, and Spanish-la
 
 - 2026-10-25: The user chose per-user locale stored in Postgres with a cookie mirror, per-event engine language, and typed dictionaries with no dependency.
 - 2026-10-25: Branches. Console `feat/console-translations` was created from `feat/matching-simulation` (user choice) because `main` lacks `demo-matches.ts` and the match browsing code; it also contains those 7 unmerged commits and is 4 commits behind `origin/main` (not merged). The engine branch `feat/console-translations` lives in the worktree `/Users/shearytan/Documents/SurnX/weft-engine-translations` (from `origin/main`), because the main engine checkout holds unrelated uncommitted DeepSeek edits to `worker.py`/`config.py` that conflict with `main`. Those edits are untouched. The worktree has no Poetry env yet; the `.python-version` of 3.14 is missing from pyenv.
-- 2026-10-25: Unknown: whether `@clerk/localizations` is already resolvable through `@clerk/nextjs`. If adding it is needed, it is the one justified new dependency.
+- 2026-10-25: `@clerk/localizations` was not resolvable through `@clerk/nextjs`. Added `@clerk/localizations@^4.24.1` (the one justified dependency; it pulls a newer `@clerk/shared` copy, data only). `esES` is passed to `ClerkProvider` when the locale is `es`.
+- 2026-10-25: Dictionary layout: `dictionaries/en.ts` and `es.ts` compose per-namespace files in `en/` and `es/` so each module commit touches its own files. `Dictionary` is the English shape widened to `string`; each `es/<ns>.ts` is `satisfies Dictionary["<ns>"]`, so adding an English key fails typecheck until Spanish exists (verified with a probe key). Components read typed properties (`dict.events.title`), not string key paths; `createI18n` in `i18n.ts` (no `"use client"`) gives `t`, `plural`, `number`, `date`, `dateTime`, `relative`, and `I18nProvider`/`useI18n` wrap it for client components.
+- 2026-10-25: `getLocale()` currently resolves cookie, then `Accept-Language`, then `en`; step 3 puts the signed-in user's saved locale in front.
 
 ## Verification
 
@@ -94,4 +96,4 @@ Required when implementing:
 
 ## Handoff or outcome
 
-Next action: step 2 (foundation in `src/shared/i18n/`). Engine plan: `weft-engine-translations/docs/exec-plans/active/2026-10-25-event-language.md`.
+Next action: step 3 (user preference: `users.locale`, `setLocale`, switchers). Engine plan: `weft-engine-translations/docs/exec-plans/active/2026-10-25-event-language.md`.
