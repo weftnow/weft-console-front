@@ -30,7 +30,7 @@ export type MatchingStatusDto = z.infer<typeof engineMatchingStatusSchema>;
 export const MATCHING_UNAVAILABLE_REASONS = ["not_configured", "unreachable", "invalid_response"] as const;
 
 export const matchingStatusResultSchema = z.discriminatedUnion("availability", [
-  z.strictObject({ availability: z.literal("available"), status: engineMatchingStatusSchema.strict() }),
+  z.strictObject({ availability: z.literal("available"), status: engineMatchingStatusSchema.strict(), simulated: z.literal(true).optional() }),
   z.strictObject({ availability: z.literal("unavailable"), reason: z.enum(MATCHING_UNAVAILABLE_REASONS) }),
 ]);
 export type MatchingStatusResult = z.infer<typeof matchingStatusResultSchema>;

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getI18n } from "@/shared/i18n/get-locale";
 
 import { EventDetailQueryPage } from "@/modules/events/components/event-detail-query-page";
 import { getEventDetailTab } from "@/modules/events/event-record";
@@ -6,9 +7,10 @@ import { uuidSchema } from "@/modules/events/event-schemas";
 import { notFound } from "next/navigation";
 import { requireClerkSession } from "@/infrastructure/auth/require-session";
 
-export const metadata: Metadata = {
-  title: "Event overview · Weft Console",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getI18n();
+  return { title: dict.nav.pageTitle.eventDetail };
+}
 export const dynamic = "force-dynamic";
 
 export default async function EventDetailRoute(

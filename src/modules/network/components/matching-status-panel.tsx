@@ -1,18 +1,15 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ClockIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { formatRelativeActivity } from "@/modules/events/event-record";
 import { fetchEventMatchingStatus } from "../queries/matching-status";
+import { eventMatchesKey } from "../queries/matches";
 import { describeMatchingStatus } from "../matching-status-copy";
 import type { MatchingStatusResult } from "../matching-status-schemas";
-
-const unavailableCopy = {
-  not_configured: "Matching status isn’t connected in this environment yet.",
-  unreachable: "The matching service didn’t respond. Try again in a moment.",
-  invalid_response: "The matching service sent an answer this page couldn’t read.",
-} as const;
 
 export type MatchingStatusViewProps =
   | { kind: "loading" }
@@ -21,21 +18,23 @@ export type MatchingStatusViewProps =
 
 /** Read-only: it reports the matching state and has no way to start, stop or approve matching. */
 export function MatchingStatusView(props: MatchingStatusViewProps) {
+  const i18n = useI18n();
+  const text = i18n.dict.network.statusPanel;
   const unavailableMessage = props.kind === "error"
-    ? "Matching status couldn’t be loaded."
-    : props.kind === "result" && props.result.availability === "unavailable" ? unavailableCopy[props.result.reason] : null;
+    ? text.loadFailed
+    : props.kind === "result" && props.result.availability === "unavailable" ? text.unavailable[props.result.reason] : null;
   let body;
   if (props.kind === "loading") {
-    body = <p className="matching-status__detail">Checking matching status…</p>;
+    body = <p className="matching-status__detail">{text.checking}</p>;
   } else if (unavailableMessage !== null) {
     body = (
       <>
         <p className="matching-status__detail">{unavailableMessage}</p>
-        <button className="event-text-action" onClick={props.onRetry} type="button">Check again</button>
+        <button className="event-text-action" onClick={props.onRetry} type="button">{text.checkAgain}</button>
       </>
     );
   } else if (props.kind === "result" && props.result.availability === "available") {
-    const copy = describeMatchingStatus(props.result.status, formatRelativeActivity);
+    const copy = describeMatchingStatus(i18n, props.result.status, (iso) => formatRelativeActivity(i18n, iso));
     body = (
       <>
         <span className={`status-pill matching-status__pill matching-status__pill--${copy.tone}`}>{copy.label}</span>
@@ -44,11 +43,12 @@ export function MatchingStatusView(props: MatchingStatusViewProps) {
       </>
     );
   }
+  const simulated = props.kind === "result" && props.result.availability === "available" && props.result.simulated === true;
   return (
-    <Surface as="section" className="event-detail-panel matching-status" depth="raised" aria-labelledby="matching-status-title">
+    <Surface as="section" className="event-detail-panel matching-status" data-simulated={simulated ? "true" : undefined} depth="raised" aria-labelledby="matching-status-title">
       <div className="event-detail-panel__heading">
         <ClockIcon height="20" width="20" />
-        <h2 id="matching-status-title">Matching status</h2>
+        <h2 id="matching-status-title">{text.heading}</h2>
       </div>
       <div aria-live="polite" className="matching-status__body">{body}</div>
     </Surface>
@@ -59,6 +59,7 @@ const ACTIVE_REFRESH_MS = 5_000;
 const IDLE_REFRESH_MS = 30_000;
 
 export function MatchingStatusPanel({ eventId }: { eventId: string }) {
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["matching-status", eventId],
     queryFn: () => fetchEventMatchingStatus(eventId),
@@ -69,6 +70,11 @@ export function MatchingStatusPanel({ eventId }: { eventId: string }) {
     },
     retry: false,
   });
+  // A finished run means the server has pulled new matches, so a mounted or cached Matches tab must reload them.
+  const finishedRunId = query.data?.availability === "available" ? query.data.status.lastFinishedRunId : null;
+  useEffect(() => {
+    if (finishedRunId) void queryClient.invalidateQueries({ queryKey: eventMatchesKey(eventId) });
+  }, [eventId, finishedRunId, queryClient]);
   const retry = () => void query.refetch();
   if (query.data) return <MatchingStatusView kind="result" onRetry={retry} result={query.data} />;
   if (query.isError) return <MatchingStatusView kind="error" onRetry={retry} />;

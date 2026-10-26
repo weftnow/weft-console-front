@@ -4,6 +4,7 @@ import { uuidSchema } from "@/modules/events/event-schemas";
 import { matchDetailResponseSchema, matchListQuerySchema, matchListResponseSchema } from "@/modules/network/matches-schemas";
 import { getMatch, listMatches } from "@/modules/network/server/matches-service";
 import { ApplicationError } from "@/shared/lib/application-error";
+import { engineModeHeaders } from "./engine-mode-headers";
 import { errorResponse } from "./errors";
 
 const headers = { "Cache-Control": "private, no-store" };
@@ -29,11 +30,10 @@ export async function handleListMatches(
       search: params.get("search") ?? undefined,
       page: params.get("page") ?? undefined,
       introductionPath: params.get("introductionPath") ?? undefined,
-      locale: params.get("locale") ?? undefined,
     });
     if (!query.success) throw new ApplicationError("VALIDATION_ERROR", "Choose valid match filters.");
     const data = await dependencies.listMatches({ userId: actor.id, eventId, ...query.data });
-    return Response.json(matchListResponseSchema.parse({ data }), { status: 200, headers });
+    return Response.json(matchListResponseSchema.parse({ data }), { status: 200, headers: { ...headers, ...engineModeHeaders() } });
   } catch (error) {
     return errorResponse(error, "list_matches", "Something went wrong while loading matches. Please try again.");
   }
@@ -48,7 +48,7 @@ export async function handleGetMatch(
       throw new ApplicationError("INVALID_JSON", "Enter a valid event and match ID.");
     }
     const match = await dependencies.getMatch({ userId: actor.id, eventId, matchId });
-    return Response.json(matchDetailResponseSchema.parse({ data: { match } }), { status: 200, headers });
+    return Response.json(matchDetailResponseSchema.parse({ data: { match } }), { status: 200, headers: { ...headers, ...engineModeHeaders() } });
   } catch (error) {
     return errorResponse(error, "get_match", "Something went wrong while loading the match. Please try again.");
   }

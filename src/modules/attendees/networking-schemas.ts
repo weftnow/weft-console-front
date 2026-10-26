@@ -5,13 +5,6 @@ export const EXCLUSION_REASONS = ["guest_request", "organizer_decision", "not_at
 export const exclusionReasonSchema = z.enum(EXCLUSION_REASONS);
 export type ExclusionReason = z.infer<typeof exclusionReasonSchema>;
 
-export const EXCLUSION_REASON_LABELS: Record<ExclusionReason, string> = {
-  guest_request: "Guest asked not to be matched",
-  organizer_decision: "Organizer decision",
-  not_attending: "Not attending the event",
-  other: "Other",
-};
-
 const expectedVersionSchema = z.number().int().min(1).max(2_147_483_647);
 
 export const participationInputSchema = z.discriminatedUnion("status", [

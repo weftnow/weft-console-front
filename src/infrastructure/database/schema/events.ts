@@ -14,7 +14,7 @@ export const guestExclusionReason = pgEnum("event_guest_exclusion_reason", ["gue
 export const matchIntroductionPath = pgEnum("event_match_introduction_path", ["sms_coordination", "wefter"]);
 export const matchStatus = pgEnum("event_match_status", ["active", "revoked"]);
 export const matchRevocationReason = pgEnum("event_match_revocation_reason", ["guest_excluded", "pair_blocked", "identity_resolution_required", "guest_missing"]);
-export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated", "attendees_imported", "attendee_corrected", "identity_linked"]);
+export const matchingChangeKind = pgEnum("event_matching_change_kind", ["guest_excluded", "guest_restored", "match_block_added", "match_block_removed", "profile_updated", "attendees_imported", "attendee_corrected", "identity_linked", "event_language_changed"]);
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -29,6 +29,8 @@ export const events = pgTable("events", {
   endDate: date("end_date", { mode: "string" }).notNull(),
   startTime: time("start_time"), endTime: time("end_time"),
   timezone: text("timezone").notNull(),
+  // Language of the engine's shareable match reasons; the engine reads it, only the Console writes it.
+  language: text("language").notNull().default("en"),
   startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
   endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -42,6 +44,7 @@ export const events = pgTable("events", {
   check("events_venue_valid", sql`${table.venue} is null or length(${table.venue}) <= 200`),
   check("events_estimate_valid", sql`${table.expectedAttendees} is null or ${table.expectedAttendees} between 0 and 1000000`),
   check("events_date_order", sql`${table.endDate} >= ${table.startDate} and ${table.endsAt} > ${table.startsAt}`),
+  check("events_language_valid", sql`${table.language} in ('en', 'es')`),
   check("events_city_allowed", sql`${table.city} in ('Las Vegas, USA','Singapore','Davos, Switzerland','Aspen, USA','Monaco')`),
   check("events_categories_allowed", sql`cardinality(${table.categories}) > 0 and ${table.categories} <@ ARRAY['Sports','Luxury','Investing','Startups','Technology','Entertainment','Web3','Real Estate','Fashion','Media']::text[]`),
   check("events_audience_allowed", sql`${table.expectedAudience} <@ ARRAY['Founders','Investors','Family Offices','Executives','Brands','Sponsors','Creators','Media','Athletes','Government','Service Providers']::text[]`),
@@ -235,7 +238,7 @@ export const eventMatchingChanges = pgTable("event_matching_changes", {
 }, (table) => [
   index("event_matching_changes_pending_idx").on(table.eventId, table.processedAt, table.createdAt),
   // Event-level kinds carry no guests; compare as text so the check does not use a just-added enum value in its own transaction.
-  check("event_matching_changes_guests_valid", sql`(${table.kind}::text in ('attendees_imported', 'identity_linked') and cardinality(${table.guestIds}) = 0) or (${table.kind}::text not in ('attendees_imported', 'identity_linked') and cardinality(${table.guestIds}) between 1 and 2)`),
+  check("event_matching_changes_guests_valid", sql`(${table.kind}::text in ('attendees_imported', 'identity_linked', 'event_language_changed') and cardinality(${table.guestIds}) = 0) or (${table.kind}::text not in ('attendees_imported', 'identity_linked', 'event_language_changed') and cardinality(${table.guestIds}) between 1 and 2)`),
   check("event_matching_changes_reason_valid", sql`${table.reason} is null or length(${table.reason}) <= 500`),
 ]);
 

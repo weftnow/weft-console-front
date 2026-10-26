@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { getI18n } from "@/shared/i18n/get-locale";
 
 import { CreateEventPage } from "@/modules/events/components/create-event-page";
 import { requireClerkSession } from "@/infrastructure/auth/require-session";
 import { getCreateEventPageContexts, requireLocalActor } from "@/infrastructure/auth/console-page-context";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Create event · Weft Console",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getI18n();
+  return { title: dict.nav.pageTitle.createEvent };
+}
 
 export const dynamic = "force-dynamic";
 

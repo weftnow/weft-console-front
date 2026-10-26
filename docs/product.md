@@ -8,7 +8,7 @@ Overview, Network, People, and Partner Report have production empty states rathe
 
 Event administration uses one Staff list for access and Wefter hours, and grouped networking settings. “Roster access” is the user-facing label for the internal staff operator mode. Attendee correction/duplicate review uses focused dialogs, explicit same-person confirmation and readable conflict comparisons. The roster distinguishes unique people from attendee records; event overview metrics are labeled as records and its activity list uses saved import/creation timestamps. Kami configuration remains a browser-local preview and must not claim that calls or introductions are running.
 
-Wefter assignment storage/screens, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows; F08 owns persisted pair uniqueness. F08 saves valid engine-selected pairs automatically as matches (no approval queue) and lists them for Owners and Organizers; a match is not guest acceptance or a meeting. See [automatic matches](backend/matches.md). See [domain ownership](domain.md) and [shared access contracts](access-contracts.md) for the implemented boundaries and consumer obligations.
+Wefter assignment storage/screens, matching/recommendations, introduction tracking, sponsor outcomes, and cross-event intelligence remain future delivery. F12 owns assignment workflows; F08 owns persisted pair uniqueness. F08 saves valid engine-selected pairs automatically as matches (no approval queue) and lists them for Owners and Organizers; a match is not guest acceptance or a meeting. See [automatic matches](backend/matches.md). A demo-only matching simulation (`WEFT_ENGINE_MODE=simulation`, local and preview only, refused in production) replaces the engine with fixed fictional data; see the [specification](changes/2026-10-20-matching-simulation.md). See [domain ownership](domain.md) and [shared access contracts](access-contracts.md) for the implemented boundaries and consumer obligations.
 
 ## Weft
 
@@ -209,6 +209,10 @@ Organizations
 These represent business capabilities rather than navigation sections.
 
 A single screen may combine information from several capabilities.
+
+## Languages
+
+The Console is available in English and Spanish. Each user chooses their own language; it defaults from the browser and applies to all Console copy, formats and errors. Each event also has a language that decides the language of the match reasons the engine writes for it. User-entered content is never translated. See the [specification](changes/2026-10-25-console-translations.md).
 
 ## Non Goals
 

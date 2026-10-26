@@ -14,7 +14,7 @@ Every `event_guests` row is in the event's matching pool by default. Four column
 | `match_block_added`, `match_block_removed` | do-not-match change | the pair |
 | `profile_updated` | profile save | the guest |
 | `attendee_corrected` | attendee correction (`replaceAttendee`) | the guest |
-| `attendees_imported` | CSV import that stored at least one guest | none (event-level) |
+| `attendees_imported` | CSV import (or event creation with an initial roster) that stored at least one guest | none (event-level) |
 | `identity_linked` | explicit identity link that linked records | none (event-level; a linked group can exceed two guests) |
 
 Replayed or empty imports, stale or denied corrections and already-linked pairs write no row. A check constraint requires an empty `guest_ids` for the two event-level kinds and one or two guests for every other kind; it compares `kind::text` so migration 0012 can add the enum values and the check in one transaction.

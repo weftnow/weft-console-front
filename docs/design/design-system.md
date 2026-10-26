@@ -946,6 +946,10 @@ Avoid:
 
 ---
 
+## 27a. Localized copy
+
+Every string ships in English and Spanish. Spanish is typically 15 to 30 percent longer, so buttons, pills, table headers and the 620px dialogs must wrap or truncate gracefully rather than clip; check both locales at desktop and narrow widths. Do not hardcode widths to English text. Use the locale-aware formatters for dates and numbers.
+
 ## 28. Responsive behavior
 
 The tactile language must simplify gracefully.

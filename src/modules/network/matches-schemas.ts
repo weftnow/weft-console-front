@@ -15,7 +15,6 @@ export const matchListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(1_000_000).default(1),
   status: matchStatusSchema.optional(),
   introductionPath: introductionPathSchema.optional(),
-  locale: z.enum(["en", "es"]).default("en"),
 });
 
 const timestamp = z.iso.datetime({ offset: true });
@@ -84,6 +83,8 @@ export const matchListSchema = z.strictObject({
   pagination: z.strictObject({ page: z.number().int().min(1), pageSize: z.number().int().min(1), total: z.number().int().min(0) })
     .default({ page: 1, pageSize: 25, total: 0 }),
   sync: matchSyncNoteSchema,
+  /** Present only while the Console runs the matching simulation (demo data). */
+  simulated: z.literal(true).optional(),
 });
 export type MatchListDto = z.infer<typeof matchListSchema>;
 

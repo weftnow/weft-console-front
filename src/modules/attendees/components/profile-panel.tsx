@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/shared/i18n/I18nProvider";
+import { localizeErrorCode, localizeFieldMessage } from "@/shared/i18n/field-messages";
 import { CheckIcon, CloseIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
@@ -8,7 +10,7 @@ import { ApplicationError } from "@/shared/lib/application-error";
 import type { SavedEventGuestRecord } from "@/modules/events/event-record";
 import { StaleProfileError, submitGuestProfile } from "../mutations/update-profile";
 import { profileCompleteness, profilePresence, shareableSummary } from "../profile-completeness";
-import { ORGANIZER_ONLY_FIELDS, PROFILE_FIELDS, PROFILE_FIELD_LABELS, PROFILE_FIELD_LIMITS, normalizeOrganizerOnly } from "../profile-schemas";
+import { ORGANIZER_ONLY_FIELDS, PROFILE_FIELDS, PROFILE_FIELD_LIMITS, normalizeOrganizerOnly } from "../profile-schemas";
 import type { OrganizerOnlyFieldKey, ProfileCompleteness, ProfileDto, ProfileFieldKey, ProfileFields } from "../profile-schemas";
 import { fetchGuestProfile } from "../queries/guest-profile";
 
@@ -22,23 +24,7 @@ type Props = {
 
 type Draft = { fields: Record<ProfileFieldKey, string>; organizerOnly: OrganizerOnlyFieldKey[] };
 
-const COMPLETENESS_LABELS: { key: keyof ProfileCompleteness; label: string }[] = [
-  { key: "goals", label: "Goals" },
-  { key: "background", label: "Background" },
-  { key: "linkedin", label: "LinkedIn details" },
-  { key: "offers", label: "Offers" },
-  { key: "desiredConnections", label: "Desired connections" },
-];
-
-const COMPLETENESS_STATE: Record<ProfileCompleteness[keyof ProfileCompleteness], string> = {
-  available: "Available",
-  missing: "Missing",
-  url_only: "URL only, details not supplied",
-};
-
-function guestName(guest: Pick<SavedEventGuestRecord, "firstName" | "lastName">) {
-  return `${guest.firstName} ${guest.lastName}`.trim() || "Unnamed guest";
-}
+const COMPLETENESS_KEYS: (keyof ProfileCompleteness)[] = ["goals", "background", "linkedin", "offers", "desiredConnections"];
 
 function toDraft(profile: ProfileDto): Draft {
   return {
@@ -52,11 +38,16 @@ function toFields(draft: Draft): ProfileFields {
   return Object.fromEntries(PROFILE_FIELDS.map((key) => [key, draft.fields[key].trim() || null])) as ProfileFields;
 }
 
-function describeSaved(profile: ProfileDto) {
-  return profile.version === 0 ? "No profile saved yet." : `Last saved v${profile.version}${profile.savedBy ? ` by ${profile.savedBy}` : ""}${profile.savedAt ? ` on ${new Date(profile.savedAt).toLocaleString()}` : ""}.`;
-}
-
 export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange }: Props) {
+  const i18n = useI18n();
+  const { dict, t } = i18n;
+  const copy = dict.attendees.profile;
+  const guestName = (entry: Pick<SavedEventGuestRecord, "firstName" | "lastName">) => `${entry.firstName} ${entry.lastName}`.trim() || dict.attendees.networking.unnamed;
+  const describeSaved = (profile: ProfileDto) => profile.version === 0 ? copy.noneSaved : t(copy.lastSaved, {
+    version: profile.version,
+    by: profile.savedBy ? t(copy.savedBy, { name: profile.savedBy }) : "",
+    at: profile.savedAt ? t(copy.savedAt, { date: i18n.dateTime(profile.savedAt) }) : "",
+  });
   const [saved, setSaved] = useState<ProfileDto | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   /** The version the next save is based on. After a conflict the user may rebase onto the latest version. */
@@ -76,10 +67,10 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
       setDraft(toDraft(read.profile));
       setBaseVersion(read.profile.version);
     }).catch((failure: unknown) => {
-      if (!cancelled) setLoadError(failure instanceof ApplicationError ? failure.message : "The profile could not be loaded. Try again.");
+      if (!cancelled) setLoadError(failure instanceof ApplicationError ? localizeErrorCode(dict, failure.code) : copy.loadFailed);
     });
     return () => { cancelled = true; };
-  }, [eventId, guest.id]);
+  }, [eventId, guest.id, dict, copy.loadFailed]);
 
   const organizerOnly = draft ? normalizeOrganizerOnly(draft.organizerOnly) : [];
   const fields = draft ? toFields(draft) : null;
@@ -113,16 +104,16 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
       setSaved(read.profile);
       setDraft(toDraft(read.profile));
       setBaseVersion(read.profile.version);
-      setNotice("Profile saved. Matching will use this version.");
+      setNotice(copy.saved);
       try { await onChanged(); }
-      catch { setNotice("Saved; refresh to load the updated roster."); }
+      catch { setNotice(copy.savedRefresh); }
     } catch (failure) {
       if (failure instanceof StaleProfileError) {
         setLatest(failure.latest);
-        setError("Someone else changed this profile.");
+        setError(copy.stale);
       } else if (failure instanceof ApplicationError) {
-        setError(failure.fields ? Object.values(failure.fields)[0] ?? failure.message : failure.message);
-      } else setError("The profile could not be saved. Try again.");
+        setError(failure.fields ? localizeFieldMessage(i18n, Object.values(failure.fields)[0] ?? "") || localizeErrorCode(dict, failure.code) : localizeErrorCode(dict, failure.code));
+      } else setError(copy.saveFailed);
     } finally {
       setPending(false);
     }
@@ -144,33 +135,33 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
     setBaseVersion(latest.version);
     setLatest(null);
     setError("");
-    setNotice("Your edits are now based on the latest version. Save to apply them.");
+    setNotice(copy.rebased);
   }
 
   return (
     <Surface className="attendee-import-panel networking-panel profile-panel" depth="inset" aria-labelledby="profile-panel-title">
       <div className="attendee-import-panel__heading">
         <div>
-          <h3 id="profile-panel-title">Profile for {guestName(guest)}</h3>
-          <p>Missing information stays marked as unknown. Saved details are available for future matching.</p>
+          <h3 id="profile-panel-title">{t(copy.title, { name: guestName(guest) })}</h3>
+          <p>{copy.description}</p>
         </div>
-        <TactileButton aria-label="Close profile panel" iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
+        <TactileButton aria-label={copy.close} iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
       </div>
 
       {loadError ? <p className="upload-error" role="alert">{loadError}</p> : null}
-      {!draft && !loadError ? <p aria-live="polite">Loading profile…</p> : null}
+      {!draft && !loadError ? <p aria-live="polite">{copy.loading}</p> : null}
 
       {draft && saved && completeness && preview ? (
         <>
           <p className="profile-panel__saved">{describeSaved(saved)}</p>
 
           <div className="networking-panel__section">
-            <strong>Profile completeness</strong>
+            <strong>{copy.completeness}</strong>
             <ul className="networking-panel__list profile-panel__completeness">
-              {COMPLETENESS_LABELS.map(({ key, label }) => (
+              {COMPLETENESS_KEYS.map((key) => (
                 <li key={key}>
-                  <span>{label}</span>
-                  <span className={`status-pill profile-pill profile-pill--${completeness[key]}`}>{COMPLETENESS_STATE[completeness[key]]}</span>
+                  <span>{copy.completenessLabels[key]}</span>
+                  <span className={`status-pill profile-pill profile-pill--${completeness[key]}`}>{copy.completenessStates[completeness[key]]}</span>
                 </li>
               ))}
             </ul>
@@ -182,7 +173,7 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
               const canHide = key !== "summary";
               return (
                 <div className="event-field" key={key}>
-                  <label htmlFor={id}>{PROFILE_FIELD_LABELS[key]}</label>
+                  <label htmlFor={id}>{copy.fieldLabels[key]}</label>
                   <div className="textarea-wrap">
                     <textarea
                       className="event-control event-textarea profile-panel__textarea"
@@ -203,7 +194,7 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
                         onChange={(input) => setHidden(key, input.target.checked)}
                         type="checkbox"
                       />
-                      Organizer only: kept out of the shareable summary, still used for matching
+                      {copy.organizerOnly}
                     </label>
                   ) : null}
                 </div>
@@ -212,23 +203,23 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
           </div>
 
           <div className="networking-panel__section">
-            <strong>Shareable summary preview</strong>
+            <strong>{copy.preview}</strong>
             {preview.summary || preview.details.length > 0 ? (
               <>
                 {preview.summary ? <p>{preview.summary}</p> : null}
                 <dl className="profile-panel__summary">
                   {preview.details.map((detail) => (
-                    <div key={detail.key}><dt>{detail.label}</dt><dd>{detail.value}</dd></div>
+                    <div key={detail.key}><dt>{copy.fieldLabels[detail.key]}</dt><dd>{detail.value}</dd></div>
                   ))}
                 </dl>
               </>
-            ) : <p>Nothing to share yet.</p>}
-            {organizerOnly.length > 0 ? <p>Organizer only: {organizerOnly.map((key) => PROFILE_FIELD_LABELS[key]).join(", ")}.</p> : null}
+            ) : <p>{copy.nothingToShare}</p>}
+            {organizerOnly.length > 0 ? <p>{t(copy.organizerOnlyList, { fields: organizerOnly.map((key) => copy.fieldLabels[key]).join(", ") })}</p> : null}
           </div>
 
           <div className="networking-panel__row">
-            <TactileButton disabled={pending || !dirty} onClick={() => void save()} variant="primary">{pending ? "Saving…" : "Save profile"}</TactileButton>
-            <TactileButton disabled={pending || !dirty} onClick={() => { setDraft(toDraft(saved)); setError(""); setNotice(""); setLatest(null); }}>Discard changes</TactileButton>
+            <TactileButton disabled={pending || !dirty} onClick={() => void save()} variant="primary">{pending ? copy.saving : copy.save}</TactileButton>
+            <TactileButton disabled={pending || !dirty} onClick={() => { setDraft(toDraft(saved)); setError(""); setNotice(""); setLatest(null); }}>{copy.discard}</TactileButton>
           </div>
         </>
       ) : null}
@@ -238,16 +229,16 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
           <p className="upload-error">{error}</p>
           {latest ? (
             <div className="networking-panel__section profile-panel__latest">
-              <strong>Latest saved version</strong>
+              <strong>{copy.latest}</strong>
               <p>{describeSaved(latest)}</p>
               <dl className="profile-panel__summary">
                 {ORGANIZER_ONLY_FIELDS.filter((key) => latest.fields[key]).map((key) => (
-                  <div key={key}><dt>{PROFILE_FIELD_LABELS[key]}{latest.organizerOnly.includes(key) ? " (organizer only)" : ""}</dt><dd>{latest.fields[key]}</dd></div>
+                  <div key={key}><dt>{copy.fieldLabels[key]}{latest.organizerOnly.includes(key) ? copy.organizerOnlySuffix : ""}</dt><dd>{latest.fields[key]}</dd></div>
                 ))}
               </dl>
               <div className="networking-panel__row">
-                <TactileButton onClick={useLatest}>Load latest into the form</TactileButton>
-                <TactileButton onClick={keepMine}>Keep my edits on top of it</TactileButton>
+                <TactileButton onClick={useLatest}>{copy.loadLatest}</TactileButton>
+                <TactileButton onClick={keepMine}>{copy.keepMine}</TactileButton>
               </div>
             </div>
           ) : null}
