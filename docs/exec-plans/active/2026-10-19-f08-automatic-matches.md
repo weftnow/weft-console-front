@@ -49,6 +49,7 @@ The Console saves valid selected pairs from the engine feed as matches and shows
 - **2026-10-19: Matches tab hidden for non-managers.** `activeTab` falls back to Overview when `?tab=matches` is requested without `attendees.canManage`; the API enforces the real rule.
 - **2026-10-19: query key is `["event-matches", eventId]`**, matching the other event panels; actor scoping is by the server-side authorization and per-session query client.
 - **2026-10-24:** browse state is part of the query key; event-wide status counts stay global while filtered totals and pages reflect status, method, and literal search. Search considers either attendee's name, company, or position within the event.
+- **2026-10-24: UI-only branch extraction.** `feat/console-ui-ux-improvements` starts at updated `origin/main` (`a970113`) and cherry-picks only `5e75d07`, `aee6985`, and `10e65a5`, in that order. Conflicts in the browsing commit retain search, filters, pagination, and detail integration while omitting simulation headers, flags, and polling. The simulation and initial-import tracking commits are excluded.
 
 ## Verification
 
@@ -57,7 +58,8 @@ Run on 2026-10-19 (no database, provider or engine contacted):
 - `pnpm verify` (docs check, lint, typecheck, tests) → 360 tests: 332 passed, 0 failed, 28 skipped. Skips are database-gated suites, including the new `tests/matches-database.test.mjs`. New: `tests/matches.test.mjs` (18 tests), `tests/matches-migration.test.mjs` (5); `tests/merge-contracts.test.mjs` pin updated to journal entry 13.
 - `pnpm build` → success; the route table lists `/api/events/[eventId]/matches` and `/matches/[matchId]`.
 - Database suite: see step 7a. **Not run:** applying 0013 to any shared database, signed-in browser acceptance (desktop/narrow, keyboard, reduced motion), end-to-end with a real engine.
-- Run on 2026-10-24 after browse/detail improvements: `pnpm verify` passed (379 tests: 351 passed, 0 failed, 28 database-gated skipped); `pnpm build` passed. Focused match browsing, F08, simulation, and matching-status suites passed. Signed-in browser acceptance remains pending.
+- Run on the original simulation branch on 2026-10-24 after browse/detail improvements: `pnpm verify` passed (379 tests: 351 passed, 0 failed, 28 database-gated skipped); `pnpm build` passed. Focused match browsing, F08, simulation, and matching-status suites passed. Signed-in browser acceptance remains pending.
+- UI-only extraction on 2026-10-24: `pnpm verify` passed (365 tests: 337 passed, 0 failed, 28 database-gated skipped), including browsing, F08, matching-status, and authorization tests. `pnpm build` passed with development configuration preloaded and `WEFT_LOCAL_PLUGIN_THREADS=1`. An initial conflict-resolution script truncated three files; lint/build caught it, the files were restored from the source commit with only simulation dependencies removed, and both checks then passed. No live database suites or signed-in browser acceptance were run for the extraction.
 
 ## Handoff or outcome
 
