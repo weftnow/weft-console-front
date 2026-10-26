@@ -8,6 +8,7 @@ import { canAssignStaff, canCreateEvent } from "@/modules/organizations/service"
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { EventDetailDto } from "../event-dto";
 import type { PreparedEvent } from "./service";
+import { DEFAULT_LOCALE, hasLocale } from "@/shared/i18n/locales";
 import { normalizeAttendeePhone } from "../attendee-contact";
 import { recordChange } from "@/modules/attendees/server/networking-repository";
 
@@ -30,7 +31,7 @@ export async function create(prepared: PreparedEvent): Promise<EventDetailDto> {
     }
     const [inserted] = await tx.insert(events).values({
       organizationId, creatorId: userId, name: data.name, description: data.description,
-      city: data.city, venue: data.venue, expectedAttendees: data.expectedAttendees,
+      language: data.language, city: data.city, venue: data.venue, expectedAttendees: data.expectedAttendees,
       categories: data.categories, expectedAudience: data.expectedAudience,
       startDate: data.startDate, endDate: data.endDate, startTime: data.startTime,
       endTime: data.endTime, timezone: schedule.timezone,
@@ -119,6 +120,7 @@ export async function findById(eventId: string, organizationId: string): Promise
     startDate: event.startDate, endDate: event.endDate,
     startTime: event.startTime?.slice(0, 5) ?? "", endTime: event.endTime?.slice(0, 5) ?? "",
     timezone: event.timezone, startsAt: event.startsAt.toISOString(), endsAt: event.endsAt.toISOString(),
+    language: hasLocale(event.language) ? event.language : DEFAULT_LOCALE,
     createdAt: event.createdAt.toISOString(), updatedAt: event.updatedAt.toISOString(),
     coverImage: covers.length ? `/api/events/${event.id}/cover` : null,
     attendees: {

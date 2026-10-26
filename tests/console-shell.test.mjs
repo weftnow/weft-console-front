@@ -4,6 +4,9 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs, stubTs } from "./load-ts.mjs";
+import { stubI18n } from "./i18n-stub.mjs";
+
+stubI18n();
 
 stubTs("@/shared/ui/console-account", {
   ConsoleAccount: ({ user, organization }) =>

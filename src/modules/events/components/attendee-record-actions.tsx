@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { SavedEventGuestRecord, EventGuestType } from "../event-record";
+import { useI18n } from "@/shared/i18n/I18nProvider";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { ConsoleDialog } from "@/shared/ui/console-dialog";
 import { attendeeCandidateResponseSchema, attendeeReplacementSchema } from "../attendee-record-schemas";
@@ -13,18 +14,20 @@ import { ChevronDownIcon } from "@/shared/ui/icons";
 type Draft = { firstName: string; lastName: string; email: string; phone: string; company: string; position: string; profileType: string; guestType: EventGuestType; linkedin: string };
 type Candidate = ReturnType<typeof attendeeCandidateResponseSchema.parse>["data"]["candidates"][number];
 const fields = [
-  ["firstName", "First name", 100], ["lastName", "Last name", 100], ["email", "Email", 254], ["phone", "Phone", 40],
-  ["company", "Company", 200], ["position", "Position", 200], ["profileType", "Profile type", 100], ["linkedin", "LinkedIn URL", 500],
+  ["firstName", 100], ["lastName", 100], ["email", 254], ["phone", 40],
+  ["company", 200], ["position", 200], ["profileType", 100], ["linkedin", 500],
 ] as const;
 function guestDraft(guest: Draft): Draft {
   return { firstName: guest.firstName, lastName: guest.lastName, email: guest.email, phone: guest.phone, company: guest.company, position: guest.position, profileType: guest.profileType, guestType: guest.guestType, linkedin: guest.linkedin };
 }
-function name(guest: { firstName: string; lastName: string }) { return [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Unnamed attendee"; }
 
 export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSaved, onEditProfile, onNetworking }: {
   eventId: string; guest: SavedEventGuestRecord; guests: SavedEventGuestRecord[]; canManage: boolean; onSaved: () => void | Promise<void>;
   onEditProfile: () => void; onNetworking: () => void;
 }) {
+  const { dict, t, plural } = useI18n();
+  const copy = dict.events.record;
+  const name = (person: { firstName: string; lastName: string }) => [person.firstName, person.lastName].filter(Boolean).join(" ") || copy.unnamed;
   const menuId = useId();
   const menu = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -67,9 +70,9 @@ export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSav
     try {
       const response = await fetch(`/api/events/${eventId}/attendees/${guest.id}`, { cache: "no-store" });
       const body: unknown = await response.json();
-      if (!response.ok) throw new Error("Could not check for duplicates. Try again.");
+      if (!response.ok) throw new Error(copy.errors.duplicatesCheck);
       setCandidates(attendeeCandidateResponseSchema.parse(body).data.candidates);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "Could not check for duplicates."); }
+    } catch (reason) { setError(reason instanceof Error ? reason.message : copy.errors.duplicatesShort); }
     finally { setPending(false); }
   };
   const save = async () => {
@@ -87,11 +90,11 @@ export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSav
           if (snapshot.success) { setCurrent(snapshot.data); return; }
         }
         if (parsedError.success) setFieldErrors(parsedError.data.error.fields ?? {});
-        throw new Error(parsedError.success ? parsedError.data.error.message : "Could not save attendee details. Try again.");
+        throw new Error(parsedError.success ? parsedError.data.error.message : copy.errors.saveFailed);
       }
-      setView(null); setNotice("Attendee details saved.");
-      try { await onSaved(); } catch { setNotice("Details saved. Reload the page to see the latest roster."); }
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "Could not save attendee details."); }
+      setView(null); setNotice(copy.saved);
+      try { await onSaved(); } catch { setNotice(copy.savedReload); }
+    } catch (reason) { setError(reason instanceof Error ? reason.message : copy.errors.saveShort); }
     finally { setPending(false); }
   };
   const link = async () => {
@@ -99,36 +102,36 @@ export function AttendeeRecordActions({ eventId, guest, guests, canManage, onSav
     setPending(true); setError("");
     try {
       const response = await fetch(`/api/events/${eventId}/attendee-links`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ duplicateGuestId: guest.id, canonicalGuestId: selected.guestId }) });
-      if (!response.ok) throw new Error(response.status === 409 ? "These records have changed. Check for duplicates again before linking." : "Could not link these records. Try again.");
-      setView(null); setNotice("Records linked as the same person.");
-      try { await onSaved(); } catch { setNotice("Records linked. Reload the page to see the latest roster."); }
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "Could not link attendee records."); }
+      if (!response.ok) throw new Error(response.status === 409 ? copy.errors.linkStale : copy.errors.linkFailed);
+      setView(null); setNotice(copy.linked);
+      try { await onSaved(); } catch { setNotice(copy.linkedReload); }
+    } catch (reason) { setError(reason instanceof Error ? reason.message : copy.errors.linkShort); }
     finally { setPending(false); }
   };
   return <div className="attendee-record-actions">
     {canManage ? <div className="attendee-record-actions__buttons">
-      <TactileButton className="roster-edit-action" variant="ghost" aria-label={`Edit details for ${name(guest)}`} onClick={() => { setDraft(guestDraft(guest)); setRevision(guest.revision); setError(""); setFieldErrors({}); setCurrent(null); setView("edit"); }}>Edit</TactileButton>
-      <button className="tactile-button tactile-button--ghost" type="button" aria-label={`More actions for ${name(guest)}`} popoverTarget={menuId} ref={trigger}>More <ChevronDownIcon height="13" width="13" /></button>
-      <div id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="roster-actions-popover surface-floating" role="group" aria-label={`Actions for ${name(guest)}`}>
-        <button type="button" onClick={() => runAction(onEditProfile)}>Edit profile</button>
-        <button type="button" onClick={() => runAction(onNetworking)}>Networking</button>
-        <button type="button" onClick={() => runAction(() => { setView("duplicates"); void loadCandidates(); })}>Review duplicates</button>
+      <TactileButton className="roster-edit-action" variant="ghost" aria-label={t(copy.editFor, { name: name(guest) })} onClick={() => { setDraft(guestDraft(guest)); setRevision(guest.revision); setError(""); setFieldErrors({}); setCurrent(null); setView("edit"); }}>{copy.edit}</TactileButton>
+      <button className="tactile-button tactile-button--ghost" type="button" aria-label={t(copy.moreFor, { name: name(guest) })} popoverTarget={menuId} ref={trigger}>{copy.more} <ChevronDownIcon height="13" width="13" /></button>
+      <div id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="roster-actions-popover surface-floating" role="group" aria-label={t(copy.actionsFor, { name: name(guest) })}>
+        <button type="button" onClick={() => runAction(onEditProfile)}>{copy.editProfile}</button>
+        <button type="button" onClick={() => runAction(onNetworking)}>{copy.networking}</button>
+        <button type="button" onClick={() => runAction(() => { setView("duplicates"); void loadCandidates(); })}>{copy.reviewDuplicates}</button>
       </div>
     </div> : null}
     {notice ? <span className="attendee-action-status" role="status">{notice}</span> : null}
-    {canManage ? <ConsoleDialog open={view !== null} onClose={() => setView(null)} busy={pending} title={view === "edit" ? "Edit attendee details" : "Review duplicates"} description={name(guest)}>
+    {canManage ? <ConsoleDialog open={view !== null} onClose={() => setView(null)} busy={pending} title={view === "edit" ? copy.editTitle : copy.duplicatesTitle} description={name(guest)}>
       {view === "edit" ? <form className="attendee-details-form" onSubmit={(event) => { event.preventDefault(); void save(); }}>
-        <fieldset disabled={pending} className="event-form-grid">{fields.map(([key, label, maxLength]) => <EventField key={key} label={label} error={fieldErrors[key]}>{(id, help) => <input className="event-control" id={id} aria-describedby={help} aria-invalid={!!fieldErrors[key]} maxLength={maxLength} inputMode={key === "email" ? "email" : key === "phone" ? "tel" : undefined} value={draft[key]} onChange={(event) => { setDraft({ ...draft, [key]: event.target.value }); setFieldErrors((previous) => ({ ...previous, [key]: "" })); }} />}</EventField>)}<EventField label="Guest type" error={fieldErrors.guestType}>{(id) => <select className="event-control" id={id} value={draft.guestType} onChange={(event) => setDraft({ ...draft, guestType: event.target.value as EventGuestType })}><option>Attendee</option><option>VIP</option><option>Sponsor</option></select>}</EventField></fieldset>
-        {current ? <div className="event-conflict" role="alert"><h3>These details changed while you were editing</h3><p>Compare the saved details with your changes before saving again.</p><div className="event-comparison">{[{ title: "Saved details", value: current }, { title: "Your changes", value: draft }].map(({ title, value }) => <div key={title}><h4>{title}</h4><dl>{[...fields.map(([key, label]) => [label, value[key]]), ["Guest type", value.guestType]].map(([label, content]) => <div key={label}><dt>{label}</dt><dd>{content || "Not set"}</dd></div>)}</dl></div>)}</div><div className="event-form-actions"><TactileButton onClick={() => { setDraft(guestDraft(current)); setRevision(current.revision); setCurrent(null); }}>Use saved details</TactileButton><TactileButton onClick={() => { setRevision(current.revision); setCurrent(null); }}>Keep my changes</TactileButton></div></div> : null}
+        <fieldset disabled={pending} className="event-form-grid">{fields.map(([key, maxLength]) => <EventField key={key} label={copy.fields[key]} error={fieldErrors[key]}>{(id, help) => <input className="event-control" id={id} aria-describedby={help} aria-invalid={!!fieldErrors[key]} maxLength={maxLength} inputMode={key === "email" ? "email" : key === "phone" ? "tel" : undefined} value={draft[key]} onChange={(event) => { setDraft({ ...draft, [key]: event.target.value }); setFieldErrors((previous) => ({ ...previous, [key]: "" })); }} />}</EventField>)}<EventField label={copy.fields.guestType} error={fieldErrors.guestType}>{(id) => <select className="event-control" id={id} value={draft.guestType} onChange={(event) => setDraft({ ...draft, guestType: event.target.value as EventGuestType })}><option value="Attendee">{dict.events.guestTypes.Attendee}</option><option value="VIP">{dict.events.guestTypes.VIP}</option><option value="Sponsor">{dict.events.guestTypes.Sponsor}</option></select>}</EventField></fieldset>
+        {current ? <div className="event-conflict" role="alert"><h3>{copy.conflict.heading}</h3><p>{copy.conflict.description}</p><div className="event-comparison">{[{ title: copy.conflict.saved, value: current }, { title: copy.conflict.yours, value: draft }].map(({ title, value }) => <div key={title}><h4>{title}</h4><dl>{[...fields.map(([key]) => [copy.fields[key], value[key]]), [copy.fields.guestType, dict.events.guestTypes[value.guestType]]].map(([label, content]) => <div key={label}><dt>{label}</dt><dd>{content || copy.notSet}</dd></div>)}</dl></div>)}</div><div className="event-form-actions"><TactileButton onClick={() => { setDraft(guestDraft(current)); setRevision(current.revision); setCurrent(null); }}>{copy.conflict.useSaved}</TactileButton><TactileButton onClick={() => { setRevision(current.revision); setCurrent(null); }}>{copy.conflict.keepMine}</TactileButton></div></div> : null}
         {error ? <p className="event-field__error" role="alert">{error}</p> : null}
-        <div className="event-form-footer"><TactileButton disabled={pending} onClick={() => setView(null)}>Cancel</TactileButton><TactileButton disabled={pending || !!current} type="submit" variant="primary">{pending ? "Saving…" : "Save changes"}</TactileButton></div>
+        <div className="event-form-footer"><TactileButton disabled={pending} onClick={() => setView(null)}>{copy.cancel}</TactileButton><TactileButton disabled={pending || !!current} type="submit" variant="primary">{pending ? copy.saving : copy.saveChanges}</TactileButton></div>
       </form> : <div className="attendee-duplicate-review">
-        {linked.length ? <section className="attendee-linked-records"><h3>Already linked as the same person</h3>{linked.map((item) => <p key={item.id}><strong>{name(item)}</strong><span>{item.email || item.phone || item.company}</span></p>)}</section> : null}
-        <p className="event-section-description">Review attendees who share an email or phone number. Link records only if they belong to the same person.</p>
-        {pending && candidates === null ? <p role="status">Checking for duplicate attendees…</p> : candidates?.length ? <div className="attendee-candidates">{candidates.map((candidate) => <label className="attendee-candidate-option" key={candidate.guestId}><input type="radio" name={`duplicate-${guest.id}`} checked={selected?.guestId === candidate.guestId} disabled={pending} onChange={() => { setSelected(candidate); setConfirmed(false); setError(""); }} /><span><strong>{name(candidate)}</strong><span>{candidate.company || "Company not set"}</span>{candidate.reasons.includes("email") ? <small>Same email: {candidate.email}</small> : null}{candidate.reasons.includes("phone") ? <small>Same phone: {candidate.phone}</small> : null}</span></label>)}</div> : candidates ? <p className="event-form-empty">No other attendees share this email or phone number.</p> : null}
-        {selected ? <section className="attendee-link-confirmation"><h3>Link these records as one person</h3><p><strong>{name(guest)}</strong> and <strong>{name(selected)}</strong> will share one person record. Existing details and import history will be kept.{linked.length ? ` This also links ${linked.length} ${linked.length === 1 ? "record already connected" : "records already connected"} to ${name(guest)}.` : ""}</p><label><input type="checkbox" checked={confirmed} disabled={pending} onChange={(event) => setConfirmed(event.target.checked)} /> I confirm these records belong to the same person.</label></section> : null}
-        {error ? <div role="alert"><p className="event-field__error">{error}</p><button className="event-text-action" type="button" disabled={pending} onClick={() => void loadCandidates()}>Check again</button></div> : null}
-        <div className="event-form-footer"><TactileButton disabled={pending} onClick={() => setView(null)}>Close</TactileButton>{selected ? <TactileButton variant="graphite" disabled={!confirmed || pending} onClick={() => void link()}>{pending ? "Linking…" : "Link as same person"}</TactileButton> : null}</div>
+        {linked.length ? <section className="attendee-linked-records"><h3>{copy.alreadyLinked}</h3>{linked.map((item) => <p key={item.id}><strong>{name(item)}</strong><span>{item.email || item.phone || item.company}</span></p>)}</section> : null}
+        <p className="event-section-description">{copy.reviewHint}</p>
+        {pending && candidates === null ? <p role="status">{copy.checking}</p> : candidates?.length ? <div className="attendee-candidates">{candidates.map((candidate) => <label className="attendee-candidate-option" key={candidate.guestId}><input type="radio" name={`duplicate-${guest.id}`} checked={selected?.guestId === candidate.guestId} disabled={pending} onChange={() => { setSelected(candidate); setConfirmed(false); setError(""); }} /><span><strong>{name(candidate)}</strong><span>{candidate.company || copy.companyNotSet}</span>{candidate.reasons.includes("email") ? <small>{t(copy.sameEmail, { email: candidate.email })}</small> : null}{candidate.reasons.includes("phone") ? <small>{t(copy.samePhone, { phone: candidate.phone })}</small> : null}</span></label>)}</div> : candidates ? <p className="event-form-empty">{copy.noDuplicates}</p> : null}
+        {selected ? <section className="attendee-link-confirmation"><h3>{copy.confirmHeading}</h3><p>{t(copy.confirmBody, { first: name(guest), second: name(selected) })}{linked.length ? plural(copy.confirmAlso, linked.length, { name: name(guest) }) : ""}</p><label><input type="checkbox" checked={confirmed} disabled={pending} onChange={(event) => setConfirmed(event.target.checked)} /> {copy.confirmCheckbox}</label></section> : null}
+        {error ? <div role="alert"><p className="event-field__error">{error}</p><button className="event-text-action" type="button" disabled={pending} onClick={() => void loadCandidates()}>{copy.checkAgain}</button></div> : null}
+        <div className="event-form-footer"><TactileButton disabled={pending} onClick={() => setView(null)}>{copy.close}</TactileButton>{selected ? <TactileButton variant="graphite" disabled={!confirmed || pending} onClick={() => void link()}>{pending ? copy.linking : copy.linkAction}</TactileButton> : null}</div>
       </div>}
     </ConsoleDialog> : null}
   </div>;

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/shared/i18n/I18nProvider";
+import { localizeErrorCode, localizeFieldMessage } from "@/shared/i18n/field-messages";
 import { CheckIcon, ChevronDownIcon, CloseIcon, SearchIcon, TrashIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
@@ -8,7 +10,7 @@ import { ApplicationError } from "@/shared/lib/application-error";
 import type { SavedEventGuestRecord } from "@/modules/events/event-record";
 import { deleteMatchBlock, submitMatchBlock } from "../mutations/match-blocks";
 import { StaleParticipationError, submitGuestNetworking } from "../mutations/update-networking";
-import { EXCLUSION_REASONS, EXCLUSION_REASON_LABELS } from "../networking-schemas";
+import { EXCLUSION_REASONS } from "../networking-schemas";
 import type { ExclusionReason, MatchBlockDto, ParticipationDto } from "../networking-schemas";
 
 const MAX_SUGGESTIONS = 6;
@@ -23,17 +25,15 @@ type Props = {
   onChanged: () => void | Promise<void>;
 };
 
-function guestName(guest: Pick<SavedEventGuestRecord, "firstName" | "lastName">) {
-  return `${guest.firstName} ${guest.lastName}`.trim() || "Unnamed guest";
-}
-
-function describeState(state: Pick<ParticipationDto, "status" | "reason">) {
-  return state.status === "excluded" && state.reason
-    ? `Excluded: ${EXCLUSION_REASON_LABELS[state.reason]}`
-    : state.status === "excluded" ? "Excluded" : "Included";
-}
 
 export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onChanged, onBusyChange }: Props) {
+  const i18n = useI18n();
+  const { dict, t } = i18n;
+  const copy = dict.attendees.networking;
+  const guestName = (entry: Pick<SavedEventGuestRecord, "firstName" | "lastName">) => `${entry.firstName} ${entry.lastName}`.trim() || copy.unnamed;
+  const describeState = (state: Pick<ParticipationDto, "status" | "reason">) => state.status === "excluded" && state.reason
+    ? t(copy.excludedReason, { reason: dict.attendees.exclusionReasons[state.reason] })
+    : state.status === "excluded" ? copy.excluded : copy.included;
   const [reason, setReason] = useState<ExclusionReason | "">("");
   const [pending, setPending] = useState(false);
   useEffect(() => { onBusyChange?.(pending); }, [pending, onBusyChange]);
@@ -61,15 +61,15 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
     try {
       setNotice(await operation());
       try { await onChanged(); }
-      catch { setNotice("Saved; refresh to load the updated roster."); }
+      catch { setNotice(copy.savedRefresh); }
     } catch (failure) {
       if (failure instanceof StaleParticipationError) {
         setLatest(failure.latest);
-        setError("Someone else changed this guest.");
+        setError(copy.stale);
         try { await onChanged(); } catch { /* the notice below still shows the saved state */ }
       } else if (failure instanceof ApplicationError) {
-        setError(failure.fields ? Object.values(failure.fields)[0] ?? failure.message : failure.message);
-      } else setError("The change could not be saved. Try again.");
+        setError(failure.fields ? localizeFieldMessage(i18n, Object.values(failure.fields)[0] ?? "") || localizeErrorCode(dict, failure.code) : localizeErrorCode(dict, failure.code));
+      } else setError(copy.failed);
     } finally {
       setPending(false);
     }
@@ -81,49 +81,49 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
       : { status: "excluded" as const, reason: reason as ExclusionReason, expectedVersion: guest.networking.version };
     await submitGuestNetworking(eventId, guest.id, next);
     setReason("");
-    return excluded ? "Guest restored to the matching pool." : "Guest excluded from matching.";
+    return excluded ? copy.restored : copy.excludedNotice;
   });
 
   return (
     <Surface className="attendee-import-panel networking-panel" depth="inset" aria-labelledby="networking-panel-title">
       <div className="attendee-import-panel__heading">
         <div>
-          <h3 id="networking-panel-title">Networking for {guestName(guest)}</h3>
-          <p>Excluded guests stay on the roster but are not matched. Saved changes apply to future matching.</p>
+          <h3 id="networking-panel-title">{t(copy.title, { name: guestName(guest) })}</h3>
+          <p>{copy.description}</p>
         </div>
-        <TactileButton aria-label="Close networking panel" iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
+        <TactileButton aria-label={copy.close} iconOnly disabled={pending} onClick={onClose}><CloseIcon height="15" width="15" /></TactileButton>
       </div>
 
       <div className="networking-panel__section">
-        <strong>Participation</strong>
+        <strong>{copy.participation}</strong>
         <p>{describeState(guest.networking)}</p>
         {excluded ? (
-          <TactileButton disabled={pending} onClick={() => void changeParticipation()}>{pending ? "Saving…" : "Restore to matching"}</TactileButton>
+          <TactileButton disabled={pending} onClick={() => void changeParticipation()}>{pending ? copy.saving : copy.restore}</TactileButton>
         ) : (
           <div className="networking-panel__row">
             <label className="roster-filter">
-              <span className="sr-only">Exclusion reason</span>
+              <span className="sr-only">{copy.reasonLabel}</span>
               <select disabled={pending} onChange={(input) => setReason(input.target.value as ExclusionReason | "")} value={reason}>
-                <option value="">Choose a reason…</option>
-                {EXCLUSION_REASONS.map((value) => <option key={value} value={value}>{EXCLUSION_REASON_LABELS[value]}</option>)}
+                <option value="">{copy.chooseReason}</option>
+                {EXCLUSION_REASONS.map((value) => <option key={value} value={value}>{dict.attendees.exclusionReasons[value]}</option>)}
               </select><ChevronDownIcon className="roster-filter__chevron" />
             </label>
-            <TactileButton disabled={pending || !reason} onClick={() => void changeParticipation()}>{pending ? "Saving…" : "Exclude from matching"}</TactileButton>
+            <TactileButton disabled={pending || !reason} onClick={() => void changeParticipation()}>{pending ? copy.saving : copy.exclude}</TactileButton>
           </div>
         )}
       </div>
 
       <div className="networking-panel__section">
-        <strong>Do not match with</strong>
-        {guestBlocks.length === 0 ? <p>No restrictions for this guest.</p> : (
+        <strong>{copy.blocks}</strong>
+        {guestBlocks.length === 0 ? <p>{copy.noBlocks}</p> : (
           <ul className="networking-panel__list">
             {guestBlocks.map((block) => {
               const otherId = block.guestIds.find((id) => id !== guest.id) ?? block.guestIds[0];
               const other = byId.get(otherId);
               return (
                 <li key={block.id}>
-                  <span>{other ? guestName(other) : "Unknown guest"}{other?.company ? ` · ${other.company}` : ""}</span>
-                  <button aria-label={`Remove restriction with ${other ? guestName(other) : "guest"}`} disabled={pending} onClick={() => void run(async () => { await deleteMatchBlock(eventId, block.id); return "Restriction removed."; })} type="button">
+                  <span>{other ? guestName(other) : copy.unknownGuest}{other?.company ? ` · ${other.company}` : ""}</span>
+                  <button aria-label={t(copy.removeFor, { name: other ? guestName(other) : copy.guestFallback })} disabled={pending} onClick={() => void run(async () => { await deleteMatchBlock(eventId, block.id); return copy.removed; })} type="button">
                     <TrashIcon height="14" width="14" />
                   </button>
                 </li>
@@ -133,7 +133,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
         )}
         <label className="search-field search-field--compact">
           <SearchIcon height="15" width="15" />
-          <input aria-label="Search guests to add a restriction" disabled={pending} onChange={(input) => setSearch(input.target.value)} placeholder="Search guests to avoid matching…" type="search" value={search} />
+          <input aria-label={copy.searchLabel} disabled={pending} onChange={(input) => setSearch(input.target.value)} placeholder={copy.searchPlaceholder} type="search" value={search} />
         </label>
         {suggestions.length > 0 ? (
           <ul className="networking-panel__list">
@@ -143,15 +143,15 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
                 <TactileButton disabled={pending} onClick={() => void run(async () => {
                   await submitMatchBlock(eventId, { guestIds: [guest.id, entry.id] });
                   setSearch("");
-                  return `${guestName(entry)} will not be matched with ${guestName(guest)}.`;
-                })}>Add</TactileButton>
+                  return t(copy.wontMatch, { other: guestName(entry), guest: guestName(guest) });
+                })}>{copy.add}</TactileButton>
               </li>
             ))}
           </ul>
-        ) : needle ? <p>No other guests match this search.</p> : null}
+        ) : needle ? <p>{copy.noSearchResults}</p> : null}
       </div>
 
-      {error ? <p className="upload-error" role="alert">{error}{latest ? ` Latest saved state: ${describeState(latest)}.` : ""}</p> : null}
+      {error ? <p className="upload-error" role="alert">{error}{latest ? t(copy.latest, { state: describeState(latest) }) : ""}</p> : null}
       {notice ? <div aria-live="polite" className="roster-notice" role="status"><CheckIcon height="15" width="15" /> <span>{notice}</span></div> : null}
     </Surface>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useRef, useState, type DragEvent, type FormEvent } from "react";
+import { useI18n } from "@/shared/i18n/I18nProvider";
+import { localizeErrorCode, localizeFieldMessage } from "@/shared/i18n/field-messages";
 import { CheckIcon, CloseIcon, DocumentIcon, TrashIcon, UploadIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
@@ -26,6 +28,9 @@ function formatFileSize(size: number) {
 }
 
 export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters, onCancel, onClearFilters, onSaved }: Props) {
+  const i18n = useI18n();
+  const { dict, number } = i18n;
+  const copy = dict.events.import;
   const [file, setFile] = useState<File | null>(null);
   const [csvText, setCsvText] = useState("");
   const [preview, setPreview] = useState<ReturnType<typeof parseGuestCsv> | null>(null);
@@ -34,11 +39,14 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [resultMessage, setResultMessage] = useState("");
+  const [savedWithFilters, setSavedWithFilters] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const submitting = useRef(false);
 
   const existingEmails = useMemo(() => new Set(existingGuests.map((guest) => guest.email.trim().toLowerCase()).filter(Boolean)), [existingGuests]);
   const previewDuplicates = preview?.guests.filter((guest) => guest.email && existingEmails.has(guest.email)).length ?? 0;
+
+  const localizeFields = (fields: Record<string, string>) => Object.fromEntries(Object.entries(fields).map(([field, message]) => [field, localizeFieldMessage(i18n, message)]));
 
   async function acceptFile(nextFile: File | undefined) {
     if (!nextFile) return;
@@ -50,11 +58,11 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
     setFieldErrors({});
     setResultMessage("");
     if (!nextFile.name.toLowerCase().endsWith(".csv") && !nextFile.type.includes("csv")) {
-      setErrorMessage("Choose a .csv file to import attendees.");
+      setErrorMessage(copy.errors.notCsv);
       return;
     }
     if (nextFile.size > 1024 * 1024) {
-      setErrorMessage("The file must be 1 MiB or smaller.");
+      setErrorMessage(copy.errors.tooLarge);
       return;
     }
     try {
@@ -63,8 +71,8 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
       setCsvText(text);
       setPreview(parsed);
     } catch (error) {
-      setErrorMessage(error instanceof GuestCsvError ? error.message : "We could not read attendee rows from this file.");
-      if (error instanceof GuestCsvError && error.fields) setFieldErrors(error.fields);
+      setErrorMessage(error instanceof GuestCsvError ? localizeFieldMessage(i18n, error.message) : copy.errors.unreadable);
+      if (error instanceof GuestCsvError && error.fields) setFieldErrors(localizeFields(error.fields));
     }
   }
 
@@ -84,18 +92,19 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
       setResultMessage("");
       try {
         const result = await submitAttendeeImport(eventId, { fileName: file.name, csvText });
-        setResultMessage(importSuccessMessage(result, hasActiveFilters));
+        setResultMessage(importSuccessMessage(i18n, result, hasActiveFilters));
+        setSavedWithFilters(hasActiveFilters);
         setFile(null);
         setCsvText("");
         setPreview(null);
         if (fileInput.current) fileInput.current.value = "";
-        const refreshFailure = await refreshAfterImport(onSaved);
+        const refreshFailure = await refreshAfterImport(i18n, onSaved);
         if (refreshFailure) setResultMessage(refreshFailure);
       } catch (error) {
         if (error instanceof ApplicationError) {
-          setErrorMessage(error.message);
-          setFieldErrors(error.fields ?? {});
-        } else setErrorMessage("The CSV could not be imported. Your file is still selected; try again.");
+          setErrorMessage(error.code === "INTERNAL_ERROR" ? copy.errors.failed : localizeErrorCode(dict, error.code));
+          setFieldErrors(localizeFields(error.fields ?? {}));
+        } else setErrorMessage(copy.errors.failed);
       } finally {
         setPending(false);
       }
@@ -106,10 +115,10 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
     <Surface className="attendee-import-panel" depth="inset" aria-labelledby="attendee-import-title">
       <div className="attendee-import-panel__heading">
         <div>
-          <h3 id="attendee-import-title">Import attendees from CSV</h3>
-          <p>New attendees are appended. Emails already on this event are skipped, and existing records stay as they are.</p>
+          <h3 id="attendee-import-title">{copy.heading}</h3>
+          <p>{copy.description}</p>
         </div>
-        <TactileButton aria-label="Close CSV import" disabled={pending} iconOnly onClick={onCancel}><CloseIcon height="15" width="15" /></TactileButton>
+        <TactileButton aria-label={copy.close} disabled={pending} iconOnly onClick={onCancel}><CloseIcon height="15" width="15" /></TactileButton>
       </div>
 
       <form onSubmit={submit}>
@@ -128,23 +137,23 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
                 <span className="csv-complete__icon"><DocumentIcon height="23" width="23" /></span>
                 <div className="csv-complete__copy">
                   {preview ? <span className="upload-success"><CheckIcon height="14" width="14" /></span> : null}
-                  <div><strong>{file.name}</strong><span>{formatFileSize(file.size)} · {preview ? "Preview ready" : "Needs attention"}</span></div>
+                  <div><strong>{file.name}</strong><span>{formatFileSize(file.size)} · {preview ? copy.previewReady : copy.needsAttention}</span></div>
                 </div>
                 {preview ? (
                   <div className="csv-results">
-                    <strong>{preview.rows.toLocaleString()}<span>rows</span></strong>
-                    <strong>{Math.max(0, preview.rows - previewDuplicates).toLocaleString()}<span>likely added</span></strong>
-                    <strong>{previewDuplicates.toLocaleString()}<span>likely skipped</span></strong>
+                    <strong>{number(preview.rows)}<span>{copy.rows}</span></strong>
+                    <strong>{number(Math.max(0, preview.rows - previewDuplicates))}<span>{copy.likelyAdded}</span></strong>
+                    <strong>{number(previewDuplicates)}<span>{copy.likelySkipped}</span></strong>
                   </div>
                 ) : null}
                 <div className="upload-actions csv-complete__actions">
-                  <button disabled={pending} onClick={() => fileInput.current?.click()} type="button">Replace file</button>
-                  <button aria-label="Remove CSV file" disabled={pending} onClick={() => { setFile(null); setCsvText(""); setPreview(null); setErrorMessage(""); setFieldErrors({}); if (fileInput.current) fileInput.current.value = ""; }} type="button"><TrashIcon height="15" width="15" /></button>
+                  <button disabled={pending} onClick={() => fileInput.current?.click()} type="button">{copy.replace}</button>
+                  <button aria-label={copy.remove} disabled={pending} onClick={() => { setFile(null); setCsvText(""); setPreview(null); setErrorMessage(""); setFieldErrors({}); if (fileInput.current) fileInput.current.value = ""; }} type="button"><TrashIcon height="15" width="15" /></button>
                 </div>
               </div>
             ) : (
               <div
-                aria-label="Upload attendee CSV"
+                aria-label={copy.upload}
                 className={`csv-dropzone ${dragging ? "csv-dropzone--dragging" : ""}`}
                 onClick={() => fileInput.current?.click()}
                 onDragEnter={(event) => { event.preventDefault(); setDragging(true); }}
@@ -156,41 +165,41 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
                 tabIndex={0}
               >
                 <span className="dropzone-icon"><DocumentIcon height="21" width="21" /></span>
-                <strong>Drop your CSV here</strong>
-                <span>or click to browse · maximum 1 MiB</span>
+                <strong>{copy.drop}</strong>
+                <span>{copy.orBrowse}</span>
               </div>
             )}
             {errorMessage ? <p className="upload-error" role="alert">{errorMessage}</p> : null}
             {Object.keys(fieldErrors).length ? (
-              <ul className="attendee-import-errors" aria-label="CSV field errors">
+              <ul className="attendee-import-errors" aria-label={copy.fieldErrors}>
                 {Object.entries(fieldErrors).slice(0, 20).map(([field, message]) => <li key={field}><span>{field}</span> {message}</li>)}
               </ul>
             ) : null}
           </div>
           <div className="csv-requirements">
-            <strong>CSV requirements</strong>
-            <p>Use the downloaded template. At least one name column and a name for each row are required.</p>
-            <p>Email is optional. Duplicate emails inside the file reject the whole import.</p>
-            <p>Maximum 2,000 attendees per event. Blank rows are ignored.</p>
-            <p>No-email guests stay distinct. An exact file retry is safe; changed or reordered files can add them again.</p>
-            <button className="template-action" disabled={pending} onClick={downloadGuestCsvTemplate} type="button"><UploadIcon className="rotate-180" height="15" width="15" /> Download template</button>
+            <strong>{copy.requirements}</strong>
+            <p>{copy.req1}</p>
+            <p>{copy.req2}</p>
+            <p>{copy.req3}</p>
+            <p>{copy.req4}</p>
+            <button className="template-action" disabled={pending} onClick={downloadGuestCsvTemplate} type="button"><UploadIcon className="rotate-180" height="15" width="15" /> {copy.template}</button>
           </div>
         </div>
         {preview ? (
           <p className="attendee-import-preview-note" role="note">
-            Preview is advisory; the server checks the current roster again when saving. {preview.skipped ? `${preview.skipped} blank ${preview.skipped === 1 ? "row is" : "rows are"} ignored.` : ""}
+            {copy.previewNote} {preview.skipped ? i18n.plural(copy.blankIgnored, preview.skipped) : ""}
           </p>
         ) : null}
         {resultMessage ? (
           <div aria-live="polite" className="roster-notice attendee-import-result" role="status">
             <CheckIcon height="15" width="15" /> <span>{resultMessage}</span>
-            {hasActiveFilters && resultMessage.startsWith("Import saved:") ? <button onClick={onClearFilters} type="button">Clear filters</button> : null}
+            {hasActiveFilters && savedWithFilters ? <button onClick={onClearFilters} type="button">{copy.clearFilters}</button> : null}
           </div>
         ) : null}
         <div className="attendee-import-panel__actions">
-          <TactileButton disabled={pending} onClick={onCancel}>Cancel</TactileButton>
+          <TactileButton disabled={pending} onClick={onCancel}>{copy.cancel}</TactileButton>
           <TactileButton disabled={pending || !file || !preview || !csvText} type="submit" variant="primary">
-            {pending ? "Importing…" : "Import CSV"}
+            {pending ? copy.importing : copy.importCsv}
           </TactileButton>
         </div>
       </form>
