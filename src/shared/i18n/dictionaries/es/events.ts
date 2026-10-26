@@ -269,4 +269,67 @@ export const events = {
     unchanged: "El idioma ya está configurado.",
     failed: "No se pudo guardar el idioma. Inténtalo de nuevo.",
   },
+  create: {
+    title: "Crear evento", subtitle: "Configura un evento nuevo.", back: "Eventos", summaryLabel: "Resumen del evento en vivo",
+    basics: { heading: "Datos básicos del evento", description: "Lo esencial que verán los invitados y el personal." },
+    context: { heading: "Contexto del evento", description: "Danos suficientes señales para que Weft entienda a quién reunirás." },
+    audience: { heading: "Audiencia esperada", description: "¿A quiénes esperas en la sala?", label: "Perfiles de audiencia esperada" },
+    attendees: { heading: "Asistentes", description: "Importa tu lista de invitados o agrega personas manualmente.", entryMethod: "Método para agregar asistentes", importCsv: "Importar CSV", addManually: "Agregar manualmente" },
+    team: {
+      heading: "Equipo del evento", description: "Asigna a las personas que ayudarán a operar la sala.", organizer: "Organizador", staffWefters: "Personal / Wefters",
+      portrait: "Retrato de {name}", assign: "Asignar personal", selected: "{count} seleccionados", remove: "Quitar a {name}",
+    },
+    fields: {
+      organization: "Organización", name: "Nombre del evento", namePlaceholder: "Ponle nombre a tu evento", city: "Ciudad", chooseCity: "Elige una ciudad",
+      venue: "Sede", venuePlaceholder: "Agrega una sede", expectedAttendees: "Asistentes esperados", startDate: "Fecha de inicio", startTime: "Hora de inicio",
+      endDate: "Fecha de fin", endTime: "Hora de fin", coverImage: "Imagen de portada", description: "Descripción del evento",
+      descriptionPlaceholder: "Describe el encuentro y a quiénes reúne", categories: "Categorías del evento",
+      categoriesHint: "Selecciona las señales que mejor describen el evento.",
+    },
+    cover: {
+      uploadLabel: "Subir imagen de portada del evento", upload: "Subir portada", hint: "JPG, PNG o WebP · 16:9 funciona mejor",
+      ready: "{size} · Lista en la vista previa del evento", replace: "Reemplazar", remove: "Quitar imagen de portada", previewAlt: "Vista previa de la portada de {name}", newEvent: "nuevo evento",
+    },
+    csv: {
+      ready: "{size} · Listo para importar", attendees: "asistentes", vips: "VIP", sponsors: "patrocinadores",
+      skipped: { one: "Se omitió {count} fila vacía.", other: "Se omitieron {count} filas vacías." },
+      replace: "Reemplazar archivo", remove: "Quitar archivo CSV", uploadLabel: "Subir CSV de asistentes", drop: "Suelta tu CSV aquí", browse: "o haz clic para buscarlo · máximo 1 MiB",
+      requirements: "Requisitos del CSV", req1: "Obligatorio: al menos una columna de nombre y un nombre para cada invitado.", req2: "El correo es opcional para los invitados del CSV.",
+      req3: "Opcional: teléfono, empresa, cargo, LinkedIn, tipo de perfil, tipo de invitado", req4: "El tipo de invitado acepta Attendee, VIP o Sponsor (en inglés).",
+      template: "Descargar plantilla", readRows: "{message}. Revisa que la primera fila contenga los nombres de las columnas.",
+    },
+    manual: {
+      firstName: "Nombre", lastName: "Apellido", email: "Correo electrónico", phone: "Teléfono", guestType: "Tipo de invitado", linkedin: "LinkedIn", position: "Cargo",
+      company: "Empresa", profileType: "Tipo de perfil", emailPlaceholder: "nombre@empresa.com", linkedinPlaceholder: "linkedin.com/in/perfil", notSet: "Sin definir", positionPlaceholder: "Fundador y CEO", companyPlaceholder: "Nombre de la empresa",
+      add: "Agregar invitado", added: { one: "{count} invitado agregado en esta sesión", other: "{count} invitados agregados en esta sesión" }, guestError: "Invitado {number}: {message}",
+    },
+    summary: {
+      heading: "Resumen del evento", live: "En vivo", addCover: "AGREGA UNA IMAGEN DE PORTADA", untitled: "Evento sin título", coverAlt: "Portada de {name}",
+      expectedAttendees: "{count} asistentes esperados", addEstimate: "Agrega una estimación de asistentes", context: "Contexto", addCategories: "Agrega categorías del evento",
+      audience: "Audiencia esperada", addProfiles: "Agrega perfiles de audiencia", more: "+{count} más", team: "Equipo", staffAssigned: "{count} integrantes del personal asignados", assignStaff: "Asigna personal al evento",
+    },
+    actions: { create: "Crear evento", creating: "Creando…", keepDraft: "Mantener el borrador en esta pestaña" },
+    validation: {
+      name: "Agrega un nombre para el evento.", city: "Elige una ciudad.", startDate: "Elige una fecha de inicio.", endDate: "Elige una fecha de fin.",
+      description: "Agrega una descripción.", categories: "Elige al menos una categoría.",
+    },
+    toast: {
+      dismiss: "Descartar notificación",
+      notImage: { title: "Ese archivo no es una imagen", detail: "Elige una imagen JPG, PNG o WebP." },
+      guestAttention: { title: "Los datos del invitado requieren atención", detail: "Agrega un nombre y un correo válidos, y mantén la lista de invitados por debajo de 2000 personas." },
+      guestAdded: { title: "Invitado agregado", detail: "{name} se agregó a la lista de invitados de este formulario." },
+      missing: { title: "Faltan algunos datos", detail: "Completa los campos resaltados antes de crear el evento." },
+      draft: { title: "Borrador conservado en esta pestaña", detail: "Este formulario permanece en esta pestaña. Se perderá si actualizas o sales de la página." },
+      authRequired: "Se requiere autenticación", accessRequired: "Se requiere acceso", failed: "No se pudo crear el evento",
+    },
+    errors: {
+      cover: "No se pudo procesar la portada seleccionada.", coverField: "Elige una imagen JPG, PNG o WebP válida.",
+      csvRead: "No se pudo leer el CSV.", csvField: "Elige el archivo CSV de nuevo.", highlighted: "Revisa los campos resaltados.",
+      generic: "No se pudo crear el evento. Tu formulario sigue aquí; inténtalo de nuevo.", unreadable: "No pudimos leer las filas de asistentes de este archivo.",
+    },
+    access: {
+      signInTitle: "Se requiere iniciar sesión", signInDescription: "Inicia sesión de nuevo para ver este evento.",
+      verifyingTitle: "Verificando el acceso", verifyingDescription: "Esperando tu sesión activa.",
+    },
+  },
 } satisfies Dictionary["events"];

@@ -105,7 +105,7 @@ Actual results, 2026-10-25:
 Branches: Console `feat/console-translations` (based on `feat/matching-simulation`, not pushed); engine `feat/console-translations` in worktree `/Users/shearytan/Documents/SurnX/weft-engine-translations` (based on origin/main, not pushed). The main engine checkout still has the user's uncommitted DeepSeek edits, untouched.
 
 Remaining step 5 work (the PENDING list in `tests/i18n.test.mjs` shows it; remove each file from it as it is done):
-1. `src/modules/events/components/create-event-page.tsx` (~1000 lines, form copy, toasts, validation text, option lists via `dict.events.options`), and `events-query-provider.tsx` (two strings).
+1. Done 2026-10-26: `create-event-page.tsx` and `events-query-provider.tsx` (`dict.events.create`; city, category and audience labels via `dict.events.options`; server and Zod messages through `localizeFieldMessage`). `pnpm verify` and `pnpm build` passed; not checked in a browser. Spanish copy still needs native review.
 2. Kami: `kami-config.ts`, `kami-preview.ts`, `kami-workspace.tsx`, `kami-preview-panel.tsx`, `kami-call-modal.tsx`, `kami-controls.tsx`, `hooks/use-dictation.ts`. Decide whether default Kami messages follow the event language (suggested) or the UI language.
 3. Server field messages not yet in `src/shared/i18n/field-messages.ts`.
 Then: finish step 7 (JSX check has no pending files), run the signed-in browser checks listed above, Spanish length review, `pnpm verify`/`pnpm build` again, and native review of Spanish strings. Also apply the Console migrations to an isolated database before running the engine database suites. Do not merge before `feat/matching-simulation` lands.

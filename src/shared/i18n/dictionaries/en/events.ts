@@ -267,4 +267,67 @@ export const events = {
     unchanged: "Language is already set.",
     failed: "Could not save the language. Try again.",
   },
+  create: {
+    title: "Create event", subtitle: "Set up a new event.", back: "Events", summaryLabel: "Live event summary",
+    basics: { heading: "Event basics", description: "The essentials guests and staff will see." },
+    context: { heading: "Event context", description: "Give Weft enough signal to understand the room." },
+    audience: { heading: "Expected audience", description: "Who do you expect to be in the room?", label: "Expected audience profiles" },
+    attendees: { heading: "Attendees", description: "Import your guest list or add people manually.", entryMethod: "Attendee entry method", importCsv: "Import CSV", addManually: "Add manually" },
+    team: {
+      heading: "Event team", description: "Assign the people who will help run the room.", organizer: "Organizer", staffWefters: "Staff / Wefters",
+      portrait: "Portrait of {name}", assign: "Assign staff", selected: "{count} selected", remove: "Remove {name}",
+    },
+    fields: {
+      organization: "Organization", name: "Event name", namePlaceholder: "Name your event", city: "City", chooseCity: "Choose a city",
+      venue: "Venue", venuePlaceholder: "Add a venue", expectedAttendees: "Expected attendees", startDate: "Start date", startTime: "Start time",
+      endDate: "End date", endTime: "End time", coverImage: "Cover image", description: "Event description",
+      descriptionPlaceholder: "Describe the gathering and who it brings together", categories: "Event categories",
+      categoriesHint: "Select the signals that best describe the event.",
+    },
+    cover: {
+      uploadLabel: "Upload event cover image", upload: "Upload cover", hint: "JPG, PNG or WebP · 16:9 works best",
+      ready: "{size} · Ready in the event preview", replace: "Replace", remove: "Remove cover image", previewAlt: "Cover preview for {name}", newEvent: "new event",
+    },
+    csv: {
+      ready: "{size} · Ready to import", attendees: "attendees", vips: "VIPs", sponsors: "sponsors",
+      skipped: { one: "{count} empty row skipped.", other: "{count} empty rows skipped." },
+      replace: "Replace file", remove: "Remove CSV file", uploadLabel: "Upload attendee CSV", drop: "Drop your CSV here", browse: "or click to browse · maximum 1 MiB",
+      requirements: "CSV requirements", req1: "Required: at least one name column and a name for each guest.", req2: "Email is optional for CSV guests.",
+      req3: "Optional: phone, company, position, LinkedIn, profile type, guest type", req4: "Guest type accepts Attendee, VIP, or Sponsor.",
+      template: "Download template", readRows: "{message}. Check that the first row names the columns.",
+    },
+    manual: {
+      firstName: "First name", lastName: "Last name", email: "Email", phone: "Phone", guestType: "Guest type", linkedin: "LinkedIn", position: "Position",
+      company: "Company", profileType: "Profile type", emailPlaceholder: "name@company.com", linkedinPlaceholder: "linkedin.com/in/profile", notSet: "Not set", positionPlaceholder: "Founder & CEO", companyPlaceholder: "Company name",
+      add: "Add guest", added: { one: "{count} guest added in this session", other: "{count} guests added in this session" }, guestError: "Guest {number}: {message}",
+    },
+    summary: {
+      heading: "Event summary", live: "Live", addCover: "ADD A COVER IMAGE", untitled: "Untitled event", coverAlt: "Cover for {name}",
+      expectedAttendees: "{count} expected attendees", addEstimate: "Add an attendee estimate", context: "Context", addCategories: "Add event categories",
+      audience: "Expected audience", addProfiles: "Add audience profiles", more: "+{count} more", team: "Team", staffAssigned: "{count} staff assigned", assignStaff: "Assign event staff",
+    },
+    actions: { create: "Create event", creating: "Creating…", keepDraft: "Keep draft in this tab" },
+    validation: {
+      name: "Add an event name.", city: "Choose a city.", startDate: "Choose a start date.", endDate: "Choose an end date.",
+      description: "Add a description.", categories: "Choose at least one category.",
+    },
+    toast: {
+      dismiss: "Dismiss notification",
+      notImage: { title: "That file is not an image", detail: "Choose a JPG, PNG, or WebP image." },
+      guestAttention: { title: "Guest details need attention", detail: "Add a valid first name and email, and keep the guest list under 2,000 people." },
+      guestAdded: { title: "Guest added", detail: "{name} was added to this form's guest list." },
+      missing: { title: "A few details are missing", detail: "Complete the highlighted fields before creating the event." },
+      draft: { title: "Draft kept in this tab", detail: "This form remains in this tab. It will be lost if you refresh or leave the page." },
+      authRequired: "Authentication required", accessRequired: "Access required", failed: "Event could not be created",
+    },
+    errors: {
+      cover: "The selected cover could not be processed.", coverField: "Choose a valid JPG, PNG or WebP image.",
+      csvRead: "The CSV could not be read.", csvField: "Choose the CSV file again.", highlighted: "Check the highlighted fields.",
+      generic: "The event could not be created. Your form is still here; try again.", unreadable: "We could not read attendee rows from this file.",
+    },
+    access: {
+      signInTitle: "Sign in required", signInDescription: "Sign in again to view this event.",
+      verifyingTitle: "Verifying access", verifyingDescription: "Waiting for your active session.",
+    },
+  },
 } as const;

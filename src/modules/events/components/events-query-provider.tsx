@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { ConsoleContext } from "@/modules/organizations/types";
 import type { EventQueryScope } from "../queries/event-detail-query";
+import { useI18n } from "@/shared/i18n/I18nProvider";
 import { EventAccessState } from "./event-access-state";
 
 const ScopeContext = createContext<EventQueryScope | null>(null);
@@ -12,6 +13,7 @@ const SessionEndContext = createContext<(() => void) | null>(null);
 const CanInviteStaffContext = createContext(false);
 
 function ScopedQueryProvider({ scope, children }: { scope: EventQueryScope; children: ReactNode }) {
+  const copy = useI18n().dict.events.create.access;
   const [client] = useState(() => new QueryClient());
   const [ended, setEnded] = useState(false);
   useEffect(() => () => {
@@ -19,7 +21,7 @@ function ScopedQueryProvider({ scope, children }: { scope: EventQueryScope; chil
     client.clear();
   }, [client]);
 
-  if (ended) return <EventAccessState title="Sign in required" description="Sign in again to view this event." />;
+  if (ended) return <EventAccessState title={copy.signInTitle} description={copy.signInDescription} />;
   return (
     <ScopeContext.Provider value={scope}>
       <SessionEndContext.Provider value={() => {
@@ -36,9 +38,10 @@ function ScopedQueryProvider({ scope, children }: { scope: EventQueryScope; chil
 export function EventsQueryProvider({ context, clerkSubject, children }: {
   context: ConsoleContext; clerkSubject: string; children: ReactNode;
 }) {
+  const copy = useI18n().dict.events.create.access;
   const auth = useAuth({ treatPendingAsSignedOut: true });
   if (!auth.isLoaded || !auth.isSignedIn || auth.userId !== clerkSubject || !auth.sessionId) {
-    return <EventAccessState title="Verifying access" description="Waiting for your active session." />;
+    return <EventAccessState title={copy.verifyingTitle} description={copy.verifyingDescription} />;
   }
   const scope: EventQueryScope = {
     actorId: context.user.id, sessionId: auth.sessionId, activeOrganizationId: context.organization.id,

@@ -123,8 +123,6 @@ export function jsxLiterals(source) {
 
 // Files whose copy is not extracted yet. The check below is a ratchet: remove a file from this list as soon as it is clean.
 const PENDING = new Set([
-  "src/modules/events/components/create-event-page.tsx",
-  "src/modules/events/components/events-query-provider.tsx",
   "src/modules/events/components/kami-call-modal.tsx",
   "src/modules/events/components/kami-preview-panel.tsx",
   "src/modules/events/components/kami-workspace.tsx",
