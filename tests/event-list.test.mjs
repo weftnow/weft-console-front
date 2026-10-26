@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loadTs } from "./load-ts.mjs";
-import { stubI18n } from "./i18n-stub.mjs";
-
-const i18n = stubI18n();
 
 const row = (overrides) => ({
   id: "33333333-3333-4333-8333-333333333333", name: "Launch", city: "Singapore", venue: "",
@@ -60,17 +57,7 @@ test("eventArt uses the uploaded cover or the neutral placeholder, never city ar
 test("formatCountdown reads naturally", () => {
   const { formatCountdown } = loadTs("src/modules/events/event-list.ts");
   const now = new Date("2026-10-03T12:00:00Z");
-  assert.equal(formatCountdown(i18n, "2026-10-03T18:00:00.000Z", now), "Starts today");
-  assert.equal(formatCountdown(i18n, "2026-10-04T12:00:00.000Z", now), "In 1 day");
-  assert.equal(formatCountdown(i18n, "2026-10-13T12:00:00.000Z", now), "In 10 days");
-});
-
-test("formatCountdown pluralizes in Spanish", () => {
-  const { formatCountdown } = loadTs("src/modules/events/event-list.ts");
-  const spanish = stubI18n("es");
-  const now = new Date("2026-10-03T12:00:00Z");
-  assert.equal(formatCountdown(spanish, "2026-10-03T18:00:00.000Z", now), "Comienza hoy");
-  assert.equal(formatCountdown(spanish, "2026-10-04T12:00:00.000Z", now), "En 1 día");
-  assert.equal(formatCountdown(spanish, "2026-10-13T12:00:00.000Z", now), "En 10 días");
-  stubI18n("en");
+  assert.equal(formatCountdown("2026-10-03T18:00:00.000Z", now), "Starts today");
+  assert.equal(formatCountdown("2026-10-04T12:00:00.000Z", now), "In 1 day");
+  assert.equal(formatCountdown("2026-10-13T12:00:00.000Z", now), "In 10 days");
 });

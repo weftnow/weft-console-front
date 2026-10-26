@@ -1,9 +1,6 @@
-import { esES } from "@clerk/localizations";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { I18nProvider } from "@/shared/i18n/I18nProvider";
-import { getI18n } from "@/shared/i18n/get-locale";
 import { PoweredByWeft } from "@/shared/ui/powered-by-weft";
 import "./globals.css";
 
@@ -17,24 +14,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { dict } = await getI18n();
-  return { title: dict.common.metadata.title, description: dict.common.metadata.description };
-}
+export const metadata: Metadata = {
+  title: "Weft Console",
+  description: "Networking intelligence for extraordinary events.",
+};
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const { locale, dict } = await getI18n();
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang={locale}
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
-        <ClerkProvider localization={locale === "es" ? esES : undefined}>
-          <I18nProvider locale={locale} dictionary={dict}>
-            {children}
-            <footer className="weft-page-branding"><PoweredByWeft /></footer>
-          </I18nProvider>
+        <ClerkProvider>
+          {children}
+          <footer className="weft-page-branding"><PoweredByWeft /></footer>
         </ClerkProvider>
       </body>
     </html>

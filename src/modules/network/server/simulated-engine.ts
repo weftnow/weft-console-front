@@ -1,6 +1,5 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import type { Locale } from "@/shared/i18n/locales";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { engineMatchingFeedSchema, type MatchingFeedEntry, type MatchingFeedResult } from "../matching-feed-schemas";
 import { engineMatchingStatusSchema, type MatchingStatusResult } from "../matching-status-schemas";
@@ -19,7 +18,6 @@ type Dependencies = {
   listChanges: typeof repository.listChanges;
   findGuests: typeof repository.findGuestsByEmails;
   listBlockedPairs: typeof repository.listBlockedPairs;
-  findLanguage: typeof repository.findEventLanguage;
   now: () => Date;
 };
 const defaults: Dependencies = {
@@ -27,7 +25,6 @@ const defaults: Dependencies = {
   listChanges: repository.listChanges,
   findGuests: repository.findGuestsByEmails,
   listBlockedPairs: repository.listBlockedPairs,
-  findLanguage: repository.findEventLanguage,
   now: () => new Date(),
 };
 
@@ -71,11 +68,7 @@ export async function readSimulatedMatchingStatus(
 
 type Guest = repository.SimulatedGuest;
 
-function recommendationFor(eventId: string, source: DemoMatch, a: Guest, b: Guest, language: Locale) {
-  // Spanish events show the Spanish text; scores and quotes are the same in both languages.
-  const pair = language === "es"
-    ? { ...source, uncertainty: source.es.uncertainty, forA: { ...source.forA, ...source.es.forA }, forB: { ...source.forB, ...source.es.forB } }
-    : source;
+function recommendationFor(eventId: string, pair: DemoMatch, a: Guest, b: Guest) {
   const [low, lowSide, high, highSide] = a.id < b.id ? [a, pair.forA, b, pair.forB] as const : [b, pair.forB, a, pair.forA] as const;
   const idOf = (who: "a" | "b") => (who === "a" ? a.id : b.id);
   const both = <T>(lowValue: T, highValue: T): Record<string, T> => ({ [low.id]: lowValue, [high.id]: highValue });
@@ -123,14 +116,13 @@ export async function readSimulatedMatchingFeed(
     .map((guest) => [guest.normalizedEmail, guest]));
   const blocked = new Set((await dependencies.listBlockedPairs(eventId, [...guests.values()].map((guest) => guest.id))).map((pair) => pair.join()));
   const runId = simulatedRunId(eventId, anchor);
-  const language = await dependencies.findLanguage(eventId);
 
   const entries: MatchingFeedEntry[] = [];
   fixture.forEach((pair, index) => {
     const a = guests.get(pair.a);
     const b = guests.get(pair.b);
     if (!a || !b) return;
-    const recommendation = recommendationFor(eventId, pair, a, b, language);
+    const recommendation = recommendationFor(eventId, pair, a, b);
     entries.push({ seq: index + 1, kind: "issued", runId, recommendation });
 
     const excluded = [a, b].find((guest) => guest.networkingStatus === "excluded");

@@ -1,14 +1,10 @@
-"use client";
-
 import type { ConsoleContext } from "@/modules/organizations/types";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
-import { useI18n } from "@/shared/i18n/I18nProvider";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PeopleIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 
 export function PeoplePage({ context }: { context: ConsoleContext }) {
-  const copy = useI18n().dict.attendees.people;
   return (
     <div className="overview-shell">
       <div className="dashboard-layout">
@@ -16,13 +12,13 @@ export function PeoplePage({ context }: { context: ConsoleContext }) {
         <main className="dashboard-main">
           <header className="events-header">
             <div className="events-header__copy">
-              <h1 className="events-header__title">{copy.title}</h1>
-              <p className="events-header__subtitle">{copy.subtitle}</p>
+              <h1 className="events-header__title">People</h1>
+              <p className="events-header__subtitle">Everyone who has attended your events.</p>
             </div>
           </header>
           <div className="content-stack">
             <Surface as="section" className="panel" depth="raised">
-              <EmptyState description={copy.emptyDescription} icon={PeopleIcon} title={copy.emptyTitle} />
+              <EmptyState description="Guests appear here once you add them to an event." icon={PeopleIcon} title="No people yet" />
             </Surface>
           </div>
         </main>

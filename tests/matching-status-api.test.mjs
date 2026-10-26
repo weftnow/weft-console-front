@@ -3,9 +3,6 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs } from "./load-ts.mjs";
-import { stubI18n } from "./i18n-stub.mjs";
-
-const i18n = stubI18n();
 
 const actor = { id: "11111111-1111-4111-8111-111111111111", displayName: "Ada", avatarUrl: null };
 const eventId = "22222222-2222-4222-8222-222222222222";
@@ -133,7 +130,7 @@ test("GET maps denied and unknown events and hides unexpected errors", async () 
 });
 
 const format = () => "2 min ago";
-const copyFor = (overrides) => describeMatchingStatus(i18n, engineStatus(overrides), format);
+const copyFor = (overrides) => describeMatchingStatus(engineStatus(overrides), format);
 
 test("status copy describes each state in plain language without raw engine text", () => {
   assert.equal(copyFor({ state: "idle", latestRun: null, lastFinishedRunId: null }).label, "Not started");

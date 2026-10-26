@@ -4,9 +4,6 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs } from "./load-ts.mjs";
-import { stubI18n } from "./i18n-stub.mjs";
-
-stubI18n();
 
 const eventId = "22222222-2222-4222-8222-222222222222";
 const organizationId = "33333333-3333-4333-8333-333333333333";
@@ -39,13 +36,12 @@ const demoGuests = (overrides = {}) => csvGuests.map(({ email }, index) => ({
   id: guestId(index), normalizedEmail: email, profileVersion: 0, networkingStatus: "included", ...overrides[email],
 }));
 
-function deps({ language = "en", changes = [{ id: "c1", kind: "attendees_imported", guestIds: [], createdAt: anchor }], guests = demoGuests(), blocked = [], now = at(FINISH_MS) } = {}) {
+function deps({ changes = [{ id: "c1", kind: "attendees_imported", guestIds: [], createdAt: anchor }], guests = demoGuests(), blocked = [], now = at(FINISH_MS) } = {}) {
   return {
     latestChangeAt: async () => changes.at(-1)?.createdAt ?? null,
     listChanges: async () => changes,
     findGuests: async (_event, emails) => guests.filter((guest) => emails.includes(guest.normalizedEmail)),
     listBlockedPairs: async () => blocked,
-    findLanguage: async () => language,
     now,
   };
 }
@@ -303,20 +299,4 @@ test("the demo is flagged invisibly: data attribute, response header and no visi
   } finally {
     if (before === undefined) delete process.env.WEFT_ENGINE_MODE; else process.env.WEFT_ENGINE_MODE = before;
   }
-});
-
-test("a Spanish event gets Spanish demo reasons with the same scores and verbatim quotes", async () => {
-  const english = await feedAfter(0, { language: "en" });
-  const spanish = await feedAfter(0, { language: "es" });
-  assert.equal(spanish.feed.entries.length, english.feed.entries.length);
-  const reasons = (entry) => Object.values(entry.recommendation.shareableReasons);
-  spanish.feed.entries.forEach((entry, index) => {
-    const base = english.feed.entries[index].recommendation;
-    assert.deepEqual(entry.recommendation.evidence, base.evidence);
-    assert.deepEqual(entry.recommendation.directionalScores, base.directionalScores);
-    assert.equal(entry.recommendation.pairScore, base.pairScore);
-    assert.notDeepEqual(reasons(entry), reasons(english.feed.entries[index]));
-    assert.ok(reasons(entry).every((reason) => reason && reason.length > 0));
-  });
-  assert.match(reasons(spanish.feed.entries[0]).join(" "), /invierte|podría/);
 });

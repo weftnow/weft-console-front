@@ -5,15 +5,12 @@ import { useCallback, useEffect, useId, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { clearOrganizationSelectionCookie, switchOrganization } from "@/app/account/actions";
-import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ChevronDownIcon } from "./icons";
-import { LocaleSwitcher } from "./locale-switcher";
 
 export function ConsoleAccount({ user, organization }: {
   user: { id: string; displayName: string };
   organization: { name: string; role: string };
 }) {
-  const { dict } = useI18n();
   const { user: clerkUser } = useUser();
   const clerk = useClerk();
   const router = useRouter();
@@ -39,19 +36,18 @@ export function ConsoleAccount({ user, organization }: {
       <div className="profile__avatar"><UserButton /></div>
       <div className="profile__text">
         <span className="profile__name" title={user.displayName}>{user.displayName}</span>
-        <span className="profile__role">{dict.common.roles[organization.role as keyof typeof dict.common.roles] ?? organization.role}</span>
+        <span className="profile__role">{organization.role}</span>
       </div>
       <div className="profile-menu">
-      <button className="profile-menu__trigger" aria-label={dict.common.account.options} popoverTarget={menuId} ref={trigger} type="button"><ChevronDownIcon height="16" width="16" /></button>
-      <nav id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="profile-menu__content surface-floating" aria-label={dict.common.account.label}>
-      {organization.role === "owner" ? <Link href="/settings/team">{dict.common.account.manageTeam}</Link> : null}
-      <Link href="/onboarding">{dict.common.account.acceptInvitation}</Link>
-      <LocaleSwitcher />
-      <form action={switchOrganization}><button type="submit">{dict.common.account.switchOrganization}</button></form>
+      <button className="profile-menu__trigger" aria-label="Account options" popoverTarget={menuId} ref={trigger} type="button"><ChevronDownIcon height="16" width="16" /></button>
+      <nav id={menuId} popover="auto" ref={menu} onToggle={placeMenu} className="profile-menu__content surface-floating" aria-label="Account">
+      {organization.role === "owner" ? <Link href="/settings/team">Manage team</Link> : null}
+      <Link href="/onboarding">Accept invitation</Link>
+      <form action={switchOrganization}><button type="submit">Switch organization</button></form>
       <button onClick={async () => {
         await clearOrganizationSelectionCookie();
         await clerk.signOut({ redirectUrl: "/sign-in" });
-      }} type="button">{dict.common.account.signOut}</button>
+      }} type="button">Sign out</button>
       </nav>
       </div>
     </div>

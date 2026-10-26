@@ -4,9 +4,6 @@ import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadTs } from "./load-ts.mjs";
-import { stubI18n } from "./i18n-stub.mjs";
-
-stubI18n();
 
 test("event loading is one accessible main region with decorative content placeholders", () => {
   const { EventDetailSkeleton } = loadTs("src/modules/events/components/event-detail-skeleton.tsx");

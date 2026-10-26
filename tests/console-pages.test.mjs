@@ -21,7 +21,7 @@ test("partner report requires a Clerk session but never renders unscoped fixture
   assert.ok(source.indexOf("requireClerkSession(") < source.indexOf("<PartnerReportPage"), "partner report must check the session before rendering");
   const component = readFileSync(new URL("../src/modules/sponsors/components/partner-report-page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(component, /partner-report-data|Horizon/);
-  assert.match(component, /copy\.emptyTitle/);
+  assert.match(component, /No partner report yet/);
 });
 
 test("event detail API applies its event operation policy after resolving the event organization", () => {

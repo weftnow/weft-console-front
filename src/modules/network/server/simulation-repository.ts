@@ -1,8 +1,7 @@
 import "server-only";
 import { and, asc, eq, inArray, max } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
-import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/shared/i18n/locales";
-import { eventGuests, eventMatchBlocks, eventMatchingChanges, events } from "@/infrastructure/database/schema/events";
+import { eventGuests, eventMatchBlocks, eventMatchingChanges } from "@/infrastructure/database/schema/events";
 
 export type SimulatedChange = { id: string; kind: string; guestIds: string[]; createdAt: Date };
 export type SimulatedGuest = { id: string; normalizedEmail: string; profileVersion: number; networkingStatus: "included" | "excluded" };
@@ -36,10 +35,4 @@ export async function listBlockedPairs(eventId: string, guestIds: readonly strin
   const rows = await getDatabase().select({ low: eventMatchBlocks.guestLowId, high: eventMatchBlocks.guestHighId })
     .from(eventMatchBlocks).where(and(eq(eventMatchBlocks.eventId, eventId), inArray(eventMatchBlocks.guestLowId, [...guestIds])));
   return rows.map((row) => [row.low, row.high]);
-}
-
-/** The event's language, which decides the language of the demo reasons. */
-export async function findEventLanguage(eventId: string): Promise<Locale> {
-  const [row] = await getDatabase().select({ language: events.language }).from(events).where(eq(events.id, eventId)).limit(1);
-  return hasLocale(row?.language) ? row.language : DEFAULT_LOCALE;
 }

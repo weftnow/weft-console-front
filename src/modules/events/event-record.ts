@@ -1,4 +1,3 @@
-import type { I18n } from "@/shared/i18n/i18n";
 import { deriveScheduleStatus } from "./event-schedule";
 import { z } from "zod";
 import type { AttendeeImportDto } from "./attendee-import-schemas";
@@ -109,32 +108,31 @@ export function deriveEventStatus(event: EventRecord, now = new Date()): EventSt
   return "live";
 }
 
-export function formatEventDateRange(i18n: I18n, start: string, end: string) {
+export function formatEventDateRange(start: string, end: string) {
   const startDate = parseLocalDate(start);
   const endDate = parseLocalDate(end);
-  if (!startDate && !endDate) return i18n.dict.events.dates.notAdded;
-  const format = (value: Date) => i18n.date(value, { day: "numeric", month: "short", year: "numeric" });
-  if (!startDate) return format(endDate!);
-  if (!endDate || start === end) return format(startDate);
-  const startLabel = format(startDate);
-  const endLabel = format(endDate);
-  // Same-year ranges drop the first year; the year is dropped by formatting without it.
-  if (startDate.getFullYear() === endDate.getFullYear()) return `${i18n.date(startDate, { day: "numeric", month: "short" })} – ${endLabel}`;
+  if (!startDate && !endDate) return "Dates not added";
+  const formatter = new Intl.DateTimeFormat("en-US", { day: "numeric", month: "short", year: "numeric" });
+  if (!startDate) return formatter.format(endDate!);
+  if (!endDate || start === end) return formatter.format(startDate);
+  const startLabel = formatter.format(startDate);
+  const endLabel = formatter.format(endDate);
+  if (startDate.getFullYear() === endDate.getFullYear()) return `${startLabel.replace(`, ${startDate.getFullYear()}`, "")} – ${endLabel}`;
   return `${startLabel} – ${endLabel}`;
 }
 
-export function formatRelativeActivity(i18n: I18n, isoDate: string, now = new Date()) {
-  const copy = i18n.dict.events.relative;
+export function formatRelativeActivity(isoDate: string, now = new Date()) {
   const date = new Date(isoDate);
-  if (Number.isNaN(date.getTime())) return copy.recently;
+  if (Number.isNaN(date.getTime())) return "Recently";
   const minutes = Math.max(0, Math.round((now.getTime() - date.getTime()) / 60_000));
-  if (minutes < 2) return copy.justNow;
-  if (minutes < 60) return i18n.t(copy.minutesAgo, { count: minutes });
+  if (minutes < 2) return "Just now";
+  if (minutes < 60) return `${minutes} min ago`;
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return i18n.plural(copy.hoursAgo, hours);
+  if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
   const days = Math.round(hours / 24);
-  if (days < 7) return i18n.plural(copy.daysAgo, days);
-  return i18n.plural(copy.weeksAgo, Math.round(days / 7));
+  if (days < 7) return `${days} ${days === 1 ? "day" : "days"} ago`;
+  const weeks = Math.round(days / 7);
+  return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
 }
 
 export function getEventDetailTab(value: string | string[] | undefined): EventDetailTab {

@@ -1,11 +1,6 @@
-"use client";
-
-import { useI18n } from "@/shared/i18n/I18nProvider";
-
 export function EventDetailSkeleton() {
-  const { dict } = useI18n();
   return (
-    <main aria-busy="true" aria-label={dict.events.detail.loading} className="dashboard-main event-detail-main">
+    <main aria-busy="true" aria-label="Loading event" className="dashboard-main event-detail-main">
       <div aria-hidden="true" className="event-detail-skeleton-header">
         <div className="event-detail-skeleton-header__copy">
           <span className="event-detail-skeleton event-detail-skeleton--crumb" />

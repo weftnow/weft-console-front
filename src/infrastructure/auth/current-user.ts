@@ -1,6 +1,5 @@
 import "server-only";
 import { cache } from "react";
-import type { Locale } from "@/shared/i18n/locales";
 import { auth } from "@clerk/nextjs/server";
 import { findClerkUser } from "./identity-repository";
 import { resolveCurrentUser } from "./resolve-current-user";
@@ -10,7 +9,6 @@ export type AuthenticatedUser = {
   id: string;
   displayName: string;
   avatarUrl: string | null;
-  locale: Locale;
 };
 
 export const getCurrentUser = cache(async (): Promise<AuthenticatedUser | null> => resolveCurrentUser({

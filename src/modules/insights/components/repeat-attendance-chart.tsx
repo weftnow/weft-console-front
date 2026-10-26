@@ -2,7 +2,6 @@
 
 import { RadialBar, RadialBarChart } from "recharts";
 
-import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ChartContainer, type ChartConfig } from "@/shared/ui/chart";
 
 const chartConfig = {
@@ -17,12 +16,10 @@ interface RepeatAttendanceChartProps {
 }
 
 export function RepeatAttendanceChart({ percentage }: RepeatAttendanceChartProps) {
-  const { dict, t } = useI18n();
-  const copy = dict.insights.repeat;
   const data = [{ returning: percentage, fill: "var(--color-returning)" }];
 
   return (
-    <div className="radial-chart-shell" role="img" aria-label={t(copy.label, { percentage })}>
+    <div className="radial-chart-shell" role="img" aria-label={`${percentage}% of attendees returned to another event`}>
       <div aria-hidden="true" className="radial-track" />
       <ChartContainer className="radial-chart" config={chartConfig}>
         <RadialBarChart
@@ -42,7 +39,7 @@ export function RepeatAttendanceChart({ percentage }: RepeatAttendanceChartProps
       </ChartContainer>
       <div className="radial-chart__center">
         <strong>{percentage}%</strong>
-        <span>{copy.line1}<br />{copy.line2}<br />{copy.line3}</span>
+        <span>of attendees<br />returned to another<br />event</span>
       </div>
     </div>
   );

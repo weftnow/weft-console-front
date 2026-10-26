@@ -1,5 +1,0 @@
-ALTER TYPE "public"."event_matching_change_kind" ADD VALUE 'event_language_changed';--> statement-breakpoint
-ALTER TABLE "event_matching_changes" DROP CONSTRAINT "event_matching_changes_guests_valid";--> statement-breakpoint
-ALTER TABLE "events" ADD COLUMN "language" text DEFAULT 'en' NOT NULL;--> statement-breakpoint
-ALTER TABLE "event_matching_changes" ADD CONSTRAINT "event_matching_changes_guests_valid" CHECK (("event_matching_changes"."kind"::text in ('attendees_imported', 'identity_linked', 'event_language_changed') and cardinality("event_matching_changes"."guest_ids") = 0) or ("event_matching_changes"."kind"::text not in ('attendees_imported', 'identity_linked', 'event_language_changed') and cardinality("event_matching_changes"."guest_ids") between 1 and 2));--> statement-breakpoint
-ALTER TABLE "events" ADD CONSTRAINT "events_language_valid" CHECK ("events"."language" in ('en', 'es'));

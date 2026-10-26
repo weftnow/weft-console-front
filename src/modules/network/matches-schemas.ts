@@ -15,6 +15,7 @@ export const matchListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(1_000_000).default(1),
   status: matchStatusSchema.optional(),
   introductionPath: introductionPathSchema.optional(),
+  locale: z.enum(["en", "es"]).default("en"),
 });
 
 const timestamp = z.iso.datetime({ offset: true });
