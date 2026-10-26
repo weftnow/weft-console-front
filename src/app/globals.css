@@ -921,7 +921,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 .event-control[aria-invalid="true"] { border-color: rgba(206,67,25,.45); box-shadow: var(--weft-shadow-inset-compact), 0 0 0 3px rgba(206,67,25,.1); }
 .event-control-wrap { position: relative; display: block; }
 .event-control-wrap > svg { position: absolute; top: 50%; left: 12px; z-index: 2; color: var(--weft-text-muted); pointer-events: none; transform: translateY(-50%); }
-.event-control--with-icon { padding-left: 36px; }
+.event-control.event-control--with-icon { padding-left: 36px; }
 select.event-control { appearance: none; background-image: linear-gradient(45deg,transparent 50%,#6e706b 50%),linear-gradient(135deg,#6e706b 50%,transparent 50%); background-position: calc(100% - 16px) calc(50% - 2px),calc(100% - 12px) calc(50% - 2px); background-repeat: no-repeat; background-size: 4px 4px,4px 4px; padding-right: 31px; }
 .event-field__error { color: #b7441c; font-size: 11px; line-height: 1.2; }
 .cover-field { display: grid; gap: 7px; margin-top: 15px; }
