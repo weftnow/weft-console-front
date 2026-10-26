@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES, EVENT_CITIES } from "./event-options";
 import { attendeeImportDtoSchema } from "./attendee-import-schemas";
-import { localeSchema } from "@/shared/i18n/locales";
 import { guestTypeSchema, uuidSchema } from "./event-schemas";
 import { exclusionReasonSchema, matchBlockDtoSchema } from "@/modules/attendees/networking-schemas";
 import { profileCompletenessSchema } from "@/modules/attendees/profile-schemas";
@@ -38,7 +37,6 @@ export const eventDetailDtoSchema = z.strictObject({
   expectedAudience: z.array(z.enum(EVENT_AUDIENCE_OPTIONS)),
   startDate: z.string(), endDate: z.string(), startTime: z.string(), endTime: z.string(),
   timezone: z.string(), startsAt: z.iso.datetime(), endsAt: z.iso.datetime(),
-  language: localeSchema,
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
   coverImage: z.string().nullable(),
   attendees: z.strictObject({

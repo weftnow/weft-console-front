@@ -1,4 +1,3 @@
-import type { I18n } from "@/shared/i18n/i18n";
 import type { CityArt } from "@/shared/ui/city-artwork";
 import type { EventSummaryDto } from "./event-dto";
 import { EVENT_COVER_PLACEHOLDER_ART } from "./event-record";
@@ -19,8 +18,8 @@ export function eventArt(event: { coverImage: string | null }): CityArt {
   return event.coverImage ? { ...EVENT_COVER_PLACEHOLDER_ART, image: event.coverImage } : EVENT_COVER_PLACEHOLDER_ART;
 }
 
-export function formatCountdown(i18n: I18n, startsAt: string, now = new Date()) {
+export function formatCountdown(startsAt: string, now = new Date()) {
   const days = Math.floor((new Date(startsAt).getTime() - now.getTime()) / 86_400_000);
-  if (days < 1) return i18n.dict.events.relative.startsToday;
-  return i18n.plural(i18n.dict.events.relative.inDays, days);
+  if (days < 1) return "Starts today";
+  return `In ${days} ${days === 1 ? "day" : "days"}`;
 }

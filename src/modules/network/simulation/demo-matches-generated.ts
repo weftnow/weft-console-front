@@ -7,23 +7,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 61,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) dirige un negocio deportivo que busca socios de marca; un patrocinio podría poner a Fable Collective frente a los aficionados.",
-        "shareableReason": "El grupo deportivo Kestrel Sports Group de Mina busca socios de marca como Fable Collective.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Pablo (Head of Partnerships, Fable Collective) dirige una marca que podría patrocinar a Kestrel Sports Group.",
-        "shareableReason": "La marca Fable Collective de Pablo podría patrocinar a Kestrel Sports Group.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -58,23 +41,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.rossi@demo.weft.example",
     "pairScore": 84,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Marketing Director, Fable Studio) dirige una marca con lanzamientos que Harbor Media podría cubrir.",
-        "shareableReason": "La marca Fable Studio de Dmitri tiene novedades que Harbor Media podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Helena para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Helena (Editor, Harbor Media) trabaja en un medio que podría cubrir el próximo lanzamiento de Fable Studio.",
-        "shareableReason": "Helena trabaja en Harbor Media, que cubre marcas como Fable Studio.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -109,23 +75,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "talia.ostrowski@demo.weft.example",
     "pairScore": 63,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Talia (Head of Sponsorships, Kestrel Cloud) busca socios comerciales para un patrocinador del evento; Nimbus Group podría ser uno.",
-        "shareableReason": "La empresa Kestrel Cloud de Talia busca socios comerciales como Nimbus Group.",
-        "missingInformation": [
-          "Los objetivos de Greta para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Greta (Chief Operating Officer, Nimbus Group) ayuda a dirigir una empresa que podría convertirse en cliente o socia de Kestrel Cloud.",
-        "shareableReason": "Greta ayuda a dirigir Nimbus Group, un posible cliente o socio de Kestrel Cloud.",
-        "missingInformation": [
-          "Los objetivos de Talia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -160,23 +109,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 66,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Beatriz (Co-Founder & CEO, Glade Works) está creando una empresa joven que busca capital paciente y de largo plazo como el de Glade Holdings.",
-        "shareableReason": "Beatriz está creando Glade Works y busca inversionistas de largo plazo como Glade Holdings.",
-        "missingInformation": [
-          "Los objetivos de Sven para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Sven (Head of Direct Investments, Glade Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Glade Works.",
-        "shareableReason": "Sven invierte para Glade Holdings con un horizonte de largo plazo y podría respaldar a Glade Works.",
-        "missingInformation": [
-          "Los objetivos de Beatriz para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -211,23 +143,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 82,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Beatriz (Co-Founder & CEO, Glade Works) está creando una empresa joven, una primera mirada para Petra antes de que levante capital de forma amplia.",
-        "shareableReason": "Beatriz está creando Glade Works, una empresa que Indigo Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Partner, Indigo Partners) invierte en empresas jóvenes y puede decirle a Beatriz si Glade Works encaja con lo que respalda Indigo Partners.",
-        "shareableReason": "Petra invierte en Indigo Partners y podría ser un inversionista temprano de Glade Works.",
-        "missingInformation": [
-          "Los objetivos de Beatriz para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -262,23 +177,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 91,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Clara (VP of Strategy, Fable Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Tundra Works.",
-        "shareableReason": "La empresa Fable Group de Clara podría hacer un piloto o comprarle a Tundra Works.",
-        "missingInformation": [
-          "Los objetivos de Mateo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mateo (Founder, Tundra Works) está desarrollando un producto que podría ayudar a Fable Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Tundra Works de Mateo desarrolla algo que Fable Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Clara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -313,23 +211,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 65,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gideon (Founder, Ember Labs) está desarrollando un producto que podría ayudar a Ridge Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Ember Labs de Gideon desarrolla algo que Ridge Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Chief Financial Officer, Ridge Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Ember Labs.",
-        "shareableReason": "La empresa Ridge Industries de Hassan podría hacer un piloto o comprarle a Ember Labs.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -364,23 +245,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "talia.ostrowski@demo.weft.example",
     "pairScore": 62,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Talia (Head of Sponsorships, Kestrel Cloud) busca socios comerciales para un patrocinador del evento; Fable Group podría ser uno.",
-        "shareableReason": "La empresa Kestrel Cloud de Talia busca socios comerciales como Fable Group.",
-        "missingInformation": [
-          "Los objetivos de Clara para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Clara (VP of Strategy, Fable Group) ayuda a dirigir una empresa que podría convertirse en cliente o socia de Kestrel Cloud.",
-        "shareableReason": "Clara ayuda a dirigir Fable Group, un posible cliente o socio de Kestrel Cloud.",
-        "missingInformation": [
-          "Los objetivos de Talia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -415,23 +279,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 70,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Managing Director, Lantern Athletics) dirige un negocio deportivo con historias y acceso que Marlow Press podría aprovechar.",
-        "shareableReason": "El grupo deportivo Lantern Athletics de Dalia tiene historias que Marlow Press podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Editor, Marlow Press) trabaja en un medio que podría cubrir a Lantern Athletics.",
-        "shareableReason": "El medio Marlow Press de Dmitri podría cubrir a Lantern Athletics.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -466,23 +313,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "hassan.jovanovic@demo.weft.example",
     "pairScore": 80,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Hassan (Chief Financial Officer, Ridge Industries) puede ofrecer a Ember Agency una visión directa de la industria sobre las políticas.",
-        "shareableReason": "Hassan ayuda a dirigir Ridge Industries y puede compartir una visión de la industria con Ember Agency.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Esra (Policy Advisor, Ember Agency) trabaja en normas y programas comerciales que afectan a Ridge Industries.",
-        "shareableReason": "Esra trabaja en políticas públicas en Ember Agency, lo que afecta a empresas como Ridge Industries.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -517,23 +347,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 71,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Founder, Tundra Systems) está desarrollando un producto que podría ayudar a Juniper Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Tundra Systems de Kofi desarrolla algo que Juniper Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Chief Operating Officer, Juniper Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Tundra Systems.",
-        "shareableReason": "La empresa Juniper Group de Hassan podría hacer un piloto o comprarle a Tundra Systems.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -568,23 +381,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "pablo.jankowski@demo.weft.example",
     "pairScore": 79,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Pablo (VP of Strategy, Cinder Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Juniper Systems.",
-        "shareableReason": "La empresa Cinder Group de Pablo podría hacer un piloto o comprarle a Juniper Systems.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Founder, Juniper Systems) está desarrollando un producto que podría ayudar a Cinder Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Juniper Systems de Dmitri desarrolla algo que Cinder Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -619,23 +415,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "bilal.lombardi@demo.weft.example",
     "pairScore": 64,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Bilal (VP of Strategy, Glade Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Vertex Systems.",
-        "shareableReason": "La empresa Glade Industries de Bilal podría hacer un piloto o comprarle a Vertex Systems.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Nora (Co-Founder & CEO, Vertex Systems) está desarrollando un producto que podría ayudar a Glade Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Vertex Systems de Nora desarrolla algo que Glade Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Bilal para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -670,23 +449,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 75,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Yara (Head of Sponsorships, Lantern Cloud) dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como Alder Systems.",
-        "shareableReason": "La empresa Lantern Cloud de Yara se asocia con empresas jóvenes como Alder Systems.",
-        "missingInformation": [
-          "Los objetivos de Imani para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Imani (Co-Founder & CEO, Alder Systems) está creando una empresa joven a la que Lantern Cloud podría apoyar y obtener acceso temprano.",
-        "shareableReason": "Imani está creando Alder Systems, una empresa joven con la que Lantern Cloud podría asociarse.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -721,23 +483,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "greta.nasser@demo.weft.example",
     "pairScore": 85,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Greta (Chief Operating Officer, Nimbus Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Orbit Works.",
-        "shareableReason": "La empresa Nimbus Group de Greta podría hacer un piloto o comprarle a Orbit Works.",
-        "missingInformation": [
-          "Los objetivos de Omar para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Omar (Founder, Orbit Works) está desarrollando un producto que podría ayudar a Nimbus Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Orbit Works de Omar desarrolla algo que Nimbus Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Greta para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -772,23 +517,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 79,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Elena (Managing Partner, Willow Consulting) asesora a empresas en proyectos para los que Willow Global quizá no tenga las capacidades internas.",
-        "shareableReason": "La firma Willow Consulting de Elena asesora a empresas como Willow Global.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Esra (VP of Strategy, Willow Global) ayuda a dirigir una empresa que podría contratar a Willow Consulting.",
-        "shareableReason": "Esra ayuda a dirigir Willow Global, que podría necesitar los servicios de Willow Consulting.",
-        "missingInformation": [
-          "Los objetivos de Elena para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -823,23 +551,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 89,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gideon (Founder, Ember Labs) está creando una empresa joven que busca capital paciente y de largo plazo como el de Tundra Holdings.",
-        "shareableReason": "Gideon está creando Ember Labs y busca inversionistas de largo plazo como Tundra Holdings.",
-        "missingInformation": [
-          "Los objetivos de Carlos para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Ember Labs.",
-        "shareableReason": "Carlos invierte para Tundra Holdings con un horizonte de largo plazo y podría respaldar a Ember Labs.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -874,23 +585,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "tessa.varga@demo.weft.example",
     "pairScore": 68,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Tessa (Head of Partnerships, Lantern & Co) encarga trabajo creativo, por lo que Lantern & Co es un posible cliente de Cinder Studios.",
-        "shareableReason": "La marca Lantern & Co de Tessa contrata estudios como Cinder Studios.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Founder, Cinder Studios) crea trabajo creativo que podría convertirse en contenido de campaña para Lantern & Co.",
-        "shareableReason": "El estudio Cinder Studios de Petra crea contenido para marcas como Lantern & Co.",
-        "missingInformation": [
-          "Los objetivos de Tessa para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -925,23 +619,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 85,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Petra (Founder & CTO, Nimbus Labs) está creando una empresa joven, una primera mirada para Nora antes de que levante capital de forma amplia.",
-        "shareableReason": "Petra está creando Nimbus Labs, una empresa que Quarry Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Nora (Principal, Quarry Partners) invierte en empresas jóvenes y puede decirle a Petra si Nimbus Labs encaja con lo que respalda Quarry Partners.",
-        "shareableReason": "Nora invierte en Quarry Partners y podría ser un inversionista temprano de Nimbus Labs.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -976,23 +653,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "hassan.ibarra@demo.weft.example",
     "pairScore": 73,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Hassan (Chief Operating Officer, Juniper Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Vertex Systems.",
-        "shareableReason": "La empresa Juniper Group de Hassan podría hacer un piloto o comprarle a Vertex Systems.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Nora (Co-Founder & CEO, Vertex Systems) está desarrollando un producto que podría ayudar a Juniper Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Vertex Systems de Nora desarrolla algo que Juniper Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1027,23 +687,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Elena (Managing Partner, Willow Consulting) asesora a empresas en proyectos para los que Tundra Industries quizá no tenga las capacidades internas.",
-        "shareableReason": "La firma Willow Consulting de Elena asesora a empresas como Tundra Industries.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Esra (Chief Financial Officer, Tundra Industries) ayuda a dirigir una empresa que podría contratar a Willow Consulting.",
-        "shareableReason": "Esra ayuda a dirigir Tundra Industries, que podría necesitar los servicios de Willow Consulting.",
-        "missingInformation": [
-          "Los objetivos de Elena para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1078,23 +721,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 60,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Yara (Head of Sponsorships, Lantern Cloud) busca socios comerciales para un patrocinador del evento; Ridge Industries podría ser uno.",
-        "shareableReason": "La empresa Lantern Cloud de Yara busca socios comerciales como Ridge Industries.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Chief Financial Officer, Ridge Industries) ayuda a dirigir una empresa que podría convertirse en cliente o socia de Lantern Cloud.",
-        "shareableReason": "Hassan ayuda a dirigir Ridge Industries, un posible cliente o socio de Lantern Cloud.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1129,23 +755,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 72,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Zane (Founder & CTO, Cinder Labs) está creando una empresa joven, una primera mirada para Petra antes de que levante capital de forma amplia.",
-        "shareableReason": "Zane está creando Cinder Labs, una empresa que Indigo Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Partner, Indigo Partners) invierte en empresas jóvenes y puede decirle a Zane si Cinder Labs encaja con lo que respalda Indigo Partners.",
-        "shareableReason": "Petra invierte en Indigo Partners y podría ser un inversionista temprano de Cinder Labs.",
-        "missingInformation": [
-          "Los objetivos de Zane para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1180,23 +789,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 67,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Esra (Policy Advisor, Ember Agency) trabaja en normas y programas comerciales que afectan a Glade Industries.",
-        "shareableReason": "Esra trabaja en políticas públicas en Ember Agency, lo que afecta a empresas como Glade Industries.",
-        "missingInformation": [
-          "Los objetivos de Bilal para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Bilal (VP of Strategy, Glade Industries) puede ofrecer a Ember Agency una visión directa de la industria sobre las políticas.",
-        "shareableReason": "Bilal ayuda a dirigir Glade Industries y puede compartir una visión de la industria con Ember Agency.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1231,23 +823,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 87,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Yara (Head of Sponsorships, Lantern Cloud) dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como Marlow Labs.",
-        "shareableReason": "La empresa Lantern Cloud de Yara se asocia con empresas jóvenes como Marlow Labs.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Yara (Founder, Marlow Labs) está creando una empresa joven a la que Lantern Cloud podría apoyar y obtener acceso temprano.",
-        "shareableReason": "Yara está creando Marlow Labs, una empresa joven con la que Lantern Cloud podría asociarse.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1282,23 +857,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.ostrowski@demo.weft.example",
     "pairScore": 86,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Creative Director, Alder Studios) crea trabajo creativo que podría convertirse en contenido de campaña para Fable Studio.",
-        "shareableReason": "El estudio Alder Studios de Kofi crea contenido para marcas como Fable Studio.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Marketing Director, Fable Studio) encarga trabajo creativo, por lo que Fable Studio es un posible cliente de Alder Studios.",
-        "shareableReason": "La marca Fable Studio de Dmitri contrata estudios como Alder Studios.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1333,23 +891,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 62,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Founder, Marlow Systems) está desarrollando un producto que podría ayudar a Juniper Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Marlow Systems de Dalia desarrolla algo que Juniper Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Chief Operating Officer, Juniper Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Marlow Systems.",
-        "shareableReason": "La empresa Juniper Group de Hassan podría hacer un piloto o comprarle a Marlow Systems.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1384,23 +925,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.bergstrom@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Founder, Ember Systems) está creando una empresa joven, una primera mirada para Aiden antes de que levante capital de forma amplia.",
-        "shareableReason": "Kofi está creando Ember Systems, una empresa que Lantern Ventures podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Aiden para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Aiden (Partner, Lantern Ventures) invierte en empresas jóvenes y puede decirle a Kofi si Ember Systems encaja con lo que respalda Lantern Ventures.",
-        "shareableReason": "Aiden invierte en Lantern Ventures y podría ser un inversionista temprano de Ember Systems.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1435,23 +959,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "yara.takahashi@demo.weft.example",
     "pairScore": 75,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Yara (Head of Sponsorships, Lantern Cloud) dirige las alianzas de un patrocinador del evento que podría cofinanciar una campaña con Fable Studio.",
-        "shareableReason": "La empresa Lantern Cloud de Yara realiza campañas conjuntas con marcas como Fable Studio.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Marketing Director, Fable Studio) dirige una marca con la que Lantern Cloud podría hacer una campaña conjunta.",
-        "shareableReason": "La marca Fable Studio de Dmitri es un posible socio de campaña para Lantern Cloud.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1486,23 +993,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 76,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Elena (Managing Partner, Willow Consulting) asesora a empresas en proyectos para los que Fable Group quizá no tenga las capacidades internas.",
-        "shareableReason": "La firma Willow Consulting de Elena asesora a empresas como Fable Group.",
-        "missingInformation": [
-          "Los objetivos de Clara para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Clara (VP of Strategy, Fable Group) ayuda a dirigir una empresa que podría contratar a Willow Consulting.",
-        "shareableReason": "Clara ayuda a dirigir Fable Group, que podría necesitar los servicios de Willow Consulting.",
-        "missingInformation": [
-          "Los objetivos de Elena para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1537,23 +1027,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.ostrowski@demo.weft.example",
     "pairScore": 79,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Creative Director, Alder Studios) crea trabajo creativo que podría convertirse en contenido de campaña para Fable Collective.",
-        "shareableReason": "El estudio Alder Studios de Kofi crea contenido para marcas como Fable Collective.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Pablo (Head of Partnerships, Fable Collective) encarga trabajo creativo, por lo que Fable Collective es un posible cliente de Alder Studios.",
-        "shareableReason": "La marca Fable Collective de Pablo contrata estudios como Alder Studios.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1588,23 +1061,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 73,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Founder, Tundra Systems) está desarrollando un producto que podría ayudar a Cinder Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Tundra Systems de Kofi desarrolla algo que Cinder Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Pablo (VP of Strategy, Cinder Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Tundra Systems.",
-        "shareableReason": "La empresa Cinder Group de Pablo podría hacer un piloto o comprarle a Tundra Systems.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1639,23 +1095,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.bergstrom@demo.weft.example",
     "pairScore": 90,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Founder, Ember Systems) está desarrollando un producto que podría ayudar a Glade Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Ember Systems de Kofi desarrolla algo que Glade Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Bilal para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Bilal (VP of Strategy, Glade Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Ember Systems.",
-        "shareableReason": "La empresa Glade Industries de Bilal podría hacer un piloto o comprarle a Ember Systems.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1690,23 +1129,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "kofi.vasquez@demo.weft.example",
     "pairScore": 84,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Kofi (Founder, Tundra Systems) está desarrollando un producto que podría ayudar a Tundra Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Tundra Systems de Kofi desarrolla algo que Tundra Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Esra (Chief Financial Officer, Tundra Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Tundra Systems.",
-        "shareableReason": "La empresa Tundra Industries de Esra podría hacer un piloto o comprarle a Tundra Systems.",
-        "missingInformation": [
-          "Los objetivos de Kofi para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1741,23 +1163,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "camila.gutierrez@demo.weft.example",
     "pairScore": 61,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Camila (Founder, Quarry Labs) está creando una empresa joven que busca capital paciente y de largo plazo como el de Glade Holdings.",
-        "shareableReason": "Camila está creando Quarry Labs y busca inversionistas de largo plazo como Glade Holdings.",
-        "missingInformation": [
-          "Los objetivos de Sven para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Sven (Head of Direct Investments, Glade Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Quarry Labs.",
-        "shareableReason": "Sven invierte para Glade Holdings con un horizonte de largo plazo y podría respaldar a Quarry Labs.",
-        "missingInformation": [
-          "Los objetivos de Camila para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1792,23 +1197,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 92,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Clara (VP of Strategy, Fable Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Vertex Works.",
-        "shareableReason": "La empresa Fable Group de Clara podría hacer un piloto o comprarle a Vertex Works.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mina (Co-Founder & CEO, Vertex Works) está desarrollando un producto que podría ayudar a Fable Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Vertex Works de Mina desarrolla algo que Fable Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Clara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1843,23 +1231,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "beatriz.lindgren@demo.weft.example",
     "pairScore": 86,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Beatriz (Co-Founder & CEO, Glade Works) está creando una empresa joven, una primera mirada para Gideon antes de que levante capital de forma amplia.",
-        "shareableReason": "Beatriz está creando Glade Works, una empresa que Orbit Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Gideon (Partner, Orbit Partners) invierte en empresas jóvenes y puede decirle a Beatriz si Glade Works encaja con lo que respalda Orbit Partners.",
-        "shareableReason": "Gideon invierte en Orbit Partners y podría ser un inversionista temprano de Glade Works.",
-        "missingInformation": [
-          "Los objetivos de Beatriz para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1894,23 +1265,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 89,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Anika (Brand Director, Indigo & Co) dirige una marca con la que Lantern Bank podría hacer una campaña conjunta.",
-        "shareableReason": "La marca Indigo & Co de Anika es un posible socio de campaña para Lantern Bank.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dalia (Head of Sponsorships, Lantern Bank) dirige las alianzas de un patrocinador del evento que podría cofinanciar una campaña con Indigo & Co.",
-        "shareableReason": "La empresa Lantern Bank de Dalia realiza campañas conjuntas con marcas como Indigo & Co.",
-        "missingInformation": [
-          "Los objetivos de Anika para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1945,23 +1299,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "pablo.delacroix@demo.weft.example",
     "pairScore": 67,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Pablo (Founder & CTO, Sable Labs) está desarrollando un producto que podría ayudar a Glade Global a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Sable Labs de Pablo desarrolla algo que Glade Global podría usar.",
-        "missingInformation": [
-          "Los objetivos de Ivy para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Ivy (Chief Operating Officer, Glade Global) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Sable Labs.",
-        "shareableReason": "La empresa Glade Global de Ivy podría hacer un piloto o comprarle a Sable Labs.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -1996,23 +1333,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 75,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Founder, Marlow Systems) está desarrollando un producto que podría ayudar a Glade Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Marlow Systems de Dalia desarrolla algo que Glade Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Bilal para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Bilal (VP of Strategy, Glade Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Marlow Systems.",
-        "shareableReason": "La empresa Glade Industries de Bilal podría hacer un piloto o comprarle a Marlow Systems.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2047,23 +1367,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 66,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Esra (Policy Advisor, Ember Agency) define normas que los clientes de Indigo Advisors deben cumplir.",
-        "shareableReason": "Esra trabaja en políticas públicas en Ember Agency, lo que afecta a los clientes de Indigo Advisors.",
-        "missingInformation": [
-          "Los objetivos de Zoe para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Zoe (Principal Consultant, Indigo Advisors) ve día a día cómo las normas afectan a las empresas, un aporte útil para el trabajo de políticas de Ember Agency.",
-        "shareableReason": "La firma Indigo Advisors de Zoe asesora a empresas afectadas por la política en la que trabaja Ember Agency.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2098,23 +1401,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "clara.quinn@demo.weft.example",
     "pairScore": 81,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Clara (VP of Strategy, Fable Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Glade Works.",
-        "shareableReason": "La empresa Fable Group de Clara podría hacer un piloto o comprarle a Glade Works.",
-        "missingInformation": [
-          "Los objetivos de Beatriz para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Beatriz (Co-Founder & CEO, Glade Works) está desarrollando un producto que podría ayudar a Fable Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Glade Works de Beatriz desarrolla algo que Fable Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Clara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2149,23 +1435,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gia.winter@demo.weft.example",
     "pairScore": 90,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gia (Founder, Harbor Labs) está desarrollando un producto que podría ayudar a Glade Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Harbor Labs de Gia desarrolla algo que Glade Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Bilal para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Bilal (VP of Strategy, Glade Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Harbor Labs.",
-        "shareableReason": "La empresa Glade Industries de Bilal podría hacer un piloto o comprarle a Harbor Labs.",
-        "missingInformation": [
-          "Los objetivos de Gia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2200,23 +1469,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "pablo.delacroix@demo.weft.example",
     "pairScore": 68,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Pablo (Founder & CTO, Sable Labs) está creando una empresa joven, una primera mirada para Gideon antes de que levante capital de forma amplia.",
-        "shareableReason": "Pablo está creando Sable Labs, una empresa que Orbit Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Gideon (Partner, Orbit Partners) invierte en empresas jóvenes y puede decirle a Pablo si Sable Labs encaja con lo que respalda Orbit Partners.",
-        "shareableReason": "Gideon invierte en Orbit Partners y podría ser un inversionista temprano de Sable Labs.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2251,23 +1503,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gia.winter@demo.weft.example",
     "pairScore": 91,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gia (Founder, Harbor Labs) está creando una empresa joven, una primera mirada para Aiden antes de que levante capital de forma amplia.",
-        "shareableReason": "Gia está creando Harbor Labs, una empresa que Lantern Ventures podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Aiden para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Aiden (Partner, Lantern Ventures) invierte en empresas jóvenes y puede decirle a Gia si Harbor Labs encaja con lo que respalda Lantern Ventures.",
-        "shareableReason": "Aiden invierte en Lantern Ventures y podría ser un inversionista temprano de Harbor Labs.",
-        "missingInformation": [
-          "Los objetivos de Gia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2302,23 +1537,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 92,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Imani (Co-Founder & CEO, Alder Systems) está desarrollando un producto que podría ayudar a Juniper Group a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Alder Systems de Imani desarrolla algo que Juniper Group podría usar.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Chief Operating Officer, Juniper Group) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Alder Systems.",
-        "shareableReason": "La empresa Juniper Group de Hassan podría hacer un piloto o comprarle a Alder Systems.",
-        "missingInformation": [
-          "Los objetivos de Imani para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2353,23 +1571,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "farah.fontaine@demo.weft.example",
     "pairScore": 79,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Farah (Co-Founder & CEO, Willow Systems) está creando una empresa joven, una primera mirada para Nora antes de que levante capital de forma amplia.",
-        "shareableReason": "Farah está creando Willow Systems, una empresa que Quarry Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Nora (Principal, Quarry Partners) invierte en empresas jóvenes y puede decirle a Farah si Willow Systems encaja con lo que respalda Quarry Partners.",
-        "shareableReason": "Nora invierte en Quarry Partners y podría ser un inversionista temprano de Willow Systems.",
-        "missingInformation": [
-          "Los objetivos de Farah para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2404,23 +1605,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 72,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Petra (Founder & CTO, Nimbus Labs) está creando una empresa joven, una primera mirada para Petra antes de que levante capital de forma amplia.",
-        "shareableReason": "Petra está creando Nimbus Labs, una empresa que Indigo Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Partner, Indigo Partners) invierte en empresas jóvenes y puede decirle a Petra si Nimbus Labs encaja con lo que respalda Indigo Partners.",
-        "shareableReason": "Petra invierte en Indigo Partners y podría ser un inversionista temprano de Nimbus Labs.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2455,23 +1639,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gideon.whitlock@demo.weft.example",
     "pairScore": 82,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gideon (Partner, Orbit Partners) invierte en empresas jóvenes y puede decirle a Omar si Orbit Works encaja con lo que respalda Orbit Partners.",
-        "shareableReason": "Gideon invierte en Orbit Partners y podría ser un inversionista temprano de Orbit Works.",
-        "missingInformation": [
-          "Los objetivos de Omar para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Omar (Founder, Orbit Works) está creando una empresa joven, una primera mirada para Gideon antes de que levante capital de forma amplia.",
-        "shareableReason": "Omar está creando Orbit Works, una empresa que Orbit Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2506,23 +1673,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "petra.chaudhry@demo.weft.example",
     "pairScore": 92,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Petra (Founder & CTO, Nimbus Labs) está creando una empresa joven que busca capital paciente y de largo plazo como el de Glade Holdings.",
-        "shareableReason": "Petra está creando Nimbus Labs y busca inversionistas de largo plazo como Glade Holdings.",
-        "missingInformation": [
-          "Los objetivos de Sven para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Sven (Head of Direct Investments, Glade Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Nimbus Labs.",
-        "shareableReason": "Sven invierte para Glade Holdings con un horizonte de largo plazo y podría respaldar a Nimbus Labs.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2557,23 +1707,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "gideon.dumont@demo.weft.example",
     "pairScore": 67,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Gideon (Founder, Ember Labs) está creando una empresa joven que busca capital paciente y de largo plazo como el de Glade Holdings.",
-        "shareableReason": "Gideon está creando Ember Labs y busca inversionistas de largo plazo como Glade Holdings.",
-        "missingInformation": [
-          "Los objetivos de Sven para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Sven (Head of Direct Investments, Glade Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Ember Labs.",
-        "shareableReason": "Sven invierte para Glade Holdings con un horizonte de largo plazo y podría respaldar a Ember Labs.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2608,23 +1741,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "esra.keller@demo.weft.example",
     "pairScore": 86,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Esra (VP of Strategy, Willow Global) ayuda a dirigir un negocio consolidado en el que Tundra Holdings podría tomar una participación a largo plazo.",
-        "shareableReason": "Esra ayuda a dirigir Willow Global, un negocio maduro en el que Tundra Holdings podría invertir.",
-        "missingInformation": [
-          "Los objetivos de Carlos para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) toma participaciones a largo plazo en empresas consolidadas como Willow Global.",
-        "shareableReason": "Carlos invierte para Tundra Holdings, que respalda a empresas consolidadas como Willow Global.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2659,23 +1775,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "elena.reyes@demo.weft.example",
     "pairScore": 71,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Elena (Managing Partner, Willow Consulting) asesora a empresas en proyectos para los que Quarry Industries quizá no tenga las capacidades internas.",
-        "shareableReason": "La firma Willow Consulting de Elena asesora a empresas como Quarry Industries.",
-        "missingInformation": [
-          "Los objetivos de Jin para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jin (Chief Financial Officer, Quarry Industries) ayuda a dirigir una empresa que podría contratar a Willow Consulting.",
-        "shareableReason": "Jin ayuda a dirigir Quarry Industries, que podría necesitar los servicios de Willow Consulting.",
-        "missingInformation": [
-          "Los objetivos de Elena para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2710,23 +1809,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "emeka.bergstrom@demo.weft.example",
     "pairScore": 63,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Emeka (Founder & CTO, Harbor Systems) está desarrollando un producto que podría ayudar a Glade Global a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Harbor Systems de Emeka desarrolla algo que Glade Global podría usar.",
-        "missingInformation": [
-          "Los objetivos de Ivy para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Ivy (Chief Operating Officer, Glade Global) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Harbor Systems.",
-        "shareableReason": "La empresa Glade Global de Ivy podría hacer un piloto o comprarle a Harbor Systems.",
-        "missingInformation": [
-          "Los objetivos de Emeka para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2761,23 +1843,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "yara.ahmadi@demo.weft.example",
     "pairScore": 92,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Yara (Managing Partner, Willow Advisors) asesora a empresas y podría ayudar a Kestrel Sports Group con contratos y crecimiento.",
-        "shareableReason": "La firma Willow Advisors de Yara asesora a negocios deportivos como Kestrel Sports Group.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) dirige un negocio deportivo que podría convertirse en cliente de Willow Advisors.",
-        "shareableReason": "El grupo deportivo Kestrel Sports Group de Mina podría convertirse en cliente de Willow Advisors.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2812,23 +1877,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 88,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Zane (Founder & CTO, Cinder Labs) está creando una empresa joven, una primera mirada para Aiden antes de que levante capital de forma amplia.",
-        "shareableReason": "Zane está creando Cinder Labs, una empresa que Lantern Ventures podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Aiden para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Aiden (Partner, Lantern Ventures) invierte en empresas jóvenes y puede decirle a Zane si Cinder Labs encaja con lo que respalda Lantern Ventures.",
-        "shareableReason": "Aiden invierte en Lantern Ventures y podría ser un inversionista temprano de Cinder Labs.",
-        "missingInformation": [
-          "Los objetivos de Zane para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2863,23 +1911,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "aiden.ibarra@demo.weft.example",
     "pairScore": 92,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Aiden (Partner, Lantern Ventures) invierte en empresas jóvenes y puede decirle a Dmitri si Juniper Systems encaja con lo que respalda Lantern Ventures.",
-        "shareableReason": "Aiden invierte en Lantern Ventures y podría ser un inversionista temprano de Juniper Systems.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Founder, Juniper Systems) está creando una empresa joven, una primera mirada para Aiden antes de que levante capital de forma amplia.",
-        "shareableReason": "Dmitri está creando Juniper Systems, una empresa que Lantern Ventures podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Aiden para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2914,23 +1945,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "carlos.ahmadi@demo.weft.example",
     "pairScore": 85,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Carlos (Head of Direct Investments, Tundra Holdings) invierte capital familiar a largo plazo, un tipo de inversionista paciente para Tundra Systems.",
-        "shareableReason": "Carlos invierte para Tundra Holdings con un horizonte de largo plazo y podría respaldar a Tundra Systems.",
-        "missingInformation": [
-          "Los objetivos de Jasmine para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jasmine (Founder, Tundra Systems) está creando una empresa joven que busca capital paciente y de largo plazo como el de Tundra Holdings.",
-        "shareableReason": "Jasmine está creando Tundra Systems y busca inversionistas de largo plazo como Tundra Holdings.",
-        "missingInformation": [
-          "Los objetivos de Carlos para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -2965,23 +1979,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 90,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Imani (Co-Founder & CEO, Alder Systems) está creando una empresa joven, una primera mirada para Aiden antes de que levante capital de forma amplia.",
-        "shareableReason": "Imani está creando Alder Systems, una empresa que Lantern Ventures podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Aiden para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Aiden (Partner, Lantern Ventures) invierte en empresas jóvenes y puede decirle a Imani si Alder Systems encaja con lo que respalda Lantern Ventures.",
-        "shareableReason": "Aiden invierte en Lantern Ventures y podría ser un inversionista temprano de Alder Systems.",
-        "missingInformation": [
-          "Los objetivos de Imani para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3016,23 +2013,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 86,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Esra (Policy Advisor, Ember Agency) trabaja en normas y programas comerciales que afectan a Glade Global.",
-        "shareableReason": "Esra trabaja en políticas públicas en Ember Agency, lo que afecta a empresas como Glade Global.",
-        "missingInformation": [
-          "Los objetivos de Ivy para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Ivy (Chief Operating Officer, Glade Global) puede ofrecer a Ember Agency una visión directa de la industria sobre las políticas.",
-        "shareableReason": "Ivy ayuda a dirigir Glade Global y puede compartir una visión de la industria con Ember Agency.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3067,23 +2047,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 66,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Anika (Brand Director, Indigo & Co) dirige una marca con lanzamientos que Nimbus Network podría cubrir.",
-        "shareableReason": "La marca Indigo & Co de Anika tiene novedades que Nimbus Network podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Editor, Nimbus Network) trabaja en un medio que podría cubrir el próximo lanzamiento de Indigo & Co.",
-        "shareableReason": "Dmitri trabaja en Nimbus Network, que cubre marcas como Indigo & Co.",
-        "missingInformation": [
-          "Los objetivos de Anika para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3118,23 +2081,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "pablo.ibarra@demo.weft.example",
     "pairScore": 77,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Pablo (Head of Partnerships, Fable Collective) encarga trabajo creativo, por lo que Fable Collective es un posible cliente de Zephyr Studios.",
-        "shareableReason": "La marca Fable Collective de Pablo contrata estudios como Zephyr Studios.",
-        "missingInformation": [
-          "Los objetivos de Jonas para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jonas (Founder, Zephyr Studios) crea trabajo creativo que podría convertirse en contenido de campaña para Fable Collective.",
-        "shareableReason": "El estudio Zephyr Studios de Jonas crea contenido para marcas como Fable Collective.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3169,23 +2115,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "pablo.ibarra@demo.weft.example",
     "pairScore": 61,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Pablo (Head of Partnerships, Fable Collective) dirige una marca con lanzamientos que Harbor Media podría cubrir.",
-        "shareableReason": "La marca Fable Collective de Pablo tiene novedades que Harbor Media podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Helena para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Helena (Editor, Harbor Media) trabaja en un medio que podría cubrir el próximo lanzamiento de Fable Collective.",
-        "shareableReason": "Helena trabaja en Harbor Media, que cubre marcas como Fable Collective.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3220,23 +2149,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 71,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Jin (Chief Financial Officer, Quarry Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Juniper Systems.",
-        "shareableReason": "La empresa Quarry Industries de Jin podría hacer un piloto o comprarle a Juniper Systems.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Founder, Juniper Systems) está desarrollando un producto que podría ayudar a Quarry Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Juniper Systems de Dmitri desarrolla algo que Quarry Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Jin para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3271,23 +2183,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 70,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Editor, Marlow Press) trabaja en un medio que podría destacar o distribuir el trabajo de Umber Studios.",
-        "shareableReason": "El medio Marlow Press de Dmitri destaca el trabajo de estudios como Umber Studios.",
-        "missingInformation": [
-          "Los objetivos de Tessa para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Tessa (Creative Director, Umber Studios) crea trabajo creativo que podría ser una historia para Marlow Press.",
-        "shareableReason": "El estudio Umber Studios de Tessa crea trabajo que Marlow Press podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3322,23 +2217,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "anika.zielinski@demo.weft.example",
     "pairScore": 81,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Anika (Brand Director, Indigo & Co) encarga trabajo creativo, por lo que Indigo & Co es un posible cliente de Zephyr Studios.",
-        "shareableReason": "La marca Indigo & Co de Anika contrata estudios como Zephyr Studios.",
-        "missingInformation": [
-          "Los objetivos de Jonas para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jonas (Founder, Zephyr Studios) crea trabajo creativo que podría convertirse en contenido de campaña para Indigo & Co.",
-        "shareableReason": "El estudio Zephyr Studios de Jonas crea contenido para marcas como Indigo & Co.",
-        "missingInformation": [
-          "Los objetivos de Anika para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3373,23 +2251,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 84,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Editor, Marlow Press) trabaja en un medio que podría cubrir el próximo lanzamiento de Fable Collective.",
-        "shareableReason": "Dmitri trabaja en Marlow Press, que cubre marcas como Fable Collective.",
-        "missingInformation": [
-          "Los objetivos de Pablo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Pablo (Head of Partnerships, Fable Collective) dirige una marca con lanzamientos que Marlow Press podría cubrir.",
-        "shareableReason": "La marca Fable Collective de Pablo tiene novedades que Marlow Press podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3424,23 +2285,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Jin (Chief Financial Officer, Quarry Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Nimbus Labs.",
-        "shareableReason": "La empresa Quarry Industries de Jin podría hacer un piloto o comprarle a Nimbus Labs.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Founder & CTO, Nimbus Labs) está desarrollando un producto que podría ayudar a Quarry Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Nimbus Labs de Petra desarrolla algo que Quarry Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Jin para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3475,23 +2319,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "nora.moreau@demo.weft.example",
     "pairScore": 80,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Nora (Principal, Quarry Partners) invierte en empresas jóvenes y puede decirle a Omar si Orbit Works encaja con lo que respalda Quarry Partners.",
-        "shareableReason": "Nora invierte en Quarry Partners y podría ser un inversionista temprano de Orbit Works.",
-        "missingInformation": [
-          "Los objetivos de Omar para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Omar (Founder, Orbit Works) está creando una empresa joven, una primera mirada para Nora antes de que levante capital de forma amplia.",
-        "shareableReason": "Omar está creando Orbit Works, una empresa que Quarry Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3526,23 +2353,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "jin.reyes@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Jin (Chief Financial Officer, Quarry Industries) ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de Tundra Systems.",
-        "shareableReason": "La empresa Quarry Industries de Jin podría hacer un piloto o comprarle a Tundra Systems.",
-        "missingInformation": [
-          "Los objetivos de Jasmine para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jasmine (Founder, Tundra Systems) está desarrollando un producto que podría ayudar a Quarry Industries a trabajar más rápido o con menos costo.",
-        "shareableReason": "La empresa Tundra Systems de Jasmine desarrolla algo que Quarry Industries podría usar.",
-        "missingInformation": [
-          "Los objetivos de Jin para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3577,23 +2387,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "camila.gutierrez@demo.weft.example",
     "pairScore": 61,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Camila (Founder, Quarry Labs) está creando una empresa joven, una primera mirada para Gideon antes de que levante capital de forma amplia.",
-        "shareableReason": "Camila está creando Quarry Labs, una empresa que Orbit Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Gideon (Partner, Orbit Partners) invierte en empresas jóvenes y puede decirle a Camila si Quarry Labs encaja con lo que respalda Orbit Partners.",
-        "shareableReason": "Gideon invierte en Orbit Partners y podría ser un inversionista temprano de Quarry Labs.",
-        "missingInformation": [
-          "Los objetivos de Camila para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3628,23 +2421,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dev.lombardi@demo.weft.example",
     "pairScore": 81,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dev (Programme Lead, Kestrel Agency) define normas que los clientes de Glade Consulting deben cumplir.",
-        "shareableReason": "Dev trabaja en políticas públicas en Kestrel Agency, lo que afecta a los clientes de Glade Consulting.",
-        "missingInformation": [
-          "Los objetivos de Mateo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mateo (Managing Partner, Glade Consulting) ve día a día cómo las normas afectan a las empresas, un aporte útil para el trabajo de políticas de Kestrel Agency.",
-        "shareableReason": "La firma Glade Consulting de Mateo asesora a empresas afectadas por la política en la que trabaja Kestrel Agency.",
-        "missingInformation": [
-          "Los objetivos de Dev para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3679,23 +2455,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.zhou@demo.weft.example",
     "pairScore": 76,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Founder, Marlow Systems) está creando una empresa joven, una primera mirada para Gideon antes de que levante capital de forma amplia.",
-        "shareableReason": "Dalia está creando Marlow Systems, una empresa que Orbit Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Gideon para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Gideon (Partner, Orbit Partners) invierte en empresas jóvenes y puede decirle a Dalia si Marlow Systems encaja con lo que respalda Orbit Partners.",
-        "shareableReason": "Gideon invierte en Orbit Partners y podría ser un inversionista temprano de Marlow Systems.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3730,23 +2489,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "nora.moreau@demo.weft.example",
     "pairScore": 77,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Nora (Principal, Quarry Partners) invierte en empresas jóvenes y puede decirle a Mina si Vertex Works encaja con lo que respalda Quarry Partners.",
-        "shareableReason": "Nora invierte en Quarry Partners y podría ser un inversionista temprano de Vertex Works.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mina (Co-Founder & CEO, Vertex Works) está creando una empresa joven, una primera mirada para Nora antes de que levante capital de forma amplia.",
-        "shareableReason": "Mina está creando Vertex Works, una empresa que Quarry Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Nora para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3781,23 +2523,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 84,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) dirige un negocio deportivo que podría convertirse en cliente de Indigo Advisors.",
-        "shareableReason": "El grupo deportivo Kestrel Sports Group de Mina podría convertirse en cliente de Indigo Advisors.",
-        "missingInformation": [
-          "Los objetivos de Zoe para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Zoe (Principal Consultant, Indigo Advisors) asesora a empresas y podría ayudar a Kestrel Sports Group con contratos y crecimiento.",
-        "shareableReason": "La firma Indigo Advisors de Zoe asesora a negocios deportivos como Kestrel Sports Group.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3832,23 +2557,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Managing Director, Lantern Athletics) dirige un negocio deportivo con historias y acceso que Nimbus Network podría aprovechar.",
-        "shareableReason": "El grupo deportivo Lantern Athletics de Dalia tiene historias que Nimbus Network podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dmitri (Editor, Nimbus Network) trabaja en un medio que podría cubrir a Lantern Athletics.",
-        "shareableReason": "El medio Nimbus Network de Dmitri podría cubrir a Lantern Athletics.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3883,23 +2591,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.abbott@demo.weft.example",
     "pairScore": 68,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Editor, Nimbus Network) trabaja en un medio que podría destacar o distribuir el trabajo de Umber Studios.",
-        "shareableReason": "El medio Nimbus Network de Dmitri destaca el trabajo de estudios como Umber Studios.",
-        "missingInformation": [
-          "Los objetivos de Tessa para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Tessa (Creative Director, Umber Studios) crea trabajo creativo que podría ser una historia para Nimbus Network.",
-        "shareableReason": "El estudio Umber Studios de Tessa crea trabajo que Nimbus Network podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3934,23 +2625,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 65,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Editor, Marlow Press) trabaja en un medio que podría destacar o distribuir el trabajo de Cinder Studios.",
-        "shareableReason": "El medio Marlow Press de Dmitri destaca el trabajo de estudios como Cinder Studios.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Founder, Cinder Studios) crea trabajo creativo que podría ser una historia para Marlow Press.",
-        "shareableReason": "El estudio Cinder Studios de Petra crea trabajo que Marlow Press podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -3985,23 +2659,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.whitlock@demo.weft.example",
     "pairScore": 74,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Head of Sponsorships, Lantern Bank) dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como Nimbus Labs.",
-        "shareableReason": "La empresa Lantern Bank de Dalia se asocia con empresas jóvenes como Nimbus Labs.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Founder & CTO, Nimbus Labs) está creando una empresa joven a la que Lantern Bank podría apoyar y obtener acceso temprano.",
-        "shareableReason": "Petra está creando Nimbus Labs, una empresa joven con la que Lantern Bank podría asociarse.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4036,23 +2693,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dmitri.petrov@demo.weft.example",
     "pairScore": 82,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dmitri (Editor, Marlow Press) trabaja en un medio que podría destacar o distribuir el trabajo de Zephyr Studios.",
-        "shareableReason": "El medio Marlow Press de Dmitri destaca el trabajo de estudios como Zephyr Studios.",
-        "missingInformation": [
-          "Los objetivos de Jonas para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Jonas (Founder, Zephyr Studios) crea trabajo creativo que podría ser una historia para Marlow Press.",
-        "shareableReason": "El estudio Zephyr Studios de Jonas crea trabajo que Marlow Press podría cubrir.",
-        "missingInformation": [
-          "Los objetivos de Dmitri para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4087,23 +2727,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "zane.mbeki@demo.weft.example",
     "pairScore": 85,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Zane (Founder & CTO, Cinder Labs) está creando una empresa joven a la que Lantern Bank podría apoyar y obtener acceso temprano.",
-        "shareableReason": "Zane está creando Cinder Labs, una empresa joven con la que Lantern Bank podría asociarse.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Dalia (Head of Sponsorships, Lantern Bank) dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como Cinder Labs.",
-        "shareableReason": "La empresa Lantern Bank de Dalia se asocia con empresas jóvenes como Cinder Labs.",
-        "missingInformation": [
-          "Los objetivos de Zane para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4138,23 +2761,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "imani.gallagher@demo.weft.example",
     "pairScore": 89,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Imani (Co-Founder & CEO, Alder Systems) está creando una empresa joven, una primera mirada para Petra antes de que levante capital de forma amplia.",
-        "shareableReason": "Imani está creando Alder Systems, una empresa que Indigo Partners podría respaldar.",
-        "missingInformation": [
-          "Los objetivos de Petra para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Petra (Partner, Indigo Partners) invierte en empresas jóvenes y puede decirle a Imani si Alder Systems encaja con lo que respalda Indigo Partners.",
-        "shareableReason": "Petra invierte en Indigo Partners y podría ser un inversionista temprano de Alder Systems.",
-        "missingInformation": [
-          "Los objetivos de Imani para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4189,23 +2795,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "mina.chaudhry@demo.weft.example",
     "pairScore": 91,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Mina (Head of Partnerships, Kestrel Sports Group) dirige un negocio deportivo que busca socios de marca; un patrocinio podría poner a Beacon Collective frente a los aficionados.",
-        "shareableReason": "El grupo deportivo Kestrel Sports Group de Mina busca socios de marca como Beacon Collective.",
-        "missingInformation": [
-          "Los objetivos de Hassan para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Hassan (Brand Director, Beacon Collective) dirige una marca que podría patrocinar a Kestrel Sports Group.",
-        "shareableReason": "La marca Beacon Collective de Hassan podría patrocinar a Kestrel Sports Group.",
-        "missingInformation": [
-          "Los objetivos de Mina para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4240,23 +2829,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dev.lombardi@demo.weft.example",
     "pairScore": 60,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dev (Programme Lead, Kestrel Agency) define normas que los clientes de Willow Advisors deben cumplir.",
-        "shareableReason": "Dev trabaja en políticas públicas en Kestrel Agency, lo que afecta a los clientes de Willow Advisors.",
-        "missingInformation": [
-          "Los objetivos de Yara para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Yara (Managing Partner, Willow Advisors) ve día a día cómo las normas afectan a las empresas, un aporte útil para el trabajo de políticas de Kestrel Agency.",
-        "shareableReason": "La firma Willow Advisors de Yara asesora a empresas afectadas por la política en la que trabaja Kestrel Agency.",
-        "missingInformation": [
-          "Los objetivos de Dev para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4291,23 +2863,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "esra.lombardi@demo.weft.example",
     "pairScore": 88,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Esra (Policy Advisor, Ember Agency) define normas que los clientes de Glade Consulting deben cumplir.",
-        "shareableReason": "Esra trabaja en políticas públicas en Ember Agency, lo que afecta a los clientes de Glade Consulting.",
-        "missingInformation": [
-          "Los objetivos de Mateo para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Mateo (Managing Partner, Glade Consulting) ve día a día cómo las normas afectan a las empresas, un aporte útil para el trabajo de políticas de Ember Agency.",
-        "shareableReason": "La firma Glade Consulting de Mateo asesora a empresas afectadas por la política en la que trabaja Ember Agency.",
-        "missingInformation": [
-          "Los objetivos de Esra para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4342,23 +2897,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.whitlock@demo.weft.example",
     "pairScore": 62,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Head of Sponsorships, Lantern Bank) dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como Harbor Labs.",
-        "shareableReason": "La empresa Lantern Bank de Dalia se asocia con empresas jóvenes como Harbor Labs.",
-        "missingInformation": [
-          "Los objetivos de Gia para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Gia (Founder, Harbor Labs) está creando una empresa joven a la que Lantern Bank podría apoyar y obtener acceso temprano.",
-        "shareableReason": "Gia está creando Harbor Labs, una empresa joven con la que Lantern Bank podría asociarse.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",
@@ -4393,23 +2931,6 @@ export const GENERATED_DEMO_MATCHES: readonly DemoMatch[] = [
     "b": "dalia.fitzgerald@demo.weft.example",
     "pairScore": 86,
     "uncertainty": "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    "es": {
-      "uncertainty": "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.",
-      "forA": {
-        "benefit": "Dalia (Managing Director, Lantern Athletics) dirige un negocio deportivo que podría convertirse en cliente de Willow Consulting.",
-        "shareableReason": "El grupo deportivo Lantern Athletics de Dalia podría convertirse en cliente de Willow Consulting.",
-        "missingInformation": [
-          "Los objetivos de Elena para el evento (aún no hay un perfil guardado)"
-        ]
-      },
-      "forB": {
-        "benefit": "Elena (Managing Partner, Willow Consulting) asesora a empresas y podría ayudar a Lantern Athletics con contratos y crecimiento.",
-        "shareableReason": "La firma Willow Consulting de Elena asesora a negocios deportivos como Lantern Athletics.",
-        "missingInformation": [
-          "Los objetivos de Dalia para el evento (aún no hay un perfil guardado)"
-        ]
-      }
-    },
     "evidence": [
       {
         "who": "a",

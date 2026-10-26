@@ -4,9 +4,6 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { drizzle } from "drizzle-orm/pg-proxy";
 import { loadTs, stubTs } from "./load-ts.mjs";
-import { stubI18n } from "./i18n-stub.mjs";
-
-stubI18n();
 
 const eventId = "22222222-2222-4222-8222-222222222222";
 const statements = [];
@@ -26,8 +23,8 @@ const controls = { filter: "active", search: "", introductionPath: "all", onSear
 const list = { matches: [], counts: { active: 1050, revoked: 20 }, pagination: { page: 1, pageSize: 25, total: 0 }, sync: { state: "synced" } };
 
 test("match browsing validates filters and bounded page input", () => {
-  assert.deepEqual(matchListQuerySchema.parse({}), { search: "", page: 1 });
-  assert.deepEqual(matchListQuerySchema.parse({ search: "  Ada Guest  ", page: "42", status: "active", introductionPath: "wefter", locale: "es" }), { search: "Ada Guest", page: 42, status: "active", introductionPath: "wefter" });
+  assert.deepEqual(matchListQuerySchema.parse({}), { search: "", page: 1, locale: "en" });
+  assert.deepEqual(matchListQuerySchema.parse({ search: "  Ada Guest  ", page: "42", status: "active", introductionPath: "wefter", locale: "es" }), { search: "Ada Guest", page: 42, status: "active", introductionPath: "wefter", locale: "es" });
   for (const value of [{ page: 0 }, { page: 1.5 }, { page: "oops" }, { page: 1000001 }, { search: "x".repeat(201) }, { introductionPath: "assigned" }, { status: "accepted" }]) {
     assert.equal(matchListQuerySchema.safeParse(value).success, false);
   }

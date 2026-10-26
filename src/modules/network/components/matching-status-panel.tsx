@@ -2,7 +2,6 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ClockIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { formatRelativeActivity } from "@/modules/events/event-record";
@@ -11,6 +10,12 @@ import { eventMatchesKey } from "../queries/matches";
 import { describeMatchingStatus } from "../matching-status-copy";
 import type { MatchingStatusResult } from "../matching-status-schemas";
 
+const unavailableCopy = {
+  not_configured: "Matching status isn’t connected in this environment yet.",
+  unreachable: "The matching service didn’t respond. Try again in a moment.",
+  invalid_response: "The matching service sent an answer this page couldn’t read.",
+} as const;
+
 export type MatchingStatusViewProps =
   | { kind: "loading" }
   | { kind: "error"; onRetry: () => void }
@@ -18,23 +23,21 @@ export type MatchingStatusViewProps =
 
 /** Read-only: it reports the matching state and has no way to start, stop or approve matching. */
 export function MatchingStatusView(props: MatchingStatusViewProps) {
-  const i18n = useI18n();
-  const text = i18n.dict.network.statusPanel;
   const unavailableMessage = props.kind === "error"
-    ? text.loadFailed
-    : props.kind === "result" && props.result.availability === "unavailable" ? text.unavailable[props.result.reason] : null;
+    ? "Matching status couldn’t be loaded."
+    : props.kind === "result" && props.result.availability === "unavailable" ? unavailableCopy[props.result.reason] : null;
   let body;
   if (props.kind === "loading") {
-    body = <p className="matching-status__detail">{text.checking}</p>;
+    body = <p className="matching-status__detail">Checking matching status…</p>;
   } else if (unavailableMessage !== null) {
     body = (
       <>
         <p className="matching-status__detail">{unavailableMessage}</p>
-        <button className="event-text-action" onClick={props.onRetry} type="button">{text.checkAgain}</button>
+        <button className="event-text-action" onClick={props.onRetry} type="button">Check again</button>
       </>
     );
   } else if (props.kind === "result" && props.result.availability === "available") {
-    const copy = describeMatchingStatus(i18n, props.result.status, (iso) => formatRelativeActivity(i18n, iso));
+    const copy = describeMatchingStatus(props.result.status, formatRelativeActivity);
     body = (
       <>
         <span className={`status-pill matching-status__pill matching-status__pill--${copy.tone}`}>{copy.label}</span>
@@ -48,7 +51,7 @@ export function MatchingStatusView(props: MatchingStatusViewProps) {
     <Surface as="section" className="event-detail-panel matching-status" data-simulated={simulated ? "true" : undefined} depth="raised" aria-labelledby="matching-status-title">
       <div className="event-detail-panel__heading">
         <ClockIcon height="20" width="20" />
-        <h2 id="matching-status-title">{text.heading}</h2>
+        <h2 id="matching-status-title">Matching status</h2>
       </div>
       <div aria-live="polite" className="matching-status__body">{body}</div>
     </Surface>

@@ -90,43 +90,8 @@ const reasons = {
   "Service Providers>Government": [(m, o) => `${who(o)} shapes rules that ${m.company}'s clients must follow.`, (m, o) => `${o.first} works on policy at ${o.company}, which affects ${m.company}'s clients.`],
   "Service Providers>Athletes": [(m, o) => `${who(o)} runs a sports business that could become a client of ${m.company}.`, (m, o) => `${o.first}'s sports group ${o.company} could become a client of ${m.company}.`],
 };
-// Spanish demo text for events whose language is Spanish. Job titles and company names are guest data and stay as-is.
-const reasonsEs = {
-  "Founders>Investors": [(m, o) => `${who(o)} invierte en empresas jóvenes y puede decirle a ${m.first} si ${m.company} encaja con lo que respalda ${o.company}.`, (m, o) => `${o.first} invierte en ${o.company} y podría ser un inversionista temprano de ${m.company}.`],
-  "Founders>Family Offices": [(m, o) => `${who(o)} invierte capital familiar a largo plazo, un tipo de inversionista paciente para ${m.company}.`, (m, o) => `${o.first} invierte para ${o.company} con un horizonte de largo plazo y podría respaldar a ${m.company}.`],
-  "Founders>Executives": [(m, o) => `${who(o)} ayuda a dirigir una empresa consolidada que podría convertirse en cliente temprano o socio piloto de ${m.company}.`, (m, o) => `La empresa ${o.company} de ${o.first} podría hacer un piloto o comprarle a ${m.company}.`],
-  "Founders>Sponsors": [(m, o) => `${who(o)} dirige las alianzas de un patrocinador del evento que apoya a empresas jóvenes como ${m.company}.`, (m, o) => `La empresa ${o.company} de ${o.first} se asocia con empresas jóvenes como ${m.company}.`],
-  "Investors>Founders": [(m, o) => `${who(o)} está creando una empresa joven, una primera mirada para ${m.first} antes de que levante capital de forma amplia.`, (m, o) => `${o.first} está creando ${o.company}, una empresa que ${m.company} podría respaldar.`],
-  "Family Offices>Founders": [(m, o) => `${who(o)} está creando una empresa joven que busca capital paciente y de largo plazo como el de ${m.company}.`, (m, o) => `${o.first} está creando ${o.company} y busca inversionistas de largo plazo como ${m.company}.`],
-  "Family Offices>Executives": [(m, o) => `${who(o)} ayuda a dirigir un negocio consolidado en el que ${m.company} podría tomar una participación a largo plazo.`, (m, o) => `${o.first} ayuda a dirigir ${o.company}, un negocio maduro en el que ${m.company} podría invertir.`],
-  "Executives>Founders": [(m, o) => `${who(o)} está desarrollando un producto que podría ayudar a ${m.company} a trabajar más rápido o con menos costo.`, (m, o) => `La empresa ${o.company} de ${o.first} desarrolla algo que ${m.company} podría usar.`],
-  "Executives>Service Providers": [(m, o) => `${who(o)} asesora a empresas en proyectos para los que ${m.company} quizá no tenga las capacidades internas.`, (m, o) => `La firma ${o.company} de ${o.first} asesora a empresas como ${m.company}.`],
-  "Executives>Sponsors": [(m, o) => `${who(o)} busca socios comerciales para un patrocinador del evento; ${m.company} podría ser uno.`, (m, o) => `La empresa ${o.company} de ${o.first} busca socios comerciales como ${m.company}.`],
-  "Executives>Family Offices": [(m, o) => `${who(o)} toma participaciones a largo plazo en empresas consolidadas como ${m.company}.`, (m, o) => `${o.first} invierte para ${o.company}, que respalda a empresas consolidadas como ${m.company}.`],
-  "Executives>Government": [(m, o) => `${who(o)} trabaja en normas y programas comerciales que afectan a ${m.company}.`, (m, o) => `${o.first} trabaja en políticas públicas en ${o.company}, lo que afecta a empresas como ${m.company}.`],
-  "Brands>Creators": [(m, o) => `${who(o)} crea trabajo creativo que podría convertirse en contenido de campaña para ${m.company}.`, (m, o) => `El estudio ${o.company} de ${o.first} crea contenido para marcas como ${m.company}.`],
-  "Brands>Media": [(m, o) => `${who(o)} trabaja en un medio que podría cubrir el próximo lanzamiento de ${m.company}.`, (m, o) => `${o.first} trabaja en ${o.company}, que cubre marcas como ${m.company}.`],
-  "Brands>Athletes": [(m, o) => `${who(o)} dirige un negocio deportivo que busca socios de marca; un patrocinio podría poner a ${m.company} frente a los aficionados.`, (m, o) => `El grupo deportivo ${o.company} de ${o.first} busca socios de marca como ${m.company}.`],
-  "Brands>Sponsors": [(m, o) => `${who(o)} dirige las alianzas de un patrocinador del evento que podría cofinanciar una campaña con ${m.company}.`, (m, o) => `La empresa ${o.company} de ${o.first} realiza campañas conjuntas con marcas como ${m.company}.`],
-  "Sponsors>Founders": [(m, o) => `${who(o)} está creando una empresa joven a la que ${m.company} podría apoyar y obtener acceso temprano.`, (m, o) => `${o.first} está creando ${o.company}, una empresa joven con la que ${m.company} podría asociarse.`],
-  "Sponsors>Brands": [(m, o) => `${who(o)} dirige una marca con la que ${m.company} podría hacer una campaña conjunta.`, (m, o) => `La marca ${o.company} de ${o.first} es un posible socio de campaña para ${m.company}.`],
-  "Sponsors>Executives": [(m, o) => `${who(o)} ayuda a dirigir una empresa que podría convertirse en cliente o socia de ${m.company}.`, (m, o) => `${o.first} ayuda a dirigir ${o.company}, un posible cliente o socio de ${m.company}.`],
-  "Creators>Brands": [(m, o) => `${who(o)} encarga trabajo creativo, por lo que ${o.company} es un posible cliente de ${m.company}.`, (m, o) => `La marca ${o.company} de ${o.first} contrata estudios como ${m.company}.`],
-  "Creators>Media": [(m, o) => `${who(o)} trabaja en un medio que podría destacar o distribuir el trabajo de ${m.company}.`, (m, o) => `El medio ${o.company} de ${o.first} destaca el trabajo de estudios como ${m.company}.`],
-  "Media>Creators": [(m, o) => `${who(o)} crea trabajo creativo que podría ser una historia para ${m.company}.`, (m, o) => `El estudio ${o.company} de ${o.first} crea trabajo que ${m.company} podría cubrir.`],
-  "Media>Athletes": [(m, o) => `${who(o)} dirige un negocio deportivo con historias y acceso que ${m.company} podría aprovechar.`, (m, o) => `El grupo deportivo ${o.company} de ${o.first} tiene historias que ${m.company} podría cubrir.`],
-  "Media>Brands": [(m, o) => `${who(o)} dirige una marca con lanzamientos que ${m.company} podría cubrir.`, (m, o) => `La marca ${o.company} de ${o.first} tiene novedades que ${m.company} podría cubrir.`],
-  "Athletes>Brands": [(m, o) => `${who(o)} dirige una marca que podría patrocinar a ${m.company}.`, (m, o) => `La marca ${o.company} de ${o.first} podría patrocinar a ${m.company}.`],
-  "Athletes>Service Providers": [(m, o) => `${who(o)} asesora a empresas y podría ayudar a ${m.company} con contratos y crecimiento.`, (m, o) => `La firma ${o.company} de ${o.first} asesora a negocios deportivos como ${m.company}.`],
-  "Athletes>Media": [(m, o) => `${who(o)} trabaja en un medio que podría cubrir a ${m.company}.`, (m, o) => `El medio ${o.company} de ${o.first} podría cubrir a ${m.company}.`],
-  "Government>Service Providers": [(m, o) => `${who(o)} ve día a día cómo las normas afectan a las empresas, un aporte útil para el trabajo de políticas de ${m.company}.`, (m, o) => `La firma ${o.company} de ${o.first} asesora a empresas afectadas por la política en la que trabaja ${m.company}.`],
-  "Government>Executives": [(m, o) => `${who(o)} puede ofrecer a ${m.company} una visión directa de la industria sobre las políticas.`, (m, o) => `${o.first} ayuda a dirigir ${o.company} y puede compartir una visión de la industria con ${m.company}.`],
-  "Service Providers>Executives": [(m, o) => `${who(o)} ayuda a dirigir una empresa que podría contratar a ${m.company}.`, (m, o) => `${o.first} ayuda a dirigir ${o.company}, que podría necesitar los servicios de ${m.company}.`],
-  "Service Providers>Government": [(m, o) => `${who(o)} define normas que los clientes de ${m.company} deben cumplir.`, (m, o) => `${o.first} trabaja en políticas públicas en ${o.company}, lo que afecta a los clientes de ${m.company}.`],
-  "Service Providers>Athletes": [(m, o) => `${who(o)} dirige un negocio deportivo que podría convertirse en cliente de ${m.company}.`, (m, o) => `El grupo deportivo ${o.company} de ${o.first} podría convertirse en cliente de ${m.company}.`],
-};
 for (const [profile, partners] of Object.entries(complement)) for (const partner of partners) {
-  for (const key of [`${profile}>${partner}`, `${partner}>${profile}`]) if (!reasons[key] || !reasonsEs[key]) throw new Error(`No reason text for ${key}`);
+  for (const key of [`${profile}>${partner}`, `${partner}>${profile}`]) if (!reasons[key]) throw new Error(`No reason text for ${key}`);
 }
 // A smaller pool of guests gets several matches each (cap 2 to 5), so the demo shows busy and quiet guests.
 const generated = shuffle(guests.filter((guest) => guest.generated));
@@ -151,13 +116,7 @@ for (let poolSize = 60; pairs.length < GENERATED_PAIRS && poolSize <= generated.
     shareableReason: reasons[`${me.profile}>${other.profile}`][1](me, other),
     missingInformation: [`${me.first}'s own goals for the event (no profile saved yet)`],
   });
-  const sideEs = (me, other) => ({
-    benefit: reasonsEs[`${me.profile}>${other.profile}`][0](me, other),
-    shareableReason: reasonsEs[`${me.profile}>${other.profile}`][1](me, other),
-    missingInformation: [`Los objetivos de ${me.first} para el evento (aún no hay un perfil guardado)`],
-  });
   pairs.push({ a: a.email, b: b.email, pairScore: base, uncertainty: "Based only on job titles and companies from the attendee list. Neither guest has a saved profile yet.",
-    es: { uncertainty: "Basado solo en los cargos y las empresas de la lista de asistentes. Ningún invitado tiene aún un perfil guardado.", forA: sideEs(a, b), forB: sideEs(b, a) },
     evidence: [{ who: "a", field: "position", quote: `${a.position}, ${a.company}` }, { who: "b", field: "position", quote: `${b.position}, ${b.company}` }],
     forA: side(a, b), forB: side(b, a) });
   }
