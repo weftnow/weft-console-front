@@ -4,7 +4,7 @@ import type { Locale } from "@/shared/i18n/locales";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { engineMatchingFeedSchema, type MatchingFeedEntry, type MatchingFeedResult } from "../matching-feed-schemas";
 import { engineMatchingStatusSchema, type MatchingStatusResult } from "../matching-status-schemas";
-import { DEMO_MATCHES, MAX_DEMO_MATCHES, type DemoMatch } from "../simulation/demo-matches";
+import { DEMO_FIXTURES, MAX_DEMO_MATCHES, type DemoMatch } from "../simulation/demo-matches";
 import { FEED_PAGE_LIMIT } from "./matching-feed-client";
 import * as repository from "./simulation-repository";
 
@@ -118,9 +118,12 @@ export async function readSimulatedMatchingFeed(
     return { availability: "available", feed: { entries: [], nextCursor: after } };
   }
 
-  const fixture = DEMO_MATCHES.slice(0, MAX_DEMO_MATCHES);
-  const guests = new Map((await dependencies.findGuests(eventId, [...new Set(fixture.flatMap((pair) => [pair.a, pair.b]))]))
+  const fixtures = DEMO_FIXTURES.map((pairs) => pairs.slice(0, MAX_DEMO_MATCHES));
+  const guests = new Map((await dependencies.findGuests(eventId, [...new Set(fixtures.flat().flatMap((pair) => [pair.a, pair.b]))]))
     .map((guest) => [guest.normalizedEmail, guest]));
+  // The event uses the roster most of its pairs come from; with no demo guests it is the default fixture, which yields nothing.
+  const present = (pairs: readonly DemoMatch[]) => pairs.filter((pair) => guests.has(pair.a) && guests.has(pair.b)).length;
+  const fixture = fixtures.reduce((best, pairs) => (present(pairs) > present(best) ? pairs : best));
   const blocked = new Set((await dependencies.listBlockedPairs(eventId, [...guests.values()].map((guest) => guest.id))).map((pair) => pair.join()));
   const runId = simulatedRunId(eventId, anchor);
   const language = await dependencies.findLanguage(eventId);

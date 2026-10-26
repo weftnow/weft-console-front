@@ -1,3 +1,4 @@
+import { DEMO_EVENT_FIXTURES } from "./demo-event-matches-generated";
 import { GENERATED_DEMO_MATCHES } from "./demo-matches-generated";
 
 /**
@@ -5,6 +6,7 @@ import { GENERATED_DEMO_MATCHES } from "./demo-matches-generated";
  * the first 24 rows of that file are `public/demo/weft-demo-attendees.csv`. The 12 pairs below are written by hand and the rest
  * are templated by `scripts/generate-demo-roster.mjs`. Evidence quotes only repeat CSV fields.
  * Order matters: a pair's `seq` in the simulated feed is its index + 1, so append new pairs and keep at most 99.
+ * Themed rosters (`public/demo/weft-demo-ai-summit-300.csv`, `weft-demo-grand-prix-400.csv`) have their own fixtures, see `DEMO_FIXTURES`.
  */
 export const MAX_DEMO_MATCHES = 99;
 
@@ -219,3 +221,6 @@ const withSpanish = (match: Omit<DemoMatch, "es">): DemoMatch => {
 };
 
 export const DEMO_MATCHES: readonly DemoMatch[] = [...HAND_WRITTEN_MATCHES.map(withSpanish), ...GENERATED_DEMO_MATCHES];
+
+/** One fixture per demo roster. Rosters share no emails, so the simulator uses the fixture whose guests are in the event. */
+export const DEMO_FIXTURES: readonly (readonly DemoMatch[])[] = [DEMO_MATCHES, ...Object.values(DEMO_EVENT_FIXTURES)];

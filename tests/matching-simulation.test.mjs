@@ -16,7 +16,7 @@ const { matchingEngineMode, selectStatusReader, selectFeedReader } = loadTs("src
 const { readEngineMatchingStatus } = loadTs("src/modules/network/server/matching-engine-client.ts");
 const { readEngineMatchingFeed } = loadTs("src/modules/network/server/matching-feed-client.ts");
 const { readSimulatedMatchingStatus, readSimulatedMatchingFeed, deterministicUuid, WAITING_MS, FINISH_MS } = loadTs("src/modules/network/server/simulated-engine.ts");
-const { DEMO_MATCHES, MAX_DEMO_MATCHES } = loadTs("src/modules/network/simulation/demo-matches.ts");
+const { DEMO_MATCHES, DEMO_FIXTURES, MAX_DEMO_MATCHES } = loadTs("src/modules/network/simulation/demo-matches.ts");
 const { engineMatchingStatusSchema, matchingStatusResultSchema } = loadTs("src/modules/network/matching-status-schemas.ts");
 const { engineMatchingFeedSchema } = loadTs("src/modules/network/matching-feed-schemas.ts");
 const { introductionPathFor } = loadTs("src/modules/network/match-rules.ts");
@@ -252,6 +252,50 @@ test("both demo CSVs are accepted by the server CSV parser", () => {
   const result = parseGuestCsvServer(csvText);
   assert.equal(result.guests.length, 300);
   assert.equal(result.guests.filter((guest) => guest.guestType === "VIP").length, csvGuests.filter((guest) => guest.guestType === "VIP").length);
+});
+
+const themedRosters = [
+  ["public/demo/weft-demo-ai-summit-300.csv", 300],
+  ["public/demo/weft-demo-grand-prix-400.csv", 400],
+].map(([file, size]) => ({ file, size, guests: parseGuestCsvServer(readFileSync(file, "utf8")).guests }));
+
+test("each themed demo roster parses and has its own consistent fixture", () => {
+  assert.equal(DEMO_FIXTURES.length, 1 + themedRosters.length);
+  assert.equal(DEMO_FIXTURES[0], DEMO_MATCHES);
+  themedRosters.forEach(({ file, size, guests }, index) => {
+    assert.equal(guests.length, size, file);
+    const type = new Map(guests.map((guest) => [guest.email, guest.guestType]));
+    assert.equal(type.size, size, `${file} emails are unique`);
+    const fixture = DEMO_FIXTURES[index + 1];
+    assert.equal(fixture.length, MAX_DEMO_MATCHES);
+    const seen = new Set();
+    const perGuest = new Map();
+    for (const pair of fixture) {
+      assert.ok(type.has(pair.a) && type.has(pair.b), `${pair.a} / ${pair.b} are in ${file}`);
+      const key = [pair.a, pair.b].sort().join();
+      assert.equal(seen.has(key), false, `duplicate pair ${key}`);
+      seen.add(key);
+      assert.ok(pair.es.forA.benefit && pair.es.forB.shareableReason, "Spanish text exists");
+      for (const email of [pair.a, pair.b]) perGuest.set(email, (perGuest.get(email) ?? 0) + 1);
+    }
+    assert.ok(Math.max(...perGuest.values()) <= 5, "no guest has more than 5 matches");
+  });
+  const owners = new Map();
+  for (const [index, fixture] of DEMO_FIXTURES.entries()) for (const pair of fixture) for (const email of [pair.a, pair.b]) {
+    assert.ok((owners.get(email) ?? index) === index, `${email} appears in two fixtures`);
+    owners.set(email, index);
+  }
+});
+
+test("an event with a themed roster gets that roster's fixture, numbered from 1", async () => {
+  const { guests: rosterGuests } = themedRosters[0];
+  const guests = rosterGuests.map((guest, index) => ({ id: guestId(index), normalizedEmail: guest.email, profileVersion: 0, networkingStatus: "included" }));
+  const { feed } = await feedAfter(0, { guests });
+  assert.equal(engineMatchingFeedSchema.safeParse(feed).success, true);
+  assert.equal(feed.entries.length, MAX_DEMO_MATCHES);
+  assert.deepEqual(feed.entries.map((entry) => entry.seq), DEMO_FIXTURES[1].map((_, index) => index + 1));
+  const stranger = { id: guestId(9_999), normalizedEmail: "stranger@example.com", profileVersion: 0, networkingStatus: "included" };
+  assert.deepEqual((await feedAfter(0, { guests: [stranger] })).feed.entries, []);
 });
 
 const authorizedDeps = (overrides = {}) => ({

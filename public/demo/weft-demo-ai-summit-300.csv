@@ -1,0 +1,301 @@
+First Name,Last Name,Email,Phone,Company,Position,LinkedIn,Profile Type,Guest Type
+Ibrahim,Dahl,ibrahim.dahl@theinferencereport.example.com,+1 512 555 0159,The Inference Report,Editor-in-Chief,linkedin.com/in/ibrahim-dahl-5952,Media,Attendee
+Priya,Lindqvist,priya.lindqvist@saltmarshventures.example.com,+1 415 555 0165,Saltmarsh Ventures,Head of AI Investments,linkedin.com/in/priya-lindqvist-9787,Investors,Attendee
+Ingrid,Bergstrom,ingrid.bergstrom@hesperfamilyholdings.example.com,+1 512 555 0131,Hesper Family Holdings,Chief Investment Officer,linkedin.com/in/ingrid-bergstrom-5272,Family Offices,Attendee
+Javier,Whitfield,javier.whitfield@tokenfield.example.com,+1 415 555 0117,Tokenfield,Co-founder & CTO,linkedin.com/in/javier-whitfield-3294,Founders,Attendee
+Paolo,Yamamoto,paolo.yamamoto@lexiconlegalai.example.com,+1 512 555 0110,Lexicon Legal AI,Co-founder & Chief Scientist,linkedin.com/in/paolo-yamamoto-5755,Founders,Attendee
+Priya,Osei,priya.osei@solacepharmaceutical.example.com,+1 312 555 0157,Solace Pharmaceuticals,Head of AI Transformation,linkedin.com/in/priya-osei-2373,Executives,Attendee
+Sofia,Ortega,sofia.ortega@frontierdispatch.example.com,+1 310 555 0180,Frontier Dispatch,Podcast Host,linkedin.com/in/sofia-ortega-2630,Media,Attendee
+Priya,Andersen,priya.andersen@northbridgeretail.example.com,+1 650 555 0144,Northbridge Retail,Chief Risk Officer,linkedin.com/in/priya-andersen-4779,Executives,Attendee
+Sienna,Esposito,sienna.esposito@auroraairlines.example.com,+1 646 555 0182,Aurora Airlines,President,,Executives,VIP
+Hugo,Mbeki,hugo.mbeki@citytechnologyoffice.example.com,,City Technology Office,Head of AI Safety Programs,linkedin.com/in/hugo-mbeki-3740,Government,Attendee
+Mateo,Kowalski,mateo.kowalski@stratacloud.example.com,+1 310 555 0195,Strata Cloud,Director of Field Marketing,linkedin.com/in/mateo-kowalski-6642,Sponsors,Sponsor
+Victor,Yamamoto,victor.yamamoto@keystoneautomotive.example.com,+1 206 555 0125,Keystone Automotive,Global Managing Partner,linkedin.com/in/victor-yamamoto-8541,Executives,VIP
+Ximena,Yamamoto,ximena.yamamoto@lumenlogistics.example.com,+1 310 555 0174,Lumen Logistics,Chief Information Officer,linkedin.com/in/ximena-yamamoto-4184,Executives,Attendee
+Nadia,Dahl,nadia.dahl@quantareasoning.example.com,+1 650 555 0104,Quanta Reasoning,Co-founder & Chief Scientist,linkedin.com/in/nadia-dahl-8119,Founders,Attendee
+Beatriz,Esposito,beatriz.esposito@interagencyaitaskfor.example.com,+1 512 555 0133,Interagency AI Task Force,Head of AI Safety Programs,,Government,VIP
+Felipe,Iyer,felipe.iyer@citytechnologyoffice.example.com,+1 617 555 0195,City Technology Office,"Deputy Commissioner, Innovation",linkedin.com/in/felipe-iyer-1220,Government,Attendee
+Dario,Dahl,dario.dahl@keystoneautomotive.example.com,+1 206 555 0161,Keystone Automotive,Chief Risk Officer,linkedin.com/in/dario-dahl-2171,Executives,Attendee
+Rania,Iyer,rania.iyer@cobaltfreightgroup.example.com,+1 650 555 0198,Cobalt Freight Group,SVP Enterprise Technology,,Executives,Attendee
+Paolo,Quintero,paolo.quintero@foundryhillventures.example.com,+1 206 555 0100,Foundry Hill Ventures,Venture Partner,linkedin.com/in/paolo-quintero-3443,Investors,VIP
+Saanvi,Sorensen,saanvi.sorensen@modelcraft.example.com,+1 415 555 0186,Modelcraft,Founder & CEO,linkedin.com/in/saanvi-sorensen-6223,Founders,Attendee
+Anika,Chatterjee,anika.chatterjee@veritytelecom.example.com,+1 646 555 0105,Verity Telecom,Chief Information Officer,linkedin.com/in/anika-chatterjee-8397,Executives,Attendee
+Ines,Udeh,ines.udeh@tidewellfoods.example.com,+1 646 555 0116,Tidewell Foods,SVP Enterprise Technology,,Executives,Attendee
+Hugo,Zhang,hugo.zhang@synapseforge.example.com,+1 312 555 0151,Synapse Forge,Co-founder & Chief Scientist,linkedin.com/in/hugo-zhang-8590,Founders,Attendee
+Emeka,Abara,emeka.abara@graniteridgeenergy.example.com,+1 212 555 0126,Granite Ridge Energy,Global Managing Partner,linkedin.com/in/emeka-abara-6807,Executives,VIP
+Esther,Mendez,esther.mendez@solacepharmaceutical.example.com,,Solace Pharmaceuticals,Chief AI Officer,linkedin.com/in/esther-mendez-2467,Executives,Attendee
+Kenji,Tanaka,kenji.tanaka@appliedaiweekly.example.com,,Applied AI Weekly,"YouTube Creator, AI Tools",linkedin.com/in/kenji-tanaka-3874,Creators,Attendee
+Olga,Chatterjee,olga.chatterjee@modelcraft.example.com,+1 646 555 0182,Modelcraft,Co-founder & CEO,linkedin.com/in/olga-chatterjee-6038,Founders,Attendee
+Anika,Andersen,anika.andersen@summitfederalbank.example.com,+1 415 555 0174,Summit Federal Bank,Chief Executive Officer,linkedin.com/in/anika-andersen-6205,Executives,VIP
+Felipe,Lindgren,felipe.lindgren@latentworks.example.com,,Latentworks,Founder & CEO,linkedin.com/in/felipe-lindgren-4816,Founders,Attendee
+Sebastian,Schneider,sebastian.schneider@summitfederalbank.example.com,+1 310 555 0134,Summit Federal Bank,VP of AI Strategy,,Executives,Attendee
+Olga,Lindqvist,olga.lindqvist@clearsightvision.example.com,+1 212 555 0114,Clearsight Vision,Co-founder & Chief Scientist,linkedin.com/in/olga-lindqvist-7055,Founders,VIP
+Kavya,Osei,kavya.osei@modelcraft.example.com,+1 617 555 0132,Modelcraft,Co-founder & CEO,linkedin.com/in/kavya-osei-7139,Founders,Attendee
+Valentina,Delacroix,valentina.delacroix@solacepharmaceutical.example.com,+1 650 555 0187,Solace Pharmaceuticals,"VP of Product, AI",linkedin.com/in/valentina-delacroix-7079,Executives,Attendee
+Chen,Kapoor,chen.kapoor@clearsightvision.example.com,+1 650 555 0138,Clearsight Vision,Founder & CEO,linkedin.com/in/chen-kapoor-3650,Founders,Attendee
+Maren,Moreau,maren.moreau@vectorlineai.example.com,,Vectorline AI,Co-founder & CTO,linkedin.com/in/maren-moreau-8248,Founders,Attendee
+Benedikt,Tanaka,benedikt.tanaka@northstargrowth.example.com,+1 512 555 0154,Northstar Growth,Head of AI Investments,linkedin.com/in/benedikt-tanaka-6955,Investors,Attendee
+Freya,Haddad,freya.haddad@halcyoninsurance.example.com,,Halcyon Insurance,Group CEO,linkedin.com/in/freya-haddad-7133,Executives,VIP
+Emeka,Ortega,emeka.ortega@independent.example.com,+1 312 555 0196,Independent,AI Educator & Creator,linkedin.com/in/emeka-ortega-5873,Creators,Attendee
+Sienna,Bergstrom,sienna.bergstrom@stratacloud.example.com,+1 212 555 0198,Strata Cloud,Head of Developer Relations,linkedin.com/in/sienna-bergstrom-9407,Sponsors,Sponsor
+Ravi,Chen,ravi.chen@sterlingvancefamilyo.example.com,,Sterling & Vance Family Office,Chief Investment Officer,linkedin.com/in/ravi-chen-8484,Family Offices,Attendee
+Olga,Vasquez,olga.vasquez@promptwell.example.com,+1 646 555 0118,Promptwell,Co-founder & Head of Research,linkedin.com/in/olga-vasquez-4976,Founders,Attendee
+Lea,Iyer,lea.iyer@interagencyaitaskfor.example.com,+1 512 555 0111,Interagency AI Task Force,Head of AI Safety Programs,linkedin.com/in/lea-iyer-2529,Government,Attendee
+Anika,Castellano,anika.castellano@frontierdispatch.example.com,,Frontier Dispatch,Senior Technology Reporter,linkedin.com/in/anika-castellano-8340,Media,Attendee
+Claire,Reyes,claire.reyes@saltmarshventures.example.com,+1 646 555 0135,Saltmarsh Ventures,Head of AI Investments,linkedin.com/in/claire-reyes-1441,Investors,Attendee
+Aisha,Moreau,aisha.moreau@brightwaterutilities.example.com,+1 702 555 0115,Brightwater Utilities,VP of AI Strategy,linkedin.com/in/aisha-moreau-1604,Executives,Attendee
+Daniela,Lombardi,daniela.lombardi@brightwaterutilities.example.com,+1 702 555 0153,Brightwater Utilities,Chief Digital Officer,linkedin.com/in/daniela-lombardi-8478,Executives,Attendee
+Nadia,Alvarez,nadia.alvarez@pinecresthospitality.example.com,+1 650 555 0172,Pinecrest Hospitality,Chief AI Officer,linkedin.com/in/nadia-alvarez-1794,Executives,Attendee
+Felipe,Kapoor,felipe.kapoor@interagencyaitaskfor.example.com,+1 617 555 0132,Interagency AI Task Force,Policy Counsel,linkedin.com/in/felipe-kapoor-2452,Government,Attendee
+Kenji,Wagner,kenji.wagner@independent.example.com,+1 650 555 0176,Independent,AI Educator & Creator,linkedin.com/in/kenji-wagner-5967,Creators,Attendee
+Isaac,Udeh,isaac.udeh@whitmorehalellp.example.com,+1 646 555 0104,Whitmore & Hale LLP,"Partner, Technology Law",,Service Providers,Attendee
+Maren,Kapoor,maren.kapoor@meridianhealthsystem.example.com,+1 650 555 0190,Meridian Health Systems,Head of AI Transformation,,Executives,Attendee
+Arjun,Fontaine,arjun.fontaine@machineweekly.example.com,+1 312 555 0107,Machine Weekly,AI Correspondent,linkedin.com/in/arjun-fontaine-7635,Media,Attendee
+Hana,Halvorsen,hana.halvorsen@atlasmutual.example.com,+1 702 555 0183,Atlas Mutual,Global Managing Partner,linkedin.com/in/hana-halvorsen-6930,Executives,VIP
+Kavya,Kawasaki,kavya.kawasaki@evalset.example.com,+1 646 555 0166,Evalset,Co-founder & Head of Research,linkedin.com/in/kavya-kawasaki-5302,Founders,Attendee
+Naveen,Park,naveen.park@independent.example.com,+1 310 555 0104,Independent,Researcher & Writer,linkedin.com/in/naveen-park-5957,Creators,Attendee
+Olga,Hoshino,olga.hoshino@whitmorehalellp.example.com,+1 650 555 0153,Whitmore & Hale LLP,"Partner, AI Governance",linkedin.com/in/olga-hoshino-4497,Service Providers,Attendee
+Samuel,Fontaine,samuel.fontaine@graniteridgeenergy.example.com,+1 415 555 0152,Granite Ridge Energy,President,,Executives,VIP
+Aiko,Quintero,aiko.quintero@foundryhillventures.example.com,+1 512 555 0130,Foundry Hill Ventures,General Partner,linkedin.com/in/aiko-quintero-5608,Investors,Attendee
+Soren,Chatterjee,soren.chatterjee@summitfederalbank.example.com,+1 646 555 0153,Summit Federal Bank,Chair of the Board,linkedin.com/in/soren-chatterjee-8892,Executives,VIP
+Rania,Sato,rania.sato@keystoneautomotive.example.com,+1 650 555 0138,Keystone Automotive,Chair of the Board,,Executives,VIP
+Javier,Tanaka,javier.tanaka@themodelexplained.example.com,+1 646 555 0155,The Model Explained,"YouTube Creator, AI Tools",linkedin.com/in/javier-tanaka-9849,Creators,Attendee
+Yusuf,Yamamoto,yusuf.yamamoto@solacepharmaceutical.example.com,+1 310 555 0186,Solace Pharmaceuticals,Chief AI Officer,linkedin.com/in/yusuf-yamamoto-2860,Executives,Attendee
+Malik,Jansen,malik.jansen@embedlybio.example.com,+1 512 555 0191,Embedly Bio,Co-founder & CEO,linkedin.com/in/malik-jansen-5299,Founders,VIP
+Imani,Chatterjee,imani.chatterjee@ironwoodmanufacturin.example.com,,Ironwood Manufacturing,VP of AI Strategy,linkedin.com/in/imani-chatterjee-2655,Executives,Attendee
+Saanvi,Varga,saanvi.varga@cortexa.example.com,,Cortexa,Founder,,Founders,Attendee
+Lea,Tanaka,lea.tanaka@quantareasoning.example.com,+1 310 555 0174,Quanta Reasoning,Co-founder & CEO,linkedin.com/in/lea-tanaka-9312,Founders,Attendee
+Malik,Xu,malik.xu@vaultlinesecurity.example.com,+1 206 555 0174,Vaultline Security,Global Head of Sponsorships,linkedin.com/in/malik-xu-8345,Sponsors,Sponsor
+Marcus,Faraday,marcus.faraday@summitfederalbank.example.com,+1 310 555 0107,Summit Federal Bank,Chief Operating Officer,,Executives,Attendee
+Jonas,Halvorsen,jonas.halvorsen@frontierdispatch.example.com,+1 650 555 0183,Frontier Dispatch,Managing Editor,linkedin.com/in/jonas-halvorsen-5127,Media,Attendee
+Helena,Castellano,helena.castellano@northbridgeretail.example.com,,Northbridge Retail,Executive Chair,linkedin.com/in/helena-castellano-2573,Executives,VIP
+Paolo,Moreau,paolo.moreau@nationalaistandardsc.example.com,+1 212 555 0147,National AI Standards Council,"Senior Advisor, Digital Affairs",linkedin.com/in/paolo-moreau-3973,Government,Attendee
+Omar,Halvorsen,omar.halvorsen@veritytelecom.example.com,+1 702 555 0149,Verity Telecom,Chief Technology Officer,linkedin.com/in/omar-halvorsen-8370,Executives,Attendee
+Saanvi,Tanaka,saanvi.tanaka@stratumdigitaladviso.example.com,+1 617 555 0194,Stratum Digital Advisory,Head of AI Advisory,linkedin.com/in/saanvi-tanaka-1263,Service Providers,Attendee
+Teodor,Eriksen,teodor.eriksen@cobaltfreightgroup.example.com,+1 650 555 0183,Cobalt Freight Group,Chief Data Officer,linkedin.com/in/teodor-eriksen-8420,Executives,Attendee
+Victor,Delacroix,victor.delacroix@signalnoise.example.com,,Signal & Noise,Senior Technology Reporter,linkedin.com/in/victor-delacroix-8092,Media,Attendee
+Claire,Thornton,claire.thornton@helixcompute.example.com,+1 646 555 0153,Helix Compute,Head of Developer Relations,,Sponsors,Sponsor
+Ibrahim,Ibarra,ibrahim.ibarra@datavine.example.com,+1 617 555 0155,Datavine,Co-founder & CTO,,Founders,Attendee
+Valentina,Sato,valentina.sato@evalset.example.com,+1 512 555 0176,Evalset,Co-founder & Head of Research,linkedin.com/in/valentina-sato-1307,Founders,Attendee
+Gabriel,Kowalski,gabriel.kowalski@lexiconlegalai.example.com,+1 212 555 0190,Lexicon Legal AI,Co-founder & Head of Research,linkedin.com/in/gabriel-kowalski-6869,Founders,Attendee
+Isaac,Chatterjee,isaac.chatterjee@harborviewpartners.example.com,+1 312 555 0129,Harborview Partners,Head of AI Investments,linkedin.com/in/isaac-chatterjee-5833,Investors,Attendee
+Aisha,Osei,aisha.osei@tidewellfoods.example.com,+1 415 555 0104,Tidewell Foods,Chief AI Officer,linkedin.com/in/aisha-osei-8564,Executives,Attendee
+Diego,Moreau,diego.moreau@helixcompute.example.com,+1 312 555 0166,Helix Compute,Global Head of Sponsorships,linkedin.com/in/diego-moreau-5702,Sponsors,Sponsor
+Lea,Bakshi,lea.bakshi@nimbusgpucloud.example.com,+1 415 555 0137,Nimbus GPU Cloud,Director of Field Marketing,linkedin.com/in/lea-bakshi-2402,Sponsors,Sponsor
+Ibrahim,Ferreira,ibrahim.ferreira@foundryhillventures.example.com,,Foundry Hill Ventures,Principal,,Investors,Attendee
+Elena,Brandt,elena.brandt@keystoneautomotive.example.com,+1 512 555 0152,Keystone Automotive,Chief Digital Officer,linkedin.com/in/elena-brandt-1764,Executives,Attendee
+Yara,Kowalski,yara.kowalski@whitmorehalellp.example.com,,Whitmore & Hale LLP,Head of AI Advisory,linkedin.com/in/yara-kowalski-3938,Service Providers,Attendee
+Yara,Sandoval,yara.sandoval@brightlineconsulting.example.com,+1 617 555 0166,Brightline Consulting,Principal Consultant,linkedin.com/in/yara-sandoval-3817,Service Providers,Attendee
+Gabriel,Chatterjee,gabriel.chatterjee@datavine.example.com,,Datavine,Founder,linkedin.com/in/gabriel-chatterjee-6849,Founders,Attendee
+Samuel,Varga,samuel.varga@pinecresthospitality.example.com,+1 702 555 0150,Pinecrest Hospitality,Chief Technology Officer,linkedin.com/in/samuel-varga-5666,Executives,Attendee
+Mei,Xu,mei.xu@meridianhealthsystem.example.com,,Meridian Health Systems,Executive Chair,linkedin.com/in/mei-xu-5948,Executives,VIP
+Anika,Novak,anika.novak@meridianhealthsystem.example.com,,Meridian Health Systems,Chief Executive Officer,linkedin.com/in/anika-novak-7594,Executives,VIP
+Zoe,Wagner,zoe.wagner@brightwaterutilities.example.com,+1 206 555 0190,Brightwater Utilities,Chief Risk Officer,linkedin.com/in/zoe-wagner-5953,Executives,Attendee
+Jonas,Brandt,jonas.brandt@nationalaistandardsc.example.com,+1 702 555 0125,National AI Standards Council,Chief Technology Advisor,linkedin.com/in/jonas-brandt-6773,Government,Attendee
+Rafael,Lombardi,rafael.lombardi@crescentmediaholding.example.com,+1 650 555 0188,Crescent Media Holdings,Chair of the Board,linkedin.com/in/rafael-lombardi-9098,Executives,VIP
+Javier,Mendez,javier.mendez@summitfederalbank.example.com,+1 415 555 0107,Summit Federal Bank,President,linkedin.com/in/javier-mendez-5500,Executives,VIP
+Yara,Schneider,yara.schneider@quantareasoning.example.com,+1 650 555 0144,Quanta Reasoning,Co-founder & CTO,linkedin.com/in/yara-schneider-4528,Founders,Attendee
+Hiroshi,Calloway,hiroshi.calloway@crescentmediaholding.example.com,+1 206 555 0171,Crescent Media Holdings,Global Managing Partner,linkedin.com/in/hiroshi-calloway-9858,Executives,VIP
+Kofi,Ramos,kofi.ramos@auroraairlines.example.com,,Aurora Airlines,VP of AI Strategy,,Executives,Attendee
+Sara,Rossi,sara.rossi@saltmarshventures.example.com,+1 512 555 0128,Saltmarsh Ventures,Partner,linkedin.com/in/sara-rossi-4095,Investors,Attendee
+Hugo,Park,hugo.park@thecomputeledger.example.com,+1 617 555 0173,The Compute Ledger,Managing Editor,linkedin.com/in/hugo-park-8294,Media,Attendee
+Esther,Castellano,esther.castellano@vaultlinesecurity.example.com,+1 512 555 0143,Vaultline Security,Head of Developer Relations,linkedin.com/in/esther-castellano-6938,Sponsors,Sponsor
+Thea,Ramos,thea.ramos@embedlybio.example.com,+1 310 555 0149,Embedly Bio,Co-founder & CEO,linkedin.com/in/thea-ramos-4179,Founders,VIP
+Hana,Quintero,hana.quintero@helixcompute.example.com,+1 512 555 0190,Helix Compute,Global Head of Sponsorships,linkedin.com/in/hana-quintero-8441,Sponsors,Sponsor
+Noah,Esposito,noah.esposito@northbridgeretail.example.com,+1 212 555 0110,Northbridge Retail,VP of AI Strategy,linkedin.com/in/noah-esposito-6370,Executives,Attendee
+Lucia,Delacroix,lucia.delacroix@gradientharbor.example.com,,Gradient Harbor,Founder & CEO,linkedin.com/in/lucia-delacroix-6645,Founders,Attendee
+Marcus,Zhang,marcus.zhang@appliedaiweekly.example.com,+1 512 555 0164,Applied AI Weekly,Newsletter Author,linkedin.com/in/marcus-zhang-7745,Creators,Attendee
+Nadia,Tanaka,nadia.tanaka@crescentmediaholding.example.com,+1 646 555 0162,Crescent Media Holdings,Group CEO,linkedin.com/in/nadia-tanaka-7061,Executives,VIP
+Yusuf,Valdez,yusuf.valdez@kestrelventures.example.com,+1 212 555 0143,Kestrel Ventures,Partner,linkedin.com/in/yusuf-valdez-3341,Investors,VIP
+Noor,Silva,noor.silva@montclairprivatecapi.example.com,,Montclair Private Capital,Chief Investment Officer,linkedin.com/in/noor-silva-9522,Family Offices,Attendee
+Teodor,Ibarra,teodor.ibarra@solacepharmaceutical.example.com,+1 512 555 0116,Solace Pharmaceuticals,VP of AI Strategy,linkedin.com/in/teodor-ibarra-5672,Executives,Attendee
+Imani,Dahl,imani.dahl@montclairprivatecapi.example.com,+1 206 555 0145,Montclair Private Capital,Director of Direct Investments,linkedin.com/in/imani-dahl-2603,Family Offices,Attendee
+Rosa,Yamamoto,rosa.yamamoto@sterlingvancefamilyo.example.com,,Sterling & Vance Family Office,Managing Partner,,Family Offices,Attendee
+Aiko,Silva,aiko.silva@oakmontlegacypartner.example.com,,Oakmont Legacy Partners,Managing Partner,linkedin.com/in/aiko-silva-6921,Family Offices,Attendee
+Yusuf,Quintero,yusuf.quintero@foundryhillventures.example.com,,Foundry Hill Ventures,Partner,,Investors,VIP
+Victor,Marchetti,victor.marchetti@nimbusgpucloud.example.com,+1 646 555 0115,Nimbus GPU Cloud,Head of Partnerships,linkedin.com/in/victor-marchetti-1829,Sponsors,Sponsor
+Sara,Sato,sara.sato@ridgelinegrowthequit.example.com,+1 512 555 0150,Ridgeline Growth Equity,Venture Partner,linkedin.com/in/sara-sato-7477,Investors,Attendee
+Teodor,Kawasaki,teodor.kawasaki@corbeladvisory.example.com,+1 415 555 0162,Corbel Advisory,"Partner, AI Governance",linkedin.com/in/teodor-kawasaki-4009,Service Providers,Attendee
+Ines,Zielinski,ines.zielinski@northbridgeretail.example.com,,Northbridge Retail,Chief Executive Officer,linkedin.com/in/ines-zielinski-8606,Executives,VIP
+Mei,Udeh,mei.udeh@callowayfamilyoffice.example.com,+1 206 555 0100,Calloway Family Office,Director of Direct Investments,linkedin.com/in/mei-udeh-3309,Family Offices,Attendee
+Sofia,Mbeki,sofia.mbeki@cobaltfreightgroup.example.com,+1 650 555 0105,Cobalt Freight Group,VP of AI Strategy,,Executives,Attendee
+Javier,Faraday,javier.faraday@atlasmutual.example.com,,Atlas Mutual,President,linkedin.com/in/javier-faraday-3717,Executives,VIP
+Leila,Ramos,leila.ramos@saltmarshventures.example.com,+1 702 555 0150,Saltmarsh Ventures,Venture Partner,linkedin.com/in/leila-ramos-3440,Investors,VIP
+Nia,Yamamoto,nia.yamamoto@orbitaldatacenters.example.com,,Orbital Data Centers,Global Head of Sponsorships,linkedin.com/in/nia-yamamoto-7320,Sponsors,Sponsor
+Zoe,Eriksen,zoe.eriksen@nationalaistandardsc.example.com,+1 312 555 0172,National AI Standards Council,"Deputy Commissioner, Innovation",linkedin.com/in/zoe-eriksen-2594,Government,Attendee
+Ibrahim,Reyes,ibrahim.reyes@cobaltfreightgroup.example.com,+1 312 555 0166,Cobalt Freight Group,Chief Information Officer,,Executives,Attendee
+Malik,Nakamura,malik.nakamura@officeofdigitalinnov.example.com,+1 646 555 0158,Office of Digital Innovation,"Senior Advisor, Digital Affairs",linkedin.com/in/malik-nakamura-6657,Government,Attendee
+Saanvi,Hartmann,saanvi.hartmann@oakmontlegacypartner.example.com,,Oakmont Legacy Partners,Chief Investment Officer,linkedin.com/in/saanvi-hartmann-5890,Family Offices,Attendee
+Sebastian,Sandoval,sebastian.sandoval@brightlineconsulting.example.com,,Brightline Consulting,"Partner, Technology Law",linkedin.com/in/sebastian-sandoval-3625,Service Providers,Attendee
+Lucia,Dahl,lucia.dahl@roboticafieldworks.example.com,+1 512 555 0134,Robotica Fieldworks,Founder,linkedin.com/in/lucia-dahl-9542,Founders,Attendee
+Priya,Sorensen,priya.sorensen@solacepharmaceutical.example.com,+1 617 555 0174,Solace Pharmaceuticals,Head of Machine Learning,,Executives,Attendee
+Dario,Haddad,dario.haddad@nimbusgpucloud.example.com,+1 206 555 0198,Nimbus GPU Cloud,Head of Partnerships,,Sponsors,Sponsor
+Nadia,Varga,nadia.varga@northbridgeretail.example.com,+1 650 555 0169,Northbridge Retail,Chief Technology Officer,linkedin.com/in/nadia-varga-5897,Executives,Attendee
+Paolo,Delacroix,paolo.delacroix@guardrailsystems.example.com,+1 646 555 0173,Guardrail Systems,Co-founder & CEO,linkedin.com/in/paolo-delacroix-5232,Founders,Attendee
+Soren,Novak,soren.novak@haldenriskpartners.example.com,+1 212 555 0104,Halden Risk Partners,Head of AI Advisory,linkedin.com/in/soren-novak-8621,Service Providers,Attendee
+Julia,Halvorsen,julia.halvorsen@graniteridgeenergy.example.com,+1 310 555 0113,Granite Ridge Energy,Chief Digital Officer,linkedin.com/in/julia-halvorsen-9102,Executives,Attendee
+Marcus,Chatterjee,marcus.chatterjee@northbridgeretail.example.com,,Northbridge Retail,Chief Risk Officer,,Executives,Attendee
+Rosa,Petrov,rosa.petrov@crescentmediaholding.example.com,+1 512 555 0161,Crescent Media Holdings,Global Managing Partner,linkedin.com/in/rosa-petrov-9243,Executives,VIP
+Elena,Osei,elena.osei@thecomputeledger.example.com,+1 415 555 0162,The Compute Ledger,Managing Editor,linkedin.com/in/elena-osei-6975,Media,Attendee
+Mei,Vasquez,mei.vasquez@stratumdigitaladviso.example.com,+1 312 555 0102,Stratum Digital Advisory,"Partner, Technology Law",linkedin.com/in/mei-vasquez-4647,Service Providers,Attendee
+Ibrahim,Halvorsen,ibrahim.halvorsen@crescentmediaholding.example.com,+1 512 555 0130,Crescent Media Holdings,Global Managing Partner,linkedin.com/in/ibrahim-halvorsen-7450,Executives,VIP
+Sofia,Ibarra,sofia.ibarra@halcyoninsurance.example.com,+1 512 555 0101,Halcyon Insurance,Chief AI Officer,linkedin.com/in/sofia-ibarra-1713,Executives,Attendee
+Emeka,Rahman,emeka.rahman@summitfederalbank.example.com,+1 617 555 0112,Summit Federal Bank,Chair of the Board,linkedin.com/in/emeka-rahman-5647,Executives,VIP
+Claire,Vasquez,claire.vasquez@foundryhillventures.example.com,+1 312 555 0198,Foundry Hill Ventures,Partner,linkedin.com/in/claire-vasquez-9991,Investors,Attendee
+Liam,Duarte,liam.duarte@inferra.example.com,,Inferra,Co-founder & Head of Research,linkedin.com/in/liam-duarte-6618,Founders,Attendee
+Felipe,Rasmussen,felipe.rasmussen@latticecapital.example.com,,Lattice Capital,General Partner,,Investors,Attendee
+Amara,Lindqvist,amara.lindqvist@northstargrowth.example.com,+1 312 555 0191,Northstar Growth,General Partner,linkedin.com/in/amara-lindqvist-5574,Investors,Attendee
+Jae,Okafor,jae.okafor@halcyoninsurance.example.com,+1 512 555 0179,Halcyon Insurance,Chief Information Officer,linkedin.com/in/jae-okafor-4485,Executives,Attendee
+Elena,Faraday,elena.faraday@vaultlinesecurity.example.com,+1 212 555 0150,Vaultline Security,VP of Strategic Alliances,linkedin.com/in/elena-faraday-7778,Sponsors,Sponsor
+Farah,Andersen,farah.andersen@nationalaistandardsc.example.com,+1 212 555 0139,National AI Standards Council,"Deputy Commissioner, Innovation",linkedin.com/in/farah-andersen-9249,Government,Attendee
+Paolo,Garcia,paolo.garcia@veritytelecom.example.com,+1 312 555 0108,Verity Telecom,Group CEO,,Executives,VIP
+Farah,Osei,farah.osei@helixcompute.example.com,+1 512 555 0165,Helix Compute,Enterprise Account Director,linkedin.com/in/farah-osei-5760,Sponsors,Sponsor
+Anika,Halvorsen,anika.halvorsen@tensorleaf.example.com,,Tensorleaf,Founder & CEO,linkedin.com/in/anika-halvorsen-3895,Founders,Attendee
+Rohan,Moreau,rohan.moreau@summitfederalbank.example.com,+1 646 555 0133,Summit Federal Bank,SVP Enterprise Technology,linkedin.com/in/rohan-moreau-1924,Executives,Attendee
+Naveen,Tanaka,naveen.tanaka@crescentmediaholding.example.com,,Crescent Media Holdings,VP of Data & Analytics,,Executives,Attendee
+Thea,Nakamura,thea.nakamura@brightwaterutilities.example.com,+1 212 555 0189,Brightwater Utilities,Chief Digital Officer,linkedin.com/in/thea-nakamura-9833,Executives,Attendee
+Elena,Novak,elena.novak@pinecresthospitality.example.com,+1 312 555 0182,Pinecrest Hospitality,Chief Technology Officer,linkedin.com/in/elena-novak-7779,Executives,Attendee
+Kavya,Zhang,kavya.zhang@ironwoodmanufacturin.example.com,+1 646 555 0182,Ironwood Manufacturing,Head of Machine Learning,,Executives,Attendee
+Nadia,Barros,nadia.barros@kestrelventures.example.com,+1 646 555 0159,Kestrel Ventures,Partner,linkedin.com/in/nadia-barros-4549,Investors,Attendee
+Thea,Brandt,thea.brandt@cortexa.example.com,+1 646 555 0130,Cortexa,Co-founder & CTO,linkedin.com/in/thea-brandt-3391,Founders,Attendee
+Rafael,Vasquez,rafael.vasquez@crescentmediaholding.example.com,+1 650 555 0185,Crescent Media Holdings,Global Managing Partner,linkedin.com/in/rafael-vasquez-8419,Executives,VIP
+Maren,Xu,maren.xu@corbeladvisory.example.com,+1 650 555 0102,Corbel Advisory,Principal Consultant,,Service Providers,Attendee
+Diego,Andersen,diego.andersen@whitmorehalellp.example.com,,Whitmore & Hale LLP,Head of AI Advisory,linkedin.com/in/diego-andersen-2917,Service Providers,Attendee
+Samuel,Andersen,samuel.andersen@embedlybio.example.com,+1 512 555 0184,Embedly Bio,Founder & CEO,linkedin.com/in/samuel-andersen-4422,Founders,VIP
+Diego,Brandt,diego.brandt@northbridgeretail.example.com,+1 310 555 0141,Northbridge Retail,Chief Digital Officer,linkedin.com/in/diego-brandt-8178,Executives,Attendee
+Rania,Rossi,rania.rossi@brightwaterutilities.example.com,,Brightwater Utilities,VP of Data & Analytics,linkedin.com/in/rania-rossi-4198,Executives,Attendee
+Esther,Yamamoto,esther.yamamoto@departmentofcommerce.example.com,+1 206 555 0125,Department of Commerce Futures Unit,"Deputy Commissioner, Innovation",linkedin.com/in/esther-yamamoto-3921,Government,VIP
+Rohan,Halvorsen,rohan.halvorsen@corbeladvisory.example.com,+1 650 555 0119,Corbel Advisory,Head of AI Advisory,linkedin.com/in/rohan-halvorsen-6139,Service Providers,Attendee
+Freya,Abara,freya.abara@modelcraft.example.com,+1 617 555 0196,Modelcraft,Co-founder & CTO,linkedin.com/in/freya-abara-1266,Founders,Attendee
+Ibrahim,Rahman,ibrahim.rahman@atlasmutual.example.com,,Atlas Mutual,Executive Chair,linkedin.com/in/ibrahim-rahman-8060,Executives,VIP
+Lena,Hoshino,lena.hoshino@northstargrowth.example.com,+1 512 555 0124,Northstar Growth,General Partner,linkedin.com/in/lena-hoshino-3470,Investors,Attendee
+Emeka,Sato,emeka.sato@sterlingvancefamilyo.example.com,+1 512 555 0110,Sterling & Vance Family Office,Principal,,Family Offices,Attendee
+Julia,Mbeki,julia.mbeki@keystoneautomotive.example.com,,Keystone Automotive,SVP Enterprise Technology,linkedin.com/in/julia-mbeki-6819,Executives,Attendee
+Kofi,Quintero,kofi.quintero@atlasmutual.example.com,+1 650 555 0199,Atlas Mutual,Chair of the Board,linkedin.com/in/kofi-quintero-3151,Executives,VIP
+Dario,Osei,dario.osei@signalnoise.example.com,,Signal & Noise,Editor-in-Chief,linkedin.com/in/dario-osei-6460,Media,Attendee
+Maya,Schneider,maya.schneider@solacepharmaceutical.example.com,+1 206 555 0152,Solace Pharmaceuticals,Chief Operating Officer,linkedin.com/in/maya-schneider-9661,Executives,Attendee
+Sofia,Lombardi,sofia.lombardi@gradientharbor.example.com,+1 310 555 0133,Gradient Harbor,Co-founder & CTO,linkedin.com/in/sofia-lombardi-5704,Founders,Attendee
+Felipe,Ramos,felipe.ramos@stratacloud.example.com,+1 702 555 0144,Strata Cloud,Global Head of Sponsorships,linkedin.com/in/felipe-ramos-3741,Sponsors,Sponsor
+Camila,Delacroix,camila.delacroix@theinferencereport.example.com,+1 206 555 0190,The Inference Report,AI Correspondent,linkedin.com/in/camila-delacroix-2149,Media,Attendee
+Beatriz,Sandoval,beatriz.sandoval@nimbusgpucloud.example.com,+1 415 555 0107,Nimbus GPU Cloud,Director of Field Marketing,linkedin.com/in/beatriz-sandoval-2566,Sponsors,Sponsor
+Benedikt,Fontaine,benedikt.fontaine@helixcompute.example.com,+1 702 555 0117,Helix Compute,Head of Developer Relations,linkedin.com/in/benedikt-fontaine-9606,Sponsors,Sponsor
+Arjun,Sandoval,arjun.sandoval@tensorleaf.example.com,+1 312 555 0111,Tensorleaf,Co-founder & Chief Scientist,,Founders,Attendee
+Sebastian,Lindgren,sebastian.lindgren@citytechnologyoffice.example.com,+1 310 555 0112,City Technology Office,"Deputy Commissioner, Innovation",linkedin.com/in/sebastian-lindgren-4835,Government,Attendee
+Noor,Okafor,noor.okafor@inferra.example.com,,Inferra,Founder & CEO,linkedin.com/in/noor-okafor-3675,Founders,VIP
+Tariq,Udeh,tariq.udeh@northbridgeretail.example.com,+1 312 555 0187,Northbridge Retail,Global Managing Partner,linkedin.com/in/tariq-udeh-3760,Executives,VIP
+Hugo,Abara,hugo.abara@tensorleaf.example.com,+1 310 555 0124,Tensorleaf,Founder & CEO,linkedin.com/in/hugo-abara-2413,Founders,Attendee
+Ines,Varga,ines.varga@evalset.example.com,+1 702 555 0153,Evalset,Founder,linkedin.com/in/ines-varga-6121,Founders,Attendee
+Ingrid,Delacroix,ingrid.delacroix@montclairprivatecapi.example.com,+1 650 555 0188,Montclair Private Capital,Director of Direct Investments,,Family Offices,Attendee
+Naveen,Bergstrom,naveen.bergstrom@crescentmediaholding.example.com,+1 212 555 0116,Crescent Media Holdings,Global Managing Partner,linkedin.com/in/naveen-bergstrom-8394,Executives,VIP
+Hugo,Calloway,hugo.calloway@tidewellfoods.example.com,+1 702 555 0108,Tidewell Foods,Chief Operating Officer,linkedin.com/in/hugo-calloway-4917,Executives,Attendee
+Sofia,Udeh,sofia.udeh@veritytelecom.example.com,,Verity Telecom,Group CEO,,Executives,VIP
+Ada,Rossi,ada.rossi@kestrelventures.example.com,+1 512 555 0155,Kestrel Ventures,Venture Partner,linkedin.com/in/ada-rossi-9978,Investors,Attendee
+Jonas,Mendez,jonas.mendez@quantareasoning.example.com,+1 312 555 0125,Quanta Reasoning,Co-founder & Chief Scientist,linkedin.com/in/jonas-mendez-5258,Founders,Attendee
+Ada,Andersen,ada.andersen@oakmontlegacypartner.example.com,+1 702 555 0194,Oakmont Legacy Partners,Managing Partner,,Family Offices,Attendee
+Noor,Halvorsen,noor.halvorsen@latticecapital.example.com,+1 310 555 0175,Lattice Capital,Venture Partner,linkedin.com/in/noor-halvorsen-3492,Investors,Attendee
+Dario,Zhang,dario.zhang@graniteridgeenergy.example.com,,Granite Ridge Energy,Chief Executive Officer,linkedin.com/in/dario-zhang-6848,Executives,VIP
+Camila,Navarro,camila.navarro@halcyoninsurance.example.com,+1 646 555 0146,Halcyon Insurance,Chief Technology Officer,,Executives,Attendee
+Aiko,Chen,aiko.chen@orbitaldatacenters.example.com,+1 312 555 0152,Orbital Data Centers,Global Head of Sponsorships,linkedin.com/in/aiko-chen-4338,Sponsors,Sponsor
+Kofi,Kowalski,kofi.kowalski@signalnoise.example.com,,Signal & Noise,Editor-in-Chief,linkedin.com/in/kofi-kowalski-4041,Media,Attendee
+Teodor,Rossi,teodor.rossi@oakmontlegacypartner.example.com,+1 310 555 0122,Oakmont Legacy Partners,Managing Partner,linkedin.com/in/teodor-rossi-6207,Family Offices,Attendee
+Rosa,Zielinski,rosa.zielinski@summitfederalbank.example.com,+1 415 555 0119,Summit Federal Bank,Chief Data Officer,linkedin.com/in/rosa-zielinski-3550,Executives,Attendee
+Yara,Rossi,yara.rossi@latticecapital.example.com,,Lattice Capital,General Partner,linkedin.com/in/yara-rossi-4437,Investors,Attendee
+Malik,Osei,malik.osei@halcyoninsurance.example.com,,Halcyon Insurance,Chief Executive Officer,linkedin.com/in/malik-osei-9077,Executives,VIP
+Nia,Sandoval,nia.sandoval@meridianhealthsystem.example.com,+1 646 555 0108,Meridian Health Systems,SVP Enterprise Technology,linkedin.com/in/nia-sandoval-3090,Executives,Attendee
+Felipe,Calloway,felipe.calloway@keystoneautomotive.example.com,+1 310 555 0198,Keystone Automotive,Chief Data Officer,linkedin.com/in/felipe-calloway-3884,Executives,Attendee
+Zoe,Okafor,zoe.okafor@orbitaldatacenters.example.com,+1 617 555 0170,Orbital Data Centers,VP of Strategic Alliances,linkedin.com/in/zoe-okafor-4879,Sponsors,Sponsor
+Gabriel,Iyer,gabriel.iyer@hesperfamilyholdings.example.com,+1 702 555 0180,Hesper Family Holdings,Chief Investment Officer,linkedin.com/in/gabriel-iyer-1296,Family Offices,Attendee
+Marcus,Bergstrom,marcus.bergstrom@frontierdispatch.example.com,+1 212 555 0105,Frontier Dispatch,Editor-in-Chief,linkedin.com/in/marcus-bergstrom-4043,Media,Attendee
+Nia,Brandt,nia.brandt@tensorleaf.example.com,+1 212 555 0165,Tensorleaf,Co-founder & CTO,linkedin.com/in/nia-brandt-8121,Founders,Attendee
+Beatriz,Hoshino,beatriz.hoshino@embedlybio.example.com,+1 310 555 0122,Embedly Bio,Co-founder & CEO,,Founders,Attendee
+Omar,Zielinski,omar.zielinski@kestrelventures.example.com,+1 415 555 0153,Kestrel Ventures,Principal,linkedin.com/in/omar-zielinski-2171,Investors,Attendee
+Jonas,Sorensen,jonas.sorensen@officeofdigitalinnov.example.com,+1 310 555 0189,Office of Digital Innovation,Chief Technology Advisor,linkedin.com/in/jonas-sorensen-8022,Government,Attendee
+Mei,Haddad,mei.haddad@departmentofcommerce.example.com,+1 702 555 0121,Department of Commerce Futures Unit,"Deputy Commissioner, Innovation",linkedin.com/in/mei-haddad-6467,Government,Attendee
+Emeka,Nakamura,emeka.nakamura@brightwaterutilities.example.com,+1 312 555 0188,Brightwater Utilities,SVP Enterprise Technology,,Executives,Attendee
+Paolo,Ortega,paolo.ortega@graniteridgeenergy.example.com,+1 650 555 0111,Granite Ridge Energy,President,linkedin.com/in/paolo-ortega-7645,Executives,VIP
+Gabriel,Petrov,gabriel.petrov@whitmorehalellp.example.com,,Whitmore & Hale LLP,"Partner, Technology Law",,Service Providers,Attendee
+Hiroshi,Sorensen,hiroshi.sorensen@departmentofcommerce.example.com,+1 512 555 0168,Department of Commerce Futures Unit,"Senior Advisor, Digital Affairs",linkedin.com/in/hiroshi-sorensen-6660,Government,Attendee
+Soren,Eriksen,soren.eriksen@northstargrowth.example.com,+1 650 555 0111,Northstar Growth,Head of AI Investments,,Investors,Attendee
+Sofia,Andersen,sofia.andersen@obsidianpointcapital.example.com,+1 206 555 0101,Obsidian Point Capital,Head of AI Investments,linkedin.com/in/sofia-andersen-5732,Investors,Attendee
+Rosa,Castellano,rosa.castellano@atlasmutual.example.com,+1 310 555 0126,Atlas Mutual,Chief Information Officer,,Executives,Attendee
+Benedikt,Mbeki,benedikt.mbeki@agenticlabs.example.com,+1 702 555 0118,Agentic Labs,Co-founder & CEO,linkedin.com/in/benedikt-mbeki-1750,Founders,Attendee
+Priya,Iyer,priya.iyer@montclairprivatecapi.example.com,,Montclair Private Capital,Director of Direct Investments,linkedin.com/in/priya-iyer-8183,Family Offices,Attendee
+Mateo,Rasmussen,mateo.rasmussen@signalnoise.example.com,+1 617 555 0108,Signal & Noise,Managing Editor,linkedin.com/in/mateo-rasmussen-8852,Media,Attendee
+Ada,Bakshi,ada.bakshi@kestrelventures.example.com,+1 512 555 0136,Kestrel Ventures,Managing Director,linkedin.com/in/ada-bakshi-8403,Investors,Attendee
+Hana,Garcia,hana.garcia@independent.example.com,+1 206 555 0164,Independent,Newsletter Author,linkedin.com/in/hana-garcia-4737,Creators,Attendee
+Dario,Silva,dario.silva@interagencyaitaskfor.example.com,+1 646 555 0127,Interagency AI Task Force,Head of AI Safety Programs,linkedin.com/in/dario-silva-9300,Government,Attendee
+Isaac,Alvarez,isaac.alvarez@promptwell.example.com,+1 206 555 0172,Promptwell,Founder,,Founders,Attendee
+Beatriz,Sorensen,beatriz.sorensen@northbridgeretail.example.com,+1 312 555 0171,Northbridge Retail,Group CEO,linkedin.com/in/beatriz-sorensen-3615,Executives,VIP
+Gabriel,Rasmussen,gabriel.rasmussen@gradientharbor.example.com,+1 702 555 0180,Gradient Harbor,Co-founder & CTO,linkedin.com/in/gabriel-rasmussen-9112,Founders,Attendee
+Esther,Navarro,esther.navarro@quantareasoning.example.com,,Quanta Reasoning,Co-founder & Head of Research,linkedin.com/in/esther-navarro-3544,Founders,Attendee
+Freya,Park,freya.park@promptnotes.example.com,+1 617 555 0170,Prompt Notes,Researcher & Writer,linkedin.com/in/freya-park-7252,Creators,Attendee
+Ravi,Chatterjee,ravi.chatterjee@crescentmediaholding.example.com,+1 646 555 0166,Crescent Media Holdings,Executive Chair,linkedin.com/in/ravi-chatterjee-5877,Executives,VIP
+Daniela,Rossi,daniela.rossi@neuralpine.example.com,+1 512 555 0180,Neuralpine,Co-founder & Chief Scientist,linkedin.com/in/daniela-rossi-8902,Founders,VIP
+Mateo,Esposito,mateo.esposito@embedlybio.example.com,,Embedly Bio,Co-founder & Head of Research,linkedin.com/in/mateo-esposito-9594,Founders,Attendee
+Tomas,Udeh,tomas.udeh@auroraairlines.example.com,+1 206 555 0171,Aurora Airlines,VP of AI Strategy,linkedin.com/in/tomas-udeh-5703,Executives,Attendee
+Nia,Rossi,nia.rossi@frontierdispatch.example.com,+1 212 555 0162,Frontier Dispatch,AI Correspondent,linkedin.com/in/nia-rossi-9743,Media,Attendee
+Dario,Brandt,dario.brandt@stratumdigitaladviso.example.com,+1 415 555 0199,Stratum Digital Advisory,"Managing Director, AI Practice",linkedin.com/in/dario-brandt-4314,Service Providers,Attendee
+Nadia,Halvorsen,nadia.halvorsen@promptwell.example.com,+1 212 555 0111,Promptwell,Co-founder & Head of Research,linkedin.com/in/nadia-halvorsen-8206,Founders,VIP
+Mei,Thornton,mei.thornton@frontierdispatch.example.com,+1 702 555 0178,Frontier Dispatch,Managing Editor,,Media,Attendee
+Ada,Silva,ada.silva@meridianhealthsystem.example.com,,Meridian Health Systems,Global Managing Partner,linkedin.com/in/ada-silva-5374,Executives,VIP
+Zoe,Chatterjee,zoe.chatterjee@modelcraft.example.com,+1 650 555 0124,Modelcraft,Co-founder & Chief Scientist,,Founders,Attendee
+Arjun,Navarro,arjun.navarro@bellwetherpartners.example.com,+1 206 555 0173,Bellwether Partners,Managing Director,linkedin.com/in/arjun-navarro-2589,Investors,VIP
+Freya,Rossi,freya.rossi@ridgelinegrowthequit.example.com,+1 310 555 0174,Ridgeline Growth Equity,Venture Partner,linkedin.com/in/freya-rossi-4483,Investors,Attendee
+Arjun,Okafor,arjun.okafor@theinferencereport.example.com,+1 212 555 0170,The Inference Report,AI Correspondent,linkedin.com/in/arjun-okafor-8423,Media,Attendee
+Javier,Kowalski,javier.kowalski@vaultlinesecurity.example.com,+1 617 555 0192,Vaultline Security,Global Head of Sponsorships,linkedin.com/in/javier-kowalski-8588,Sponsors,Sponsor
+Ada,Sato,ada.sato@helixcompute.example.com,+1 702 555 0103,Helix Compute,Enterprise Account Director,linkedin.com/in/ada-sato-2879,Sponsors,Sponsor
+Rania,Kawasaki,rania.kawasaki@pinecresthospitality.example.com,+1 702 555 0133,Pinecrest Hospitality,Chief Information Officer,linkedin.com/in/rania-kawasaki-5881,Executives,Attendee
+Ada,Navarro,ada.navarro@machineweekly.example.com,+1 512 555 0150,Machine Weekly,Senior Technology Reporter,linkedin.com/in/ada-navarro-4132,Media,Attendee
+Rohan,Kawasaki,rohan.kawasaki@helixcompute.example.com,+1 310 555 0142,Helix Compute,Director of Field Marketing,linkedin.com/in/rohan-kawasaki-4296,Sponsors,Sponsor
+Greta,Kapoor,greta.kapoor@crescentmediaholding.example.com,+1 312 555 0104,Crescent Media Holdings,Chief Digital Officer,linkedin.com/in/greta-kapoor-8277,Executives,Attendee
+Liam,Varga,liam.varga@foundryhillventures.example.com,+1 650 555 0198,Foundry Hill Ventures,Principal,linkedin.com/in/liam-varga-8902,Investors,Attendee
+Anika,Ortega,anika.ortega@interagencyaitaskfor.example.com,+1 650 555 0150,Interagency AI Task Force,"Senior Advisor, Digital Affairs",linkedin.com/in/anika-ortega-3591,Government,Attendee
+Zoe,Okonkwo,zoe.okonkwo@machineweekly.example.com,+1 512 555 0190,Machine Weekly,AI Correspondent,linkedin.com/in/zoe-okonkwo-9656,Media,Attendee
+Hiroshi,Quintero,hiroshi.quintero@stratumdigitaladviso.example.com,+1 617 555 0137,Stratum Digital Advisory,"Managing Director, AI Practice",linkedin.com/in/hiroshi-quintero-5709,Service Providers,Attendee
+Yusuf,Moreau,yusuf.moreau@cobaltfreightgroup.example.com,,Cobalt Freight Group,SVP Enterprise Technology,linkedin.com/in/yusuf-moreau-2836,Executives,Attendee
+Victor,Faraday,victor.faraday@northstargrowth.example.com,+1 206 555 0196,Northstar Growth,Managing Director,,Investors,Attendee
+Freya,Bergstrom,freya.bergstrom@themodelexplained.example.com,,The Model Explained,AI Educator & Creator,linkedin.com/in/freya-bergstrom-8891,Creators,Attendee
+Daniela,Navarro,daniela.navarro@gradientharbor.example.com,,Gradient Harbor,Co-founder & CEO,linkedin.com/in/daniela-navarro-5605,Founders,Attendee
+Sebastian,Novak,sebastian.novak@bellwetherpartners.example.com,+1 646 555 0179,Bellwether Partners,General Partner,linkedin.com/in/sebastian-novak-5738,Investors,Attendee
+Gabriel,Zielinski,gabriel.zielinski@veritytelecom.example.com,+1 415 555 0199,Verity Telecom,Chief Information Officer,linkedin.com/in/gabriel-zielinski-5721,Executives,Attendee
+Elena,Esposito,elena.esposito@arborpeakcapital.example.com,+1 415 555 0128,Arbor Peak Capital,Principal,,Investors,Attendee
+Rafael,Schneider,rafael.schneider@foundryhillventures.example.com,+1 512 555 0128,Foundry Hill Ventures,Venture Partner,linkedin.com/in/rafael-schneider-2102,Investors,Attendee
+Diego,Faraday,diego.faraday@helixcompute.example.com,+1 310 555 0153,Helix Compute,Head of Partnerships,linkedin.com/in/diego-faraday-7303,Sponsors,Sponsor
+Greta,Osei,greta.osei@officeofdigitalinnov.example.com,+1 206 555 0196,Office of Digital Innovation,Chief Technology Advisor,linkedin.com/in/greta-osei-6648,Government,Attendee
+Ravi,Wagner,ravi.wagner@summitfederalbank.example.com,,Summit Federal Bank,Head of Machine Learning,linkedin.com/in/ravi-wagner-5927,Executives,Attendee
+Noah,Vasquez,noah.vasquez@northbridgeretail.example.com,+1 206 555 0126,Northbridge Retail,Chief Data Officer,linkedin.com/in/noah-vasquez-6051,Executives,Attendee
+Esther,Lombardi,esther.lombardi@northstargrowth.example.com,+1 702 555 0112,Northstar Growth,General Partner,linkedin.com/in/esther-lombardi-5688,Investors,Attendee
+Omar,Yamamoto,omar.yamamoto@tensorleaf.example.com,+1 312 555 0185,Tensorleaf,Co-founder & CEO,linkedin.com/in/omar-yamamoto-2098,Founders,Attendee
+Greta,Moreau,greta.moreau@obsidianpointcapital.example.com,+1 312 555 0153,Obsidian Point Capital,General Partner,linkedin.com/in/greta-moreau-2026,Investors,Attendee
+Zoe,Zielinski,zoe.zielinski@departmentofcommerce.example.com,+1 617 555 0119,Department of Commerce Futures Unit,"Senior Advisor, Digital Affairs",,Government,Attendee
+Lucia,Ferreira,lucia.ferreira@keystoneautomotive.example.com,,Keystone Automotive,Group CEO,linkedin.com/in/lucia-ferreira-7088,Executives,VIP
+Rohan,Novak,rohan.novak@frontierdispatch.example.com,+1 212 555 0145,Frontier Dispatch,Podcast Host,,Media,Attendee
+Yara,Hoshino,yara.hoshino@crescentmediaholding.example.com,+1 650 555 0133,Crescent Media Holdings,Group CEO,linkedin.com/in/yara-hoshino-7714,Executives,VIP
+Lena,Vasquez,lena.vasquez@foundryhillventures.example.com,+1 702 555 0162,Foundry Hill Ventures,General Partner,linkedin.com/in/lena-vasquez-3591,Investors,Attendee
+Soren,Halvorsen,soren.halvorsen@northstargrowth.example.com,+1 206 555 0159,Northstar Growth,Venture Partner,,Investors,VIP
+Rafael,Eriksen,rafael.eriksen@orbitaldatacenters.example.com,+1 650 555 0169,Orbital Data Centers,VP of Strategic Alliances,linkedin.com/in/rafael-eriksen-7391,Sponsors,Sponsor
+Wei,Rasmussen,wei.rasmussen@crescentmediaholding.example.com,+1 310 555 0128,Crescent Media Holdings,Chief Information Officer,linkedin.com/in/wei-rasmussen-6101,Executives,Attendee
+Freya,Jansen,freya.jansen@cortexa.example.com,+1 312 555 0147,Cortexa,Founder & CEO,linkedin.com/in/freya-jansen-1561,Founders,Attendee
+Esther,Sandoval,esther.sandoval@stratacloud.example.com,+1 310 555 0191,Strata Cloud,Director of Field Marketing,,Sponsors,Sponsor
+Felipe,Rossi,felipe.rossi@auroraairlines.example.com,+1 415 555 0129,Aurora Airlines,Chief Executive Officer,linkedin.com/in/felipe-rossi-2735,Executives,VIP
+Felipe,Okonkwo,felipe.okonkwo@harborviewpartners.example.com,+1 512 555 0123,Harborview Partners,General Partner,linkedin.com/in/felipe-okonkwo-4353,Investors,Attendee
+Sebastian,Rahman,sebastian.rahman@auroraairlines.example.com,+1 312 555 0124,Aurora Airlines,Global Managing Partner,linkedin.com/in/sebastian-rahman-2473,Executives,VIP
+Valentina,Alvarez,valentina.alvarez@neuralpine.example.com,+1 646 555 0198,Neuralpine,Founder,linkedin.com/in/valentina-alvarez-3044,Founders,Attendee
+Saanvi,Wagner,saanvi.wagner@agenticlabs.example.com,+1 212 555 0174,Agentic Labs,Co-founder & CTO,linkedin.com/in/saanvi-wagner-3106,Founders,Attendee
+Priya,Fontaine,priya.fontaine@callowayfamilyoffice.example.com,+1 702 555 0192,Calloway Family Office,Director of Direct Investments,linkedin.com/in/priya-fontaine-1181,Family Offices,Attendee
+Zara,Zhang,zara.zhang@northbridgeretail.example.com,,Northbridge Retail,SVP Enterprise Technology,linkedin.com/in/zara-zhang-3740,Executives,Attendee
+Priya,Zielinski,priya.zielinski@obsidianpointcapital.example.com,,Obsidian Point Capital,Managing Director,linkedin.com/in/priya-zielinski-2389,Investors,Attendee
+Rohan,Osei,rohan.osei@bellwetherpartners.example.com,,Bellwether Partners,Principal,,Investors,Attendee
+Omar,Sandoval,omar.sandoval@quantumsilicon.example.com,,Quantum Silicon,Director of Field Marketing,linkedin.com/in/omar-sandoval-7519,Sponsors,Sponsor
+Rosa,Jansen,rosa.jansen@ironwoodmanufacturin.example.com,,Ironwood Manufacturing,Chief AI Officer,linkedin.com/in/rosa-jansen-5006,Executives,Attendee
+Naveen,Whitfield,naveen.whitfield@theinferencereport.example.com,+1 646 555 0183,The Inference Report,Senior Technology Reporter,linkedin.com/in/naveen-whitfield-5016,Media,Attendee
+Valentina,Faraday,valentina.faraday@atlasmutual.example.com,+1 646 555 0121,Atlas Mutual,President,linkedin.com/in/valentina-faraday-6216,Executives,VIP
+Daniela,Rasmussen,daniela.rasmussen@promptnotes.example.com,+1 650 555 0198,Prompt Notes,AI Educator & Creator,linkedin.com/in/daniela-rasmussen-7479,Creators,Attendee
+Jae,Novak,jae.novak@arborpeakcapital.example.com,+1 512 555 0166,Arbor Peak Capital,General Partner,linkedin.com/in/jae-novak-4466,Investors,Attendee
+Farah,Iyer,farah.iyer@foundryhillventures.example.com,,Foundry Hill Ventures,Head of AI Investments,linkedin.com/in/farah-iyer-1493,Investors,Attendee
+Greta,Sato,greta.sato@datavine.example.com,+1 617 555 0137,Datavine,Co-founder & Chief Scientist,linkedin.com/in/greta-sato-1283,Founders,VIP
+Ines,Fontaine,ines.fontaine@atlasmutual.example.com,+1 512 555 0156,Atlas Mutual,Executive Chair,,Executives,VIP
+Isaac,Okonkwo,isaac.okonkwo@datavine.example.com,+1 415 555 0114,Datavine,Co-founder & CEO,,Founders,Attendee
+Sienna,Navarro,sienna.navarro@agenticlabs.example.com,+1 650 555 0165,Agentic Labs,Founder,linkedin.com/in/sienna-navarro-4961,Founders,Attendee
+Saanvi,Quintero,saanvi.quintero@departmentofcommerce.example.com,,Department of Commerce Futures Unit,Head of AI Safety Programs,,Government,VIP
+Anika,Brandt,anika.brandt@cortexa.example.com,+1 512 555 0154,Cortexa,Co-founder & Head of Research,linkedin.com/in/anika-brandt-3394,Founders,Attendee

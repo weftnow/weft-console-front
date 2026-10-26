@@ -18,10 +18,11 @@ The matching engine is not available for demos. Organizers and stakeholders need
 - Simulated output passes `engineMatchingStatusSchema` and `engineMatchingFeedSchema`.
 - No visible demo label (user decision 2026-10-21). Invisible signals instead: `data-simulated="true"` on the Matching status panel and Matches panel, an `X-Weft-Engine-Mode: simulation` header on successful status, list and detail responses, and a one-time `weft_matching_simulation_active` server log line. The Matches tab refreshes when the status reaches finished.
 - `public/demo/weft-demo-attendees.csv` holds 24 fictional guests on `@demo.weft.example`. `public/demo/weft-demo-attendees-300.csv` (added 2026-10-21 at the user's request) holds 300, starting with the same 24. Its extra 87 pairs are templated from role and company by a seeded script, not hand-written, and spread over about 60 guests with up to 5 matches each; the fixture is capped at 99 pairs.
+- Themed rosters (added 2026-10-26 at the user's request): `public/demo/weft-demo-ai-summit-300.csv` (Future of AI Executive Summit, 300 guests) and `public/demo/weft-demo-grand-prix-400.csv` (The Grand Prix Business Club, 400 guests), fictional guests on `*.example.com`. Each has its own 99-pair fixture, templated by `scripts/generate-demo-event-matches.mjs` with the same English and Spanish text as the 300-guest roster (`scripts/demo-pairs.mjs`). Rosters share no emails; the simulator uses the fixture with the most pairs present in the event, so one event shows one roster's matches.
 
 ## Out of scope
 
-Real engine behavior, persisted simulator state, several demo datasets, any production use, database changes, new dependencies.
+Real engine behavior, persisted simulator state, mixing rosters in one event, any production use, database changes, new dependencies.
 
 ## Affected roles and organizations
 
