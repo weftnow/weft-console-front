@@ -1,5 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { z } from "zod";
+import { localeSchema } from "@/shared/i18n/locales";
 import { EVENT_AUDIENCE_OPTIONS, EVENT_CATEGORIES, EVENT_CITIES } from "./event-options";
 
 export const uuidSchema = z.uuid();
@@ -44,6 +45,7 @@ export const createEventSchema = z.strictObject({
   startTime: wallTime,
   endTime: wallTime,
   description: z.string().trim().min(1).max(500),
+  language: localeSchema.default("en"),
   categories: z.array(z.enum(EVENT_CATEGORIES)).min(1).refine(unique, "Choose each category once."),
   expectedAudience: z.array(z.enum(EVENT_AUDIENCE_OPTIONS)).refine(unique, "Choose each audience once."),
   attendeeImport: z.strictObject({

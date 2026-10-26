@@ -30,7 +30,6 @@ export async function handleListMatches(
       search: params.get("search") ?? undefined,
       page: params.get("page") ?? undefined,
       introductionPath: params.get("introductionPath") ?? undefined,
-      locale: params.get("locale") ?? undefined,
     });
     if (!query.success) throw new ApplicationError("VALIDATION_ERROR", "Choose valid match filters.");
     const data = await dependencies.listMatches({ userId: actor.id, eventId, ...query.data });

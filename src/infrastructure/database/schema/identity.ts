@@ -7,9 +7,13 @@ export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   displayName: text("display_name").notNull(),
   avatarUrl: text("avatar_url"),
+  locale: text("locale").notNull().default("en"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => [check("users_display_name_valid", sql`length(btrim(${table.displayName})) between 1 and 160`)]);
+}, (table) => [
+  check("users_display_name_valid", sql`length(btrim(${table.displayName})) between 1 and 160`),
+  check("users_locale_valid", sql`${table.locale} in ('en', 'es')`),
+]);
 
 export const userAuthIdentities = pgTable("user_auth_identities", {
   id: uuid("id").defaultRandom().primaryKey(),

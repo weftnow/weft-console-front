@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loadTs } from "./load-ts.mjs";
+import { stubI18n } from "./i18n-stub.mjs";
+
+const i18n = stubI18n();
 
 const eventId = "22222222-2222-4222-8222-222222222222";
 const input = { fileName: "guests.csv", csvText: "First Name\nAda\n" };
@@ -53,14 +56,14 @@ test("synchronous submit guard blocks duplicate clicks until the first operation
 
 test("post-save refresh failure is reported as a saved import", async () => {
   const { refreshAfterImport } = loadTs("src/modules/events/mutations/import-attendees.ts");
-  assert.equal(await refreshAfterImport(async () => { throw new Error("router failure"); }), "Import saved; refresh to load the updated roster.");
-  assert.equal(await refreshAfterImport(async () => {}), null);
+  assert.equal(await refreshAfterImport(i18n, async () => { throw new Error("router failure"); }), "Import saved; refresh to load the updated roster.");
+  assert.equal(await refreshAfterImport(i18n, async () => {}), null);
 });
 
 test("success feedback distinguishes replay and warns when filters can hide new attendees", () => {
   const { importSuccessMessage } = loadTs("src/modules/events/mutations/import-attendees.ts");
-  assert.match(importSuccessMessage(result, true), /2 added, 1 already on this event and skipped.*hidden/);
-  assert.equal(importSuccessMessage({ ...result, replayed: true }, true), "This file was already imported; no attendees were added again.");
+  assert.match(importSuccessMessage(i18n, result, true), /2 added, 1 already on this event and skipped.*hidden/);
+  assert.equal(importSuccessMessage(i18n, { ...result, replayed: true }, true), "This file was already imported; no attendees were added again.");
 });
 
 test("shared attendee template retains the Create Event columns", () => {
@@ -80,7 +83,9 @@ test("grouped roster exposes networking status, its filter and the management pa
   const source = readFileSync("src/modules/events/components/attendee-roster.tsx", "utf8");
   assert.match(source, /networking-pill--/);
   assert.match(source, /onNetworking=\{/);
-  assert.match(source, /Filter by networking status/);
+  assert.match(source, /copy\.filterNetworking/);
+  assert.equal(i18n.dict.events.roster.filterNetworking, "Filter by networking status");
   assert.match(source, /<NetworkingPanel/);
-  assert.match(source, /included · /);
+  assert.match(source, /copy\.networkingCounts/);
+  assert.match(i18n.dict.events.roster.networkingCounts, /included · .*excluded/);
 });

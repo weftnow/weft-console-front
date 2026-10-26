@@ -1,0 +1,72 @@
+import type { Dictionary } from "../types";
+
+export const organizations = {
+  invitation: {
+    notAvailable: "Este enlace de invitación no está disponible.",
+    loadingSignIn: "Cargando el inicio de sesión seguro…",
+    recovery: {
+      verifyFailed: "No pudimos verificar las invitaciones en este momento. Inténtalo de nuevo en unos instantes.",
+      askOwner: "Pide a un propietario de la organización que invite a esta cuenta.",
+      found: "Se encontró una invitación para {organization}.",
+      choose: "Elige qué organización abrir.",
+      continueTo: "Continuar a {organization}",
+      chooseDifferent: "Elegir otra organización",
+      finishing: "Finalizando el acceso a {organization}.",
+    },
+    completion: {
+      settingUp: "Configurando tu acceso…",
+      wrongAccount: "Esta invitación pertenece a otra cuenta con sesión iniciada.",
+      conflict: "Este acceso a la organización requiere la revisión de un propietario.",
+      unavailable: "Esta invitación ya no está disponible o no se pudo verificar.",
+      retry: "No pudimos terminar de configurar tu acceso. Inténtalo de nuevo.",
+      signOutUseInvited: "Cerrar sesión y usar la cuenta invitada",
+    },
+  },
+  team: {
+    title: "Equipo",
+    description: "Invita a propietarios, organizadores y personal a trabajar en esta organización.",
+    onlyOwners: "Solo los propietarios de la organización pueden administrar invitaciones.",
+    invite: {
+      heading: "Invitar a un compañero",
+      hint: "Elige su rol en Weft antes de enviar la invitación.",
+      email: "Correo de trabajo",
+      role: "Rol en Weft",
+      send: "Enviar invitación",
+      sending: "Enviando…",
+    },
+    history: {
+      heading: "Historial de invitaciones",
+      description: "Estado de entrega y de acceso de esta organización.",
+      emptyTitle: "Aún no hay invitaciones",
+      emptyText: "Las invitaciones que envíes aparecerán aquí con su estado de entrega y de acceso.",
+      expires: "Vence el {date}",
+      statusLabel: "Estado de la invitación",
+      access: "Acceso",
+      delivery: "Entrega",
+      cleanupPending: "Limpieza en Clerk pendiente; el acceso a Weft está revocado",
+    },
+    states: {
+      pending: "Pendiente", accepted: "Aceptada", revoked: "Revocada", expired: "Vencida",
+      queued: "En cola", sending: "Enviando", sent: "Confirmada", unknown: "Desconocida", failed: "Fallida",
+    },
+    actions: {
+      checking: "Comprobando…",
+      checkRetry: "Comprobar / reintentar",
+      revoke: "Revocar",
+    },
+    results: {
+      invitation_sent: "Invitación enviada a {email} como {role}.",
+      invitation_existing: "Ya hay una invitación pendiente para {email}.",
+      delivery_pending: "No se pudo confirmar la entrega. Revisa el estado de la invitación antes de reintentar.",
+      owner_required: "Solo un propietario de la organización puede administrar invitaciones.",
+      invalid_input: "Ingresa un correo válido y elige Propietario, Organizador o Personal.",
+      invitation_not_found: "No se encontró esa invitación.",
+      delivery_confirmed: "Se confirmó la entrega de la invitación a {email}.",
+      delivery_unknown: "La entrega sigue sin conocerse. Vuelve a comprobar antes de enviar una nueva invitación.",
+      delivery_failed: "No se pudo completar la entrega de la invitación. Inténtalo más tarde.",
+      revoked: "Se revocó la invitación de {email}.",
+      revoked_cleanup_pending: "El acceso se revocó localmente. La limpieza en Clerk sigue pendiente.",
+      action_failed: "No pudimos completar esa acción de la invitación. Revisa la invitación e inténtalo de nuevo.",
+    },
+  },
+} satisfies Dictionary["organizations"];

@@ -8,7 +8,10 @@ import { GENERATED_DEMO_MATCHES } from "./demo-matches-generated";
  */
 export const MAX_DEMO_MATCHES = 99;
 
-type Side = { benefit: string; shareableReason: string | null; missingInformation: string[]; score: number };
+type SideText = { benefit: string; shareableReason: string | null; missingInformation: string[] };
+type Side = SideText & { score: number };
+/** Text shown when the event language is Spanish; quotes and guest data stay as written in the roster. */
+export type SpanishText = { uncertainty: string; forA: SideText; forB: SideText };
 export type DemoMatch = {
   a: string;
   b: string;
@@ -18,11 +21,12 @@ export type DemoMatch = {
   evidence: { who: "a" | "b"; field: string; quote: string }[];
   forA: Side;
   forB: Side;
+  es: SpanishText;
 };
 
 const e = (name: string) => `${name}@demo.weft.example`;
 
-const HAND_WRITTEN_MATCHES: readonly DemoMatch[] = [
+const HAND_WRITTEN_MATCHES: readonly Omit<DemoMatch, "es">[] = [
   {
     a: e("nadia.rahman"), b: e("marcus.teo"), pairScore: 91,
     uncertainty: "Marcus’s stage and round size aren’t in the attendee list, so fit with Helio’s cheque size is unconfirmed.",
@@ -145,4 +149,73 @@ const HAND_WRITTEN_MATCHES: readonly DemoMatch[] = [
   },
 ];
 
-export const DEMO_MATCHES: readonly DemoMatch[] = [...HAND_WRITTEN_MATCHES, ...GENERATED_DEMO_MATCHES];
+const HAND_WRITTEN_SPANISH: Readonly<Record<string, SpanishText>> = {
+  [`${e("nadia.rahman")}|${e("marcus.teo")}`]: {
+    uncertainty: "La etapa y el tamaño de ronda de Marcus no están en la lista de asistentes, así que no se confirma si encaja con el tamaño de cheque de Helio.",
+    forA: { benefit: "Marcus está creando una empresa de robótica y es el tipo de fundador en etapa temprana que un socio de capital de riesgo quiere conocer antes de que se anuncie una ronda.", shareableReason: "Marcus está creando Lumen Robotics, una empresa de hardware en etapa temprana que Helio Ventures podría respaldar.", missingInformation: ["Etapa de inversión preferida"] },
+    forB: { benefit: "Nadia dirige inversiones en Helio Ventures y puede explicar qué espera un fondo de capital de riesgo de un fundador de robótica.", shareableReason: "Nadia invierte en Helio Ventures y podría ser una inversionista temprana de Lumen Robotics.", missingInformation: ["Ronda de financiamiento actual"] },
+  },
+  [`${e("hana.sato")}|${e("sofia.marchetti")}`]: {
+    uncertainty: "Es posible que el family office de Hana no invierta en salud en esta etapa; solo se conoce su cargo.",
+    forA: { benefit: "Sofia fundó una empresa de salud y ofrece una mirada directa a un sector que los family offices respaldan cada vez más a largo plazo.", shareableReason: "Sofia está creando Orchard Health y busca inversionistas pacientes y de largo plazo como Tidewater.", missingInformation: ["Sectores en los que invierte Tidewater"] },
+    forB: { benefit: "Hana asigna capital para un family office, un tipo de inversionista paciente que le conviene a una fundadora que no busca una salida rápida.", shareableReason: "Hana invierte para Tidewater Family Office con un horizonte de largo plazo y podría respaldar a Orchard Health.", missingInformation: ["Necesidades de financiamiento"] },
+  },
+  [`${e("kwame.mensah")}|${e("ingrid.solberg")}`]: {
+    uncertainty: "No se indica el mercado de enfoque de Ingrid, así que el vínculo con un fondo panafricano se asume por el nombre del fondo.",
+    forA: { benefit: "Ingrid fundó una empresa de energía, y la infraestructura energética es un tema prioritario para los fondos de crecimiento con mandato en mercados emergentes.", shareableReason: "La empresa de Ingrid, Nordlys Energy, trabaja en energía, un sector prioritario para Pan-Africa Growth Fund.", missingInformation: ["Mercados objetivo de Ingrid"] },
+    forB: { benefit: "Kwame dirige inversiones en un fondo de crecimiento y puede explicar cómo evalúan estos fondos a las empresas de energía que se expanden a nuevas regiones.", shareableReason: "Kwame invierte en Pan-Africa Growth Fund y podría respaldar a Nordlys Energy en su expansión.", missingInformation: ["Planes de expansión"] },
+  },
+  [`${e("daniel.okafor")}|${e("meilin.chan")}`]: {
+    uncertainty: "No está claro si Quill Analytics vende a bancos o solo a otros equipos de software.",
+    forA: { benefit: "Mei Lin dirige la tecnología de una empresa de análisis de datos, lo que la convierte en una socia natural para un banco que busca herramientas de datos.", shareableReason: "La empresa de Mei Lin, Quill Analytics, crea herramientas de datos que Meridian Bank podría usar.", missingInformation: ["Clientes de Quill en servicios financieros"] },
+    forB: { benefit: "Daniel está a cargo de las alianzas de un banco, por lo que puede describir cómo una institución financiera evalúa e incorpora a un proveedor de tecnología.", shareableReason: "Daniel dirige las alianzas de Meridian Bank, un posible cliente de Quill Analytics.", missingInformation: ["Requisitos de cumplimiento para proveedores"] },
+  },
+  [`${e("henrik.larsen")}|${e("elias.brandt")}`]: {
+    uncertainty: "Las dos empresas podrían ser competidoras directas en algunas rutas; ninguna lo ha indicado.",
+    forA: { benefit: "Elias dirige las operaciones de una empresa de carga y puede comparar experiencias sobre rutas, capacidad y alianzas con alguien que ve el mismo mercado desde la operación.", shareableReason: "Elias dirige las operaciones de Cobalt Freight, un posible socio de Fjordworks Logistics en rutas y capacidad.", missingInformation: ["Regiones que atiende cada empresa"] },
+    forB: { benefit: "Henrik es director ejecutivo de una empresa de logística y puede abrir una conversación sobre capacidad compartida o rutas conjuntas.", shareableReason: "Henrik dirige Fjordworks Logistics, un posible socio de Cobalt Freight en rutas y capacidad.", missingInformation: ["Interés actual en alianzas"] },
+  },
+  [`${e("zara.patel")}|${e("yuki.tanaka")}`]: {
+    uncertainty: "No se sabe si Kite Mobility procesa pagos directamente.",
+    forA: { benefit: "Yuki está a cargo del producto de una empresa de movilidad, donde los pagos dentro de la app son una función central que un negocio de pagos quiere atender.", shareableReason: "Yuki dirige el producto de Kite Mobility, que necesita los pagos dentro de la app que ofrece Ardent Payments.", missingInformation: ["Proveedor de pagos actual de Kite"] },
+    forB: { benefit: "Zara dirige el área comercial de una empresa de pagos y puede hablar de opciones de integración para un producto de movilidad.", shareableReason: "Zara dirige el área comercial de Ardent Payments, un posible socio de pagos para Kite Mobility.", missingInformation: ["Funciones de pago en el plan de producto"] },
+  },
+  [`${e("priya.venkataraman")}|${e("noah.whitaker")}`]: {
+    uncertainty: "No se indica la etapa de la empresa de Noah, y el enfoque del fondo de Priya se deduce de su cargo.",
+    forA: { benefit: "Noah fundó una empresa de educación, un negocio en etapa temprana que una directora de una firma de capital puede evaluar de primera mano.", shareableReason: "Noah está creando Brightpath Learning, una empresa que Fieldstone Capital podría respaldar.", missingInformation: ["Sectores en los que se enfoca Fieldstone"] },
+    forB: { benefit: "Priya trabaja en una firma de inversión y puede decir qué buscan los inversionistas en una empresa de tecnología educativa.", shareableReason: "Priya invierte en Fieldstone Capital y podría ser una inversionista temprana de Brightpath Learning.", missingInformation: ["Planes de financiamiento de Brightpath"] },
+  },
+  [`${e("lucas.ferreira")}|${e("chloe.beaumont")}`]: {
+    uncertainty: "Se desconocen las relaciones actuales de Maison Aube con agencias.",
+    forA: { benefit: "Chloe dirige una marca y encarga trabajo creativo, lo que la convierte en una vía directa a un proyecto para un estudio.", shareableReason: "La marca de Chloe, Maison Aube, contrata estudios creativos como Pixelwharf Studios.", missingInformation: ["Próximas campañas"] },
+    forB: { benefit: "Lucas dirige un estudio creativo y puede mostrarle a una directora de marca lo que un socio visual podría entregar para un lanzamiento.", shareableReason: "El estudio de Lucas, Pixelwharf Studios, podría crear contenido de campaña para Maison Aube.", missingInformation: ["Rango de presupuesto"] },
+  },
+  [`${e("amara.nwosu")}|${e("viktor.novak")}`]: {
+    uncertainty: "Viktor no ha dicho si quiere cobertura de prensa.",
+    forA: { benefit: "Viktor fundó una empresa de audio, así que podría tener una historia de producto y un punto de vista de fundador que valga la pena cubrir.", shareableReason: "Viktor está creando Halcyon Audio, una historia de producto que Northgate Media podría cubrir.", missingInformation: ["Si Viktor quiere cobertura"] },
+    forB: { benefit: "Amara dirige un medio de comunicación y puede explicar cómo una empresa joven de audio llama la atención de la prensa.", shareableReason: "Amara dirige Northgate Media, que podría cubrir el lanzamiento de Halcyon Audio.", missingInformation: ["Fecha del lanzamiento"] },
+  },
+  [`${e("tariq.haddad")}|${e("isabel.duarte")}`]: {
+    uncertainty: "No se indica la jurisdicción de Isabel, así que la coincidencia regulatoria con los clientes de Tariq es una suposición.",
+    forA: { benefit: "Isabel es asesora en políticas públicas, por lo que puede hablar de los cambios regulatorios que preguntan los clientes de asesoría de Tariq.", shareableReason: "Isabel asesora en políticas en Harbor Regulatory Group, lo que afecta a los clientes de Cedar Point Advisors.", missingInformation: ["Jurisdicciones que cubre Isabel"] },
+    forB: { benefit: "Tariq dirige una firma de asesoría y puede presentarle a Isabel clientes que necesitan orientación regulatoria.", shareableReason: "La firma de Tariq, Cedar Point Advisors, tiene clientes que necesitan la asesoría en políticas que ofrece Harbor Regulatory Group.", missingInformation: ["Tipos de clientes que asesora Tariq"] },
+  },
+  [`${e("rafael.ortiz")}|${e("amelia.hart")}`]: {
+    uncertainty: "Ninguno ha indicado una necesidad concreta, así que la coincidencia se basa solo en sus cargos.",
+    forA: { benefit: "Amelia es directora de una consultora y podría asesorar a un grupo deportivo en alianzas y operaciones.", shareableReason: "La firma de Amelia, Brightwell Consulting, asesora a organizaciones como Vantage Sports Group.", missingInformation: ["Necesidades de asesoría actuales"] },
+    forB: { benefit: "Rafael dirige un grupo deportivo y podría convertirse en cliente o en referencia para una consultora que quiere trabajar en el deporte.", shareableReason: "Rafael dirige Vantage Sports Group, un posible cliente de Brightwell Consulting.", missingInformation: ["Clientes del sector deportivo con los que ha trabajado Amelia"] },
+  },
+  [`${e("meilin.chan")}|${e("yuki.tanaka")}`]: {
+    uncertainty: "Ambos son líderes técnicos; no está claro si tienen un proyecto en común o solo un interés compartido.",
+    forA: { benefit: "Yuki dirige el producto de una empresa de movilidad que genera grandes volúmenes de datos de uso, una buena opción para un negocio de análisis.", shareableReason: "Kite Mobility, la empresa de Yuki, recopila datos de uso que las herramientas de Quill Analytics podrían aprovechar.", missingInformation: ["Infraestructura de datos de Kite"] },
+    forB: { benefit: "Mei Lin es directora de tecnología y crea software de análisis; puede explicar cómo un equipo de producto puede usarlo.", shareableReason: "Mei Lin crea en Quill Analytics software de análisis que el equipo de producto de Kite Mobility podría usar.", missingInformation: ["Herramientas de análisis que Kite usa hoy"] },
+  },
+};
+
+const withSpanish = (match: Omit<DemoMatch, "es">): DemoMatch => {
+  const es = HAND_WRITTEN_SPANISH[`${match.a}|${match.b}`];
+  if (!es) throw new Error(`Missing Spanish demo text for ${match.a}`);
+  return { ...match, es };
+};
+
+export const DEMO_MATCHES: readonly DemoMatch[] = [...HAND_WRITTEN_MATCHES.map(withSpanish), ...GENERATED_DEMO_MATCHES];
