@@ -18,6 +18,8 @@ Use `docs/changes/YYYY-MM-DD-short-name.md` with: Status, linked plan, problem, 
 
 - [English and Spanish translations](2026-10-25-console-translations.md): Ready; implementation in progress, with browser acceptance pending.
 
+- [Outcomes reporting design](2026-11-24-outcomes-reporting-design.md) (Draft) proposes how organizers explore event and cross-event outcomes.
+
 ## Imported specifications
 
 The following existing design specifications were migrated from the previous planning tree. Their original status and assumptions are retained as historical evidence; inspect current canonical docs and implementation before using them. None was newly approved or verified by the harness migration.
