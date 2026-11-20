@@ -1,5 +1,5 @@
 import type { ReportBreakdown, ReportEvent, ReportProjection, ReportQuery } from "./reporting-contract";
-import { projectCoverage, projectFollowThrough, projectGoals } from "./reporting-event-projections";
+import { dayInMilliseconds, projectCoverage, projectFollowThrough, projectGoals } from "./reporting-event-projections";
 import {
   compareEvents,
   keyLabel,
@@ -32,10 +32,14 @@ export function projectSeries(events: ReportEvent[], query: ReportQuery, now: nu
   const series = query.series ?? events.findLast((event) => event.evidence?.series)?.evidence?.series?.key;
   const editions = series === undefined ? [] : events.filter((event) => event.evidence?.series?.key === series);
   const results = editions.map((event) => {
-    const source = prepareReportEvent(event, now);
+    const cutoff = Date.parse(event.endsAt) + query.window * dayInMilliseconds;
+    const source = prepareReportEvent(event, query.metric === "coverage" ? Math.min(now, cutoff) : now);
+    const status: ReportProjection["status"] = now < cutoff ? "collecting" : "unavailable";
     switch (query.metric) {
-      case "goals": return projectGoals(source, query.segment);
-      case "coverage": return projectCoverage(source, query.segment);
+      case "goals": return event.evidence?.goalSurveyWindow === query.window && now >= cutoff
+        ? projectGoals(source, query.segment) : { ...projectGoals(undefined, query.segment), status };
+      case "coverage": return now >= cutoff
+        ? projectCoverage(source, query.segment) : { ...projectCoverage(undefined, query.segment), status };
       case "follow-through": return projectFollowThrough(source, query.window, now);
     }
   });
@@ -68,7 +72,7 @@ export function projectSeries(events: ReportEvent[], query: ReportQuery, now: nu
     responseCoverage: latest?.responseCoverage,
     basis: latestMeasured?.basis,
     delta: currentRate !== null && previousRate !== null ? currentRate - previousRate : undefined,
-    columns: ["rate"],
+    columns: ["edition", "rate"],
     rows,
     breakdown: {
       columns: ["edition", "date", "count", "base", "basis", "status"],
@@ -78,7 +82,7 @@ export function projectSeries(events: ReportEvent[], query: ReportQuery, now: nu
           id,
           href,
           cells: [
-            label, textLabel(editions[index].startsAt),
+            label, { date: editions[index].startsAt, timezone: editions[index].timezone },
             measure ? textLabel(measure.count) : keyLabel("unknown"),
             measure?.total === undefined ? keyLabel("unknown") : textLabel(measure.total),
             keyLabel(basis ?? query.metric), keyLabel(status),
@@ -188,9 +192,9 @@ export function projectRelationships(events: ReportEvent[], scoped: ReportEvent[
       cell.detail.rows.push({
         id: JSON.stringify([pair, edition.id]),
         cells: [
-          ...names.map(textLabel), textLabel(origin.name), textLabel(origin.startsAt), keyLabel(first.evidence),
+          ...names.map(textLabel), textLabel(origin.name), { date: origin.startsAt, timezone: origin.timezone }, keyLabel(first.evidence),
           keyLabel(first.method ?? "unknown"),
-          textLabel(edition.name), textLabel(edition.startsAt), keyLabel(later.evidence), keyLabel(later.method ?? "unknown"),
+          textLabel(edition.name), { date: edition.startsAt, timezone: edition.timezone }, keyLabel(later.evidence), keyLabel(later.method ?? "unknown"),
         ],
       });
     }

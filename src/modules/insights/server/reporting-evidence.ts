@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDatabase } from "@/infrastructure/database/client";
-import { eventOutcomesTracking, eventReportingEvidence, events } from "@/infrastructure/database/schema/events";
+import { eventGuests, eventOutcomesTracking, eventReportingEvidence, events } from "@/infrastructure/database/schema/events";
 import { organizationMemberships } from "@/infrastructure/database/schema/identity";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { matchingEngineMode } from "@/modules/network/server/engine-mode";
@@ -54,6 +54,21 @@ async function readDocument(tx: ReportingTransaction, eventId: string): Promise<
   const [row] = await tx.select({ revision: eventReportingEvidence.revision, evidence: eventReportingEvidence.evidence })
     .from(eventReportingEvidence).where(eq(eventReportingEvidence.eventId, eventId));
   return { revision: row?.revision ?? 0, evidence: reportingEvidenceSchema.parse(row ? row.evidence : {}) };
+}
+
+async function readPriorNetworkKeys(tx: ReportingTransaction, organizationId: string, before: Date, keys: string[]) {
+  if (keys.length === 0) return [];
+  const { rows } = await tx.execute<{ key: string }>(sql`
+    select distinct (p.value ->> 'networkKey') as key
+    from ${eventReportingEvidence} r
+    join ${events} e on e.id = r.event_id
+    cross join lateral jsonb_array_elements(r.evidence -> 'participants') as p(value)
+    where e.organization_id = ${organizationId} and e.ends_at <= ${before.toISOString()}::timestamptz
+      and p.value -> 'attended' = 'true'::jsonb
+      and (p.value ->> 'networkKey') = any(${sql.param(keys)}::text[])
+      and exists (select 1 from ${eventGuests} g where g.event_id = e.id and g.person_id = (p.value ->> 'personId')::uuid)
+  `);
+  return rows.map(({ key }) => key);
 }
 
 export async function getReportingEvidence(scope: EventScope): Promise<EvidenceDocument> {
@@ -122,12 +137,16 @@ export async function readReportingSources(
     const documents = ids.length ? await tx.select({ id: eventReportingEvidence.eventId, evidence: eventReportingEvidence.evidence })
       .from(eventReportingEvidence).where(sql`${eventReportingEvidence.eventId} = any(${sql.param(ids)}::uuid[])`) : [];
     const evidenceByEvent = new Map(documents.map((doc) => [doc.id, reportingEvidenceSchema.parse(doc.evidence)]));
+    const selectedEvidence = evidenceByEvent.get(selected.id);
+    const priorNetworkKeys = selection.across ? undefined : await readPriorNetworkKeys(tx, scope.organizationId, selected.startsAt,
+      (selectedEvidence?.participants ?? []).flatMap((p) => p.networkKey && p.attended === true ? [p.networkKey] : []));
     const sources = sourceEvents.map(({ id, name, startsAt, endsAt, timezone, trackingStartedAt }) => {
       const data = records.get(id)!;
       const evidence = evidenceByEvent.get(id);
       return {
         id, name, startsAt: startsAt.toISOString(), endsAt: endsAt.toISOString(), timezone,
         trackingStartedAt: trackingStartedAt?.toISOString() ?? null, ...data,
+        ...(priorNetworkKeys ? { priorNetworkKeys } : {}),
         evidence: evidence ? scopeEvidence(evidence, data, "read") : null,
       };
     });

@@ -41,6 +41,7 @@ import { EventWeftersPanel } from "./event-wefters-panel";
 import { MatchesPanel } from "@/modules/network/components/matches-panel";
 import { MatchingStatusPanel } from "@/modules/network/components/matching-status-panel";
 import { outcomesHref } from "@/modules/insights/outcomes-navigation";
+import { reportsHref } from "@/modules/insights/reporting-navigation";
 import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
@@ -100,7 +101,7 @@ function EventTabs({
           <Link
             aria-current={!linksToOutcomes && activeTab === id ? "page" : undefined}
             className="event-detail-tab"
-            href={linksToOutcomes ? outcomesHref(eventId) : `/events/${eventId}?tab=${id}`}
+            href={linksToOutcomes ? reportsHref(eventId) : `/events/${eventId}?tab=${id}`}
             key={id}
             onClick={linksToOutcomes ? undefined : () => onSelect(id)}
           >
@@ -231,7 +232,7 @@ function ReadinessCard({ event }: { event: EventRecord }) {
 }
 
 function QuickActions({ canManage, eventId, onSelect }: { canManage: boolean; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const copy = dict.events.detail.quickActions;
   const actions: { icon: Icon; label: string; tab: EventDetailTab }[] = [
     { icon: PeopleIcon, label: copy.manageAttendees, tab: "attendees" },
@@ -252,7 +253,7 @@ function QuickActions({ canManage, eventId, onSelect }: { canManage: boolean; ev
           return (
             <Link
               className="tactile-button event-quick-action"
-              href={linksToOutcomes ? outcomesHref(eventId) : `/events/${eventId}?tab=${tab}`}
+              href={linksToOutcomes ? reportsHref(eventId) : `/events/${eventId}?tab=${tab}`}
               key={label}
               onClick={linksToOutcomes ? undefined : () => onSelect(tab)}
             >
@@ -262,6 +263,13 @@ function QuickActions({ canManage, eventId, onSelect }: { canManage: boolean; ev
             </Link>
           );
         })}
+        {canManage && (
+          <Link className="tactile-button event-quick-action" href={outcomesHref(eventId)}>
+            <CheckIcon height="16" width="16" />
+            <span>{locale === "es" ? "Reuniones registradas" : "Recorded meetings"}</span>
+            <ArrowRightIcon height="14" width="14" />
+          </Link>
+        )}
       </div>
     </Surface>
   );
@@ -321,7 +329,7 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
 }
 
 function EventTabPlaceholder({ activeTab, canManage, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "matches" | "kami">; canManage: boolean; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const tab = tabs.find((item) => item.id === activeTab)!;
   const IconComponent = tab.icon;
   const isOrganizerInsights = activeTab === "insights" && canManage;
@@ -332,9 +340,12 @@ function EventTabPlaceholder({ activeTab, canManage, eventId, onSelect }: { acti
       <h2>{isOrganizerInsights ? dict.insights.outcomes.title : dict.events.detail.placeholder.title}</h2>
       <p>{isOrganizerInsights ? dict.insights.outcomes.subtitle : dict.events.detail.tabDescriptions[activeTab]}</p>
       {isOrganizerInsights ? (
-        <Link className="tactile-button tactile-button--primary event-tab-placeholder__action" href={outcomesHref(eventId)}>
-          {dict.insights.outcomes.openReport} <ArrowRightIcon height="15" width="15" />
-        </Link>
+        <>
+          <Link className="tactile-button tactile-button--primary event-tab-placeholder__action" href={reportsHref(eventId)}>
+            {dict.insights.outcomes.openReport} <ArrowRightIcon height="15" width="15" />
+          </Link>
+          <Link href={outcomesHref(eventId)}>{locale === "es" ? "Reuniones registradas" : "Recorded meetings"}</Link>
+        </>
       ) : (
         <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>
           {dict.events.detail.placeholder.back} <ArrowRightIcon height="15" width="15" />

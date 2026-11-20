@@ -7,7 +7,7 @@ function projectSponsors(source: PreparedReportEvent | undefined, query: ReportQ
   const projection: ReportProjection = {
     id: "sponsor-outcomes",
     status: "unavailable",
-    columns: ["actual", "target"],
+    columns: ["objective", "actual", "target"],
     rows: [],
   };
   if (!source) return projection;

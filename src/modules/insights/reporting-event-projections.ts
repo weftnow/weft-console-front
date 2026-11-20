@@ -23,7 +23,7 @@ import {
 
 const followUpStages = ["followUp", "secondMeeting", "opportunity"] as const;
 const coverageBuckets = ["zero", "one", "twoOrMore"] as const;
-const dayInMilliseconds = 86_400_000;
+export const dayInMilliseconds = 86_400_000;
 
 type Participant = ReportingEvidence["participants"][number];
 type FollowUpStage = typeof followUpStages[number];
@@ -86,7 +86,7 @@ export function projectGoals(source: PreparedReportEvent | undefined, segment: s
     status: respondents.length ? "ready" : "unavailable",
     measure: respondents.length ? { count, total: respondents.length } : undefined,
     responseCoverage: surveyCoverage(selected),
-    columns: [...goalResults],
+    columns: ["goal", ...goalResults],
     rows,
     breakdown: {
       columns: ["goal", ...goalResults, "responses"],
@@ -106,7 +106,7 @@ export function projectDemand(
   now: number,
 ): ReportProjection {
   const requests = source?.event.evidence?.requests;
-  const projection: ReportProjection = { id: "demand", status: "unavailable", columns: ["open"], rows: [] };
+  const projection: ReportProjection = { id: "demand", status: "unavailable", columns: ["connectionType", "open"], rows: [] };
   if (!source || requests == null) return projection;
   // A revision records request state, with no timestamps for reconstructing an earlier cutoff.
   if (now < source.endsAt) return { ...projection, status: "collecting" };
@@ -198,7 +198,7 @@ export function projectFollowThrough(
   window: ReportQuery["window"],
   now: number,
 ): ReportProjection {
-  const projection: ReportProjection = { id: "follow-through", status: "unavailable", columns: ["rate"], rows: [] };
+  const projection: ReportProjection = { id: "follow-through", status: "unavailable", columns: ["stage", "rate"], rows: [] };
   if (!source) return projection;
 
   const collecting = now < source.endsAt + window * dayInMilliseconds;
@@ -261,7 +261,7 @@ export function projectFollowThrough(
 }
 
 export function projectCoverage(source: PreparedReportEvent | undefined, segment: string | undefined): ReportProjection {
-  const projection: ReportProjection = { id: "coverage", status: "unavailable", columns: [...coverageBuckets], rows: [] };
+  const projection: ReportProjection = { id: "coverage", status: "unavailable", columns: ["segment", ...coverageBuckets], rows: [] };
   if (!source?.tracking) return projection;
 
   const eligible = [...source.people.values()].filter((person) => person.eligible);
@@ -270,7 +270,7 @@ export function projectCoverage(source: PreparedReportEvent | undefined, segment
   const basis = attendance ? "attendance" : "roster";
   const people = eligible.flatMap(({ personId }) => {
     const participant = source.participants.get(personId);
-    return !attendance || participant?.attended === true ? [{ personId, segment: participant?.segment }] : [];
+    return !attendance || participant?.attended === true ? [{ personId, segment: participant?.segment, networkKey: participant?.networkKey }] : [];
   });
   const options = segmentOptions(eligible.map(({ personId }) => source.participants.get(personId)?.segment));
   const selected = people.filter((person) => segment === undefined || person.segment === segment);
@@ -279,7 +279,13 @@ export function projectCoverage(source: PreparedReportEvent | undefined, segment
     for (const id of match.personIds) introductions.set(id, (introductions.get(id) ?? 0) + 1);
   }
 
-  const groups = groupBy(selected, (person) => person.segment);
+  const previous = new Set(source.event.priorNetworkKeys);
+  const groupByHistory = source.event.priorNetworkKeys !== undefined && selected.some((person) => person.networkKey);
+  const groups = groupBy(selected, (person) => {
+    if (!groupByHistory) return person.segment;
+    if (!person.networkKey) return "identityUnknown";
+    return previous.has(person.networkKey) ? "returning" : "firstTracked";
+  });
   const details: Record<string, ReportBreakdown> = {};
   let introduced = 0;
   const rows = [...groups.keys()].sort(compareSegments).map((segment) => {
@@ -290,7 +296,6 @@ export function projectCoverage(source: PreparedReportEvent | undefined, segment
       counts[Math.min(completed, 2)].count += 1;
       if (completed) introduced += 1;
     }
-    // A colon prefix separates provided labels from the unsegmented row and detail ids.
     const id = segment === undefined ? "unsegmented" : `segment:${segment}`;
     details[id] = {
       columns: ["bucket", "count", "eligible"],
@@ -299,7 +304,10 @@ export function projectCoverage(source: PreparedReportEvent | undefined, segment
         cells: [keyLabel(bucket), textLabel(counts[index].count), textLabel(group.length)],
       })),
     };
-    return { id, label: segmentLabel(segment), values: counts.map(rate), counts };
+    for (const row of details[id].rows) {
+      details[`${id}:${row.id}`] = { columns: details[id].columns, rows: [row] };
+    }
+    return { id, label: groupByHistory && segment ? keyLabel(segment) : segmentLabel(segment), values: counts.map(rate), counts };
   });
 
   return {
@@ -309,7 +317,7 @@ export function projectCoverage(source: PreparedReportEvent | undefined, segment
     basis,
     rows,
     breakdown: {
-      columns: ["segment", ...coverageBuckets, "eligible"],
+      columns: [groupByHistory ? "attendanceHistory" : "segment", ...coverageBuckets, "eligible"],
       rows: rows.map(({ id, label, counts }) => ({
         id,
         cells: [label, ...counts.map(({ count }) => textLabel(count)), textLabel(counts[0].total)],

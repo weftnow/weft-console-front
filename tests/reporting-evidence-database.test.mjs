@@ -82,6 +82,23 @@ test("membership, event, person and match boundaries apply to every evidence ope
   assert.deepEqual(await getReportingEvidence(scope), blank);
 });
 
+test("attendance history uses only earlier verified keys in the selected organization", gated, async (t) => {
+  const { pool, organizationId, foreignOrgId, userIds, eventId, untrackedId, foreignEventId, addGuest } = await createOutcomesFixture(t);
+  await Promise.all([
+    setDates(pool, untrackedId, -10), setDates(pool, eventId, -2), setDates(pool, foreignEventId, -20),
+  ]);
+  const [first, repeat, newcomer, foreign] = await Promise.all([
+    addGuest(untrackedId, 0), addGuest(eventId, 0), addGuest(eventId, 1), addGuest(foreignEventId, 0),
+  ]);
+  const evidence = (participants) => ({ participants: participants.map(([person, networkKey]) => ({ personId: person.personId, networkKey, attended: true })) });
+  const scope = { organizationId, userId: userIds.owner };
+  await saveReportingEvidence({ ...scope, eventId: untrackedId, expectedRevision: 0, evidence: evidence([[first, "returning"]]) });
+  await saveReportingEvidence({ ...scope, eventId, expectedRevision: 0, evidence: evidence([[repeat, "returning"], [newcomer, "other-tenant"]]) });
+  await saveReportingEvidence({ organizationId: foreignOrgId, userId: userIds.foreignOwner, eventId: foreignEventId, expectedRevision: 0, evidence: evidence([[foreign, "other-tenant"]]) });
+  assert.deepEqual((await readReportingSources(scope, { across: false, eventId })).sources[0].priorNetworkKeys, ["returning"]);
+  assert.deepEqual((await readReportingSources(scope, { across: false, eventId: untrackedId })).sources[0].priorNetworkKeys, []);
+});
+
 test("replacement races return the authorized current revision and preserve JSON round trips", gated, async (t) => {
   const { pool, organizationId, eventId, userIds } = await createOutcomesFixture(t);
   const scope = { organizationId, eventId, userId: userIds.owner };

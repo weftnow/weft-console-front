@@ -1,6 +1,6 @@
 # Outcomes reporting design
 
-**Status** Draft design proposal. Create a linked [execution plan](../PLANS.md) when implementation is in scope.
+**Status** Ready. See the [execution plan](../exec-plans/active/2026-11-24-outcomes-intelligence.md) and [implemented evidence workflow](../backend/outcomes-intelligence.md).
 
 ## Purpose and scope
 

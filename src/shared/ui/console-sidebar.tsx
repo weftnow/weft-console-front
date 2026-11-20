@@ -30,7 +30,7 @@ const navigation: NavigationItem[] = [
   { key: "network", label: "network", href: "/network", icon: NetworkIcon, supported: true },
   { key: "people", label: "people", href: "/people", icon: PeopleIcon, supported: true },
   { key: "team", label: "team", href: "/settings/team", icon: PeopleIcon, supported: true },
-  { key: "outcomes", label: "outcomes", href: "/outcomes", icon: OutcomesIcon, supported: true },
+  { key: "outcomes", label: "outcomes", href: "/outcomes/reports", icon: OutcomesIcon, supported: true },
 ];
 
 export function ConsoleSidebar({ active, context }: { active: ConsoleDestination; context: ConsoleContext }) {

@@ -11,7 +11,6 @@ import type {
 import {
   formatCount,
   formatPercent,
-  formatRatio,
   getReportingCopy,
   interpolate,
   localizeKey,
@@ -82,7 +81,9 @@ function resolveDetailSubject(
   if (directRow) return localizeLabel(locale, directRow.label);
 
   if (detailId.includes(":")) {
-    const [rowId, bucketKey] = detailId.split(":");
+    const separator = detailId.lastIndexOf(":");
+    const rowId = detailId.slice(0, separator);
+    const bucketKey = detailId.slice(separator + 1);
     const row = projection.rows.find((candidate) => candidate.id === rowId);
     if (row) {
       return `${localizeLabel(locale, row.label)} · ${localizeKey(locale, bucketKey)}`;
@@ -339,7 +340,7 @@ export function ReportingEvidenceTables({
                       ))}
                       {hasRowCounts ? (
                         <td className={styles.numericCell} data-label={copy.table.ratioColumn}>
-                          {row.counts?.[0] ? formatRatio(locale, row.counts[0]) : "—"}
+                          {row.counts?.[0]?.total === undefined ? "—" : formatCount(locale, row.counts[0].total)}
                         </td>
                       ) : null}
                       {hasAnyAction ? (

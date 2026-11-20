@@ -35,6 +35,7 @@
 - [Vercel deployment](backend/vercel-deployment.md): build and migration order, environment boundaries, rollback limits.
 - [Automatic matches](backend/matches.md): engine feed sync, stored pairs, revocation, Owner/Organizer API.
 - [Outcomes reporting](backend/outcomes.md): event tracking, meeting confirmations and corrections, aggregation, and access.
+- [Outcomes report evidence](backend/outcomes-intelligence.md) explains the seven organizer reports, evidence entry, access, and measurement rules.
 - [Event settings and Wefter management](backend/event-settings.md): persisted settings, schedules, API contracts, and F12 integration boundary.
 
 ## Documentation maintenance

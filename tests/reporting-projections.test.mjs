@@ -77,7 +77,7 @@ test("goal achievement counts each respondent once and keeps goal bases and surv
   assert.deepEqual(goals.measure, { count: 1, total: 3 });
   assert.deepEqual(goals.responseCoverage, { count: 4, total: 5 });
   assert.deepEqual(goals.options, [{ key: "Founders", label: "Founders" }, { key: "Operators", label: "Operators" }]);
-  assert.deepEqual(goals.columns, ["achieved", "partial", "unmet"]);
+  assert.deepEqual(goals.columns, ["goal", "achieved", "partial", "unmet"]);
   const buyers = goals.rows.find(({ id }) => id === "buyers");
   assert.deepEqual(buyers.label, { key: "buyers" });
   assert.deepEqual(buyers.counts, Array(3).fill({ count: 1, total: 3 }));
@@ -277,14 +277,14 @@ test("series uses unique goal respondents and preserves the segment on edition l
   const series = { key: "industry", label: "Industry Summit" };
   const a = event("a", 1, {
     people: [person(1), person(2)],
-    evidence: { series, participants: [
+    evidence: { series, goalSurveyWindow: 7, participants: [
       participant(1, { segment: "New founders", goals: [goal("buyers", "unmet"), goal("partners", "partial")] }),
       participant(2, { segment: "Operators", goals: [goal("buyers", "achieved")] }),
     ] },
   });
   const b = event("b", 2, {
     people: [person(3)],
-    evidence: { series, participants: [
+    evidence: { series, goalSurveyWindow: 7, participants: [
       participant(3, { segment: "New founders", goals: [goal("buyers", "achieved"), goal("partners", "achieved")] }),
     ] },
   });
@@ -293,6 +293,26 @@ test("series uses unique goal respondents and preserves the segment on edition l
   assert.deepEqual(projection.measure, { count: 1, total: 1 });
   assert.equal(projection.delta, 100);
   assert.equal(projection.rows[1].href, "/outcomes/reports?view=event&eventId=b&report=goals&window=7&segment=New+founders");
+  assert.equal(reports([b, a], { view: "across", metric: "goals", window: 30 }).series.status, "unavailable");
+});
+
+test("coverage compares confirmations at the same age and displays verified repeat attendance", () => {
+  const series = { key: "industry", label: "Industry Summit" };
+  const a = event("a", 1, {
+    people: [person(1), person(2), person(3)],
+    priorNetworkKeys: ["returning"],
+    evidence: { series, participants: [
+      participant(1, { attended: true, networkKey: "returning" }),
+      participant(2, { attended: true, networkKey: "new" }),
+      participant(3, { attended: true }),
+    ] },
+    matches: [match(101, 1, 2, { completedAt: "2026-01-10T09:00:00Z" })],
+  });
+  const coverage = reports([a]).coverage;
+  assert.deepEqual(coverage.rows.map(({ label }) => label.key), ["firstTracked", "identityUnknown", "returning"]);
+  assert.deepEqual(coverage.details["segment:returning:one"].rows[0].cells, [{ key: "one" }, { text: "1" }, { text: "1" }]);
+  assert.deepEqual(reports([a], { view: "across" }).series.measure, { count: 0, total: 3 });
+  assert.deepEqual(reports([a], { view: "across", window: 30 }).series.measure, { count: 2, total: 3 });
 });
 
 test("cross-event relationships use checked-in network identities and count the first continuation only", () => {

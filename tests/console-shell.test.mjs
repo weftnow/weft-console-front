@@ -36,14 +36,14 @@ test("sidebar profile is the Clerk account control fed by the server-resolved co
   assert.match(render({ active: "events" }), /Ada Lovelace · Analytical Engines · organizer/);
 });
 
-test("Outcomes navigation links to /outcomes and marks active when selected", () => {
+test("Outcomes navigation links to the reporting views and marks active when selected", () => {
   const overviewHtml = render({ active: "overview" });
   assert.doesNotMatch(overviewHtml, /href="#outcomes"/);
-  assert.match(overviewHtml, /href="\/outcomes"[^>]*>.*Outcomes/s);
+  assert.match(overviewHtml, /href="\/outcomes\/reports"[^>]*>.*Outcomes/s);
   assert.doesNotMatch(overviewHtml, /aria-disabled="true"[^>]*>.*Outcomes/s);
 
   const outcomesHtml = render({ active: "outcomes" });
-  assert.match(outcomesHtml, /<a [^>]*aria-current="page"[^>]*href="\/outcomes"[^>]*>.*Outcomes/s);
+  assert.match(outcomesHtml, /<a [^>]*aria-current="page"[^>]*href="\/outcomes\/reports"[^>]*>.*Outcomes/s);
 });
 
 test("outcomes shell keeps one primary navigation outside the route main", () => {
@@ -52,7 +52,7 @@ test("outcomes shell keeps one primary navigation outside the route main", () =>
   assert.equal(html.match(/aria-label="Primary navigation"/g)?.length, 1);
   assert.equal(html.match(/<main\b/g)?.length, 1);
   assert.ok(html.indexOf('aria-label="Primary navigation"') < html.indexOf("<main"));
-  assert.match(html, /<a [^>]*aria-current="page"[^>]*href="\/outcomes"/);
+  assert.match(html, /<a [^>]*aria-current="page"[^>]*href="\/outcomes\/reports"/);
 });
 
 test("events shell keeps exactly one primary navigation outside the route main", () => {

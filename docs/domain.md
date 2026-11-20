@@ -8,8 +8,8 @@ This map summarizes existing [product intent](product.md) and [implemented archi
 | Attendees | Event CSV and attendee-record code in `src/modules/events/`, plus `src/modules/attendees/` | Event guest/import records and event-local canonical identities belong to Events; authorized Owners/Organizers correct details and review exact-contact duplicates. `src/modules/attendees/` owns networking participation and versioned profiles; the global People screen remains an empty state |
 | Organizations | `src/modules/organizations/` | Local memberships, Console access, Team invitations, initial customer/Owner provisioning |
 | Network | `src/modules/network/` | Screen boundary; relationship exploration and introductions remain product direction |
-| Insights | `src/modules/insights/` | Event tracking, organizer-confirmed meetings, and organization and event aggregates for Overview and Outcomes |
-| Sponsors | `src/modules/sponsors/` | Partner Report screen boundary; sponsor reporting/permissions are future work |
+| Insights | `src/modules/insights/` | Event tracking, organizer-confirmed meetings, Overview aggregates, and seven organizer reports with revisioned event evidence |
+| Sponsors | `src/modules/sponsors/` | Partner Report screen boundary. The organizer's sponsor scorecard belongs to Insights. Sponsor-facing report access is future work. |
 | Staff | Event access and Wefter management in `src/modules/events/`; no dedicated module | Local staff admission, event grants, Wefter selection and Owner/Organizer-managed availability. Wefters see only their own hours; assignment workflows remain F12. |
 
 Locale is a per-user preference (`users.locale`) that any signed-in user changes for themselves only; it grants no access. An event's language (`events.language`) is event configuration changed under the same Owner/Organizer rule as other event edits. See the [translations specification](changes/2026-10-25-console-translations.md).

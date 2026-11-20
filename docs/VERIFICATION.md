@@ -58,6 +58,8 @@ Do not run `pnpm build:vercel` as a verification shortcut: it applies migrations
 
 Outcomes uses the gated `tests/outcomes-database.test.mjs` suite. With `WEFT_DATABASE_TEST=1`, `DATABASE_TEST_URL` must identify a migrated, disposable loopback database named `weft_outcomes_scratch`. Record the migration result and check cleanup after the suite. Test the tracking start, replay, correction, revocation, simulation exclusion, event-local identity deduplication, and tenant and role denial. Signed-in acceptance should cover Overview and event totals, event filter and direct links, confirmation and correction in Matches, and English and Spanish at desktop and narrow widths.
 
+`tests/reporting-evidence-database.test.mjs` uses the same disposable loopback target and gate, with migration 0018 applied. It covers evidence revisions, snapshot reads, reference validation, simulation, and organization and local-role boundaries. For signed-in report acceptance, load synthetic evidence through the organizer workflow and exercise the event, cross-event, and sponsor views and their breakdowns. See [Outcomes report evidence](backend/outcomes-intelligence.md).
+
 ## Documentation checker limits
 
 The [manifest](../scripts/harness.json) names actual canonical paths and Markdown roots. The [checker](../scripts/check-harness.mjs) resolves the repository from its installed location, so direct invocation works from another cwd. It checks required paths, the entry-point line limit, active-plan directory shape, local inline links/images and reference-definition targets, including percent encoding and angle-bracket destinations. It rejects repository escapes, skips fenced/inline code and external URLs, and does not traverse symlinked directories.

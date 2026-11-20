@@ -35,6 +35,7 @@ const enCopy = {
     segmentLabel: "Segment",
     allSegmentsOption: "All segments",
     windowLabel: "Check-in window",
+    reportingAgeLabel: "Days after each event",
     window7: "7 days",
     window30: "30 days",
     metricLabel: "Trend measure",
@@ -115,7 +116,7 @@ const enCopy = {
       shortTitle: "Series performance",
       question: "How are outcomes changing across editions?",
       leadLabel: "Latest vs previous comparable edition",
-      denominatorNote: "Percentage-point change between the latest edition and the previous comparable edition for {metric}.",
+      denominatorNote: "Percentage-point change for {metric} between comparable editions measured at {window} days.",
       coverageLabel: "Comparable editions",
       coverageDetail: "{count} of {total} editions with usable data",
       visualLabel: "Event series performance trend across editions",
@@ -249,6 +250,28 @@ const enCopy = {
     percentagePointsAria: "{value} percentage points",
   },
   labels: {
+    attendanceHistory: "Attendance history",
+    firstTracked: "First tracked attendance",
+    identityUnknown: "Attendance history unknown",
+    twoOrMore: "2+ introductions",
+    bucket: "Introductions per person",
+    surveyResponses: "Survey responses",
+    surveyInvited: "Invited to survey",
+    breakdown: "Breakdown",
+    reported: "Reported",
+    checkedIn: "Pairs that responded",
+    due: "Pairs due",
+    firstDate: "First event date",
+    firstEvidence: "First introduction evidence",
+    firstMethod: "First introduction type",
+    laterDate: "Later event date",
+    laterEvidence: "Later interaction evidence",
+    laterMethod: "Later introduction type",
+    personA: "First attendee",
+    personB: "Second attendee",
+    reconnection: "Organizer-recorded interaction",
+    opportunities: "Pairs that co-attended",
+    continued: "Pairs that continued",
     // Report IDs & metrics
     goals: "Goal achievement",
     demand: "Unmet demand",
@@ -418,6 +441,7 @@ const esCopy = {
     segmentLabel: "Segmento",
     allSegmentsOption: "Todos los segmentos",
     windowLabel: "Ventana de seguimiento",
+    reportingAgeLabel: "Días después de cada evento",
     window7: "7 días",
     window30: "30 días",
     metricLabel: "Medida de tendencia",
@@ -498,7 +522,7 @@ const esCopy = {
       shortTitle: "Rendimiento de la serie",
       question: "¿Cómo cambian los resultados entre ediciones?",
       leadLabel: "Última edición frente a la comparable anterior",
-      denominatorNote: "Cambio en puntos porcentuales entre la última edición y la edición comparable anterior para {metric}.",
+      denominatorNote: "Cambio en puntos porcentuales para {metric} entre ediciones comparables medidas a los {window} días.",
       coverageLabel: "Ediciones comparables",
       coverageDetail: "{count} de {total} ediciones con datos utilizables",
       visualLabel: "Tendencia de rendimiento de la serie entre ediciones",
@@ -618,6 +642,28 @@ const esCopy = {
     percentagePointsAria: "{value} puntos porcentuales",
   },
   labels: {
+    attendanceHistory: "Historial de asistencia",
+    firstTracked: "Primera asistencia registrada",
+    identityUnknown: "Historial de asistencia desconocido",
+    twoOrMore: "2+ presentaciones",
+    bucket: "Presentaciones por persona",
+    surveyResponses: "Respuestas a la encuesta",
+    surveyInvited: "Personas invitadas a la encuesta",
+    breakdown: "Desglose",
+    reported: "Reportados",
+    checkedIn: "Pares que respondieron",
+    due: "Pares pendientes de seguimiento",
+    firstDate: "Fecha del primer evento",
+    firstEvidence: "Evidencia de la primera presentación",
+    firstMethod: "Tipo de la primera presentación",
+    laterDate: "Fecha del evento posterior",
+    laterEvidence: "Evidencia de la interacción posterior",
+    laterMethod: "Tipo de presentación posterior",
+    personA: "Primera persona",
+    personB: "Segunda persona",
+    reconnection: "Interacción registrada por el organizador",
+    opportunities: "Pares que coincidieron",
+    continued: "Pares que continuaron",
     goals: "Logro de objetivos",
     demand: "Demanda no cubierta",
     "follow-through": "Seguimiento",
@@ -777,16 +823,17 @@ function humanizeFallback(key: string): string {
 
 export function localizeKey(locale: ReportingLocale, key: string): string {
   const copy = getReportingCopy(locale);
-  const direct = copy.labels[key];
+  const direct = Object.hasOwn(copy.labels, key) ? copy.labels[key] : undefined;
   if (direct) return direct;
   const normalized = key.trim().toLowerCase();
-  const lowered = copy.labels[normalized];
+  const lowered = Object.hasOwn(copy.labels, normalized) ? copy.labels[normalized] : undefined;
   if (lowered) return lowered;
   return humanizeFallback(key);
 }
 
 export function localizeLabel(locale: ReportingLocale, label: ReportLabel): string {
   if ("text" in label) return label.text;
+  if ("date" in label) return formatDate(locale, label.date, { dateStyle: "medium" }, label.timezone);
   return localizeKey(locale, label.key);
 }
 

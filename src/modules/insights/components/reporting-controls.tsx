@@ -255,7 +255,7 @@ export function ReportingInReportControls({
   const copy = getReportingCopy(locale);
   const options = projection.options ?? [];
   const hasAllOption = options.some((option) => option.key === "" || option.key === "all");
-  const showWindow = projection.id === "follow-through" || (projection.id === "series" && query.metric === "follow-through");
+  const showWindow = projection.id === "follow-through" || projection.id === "series";
   const showMetric = projection.id === "series";
 
   if (options.length === 0 && !showWindow && !showMetric) {
@@ -283,7 +283,7 @@ export function ReportingInReportControls({
       ) : null}
 
       {showWindow ? (
-        <div aria-label={copy.scope.windowLabel} className={styles.segmentedGroup} role="group">
+        <div aria-label={showMetric ? copy.scope.reportingAgeLabel : copy.scope.windowLabel} className={styles.segmentedGroup} role="group">
           {WINDOWS.map((windowDays) => {
             const active = query.window === windowDays;
             return (

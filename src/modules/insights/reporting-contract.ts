@@ -12,6 +12,7 @@ export const sponsorMeasures = ["qualified", "meetings", "next_steps"] as const;
 
 export const reportingEvidenceSchema = z.object({
   series: item.nullable().default(null),
+  goalSurveyWindow: z.union([z.literal(7), z.literal(30)]).optional(),
   participants: z.array(z.object({
     personId: uuid,
     segment: label.optional(),
@@ -56,6 +57,7 @@ export type ReportEvent = {
   timezone: string;
   trackingStartedAt: string | null;
   evidence: ReportingEvidence | null;
+  priorNetworkKeys?: string[];
   people: { personId: string; eligible: boolean; name: string }[];
   matches: {
     id: string;
@@ -89,7 +91,7 @@ export type ReportQuery = {
 };
 
 export type ReportCount = { count: number; total?: number };
-export type ReportLabel = { text: string } | { key: string };
+export type ReportLabel = { text: string } | { key: string } | { date: string; timezone: string };
 export type ReportDatum = { id: string; label: ReportLabel; values: (number | null)[]; counts?: ReportCount[]; href?: string };
 export type ReportDetailRow = { id: string; cells: ReportLabel[]; href?: string };
 export type ReportBreakdown = { columns: string[]; rows: ReportDetailRow[] };

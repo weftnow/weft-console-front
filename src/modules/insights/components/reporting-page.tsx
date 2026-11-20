@@ -386,12 +386,12 @@ export function ReportingPage({
                   <EmptyState
                     action={
                       <div className={styles.emptyActions}>
-                        <Link
+                        {activeEventId && <Link
                           className="tactile-button tactile-button--primary"
                           href={evidenceEntryHref(activeEventId)}
                         >
                           {copy.manageEvidenceLink}
-                        </Link>
+                        </Link>}
                         <Link
                           className="tactile-button tactile-button--neutral"
                           href={recordedMeetingsHref(activeEventId)}

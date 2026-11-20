@@ -362,7 +362,7 @@ function CoverageVisual({
               : null;
           const zeroKey = findBucketDetailKey(projection.details, row.id, ["zero", "0"]);
           const oneKey = findBucketDetailKey(projection.details, row.id, ["one", "1"]);
-          const twoPlusKey = findBucketDetailKey(projection.details, row.id, ["two_plus", "twoPlus", "2+"]);
+          const twoPlusKey = findBucketDetailKey(projection.details, row.id, ["twoOrMore", "two_plus", "twoPlus", "2+"]);
           const hasBucketLinks = Boolean(zeroKey || oneKey || twoPlusKey);
           const selected = query.detail === row.id || Boolean(query.detail?.startsWith(`${row.id}:`));
           const href = !hasBucketLinks && isRowInteractive(projection, row)
