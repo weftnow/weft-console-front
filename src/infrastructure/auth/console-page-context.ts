@@ -72,21 +72,25 @@ export async function getCreateEventPageContexts(user: AuthenticatedUser) {
   };
 }
 
-export async function requireOrganizerPageContext(): Promise<ConsoleContext> {
-  const user = await requireLocalActor();
+async function readOrganizerSelection(user: AuthenticatedUser) {
   const cookieStore = await cookies();
   const rawSelection = cookieStore.get(selectionCookie)?.value;
   const parsed = parseOrganizationSelection(rawSelection);
   const selection = parsed?.userId === user.id ? parsed : null;
   // Cookie mutation belongs in a Server Action; rendering never changes it.
   const memberships = await listActorMemberships(user);
-  const result = resolveConsoleAccess({
+  return resolveConsoleAccess({
     memberships,
     // Preserve the difference between no selection and a stale/forged cookie:
     // the latter requires an explicit user choice, even with one membership.
     selectedOrganizationId: rawSelection ? selection?.organizationId ?? "__invalid_selection__" : null,
     userId: user.id,
   });
+}
+
+export async function requireOrganizerPageContext(): Promise<ConsoleContext> {
+  const user = await requireLocalActor();
+  const result = await readOrganizerSelection(user);
   if (result.kind === "select") redirect("/select-organization");
   if (result.kind === "no-access") {
     if (await listGrantedEventsForUser(user.id).then((grants) => grants.length > 0)) redirect("/select-organization");
@@ -97,6 +101,14 @@ export async function requireOrganizerPageContext(): Promise<ConsoleContext> {
     organization: { id: result.membership.organizationId, name: result.membership.organizationName ?? "" },
     membership: { id: result.membership.id, role: result.membership.role },
   };
+}
+
+export async function requireOrganizerApiScope(): Promise<{ userId: string; organizationId: string }> {
+  const user = await getCurrentUser();
+  if (!user) throw new ApplicationError("UNAUTHORIZED", "Authentication is required.");
+  const selection = await readOrganizerSelection(user);
+  if (selection.kind !== "ready") throw new ApplicationError("FORBIDDEN", "An organizer organization must be selected.");
+  return { userId: user.id, organizationId: selection.membership.organizationId };
 }
 
 export async function requireOrganizationContext(input: {

@@ -56,6 +56,8 @@ F03 introduces migration `0008_attendee_contact_corrections.sql`; its gated fixt
 
 Do not run `pnpm build:vercel` as a verification shortcut: it applies migrations. A local build may need configured public Clerk values and network access for fonts. Record prerequisite/network failures distinctly from application failures. Browser/manual acceptance is required for affected user flows, not for a documentation-only reorganization.
 
+Outcomes uses the gated `tests/outcomes-database.test.mjs` suite. With `WEFT_DATABASE_TEST=1`, `DATABASE_TEST_URL` must identify a migrated, disposable loopback database named `weft_outcomes_scratch`. Record the migration result and check cleanup after the suite. Test the tracking start, replay, correction, revocation, simulation exclusion, event-local identity deduplication, and tenant and role denial. Signed-in acceptance should cover Overview and event totals, event filter and direct links, confirmation and correction in Matches, and English and Spanish at desktop and narrow widths.
+
 ## Documentation checker limits
 
 The [manifest](../scripts/harness.json) names actual canonical paths and Markdown roots. The [checker](../scripts/check-harness.mjs) resolves the repository from its installed location, so direct invocation works from another cwd. It checks required paths, the entry-point line limit, active-plan directory shape, local inline links/images and reference-definition targets, including percent encoding and angle-bracket destinations. It rejects repository escapes, skips fenced/inline code and external URLs, and does not traverse symlinked directories.

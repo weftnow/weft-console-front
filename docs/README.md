@@ -34,6 +34,7 @@
 - [Customer provisioning](backend/customer-provisioning.md): initial organization and Owner grant, explicit operator commands and recovery.
 - [Vercel deployment](backend/vercel-deployment.md): build and migration order, environment boundaries, rollback limits.
 - [Automatic matches](backend/matches.md): engine feed sync, stored pairs, revocation, Owner/Organizer API.
+- [Outcomes reporting](backend/outcomes.md): event tracking, meeting confirmations and corrections, aggregation, and access.
 - [Event settings and Wefter management](backend/event-settings.md): persisted settings, schedules, API contracts, and F12 integration boundary.
 
 ## Documentation maintenance

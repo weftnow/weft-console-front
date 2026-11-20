@@ -36,10 +36,23 @@ test("sidebar profile is the Clerk account control fed by the server-resolved co
   assert.match(render({ active: "events" }), /Ada Lovelace · Analytical Engines · organizer/);
 });
 
-test("unsupported Outcomes navigation is disabled, not a dead anchor", () => {
-  const html = render({ active: "overview" });
-  assert.doesNotMatch(html, /href="#outcomes"/);
-  assert.match(html, /aria-disabled="true"[^>]*>.*Outcomes/s);
+test("Outcomes navigation links to /outcomes and marks active when selected", () => {
+  const overviewHtml = render({ active: "overview" });
+  assert.doesNotMatch(overviewHtml, /href="#outcomes"/);
+  assert.match(overviewHtml, /href="\/outcomes"[^>]*>.*Outcomes/s);
+  assert.doesNotMatch(overviewHtml, /aria-disabled="true"[^>]*>.*Outcomes/s);
+
+  const outcomesHtml = render({ active: "outcomes" });
+  assert.match(outcomesHtml, /<a [^>]*aria-current="page"[^>]*href="\/outcomes"[^>]*>.*Outcomes/s);
+});
+
+test("outcomes shell keeps one primary navigation outside the route main", () => {
+  const { OutcomesShell } = loadTs("src/modules/insights/components/outcomes-shell.tsx");
+  const html = renderToStaticMarkup(React.createElement(OutcomesShell, { context }, React.createElement("main", null, "Outcomes")));
+  assert.equal(html.match(/aria-label="Primary navigation"/g)?.length, 1);
+  assert.equal(html.match(/<main\b/g)?.length, 1);
+  assert.ok(html.indexOf('aria-label="Primary navigation"') < html.indexOf("<main"));
+  assert.match(html, /<a [^>]*aria-current="page"[^>]*href="\/outcomes"/);
 });
 
 test("events shell keeps exactly one primary navigation outside the route main", () => {

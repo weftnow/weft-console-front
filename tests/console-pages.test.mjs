@@ -8,6 +8,7 @@ test("organizer dashboard routes resolve Neon context before rendering fixture c
   for (const [path, component] of [
     ["page.tsx", "OrganizerOverview"], ["events/page.tsx", "EventsPage"],
     ["network/page.tsx", "NetworkPage"], ["people/page.tsx", "PeoplePage"],
+    ["outcomes/page.tsx", "OutcomesReportPage"],
   ]) {
     const source = route(path);
     assert.match(source, /requireOrganizerPageContext\(/, `${path} needs organization authorization`);

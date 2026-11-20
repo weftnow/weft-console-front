@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
-  check, customType, date, foreignKey, index, integer, jsonb, pgEnum, pgTable,
+  boolean, check, customType, date, foreignKey, index, integer, jsonb, pgEnum, pgTable,
   primaryKey, text, time, timestamp, unique, uniqueIndex, uuid,
 } from "drizzle-orm/pg-core";
 import { organizationMemberships, organizations, users } from "./identity.ts";
@@ -212,6 +212,38 @@ export const eventMatches = pgTable("event_matches", {
   check("event_matches_scores_valid", sql`${table.scoreLow} between 0 and 100 and ${table.scoreHigh} between 0 and 100 and ${table.pairScore} between 0 and 100`),
   check("event_matches_profile_versions_valid", sql`${table.profileVersionLow} >= 0 and ${table.profileVersionHigh} >= 0`),
   check("event_matches_revocation_valid", sql`(${table.status} = 'active' and ${table.revokedAt} is null and ${table.revocationReason} is null) or (${table.status} = 'revoked' and ${table.revokedAt} is not null and ${table.revocationReason} is not null)`),
+]);
+
+export const eventOutcomesTracking = pgTable("event_outcomes_tracking", {
+  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().default(sql`date_trunc('milliseconds', clock_timestamp())`),
+  startedBy: uuid("started_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+});
+
+/** A corrected confirmation retains its revision even though completedAt is cleared. */
+export const eventMatchCompletions = pgTable("event_match_completions", {
+  eventId: uuid("event_id").notNull(),
+  matchId: uuid("match_id").notNull(),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+  revision: integer("revision").notNull(),
+}, (table) => [
+  primaryKey({ columns: [table.eventId, table.matchId] }),
+  foreignKey({ columns: [table.eventId], foreignColumns: [eventOutcomesTracking.eventId], name: "event_match_completions_tracking_fk" }).onDelete("cascade"),
+  foreignKey({ columns: [table.matchId, table.eventId], foreignColumns: [eventMatches.id, eventMatches.eventId], name: "event_match_completions_match_fk" }).onDelete("cascade"),
+  check("event_match_completions_revision_positive", sql`${table.revision} >= 1`),
+]);
+
+export const eventMatchCompletionChanges = pgTable("event_match_completion_changes", {
+  eventId: uuid("event_id").notNull(),
+  matchId: uuid("match_id").notNull(),
+  revision: integer("revision").notNull(),
+  completed: boolean("completed").notNull(),
+  changedAt: timestamp("changed_at", { withTimezone: true }).notNull().default(sql`date_trunc('milliseconds', clock_timestamp())`),
+  changedBy: uuid("changed_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+}, (table) => [
+  primaryKey({ columns: [table.eventId, table.matchId, table.revision] }),
+  foreignKey({ columns: [table.eventId, table.matchId], foreignColumns: [eventMatchCompletions.eventId, eventMatchCompletions.matchId], name: "event_match_completion_changes_completion_fk" }).onDelete("cascade"),
+  check("event_match_completion_changes_revision_positive", sql`${table.revision} >= 1`),
 ]);
 
 /** Per-event position in the engine feed. Only advanced in the transaction that applies the page. */

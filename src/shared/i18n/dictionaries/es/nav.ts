@@ -15,5 +15,6 @@ export const nav = {
     events: "Eventos · Weft Console",
     createEvent: "Crear evento · Weft Console",
     eventDetail: "Resumen del evento · Weft Console",
+    outcomes: "Resultados · Weft Console",
   },
 } satisfies Dictionary["nav"];

@@ -40,6 +40,7 @@ import { EventSettingsPanel } from "./event-settings-panel";
 import { EventWeftersPanel } from "./event-wefters-panel";
 import { MatchesPanel } from "@/modules/network/components/matches-panel";
 import { MatchingStatusPanel } from "@/modules/network/components/matching-status-panel";
+import { outcomesHref } from "@/modules/insights/outcomes-navigation";
 import type { EventDetailDto } from "../event-dto";
 import {
   EVENT_COVER_PLACEHOLDER_ART,
@@ -81,30 +82,33 @@ export function MissingEvent() {
 
 function EventTabs({
   activeTab,
-  canSeeMatches,
+  canManage,
   eventId,
   onSelect,
 }: {
   activeTab: EventDetailTab;
-  canSeeMatches: boolean;
+  canManage: boolean;
   eventId: string;
   onSelect: (tab: EventDetailTab) => void;
 }) {
   const { dict } = useI18n();
   return (
     <nav aria-label={dict.events.detail.tabsLabel} className="event-detail-tabs surface-inset">
-      {tabs.filter(({ id }) => id !== "matches" || canSeeMatches).map(({ icon: IconComponent, id }) => (
-        <Link
-          aria-current={activeTab === id ? "page" : undefined}
-          className="event-detail-tab"
-          href={`/events/${eventId}?tab=${id}`}
-          key={id}
-          onClick={() => onSelect(id)}
-        >
-          <IconComponent height="15" width="15" />
-          <span>{dict.events.detail.tabs[id]}</span>
-        </Link>
-      ))}
+      {tabs.filter(({ id }) => id !== "matches" || canManage).map(({ icon: IconComponent, id }) => {
+        const linksToOutcomes = id === "insights" && canManage;
+        return (
+          <Link
+            aria-current={!linksToOutcomes && activeTab === id ? "page" : undefined}
+            className="event-detail-tab"
+            href={linksToOutcomes ? outcomesHref(eventId) : `/events/${eventId}?tab=${id}`}
+            key={id}
+            onClick={linksToOutcomes ? undefined : () => onSelect(id)}
+          >
+            <IconComponent height="15" width="15" />
+            <span>{dict.events.detail.tabs[id]}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -226,7 +230,7 @@ function ReadinessCard({ event }: { event: EventRecord }) {
   );
 }
 
-function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+function QuickActions({ canManage, eventId, onSelect }: { canManage: boolean; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
   const { dict } = useI18n();
   const copy = dict.events.detail.quickActions;
   const actions: { icon: Icon; label: string; tab: EventDetailTab }[] = [
@@ -243,13 +247,21 @@ function QuickActions({ eventId, onSelect }: { eventId: string; onSelect: (tab: 
         <h2 id="event-quick-actions-title">{copy.heading}</h2>
       </div>
       <div className="event-quick-actions__list">
-        {actions.map(({ icon: IconComponent, label, tab }) => (
-          <Link className="tactile-button event-quick-action" href={`/events/${eventId}?tab=${tab}`} key={label} onClick={() => onSelect(tab)}>
-            <IconComponent height="16" width="16" />
-            <span>{label}</span>
-            <ArrowRightIcon height="14" width="14" />
-          </Link>
-        ))}
+        {actions.map(({ icon: IconComponent, label, tab }) => {
+          const linksToOutcomes = tab === "insights" && canManage;
+          return (
+            <Link
+              className="tactile-button event-quick-action"
+              href={linksToOutcomes ? outcomesHref(eventId) : `/events/${eventId}?tab=${tab}`}
+              key={label}
+              onClick={linksToOutcomes ? undefined : () => onSelect(tab)}
+            >
+              <IconComponent height="16" width="16" />
+              <span>{label}</span>
+              <ArrowRightIcon height="14" width="14" />
+            </Link>
+          );
+        })}
       </div>
     </Surface>
   );
@@ -308,19 +320,26 @@ function KamiCard({ eventId, onSelect }: { eventId: string; onSelect: (tab: Even
   );
 }
 
-function EventTabPlaceholder({ activeTab, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "matches" | "kami">; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
+function EventTabPlaceholder({ activeTab, canManage, eventId, onSelect }: { activeTab: Exclude<EventDetailTab, "overview" | "attendees" | "matches" | "kami">; canManage: boolean; eventId: string; onSelect: (tab: EventDetailTab) => void }) {
   const { dict } = useI18n();
   const tab = tabs.find((item) => item.id === activeTab)!;
   const IconComponent = tab.icon;
+  const isOrganizerInsights = activeTab === "insights" && canManage;
 
   return (
     <Surface className="event-tab-placeholder" depth="raised">
       <Surface className="event-tab-placeholder__icon" depth="inset"><IconComponent height="24" width="24" /></Surface>
-      <h2>{dict.events.detail.placeholder.title}</h2>
-      <p>{dict.events.detail.tabDescriptions[activeTab]}</p>
-      <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>
-        {dict.events.detail.placeholder.back} <ArrowRightIcon height="15" width="15" />
-      </Link>
+      <h2>{isOrganizerInsights ? dict.insights.outcomes.title : dict.events.detail.placeholder.title}</h2>
+      <p>{isOrganizerInsights ? dict.insights.outcomes.subtitle : dict.events.detail.tabDescriptions[activeTab]}</p>
+      {isOrganizerInsights ? (
+        <Link className="tactile-button tactile-button--primary event-tab-placeholder__action" href={outcomesHref(eventId)}>
+          {dict.insights.outcomes.openReport} <ArrowRightIcon height="15" width="15" />
+        </Link>
+      ) : (
+        <Link className="tactile-button tactile-button--graphite event-tab-placeholder__action" href={`/events/${eventId}?tab=overview`} onClick={() => onSelect("overview")}>
+          {dict.events.detail.placeholder.back} <ArrowRightIcon height="15" width="15" />
+        </Link>
+      )}
     </Surface>
   );
 }
@@ -404,7 +423,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
             )}
           </Surface>
 
-          <EventTabs activeTab={activeTab} canSeeMatches={event.attendees.canManage} eventId={event.id} onSelect={setActiveTab} />
+          <EventTabs activeTab={activeTab} canManage={event.attendees.canManage} eventId={event.id} onSelect={setActiveTab} />
 
           {activeTab === "overview" ? (
             <div className="event-detail-tab-content" key="overview">
@@ -422,7 +441,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
                 </div>
                 <aside className="event-detail-rail" aria-label={header.operations}>
                   <ReadinessCard event={event} />
-                  <QuickActions eventId={event.id} onSelect={setActiveTab} />
+                  <QuickActions canManage={event.attendees.canManage} eventId={event.id} onSelect={setActiveTab} />
                   <KamiCard eventId={event.id} onSelect={setActiveTab} />
                 </aside>
               </div>
@@ -443,7 +462,7 @@ export function EventDetailPage({ event, initialTab, onRosterChanged, refreshNot
             <div className="event-detail-tab-content" key={activeTab}><EventLanguagePanel eventId={event.id} language={event.language} onSaved={onRosterChanged} /><EventSettingsPanel eventId={event.id} /></div>
           ) : (
             <div className="event-detail-tab-content" key={activeTab}>
-              <EventTabPlaceholder activeTab={activeTab} eventId={event.id} onSelect={setActiveTab} />
+              <EventTabPlaceholder activeTab={activeTab} canManage={event.attendees.canManage} eventId={event.id} onSelect={setActiveTab} />
             </div>
           )}
 

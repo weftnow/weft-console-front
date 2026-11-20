@@ -14,10 +14,10 @@ import { ConsoleAccount } from "@/shared/ui/console-account";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import type { ConsoleContext } from "@/modules/organizations/types";
 
-export type ConsoleDestination = "overview" | "events" | "network" | "people" | "team";
+export type ConsoleDestination = "overview" | "events" | "network" | "people" | "team" | "outcomes";
 
 type NavigationItem = {
-  key: ConsoleDestination | "outcomes";
+  key: ConsoleDestination;
   label: "overview" | "events" | "network" | "people" | "team" | "outcomes";
   href: string;
   icon: typeof HomeIcon;
@@ -30,7 +30,7 @@ const navigation: NavigationItem[] = [
   { key: "network", label: "network", href: "/network", icon: NetworkIcon, supported: true },
   { key: "people", label: "people", href: "/people", icon: PeopleIcon, supported: true },
   { key: "team", label: "team", href: "/settings/team", icon: PeopleIcon, supported: true },
-  { key: "outcomes", label: "outcomes", href: "", icon: OutcomesIcon, supported: false },
+  { key: "outcomes", label: "outcomes", href: "/outcomes", icon: OutcomesIcon, supported: true },
 ];
 
 export function ConsoleSidebar({ active, context }: { active: ConsoleDestination; context: ConsoleContext }) {

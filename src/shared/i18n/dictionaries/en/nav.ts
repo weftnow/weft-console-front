@@ -13,5 +13,6 @@ export const nav = {
     events: "Events · Weft Console",
     createEvent: "Create event · Weft Console",
     eventDetail: "Event overview · Weft Console",
+    outcomes: "Outcomes · Weft Console",
   },
 } as const;

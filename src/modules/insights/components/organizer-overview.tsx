@@ -6,15 +6,20 @@ import type { ComponentType, SVGProps } from "react";
 import type { EventSummaryDto } from "@/modules/events/event-dto";
 import { eventArt, formatCountdown, groupEvents } from "@/modules/events/event-list";
 import { formatEventDateRange } from "@/modules/events/event-record";
+import type { OutcomesReport } from "@/modules/insights/outcomes-report";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { CityArtwork } from "@/shared/ui/city-artwork";
 import type { ConsoleContext } from "@/modules/organizations/types";
 import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { EmptyState } from "@/shared/ui/empty-state";
-import { ArrowRightIcon, CalendarIcon, ChevronRightIcon, LocationIcon, OutcomesIcon, PeopleIcon } from "@/shared/ui/icons";
+import { ArrowRightIcon, CalendarIcon, CheckIcon, ChevronRightIcon, LocationIcon, OutcomesIcon, PeopleIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 
 type Glyph = ComponentType<SVGProps<SVGSVGElement>>;
+
+export type OverviewOutcomesState =
+  | { status: "ready"; report: Pick<OutcomesReport, "totals"> }
+  | { status: "error" };
 
 function Hero({ events }: { events: EventSummaryDto[] }) {
   const i18n = useI18n();
@@ -43,6 +48,81 @@ function Metric({ icon: Icon, label, value }: { icon: Glyph; label: string; valu
     <Surface as="article" className="metric" depth="raised">
       <Surface className="metric__icon" depth="inset"><Icon /></Surface>
       <div className="metric__value">{number(value)}</div><div className="metric__label">{label}</div>
+    </Surface>
+  );
+}
+
+function OverviewOutcomesPanel({ outcomes }: { outcomes?: OverviewOutcomesState }) {
+  const i18n = useI18n();
+  const copy = i18n.dict.insights;
+  const overviewCopy = copy.overviewOutcomes;
+
+  if (outcomes?.status === "error") {
+    return (
+      <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-label={copy.outcomesLabel}>
+        <EmptyState
+          action={<Link className="tactile-button tactile-button--neutral" href="/outcomes">{overviewCopy.openOutcomes}</Link>}
+          description={overviewCopy.unavailableDescription}
+          icon={OutcomesIcon}
+          size="panel"
+          title={overviewCopy.unavailableTitle}
+        />
+      </Surface>
+    );
+  }
+
+  const report = outcomes?.report;
+  if (!report || report.totals.trackedEvents === 0) {
+    return (
+      <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-label={copy.outcomesLabel}>
+        <EmptyState
+          action={<Link className="tactile-button tactile-button--neutral" href="/outcomes">{overviewCopy.openOutcomes}</Link>}
+          description={overviewCopy.untrackedDescription}
+          icon={OutcomesIcon}
+          size="panel"
+          title={overviewCopy.untrackedTitle}
+        />
+      </Surface>
+    );
+  }
+
+  const isPartial = report.totals.trackedEvents < report.totals.totalEvents;
+  const isZero = report.totals.completedIntroductions === 0;
+
+  return (
+    <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-labelledby="overview-outcomes-title">
+      <div className="panel-heading">
+        <div>
+          <h2 className="panel-title" id="overview-outcomes-title">{overviewCopy.heading}</h2>
+          <p className="panel-subtitle">{overviewCopy.methodologyNote}</p>
+        </div>
+        <Link className="text-link" href="/outcomes">
+          {overviewCopy.viewReport} <ArrowRightIcon height="15" width="15" />
+        </Link>
+      </div>
+      <div className="outcomes-overview-grid">
+        <Surface as="div" className="outcomes-overview-stat" depth="inset">
+          <span className="outcomes-overview-stat__icon"><CheckIcon height="18" width="18" /></span>
+          <div>
+            <strong className="outcomes-overview-stat__value">{i18n.number(report.totals.completedIntroductions)}</strong>
+            <span className="outcomes-overview-stat__label">{copy.outcomes.metrics.completedIntroductions}</span>
+          </div>
+        </Surface>
+        <Surface as="div" className="outcomes-overview-stat" depth="inset">
+          <span className="outcomes-overview-stat__icon"><CalendarIcon height="18" width="18" /></span>
+          <div>
+            <strong className="outcomes-overview-stat__value">
+              {i18n.t(copy.outcomes.metrics.trackedOfTotal, {
+                tracked: i18n.number(report.totals.trackedEvents),
+                total: i18n.number(report.totals.totalEvents),
+              })}
+            </strong>
+            <span className="outcomes-overview-stat__label">{copy.outcomes.metrics.trackedEvents}</span>
+          </div>
+        </Surface>
+      </div>
+      {isPartial ? <p className="outcomes-overview-note">{overviewCopy.partialCoverageNote}</p> : null}
+      {isZero ? <p className="outcomes-overview-note">{overviewCopy.trackedZeroNote}</p> : null}
     </Surface>
   );
 }
@@ -93,7 +173,15 @@ function UpcomingEvents({ events }: { events: EventSummaryDto[] }) {
   );
 }
 
-export function OrganizerOverview({ context, events }: { context: ConsoleContext; events: EventSummaryDto[] }) {
+export function OrganizerOverview({
+  context,
+  events,
+  outcomes,
+}: {
+  context: ConsoleContext;
+  events: EventSummaryDto[];
+  outcomes?: OverviewOutcomesState;
+}) {
   const { dict } = useI18n();
   const copy = dict.insights;
   const grouped = groupEvents(events);
@@ -121,9 +209,7 @@ export function OrganizerOverview({ context, events }: { context: ConsoleContext
                   <Metric icon={CalendarIcon} label={copy.metrics.upcoming} value={grouped.upcoming.length} />
                   <Metric icon={LocationIcon} label={copy.metrics.cities} value={new Set(events.map((event) => event.city)).size} />
                 </section>
-                <Surface as="section" className="panel" depth="raised" aria-label={copy.outcomesLabel}>
-                  <EmptyState description={copy.noDataDescription} icon={OutcomesIcon} size="panel" title={copy.noData} />
-                </Surface>
+                <OverviewOutcomesPanel outcomes={outcomes} />
                 <EventsTable events={grouped.all.slice(0, 5)} total={events.length} />
                 <UpcomingEvents events={grouped.upcoming.slice(0, 3)} />
               </>

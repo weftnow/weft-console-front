@@ -7,6 +7,7 @@ import { PeopleIcon } from "@/shared/ui/icons";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Surface } from "@/shared/ui/surface";
 import { ConsoleDialog } from "@/shared/ui/console-dialog";
+import { MatchCompletionPanel } from "@/modules/insights/components/match-completion-panel";
 import { eventMatchKey, eventMatchesKey, fetchEventMatch, fetchEventMatches, type MatchListOptions } from "../queries/matches";
 import { describeSync, emptyMatchesCopy } from "../matches-copy";
 import type { MatchListDto, MatchStatus, MatchSummaryDto } from "../matches-schemas";
@@ -136,7 +137,7 @@ export function MatchesPanelView(props: { body: React.ReactNode; summary: string
   );
 }
 
-function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; matchId: string | null; onClose: () => void }) {
+function MatchDetailDialog({ eventId, matchId, onClose, simulated }: { eventId: string; matchId: string | null; onClose: () => void; simulated: boolean }) {
   const { dict, t } = useI18n();
   const copy = dict.network.matches;
   const query = useQuery({
@@ -146,7 +147,12 @@ function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; mat
   });
   const title = query.data ? t(copy.names, { a: query.data.guests[0].name, b: query.data.guests[1].name }) : copy.detailsTitle;
   let body;
-  if (query.data) body = <MatchDetailView match={query.data} />;
+  if (query.data) {
+    const outcome = matchId && !simulated ? (
+      <MatchCompletionPanel canConfirm={query.data.status === "active"} eventId={eventId} key={matchId} matchId={matchId} />
+    ) : undefined;
+    body = <MatchDetailView match={query.data} outcome={outcome} />;
+  }
   else if (query.isError) body = <p className="match-muted" role="alert">{query.error.message} <button className="event-text-action" onClick={() => void query.refetch()} type="button">{copy.retry}</button></p>;
   else body = <MatchDetailLoader />;
   return <ConsoleDialog open={matchId !== null} onClose={onClose} title={title} description={copy.detailsDescription}>{body}</ConsoleDialog>;
@@ -176,7 +182,7 @@ export function MatchesPanel({ eventId }: { eventId: string }) {
   return (
     <>
       <MatchesPanelView body={body} simulated={query.data?.simulated === true} summary={counts ? i18n.t(copy.summary, { active: i18n.number(counts.active), revoked: i18n.number(counts.revoked) }) : null} />
-      <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} />
+      <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} simulated={query.data?.simulated === true} />
     </>
   );
 }

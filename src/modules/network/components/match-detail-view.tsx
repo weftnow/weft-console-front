@@ -67,7 +67,7 @@ function ProfileBlock({ profile }: { profile: NonNullable<MatchGuest["profile"]>
 }
 
 /** A pair-first review, with supporting and technical context available on demand. */
-export function MatchDetailView({ match }: { match: MatchDetailDto }) {
+export function MatchDetailView({ match, outcome }: { match: MatchDetailDto; outcome?: ReactNode }) {
   const i18n = useI18n();
   const { dict, t } = i18n;
   const text = dict.network.matches;
@@ -126,6 +126,7 @@ export function MatchDetailView({ match }: { match: MatchDetailDto }) {
       <div><span className="match-eyebrow">{copy.method}</span><strong>{text.introPaths[match.introductionPath].label}</strong><p>{text.introPaths[match.introductionPath].hint}</p></div>
     </div>
     <p className="match-selection-note">{copy.selectionNote}</p>
+    {outcome}
 
     <section className="match-restrictions" aria-label={copy.restrictions}>
       {match.restrictions.length === 0 ? <p className="match-restrictions__clear"><CheckIcon height="16" width="16" />{copy.noRestrictions}</p> : <>
