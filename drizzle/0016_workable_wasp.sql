@@ -1,0 +1,2 @@
+ALTER TABLE "events" DROP CONSTRAINT "events_city_allowed";--> statement-breakpoint
+ALTER TABLE "events" ADD CONSTRAINT "events_city_allowed" CHECK ("events"."city" in ('Las Vegas, USA','Singapore','Davos, Switzerland','Aspen, USA','Monaco','Bogotá, Colombia','Medellín, Colombia','Mexico City, Mexico','Buenos Aires, Argentina'));

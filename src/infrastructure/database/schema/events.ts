@@ -45,7 +45,7 @@ export const events = pgTable("events", {
   check("events_estimate_valid", sql`${table.expectedAttendees} is null or ${table.expectedAttendees} between 0 and 1000000`),
   check("events_date_order", sql`${table.endDate} >= ${table.startDate} and ${table.endsAt} > ${table.startsAt}`),
   check("events_language_valid", sql`${table.language} in ('en', 'es')`),
-  check("events_city_allowed", sql`${table.city} in ('Las Vegas, USA','Singapore','Davos, Switzerland','Aspen, USA','Monaco')`),
+  check("events_city_allowed", sql`${table.city} in ('Las Vegas, USA','Singapore','Davos, Switzerland','Aspen, USA','Monaco','Bogotá, Colombia','Medellín, Colombia','Mexico City, Mexico','Buenos Aires, Argentina')`),
   check("events_categories_allowed", sql`cardinality(${table.categories}) > 0 and ${table.categories} <@ ARRAY['Sports','Luxury','Investing','Startups','Technology','Entertainment','Web3','Real Estate','Fashion','Media']::text[]`),
   check("events_audience_allowed", sql`${table.expectedAudience} <@ ARRAY['Founders','Investors','Family Offices','Executives','Brands','Sponsors','Creators','Media','Athletes','Government','Service Providers']::text[]`),
 ]);

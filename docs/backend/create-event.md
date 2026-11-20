@@ -4,6 +4,8 @@ The server authentication adapter verifies the active Clerk session and maps its
 
 Pilot creation is for active organization owners and organizers. Staff and sponsors cannot create events or load the organizer Detail DTO. For one permitted organization, the server selects it; when a user belongs to several, the form requires a selected organization UUID and the server rechecks membership. Selected staff must have active staff or organizer membership in that same organization. Event submission never provisions membership.
 
+The city selector supports Las Vegas, Singapore, Davos, Aspen, Monaco, Bogotá, Medellín, Mexico City and Buenos Aires. Each city resolves event-local times with its IANA timezone; the accepted city values are also enforced by the `events_city_allowed` database constraint.
+
 Initial guest uploads are limited to 2,000 combined guests. CSV text is limited to 1 MiB UTF-8, the complete JSON request to 3 MiB, and a normalized cover to 256 KiB. Invalid rows, duplicate emails and invalid images reject the entire creation. CSV guest batches use the same fingerprint and provenance model as later attendee imports; see [Attendee CSV imports](attendee-imports.md). Save as Draft is session-only; it does not persist. Event-creation request idempotency is still future work, so a lost create-event response can require manual reconciliation.
 
 The selected Neon "Weft B2B" layout uses two databases across two branches:

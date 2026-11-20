@@ -167,6 +167,7 @@ export const events = {
   options: {
     cities: {
       "Las Vegas, USA": "Las Vegas, USA", Singapore: "Singapore", "Davos, Switzerland": "Davos, Switzerland", "Aspen, USA": "Aspen, USA", Monaco: "Monaco",
+      "Bogotá, Colombia": "Bogotá, Colombia", "Medellín, Colombia": "Medellín, Colombia", "Mexico City, Mexico": "Mexico City, Mexico", "Buenos Aires, Argentina": "Buenos Aires, Argentina",
     },
     categories: {
       Sports: "Sports", Luxury: "Luxury", Investing: "Investing", Startups: "Startups", Technology: "Technology", Entertainment: "Entertainment",
