@@ -1,10 +1,10 @@
 # Outcomes reporting design
 
-**Status** Ready. See the [execution plan](../exec-plans/active/2026-11-24-outcomes-intelligence.md) and [implemented evidence workflow](../backend/outcomes-intelligence.md).
+**Status** Complete. See the [execution plan](../exec-plans/completed/2026-11-24-outcomes-intelligence.md) and [implemented evidence workflow](../backend/outcomes-intelligence.md).
 
 ## Purpose and scope
 
-Help organizers understand what attendees gained from an event, what to change for the next one, and how relationships develop across their events. This draft covers the presentation of the seven agreed report topics. Layouts, metric definitions, data collection, and release order are proposals. The [product scope](../product.md) describes current delivery, including what the Console records about matches.
+Help organizers understand what attendees gained from an event, what to change for the next one, and how relationships develop across their events. This specification records the design of the seven reports. The evidence workflow describes the implemented capture and calculation rules. See the [product scope](../product.md) for the broader Console context.
 
 ## Page structure
 
