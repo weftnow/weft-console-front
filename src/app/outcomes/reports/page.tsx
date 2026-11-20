@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { requireOrganizerPageContext } from "@/infrastructure/auth/console-page-context";
 import { ReportingPage } from "@/modules/insights/components/reporting-page";
+import { outcomesHref } from "@/modules/insights/outcomes-navigation";
 import { parseReportQuery } from "@/modules/insights/reporting-navigation";
 import { buildReportingProjections } from "@/modules/insights/reporting-projections";
 import { readReportingSources } from "@/modules/insights/server/reporting-evidence";
+import { matchingEngineMode } from "@/modules/network/server/engine-mode";
 import { getI18n, getLocale } from "@/shared/i18n/get-locale";
 import { ApplicationError } from "@/shared/lib/application-error";
 
@@ -20,6 +22,7 @@ export default async function OutcomesReports({ searchParams }: PageProps<"/outc
   const context = await requireOrganizerPageContext();
   const query = parseReportQuery(await searchParams);
   if (!query) notFound();
+  if (matchingEngineMode() === "simulation") redirect(outcomesHref(query.eventId));
 
   const scope = { userId: context.user.id, organizationId: context.organization.id };
   const { events, sources, selectedEventId } = await readReportingSources(scope, {

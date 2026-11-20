@@ -2,6 +2,8 @@
 
 Owners and Organizers open the seven reports from **Outcomes** or an event's **Insights**. `/outcomes/reports` selects the latest completed event by default and accepts `eventId` for direct links. The Event, Across events, and Sponsors views keep selections in the URL. **Recorded meetings** opens the [existing confirmation summary](outcomes.md) at `/outcomes`.
 
+In matching simulation, Outcomes and event Insights open the [read-only demo charts](outcomes.md#demo-mode), preserving the selected event. The reporting pages check demo mode before reading the reporting tables, so demo navigation also works on databases that have yet to run the reporting migrations.
+
 ## Record evidence
 
 Open **Manage evidence** in an event report. The editor accepts pasted JSON or a local JSON file and supplies field examples, roster person IDs, and saved match IDs. Capture surveys and sponsor reviews through the organizer's current process, then load the structured results. In the console, saving replaces the event's one evidence document. Keep the reportable data for that event together when making corrections.

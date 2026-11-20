@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireOrganizerPageContext } from "@/infrastructure/auth/console-page-context";
 import { EvidenceEditor } from "@/modules/insights/components/evidence-editor";
 import { evidenceEditorCopy } from "@/modules/insights/components/evidence-editor-copy";
-import { parseOutcomesEventId } from "@/modules/insights/outcomes-navigation";
+import { outcomesHref, parseOutcomesEventId } from "@/modules/insights/outcomes-navigation";
 import { reportsHref } from "@/modules/insights/reporting-navigation";
 import { getReportingEvidence, readReportingSources } from "@/modules/insights/server/reporting-evidence";
 import { matchingEngineMode } from "@/modules/network/server/engine-mode";
@@ -18,6 +18,7 @@ export default async function OutcomesEvidence({ searchParams }: PageProps<"/out
   if (selection.kind !== "event") notFound();
 
   const { eventId } = selection;
+  if (matchingEngineMode() === "simulation") redirect(outcomesHref(eventId));
   const scope = { userId: context.user.id, organizationId: context.organization.id };
   const [document, { sources }] = await Promise.all([
     getReportingEvidence({ ...scope, eventId }),
@@ -42,7 +43,7 @@ export default async function OutcomesEvidence({ searchParams }: PageProps<"/out
           <p className="events-header__subtitle">{copy.intro}</p>
         </div>
       </header>
-      <EvidenceEditor event={{ id: event.id, people: event.people, matches: event.matches }} initial={document} locale={locale} readOnly={matchingEngineMode() === "simulation"} />
+      <EvidenceEditor event={{ id: event.id, people: event.people, matches: event.matches }} initial={document} locale={locale} />
     </main>
   );
 }

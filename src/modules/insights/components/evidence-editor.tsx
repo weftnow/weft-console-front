@@ -23,11 +23,10 @@ const fieldOptions = {
   sponsors: [...sponsorMeasures],
 };
 
-export function EvidenceEditor({ event, initial, locale, readOnly }: {
+export function EvidenceEditor({ event, initial, locale }: {
   event: Pick<ReportEvent, "id" | "people" | "matches">;
   initial: EvidenceDocument;
   locale: keyof typeof evidenceEditorCopy;
-  readOnly: boolean;
 }) {
   const copy = evidenceEditorCopy[locale];
   const router = useRouter();
@@ -45,7 +44,7 @@ export function EvidenceEditor({ event, initial, locale, readOnly }: {
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (pending || readOnly || feedback?.kind === "conflict") return;
+    if (pending || feedback?.kind === "conflict") return;
     let input: unknown;
     try {
       input = JSON.parse(text);
@@ -134,30 +133,26 @@ export function EvidenceEditor({ event, initial, locale, readOnly }: {
       <Surface as="section" className={`panel ${styles.panel}`} depth="raised">
         <form className={styles.actions} onSubmit={save}>
           <label htmlFor="event-evidence"><strong>{copy.document}</strong></label>
-          <p className="panel-subtitle" id="event-evidence-help">{readOnly ? copy.simulation : copy.documentHelp}</p>
+          <p className="panel-subtitle" id="event-evidence-help">{copy.documentHelp}</p>
           <textarea
             aria-describedby="event-evidence-help"
             className={styles.editor}
             id="event-evidence"
             onChange={({ currentTarget }) => setText(currentTarget.value)}
-            readOnly={readOnly || pending}
+            readOnly={pending}
             spellCheck={false}
             value={text}
           />
-          {!readOnly && (
-            <>
-              <TactileButton disabled={pending || feedback?.kind === "conflict"} type="submit" variant="primary">
-                {pending ? copy.saving : copy.save}
-              </TactileButton>
-              {feedback?.kind === "conflict" ? (
-                <TactileButton disabled={pending} onClick={reload} type="button">{copy.reload}</TactileButton>
-              ) : (
-                <label className={styles.actions}>
-                  {copy.openFile}
-                  <input accept=".json,application/json" disabled={pending} onChange={({ currentTarget }) => void loadFile(currentTarget.files?.[0])} type="file" />
-                </label>
-              )}
-            </>
+          <TactileButton disabled={pending || feedback?.kind === "conflict"} type="submit" variant="primary">
+            {pending ? copy.saving : copy.save}
+          </TactileButton>
+          {feedback?.kind === "conflict" ? (
+            <TactileButton disabled={pending} onClick={reload} type="button">{copy.reload}</TactileButton>
+          ) : (
+            <label className={styles.actions}>
+              {copy.openFile}
+              <input accept=".json,application/json" disabled={pending} onChange={({ currentTarget }) => void loadFile(currentTarget.files?.[0])} type="file" />
+            </label>
           )}
         </form>
         {feedback && (
