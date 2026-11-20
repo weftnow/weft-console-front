@@ -220,6 +220,17 @@ export const eventOutcomesTracking = pgTable("event_outcomes_tracking", {
   startedBy: uuid("started_by").notNull().references(() => users.id, { onDelete: "restrict" }),
 });
 
+export const eventReportingEvidence = pgTable("event_reporting_evidence", {
+  eventId: uuid("event_id").primaryKey().references(() => events.id, { onDelete: "cascade" }),
+  revision: integer("revision").notNull(),
+  evidence: jsonb("evidence").notNull(),
+  updatedBy: uuid("updated_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  check("event_reporting_evidence_revision_positive", sql`${table.revision} >= 1`),
+  check("event_reporting_evidence_object", sql`jsonb_typeof(${table.evidence}) = 'object'`),
+]);
+
 /** A corrected confirmation retains its revision even though completedAt is cleared. */
 export const eventMatchCompletions = pgTable("event_match_completions", {
   eventId: uuid("event_id").notNull(),
