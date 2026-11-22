@@ -58,12 +58,25 @@ export const matchDetailGuestSchema = matchGuestSchema.extend({
   profile: profileFieldsSchema.nullable(),
 });
 
+const matchDiscussionGuestSchema = z.strictObject({
+  guestId: uuidSchema,
+  heading: z.string().optional(),
+  problem: z.string().optional(),
+  whyMatch: z.string().optional(),
+  business: z.string(),
+  life: z.string(),
+});
+
 export const matchDetailSchema = z.strictObject({
   ...summaryShape,
   guests: z.tuple([matchDetailGuestSchema, matchDetailGuestSchema]),
   uncertainty: z.string(),
   sourceRunId: uuidSchema.nullable(),
   evidence: z.array(z.record(z.string(), z.string())),
+  discussion: z.strictObject({
+    why: z.string(),
+    topics: z.tuple([matchDiscussionGuestSchema, matchDiscussionGuestSchema]),
+  }).optional(),
   restrictions: z.array(z.strictObject({ guestId: uuidSchema, otherGuestName: z.string(), reason: z.string().nullable() })),
   earlierIntroductions: z.array(z.strictObject({
     matchId: uuidSchema, guestId: uuidSchema, otherGuestName: z.string(), status: matchStatusSchema, createdAt: timestamp,

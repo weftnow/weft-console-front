@@ -1,14 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { PeopleIcon } from "@/shared/ui/icons";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { LoadingPlaceholder, LoadingSpinner } from "@/shared/ui/loading";
 import { Surface } from "@/shared/ui/surface";
 import { ConsoleDialog } from "@/shared/ui/console-dialog";
 import { MatchCompletionPanel } from "@/modules/insights/components/match-completion-panel";
-import { eventMatchKey, eventMatchesKey, fetchEventMatch, fetchEventMatches, type MatchListOptions } from "../queries/matches";
+import { eventMatchKey, eventMatchesQueryOptions, fetchEventMatch } from "../queries/matches";
 import { describeSync, emptyMatchesCopy } from "../matches-copy";
 import type { MatchListDto, MatchStatus, MatchSummaryDto } from "../matches-schemas";
 import { MatchDetailLoader, MatchDetailView } from "./match-detail-view";
@@ -26,30 +27,24 @@ function StatusPill({ match }: { match: Pick<MatchSummaryDto, "status" | "revoca
 }
 
 export type MatchesViewProps = {
-  list: MatchListDto;
+  list?: MatchListDto;
   filter: Filter;
   search?: string;
   introductionPath?: IntroductionFilter;
+  updating?: boolean;
+  refreshing?: boolean;
   onFilter: (filter: Filter) => void;
   onSearch?: (search: string) => void;
   onIntroductionPath?: (path: IntroductionFilter) => void;
   onPage?: (page: number) => void;
+  onRetry?: () => void;
   onOpen: (matchId: string) => void;
 };
 
-export function MatchesList({ list, filter, search = "", introductionPath = "all", onFilter, onSearch = () => {}, onIntroductionPath = () => {}, onPage = () => {}, onOpen }: MatchesViewProps) {
+export function MatchesList({ list, filter, search = "", introductionPath = "all", updating = false, refreshing = false, onFilter, onSearch = () => {}, onIntroductionPath = () => {}, onPage = () => {}, onRetry, onOpen }: MatchesViewProps) {
   const i18n = useI18n();
-  const { dict, t } = i18n;
-  const copy = dict.network.matches;
-  const countText = i18n.number;
-  const totalMatches = list.counts.active + list.counts.revoked;
-  const { page, pageSize, total } = list.pagination ?? { page: 1, pageSize: 25, total: list.matches.length };
-  const visible = list.matches.filter((match) => filter === "all" || match.status === filter);
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  const first = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const last = Math.min(page * pageSize, total);
-  const syncNote = describeSync(i18n, list.sync);
-  const empty = search ? { title: copy.empty.searchTitle, description: copy.empty.searchDescription } : emptyMatchesCopy(i18n, filter, totalMatches);
+  const copy = i18n.dict.network.matches;
+  const syncNote = list ? describeSync(i18n, list.sync) : null;
   return (
     <>
       {syncNote ? <p className="match-sync-note" role="status">{syncNote}</p> : null}
@@ -61,45 +56,101 @@ export function MatchesList({ list, filter, search = "", introductionPath = "all
           {INTRODUCTION_FILTERS.map((id) => <option key={id} value={id}>{id === "all" ? copy.filters.allMethods : copy.introPaths[id].label}</option>)}
         </select>
       </div>
+      {list ? (
+        <MatchResults list={list} filter={filter} searching={search.trim() !== ""} updating={updating} refreshing={refreshing} onFilter={onFilter} onPage={onPage} onOpen={onOpen} />
+      ) : onRetry ? (
+        <p className="match-muted" role="alert">{copy.loadFailed} <button className="event-text-action" onClick={onRetry} type="button">{copy.retry}</button></p>
+      ) : (
+        <LoadingPlaceholder label={copy.loading}>
+          <div className="match-toolbar">
+            {FILTERS.map((id) => <span className="loading-skeleton match-filter-skeleton" key={id} />)}
+          </div>
+          <MatchTable showStatus={filter === "all"}>
+            {[0, 1, 2].map((row) => (
+              <tr className="match-row-skeleton" key={row}>
+                {(filter === "all" ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 5]).map((column) => (
+                  <td key={column}><span className="loading-skeleton" /></td>
+                ))}
+              </tr>
+            ))}
+          </MatchTable>
+        </LoadingPlaceholder>
+      )}
+    </>
+  );
+}
+
+function MatchTable({ children, showStatus }: { children: React.ReactNode; showStatus: boolean }) {
+  const copy = useI18n().dict.network.matches;
+  return (
+    <div className="table-scroll">
+      <table className="event-table match-table" role="table">
+        <caption className="sr-only">{copy.caption}</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col">{copy.columns.attendee}</th><th scope="col">{copy.columns.matchedWith}</th><th scope="col">{copy.columns.introduction}</th><th scope="col">{copy.columns.why}</th>
+            {showStatus ? <th scope="col">{copy.columns.status}</th> : null}<th className="match-actions-heading" scope="col">{copy.columns.details}</th>
+          </tr>
+        </thead>
+        <tbody className="table-body-well" role="rowgroup" data-depth="inset">{children}</tbody>
+      </table>
+    </div>
+  );
+}
+
+function MatchResults({ list, filter, searching, updating, refreshing, onFilter, onPage, onOpen }: {
+  list: MatchListDto;
+  filter: Filter;
+  searching: boolean;
+  updating: boolean;
+  refreshing: boolean;
+  onFilter: MatchesViewProps["onFilter"];
+  onPage: (page: number) => void;
+  onOpen: MatchesViewProps["onOpen"];
+}) {
+  const i18n = useI18n();
+  const { dict, t } = i18n;
+  const copy = dict.network.matches;
+  const countText = i18n.number;
+  const totalMatches = list.counts.active + list.counts.revoked;
+  const { page, pageSize, total } = list.pagination ?? { page: 1, pageSize: 25, total: list.matches.length };
+  const visible = list.matches.filter((match) => filter === "all" || match.status === filter);
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const first = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const last = Math.min(page * pageSize, total);
+  const empty = searching ? { title: copy.empty.searchTitle, description: copy.empty.searchDescription } : emptyMatchesCopy(i18n, filter, totalMatches);
+  return (
+    <div aria-busy={updating}>
       {totalMatches > 0 ? (
-        <div className="match-toolbar" role="group" aria-label={copy.filterStatus}>
+        <div className="match-toolbar match-toolbar--filters" role="group" aria-label={copy.filterStatus}>
           {FILTERS.map((id) => (
             <button aria-pressed={filter === id} className="match-filter" key={id} onClick={() => onFilter(id)} type="button">
               {copy.filters[id]}<span>{countText(id === "all" ? totalMatches : list.counts[id])}</span>
             </button>
           ))}
+          {refreshing ? <span className="match-refresh-indicator"><LoadingSpinner /></span> : null}
         </div>
+      ) : null}
+      {visible.length > 0 || searching ? (
+        <MatchTable showStatus={filter === "all"}>
+          {visible.map((match) => <MatchRow key={match.id} match={match} showStatus={filter === "all"} onOpen={onOpen} />)}
+        </MatchTable>
       ) : null}
       {visible.length === 0 ? (
         <>
           <EmptyState icon={PeopleIcon} size="panel" title={empty.title} description={empty.description} />
-          {search ? <p className="match-result-count">{copy.zeroMatches}</p> : null}
+          {searching ? <p className="match-result-count">{copy.zeroMatches}</p> : null}
         </>
-      ) : (
-        <div className="table-scroll">
-          <table className="event-table match-table" role="table">
-            <caption className="sr-only">{copy.caption}</caption>
-            <thead role="rowgroup">
-              <tr role="row">
-                <th scope="col">{copy.columns.attendee}</th><th scope="col">{copy.columns.matchedWith}</th><th scope="col">{copy.columns.introduction}</th><th scope="col">{copy.columns.why}</th>
-                {filter === "all" ? <th scope="col">{copy.columns.status}</th> : null}<th className="match-actions-heading" scope="col">{copy.columns.details}</th>
-              </tr>
-            </thead>
-            <tbody className="table-body-well" role="rowgroup" data-depth="inset">
-              {visible.map((match) => <MatchRow key={match.id} match={match} showStatus={filter === "all"} onOpen={onOpen} />)}
-            </tbody>
-          </table>
-        </div>
-      )}
+      ) : null}
       <div className="match-pagination" aria-label={copy.pagesLabel}>
-        <span className="match-result-count">{t(copy.range, { from: countText(first), to: countText(last), total: countText(total) })}</span>
+        <span aria-live="polite" className="match-result-count">{t(copy.range, { from: countText(first), to: countText(last), total: countText(total) })}</span>
         <div>
-          <button className="event-text-action" type="button" disabled={page <= 1} onClick={() => onPage(page - 1)}>{copy.previous}</button>
+          <button className="event-text-action" type="button" disabled={updating || page <= 1} onClick={() => onPage(page - 1)}>{copy.previous}</button>
           <span aria-live="polite">{t(copy.pageOf, { page, count: pageCount })}</span>
-          <button className="event-text-action" type="button" disabled={page >= pageCount} onClick={() => onPage(page + 1)}>{copy.next}</button>
+          <button className="event-text-action" type="button" disabled={updating || page >= pageCount} onClick={() => onPage(page + 1)}>{copy.next}</button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -132,12 +183,12 @@ export function MatchesPanelView(props: { body: React.ReactNode; summary: string
           </div>
         </div>
       </div>
-      <div aria-live="polite">{props.body}</div>
+      {props.body}
     </Surface>
   );
 }
 
-function MatchDetailDialog({ eventId, matchId, onClose, simulated }: { eventId: string; matchId: string | null; onClose: () => void; simulated: boolean }) {
+function MatchDetailDialog({ eventId, matchId, onClose }: { eventId: string; matchId: string | null; onClose: () => void }) {
   const { dict, t } = useI18n();
   const copy = dict.network.matches;
   const query = useQuery({
@@ -148,7 +199,7 @@ function MatchDetailDialog({ eventId, matchId, onClose, simulated }: { eventId: 
   const title = query.data ? t(copy.names, { a: query.data.guests[0].name, b: query.data.guests[1].name }) : copy.detailsTitle;
   let body;
   if (query.data) {
-    const outcome = matchId && !simulated ? (
+    const outcome = matchId ? (
       <MatchCompletionPanel canConfirm={query.data.status === "active"} eventId={eventId} key={matchId} matchId={matchId} />
     ) : undefined;
     body = <MatchDetailView match={query.data} outcome={outcome} />;
@@ -163,26 +214,44 @@ export function MatchesPanel({ eventId }: { eventId: string }) {
   const copy = i18n.dict.network.matches;
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [introductionPath, setIntroductionPath] = useState<IntroductionFilter>("all");
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<string | null>(null);
-  const options: MatchListOptions = { status: filter, search, introductionPath, page };
-  const query = useQuery({ queryKey: eventMatchesKey(eventId, options), queryFn: () => fetchEventMatches(eventId, fetch, options), retry: false,
-    refetchInterval: (current) => (current.state.data?.simulated ? 5_000 : 30_000),
-  });
-  const retry = () => void query.refetch();
+  const searchTerm = search.trim();
+  useEffect(() => {
+    if (searchTerm === debouncedSearch) return;
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setPage(1);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchTerm, debouncedSearch]);
+
+  const query = useQuery(eventMatchesQueryOptions(eventId, { status: filter, search: debouncedSearch, introductionPath, page }));
   const changeFilter = (value: Filter) => { setFilter(value); setPage(1); };
-  const changeSearch = (value: string) => { setSearch(value); setPage(1); };
   const changeIntroductionPath = (value: IntroductionFilter) => { setIntroductionPath(value); setPage(1); };
-  let body;
-  if (query.data) body = <MatchesList list={query.data} filter={filter} search={search} introductionPath={introductionPath} onSearch={changeSearch} onFilter={changeFilter} onIntroductionPath={changeIntroductionPath} onPage={setPage} onOpen={setOpenId} />;
-  else if (query.isError) body = <p className="match-muted" role="alert">{copy.loadFailed} <button className="event-text-action" onClick={retry} type="button">{copy.retry}</button></p>;
-  else body = <p className="match-muted">{copy.loading}</p>;
+  const body = (
+    <MatchesList
+      list={query.data}
+      filter={filter}
+      search={search}
+      introductionPath={introductionPath}
+      updating={searchTerm !== debouncedSearch || query.isPlaceholderData}
+      refreshing={query.isPlaceholderData && query.isFetching}
+      onSearch={setSearch}
+      onFilter={changeFilter}
+      onIntroductionPath={changeIntroductionPath}
+      onPage={setPage}
+      onRetry={query.isError ? () => void query.refetch() : undefined}
+      onOpen={setOpenId}
+    />
+  );
   const counts = query.data?.counts;
   return (
     <>
       <MatchesPanelView body={body} simulated={query.data?.simulated === true} summary={counts ? i18n.t(copy.summary, { active: i18n.number(counts.active), revoked: i18n.number(counts.revoked) }) : null} />
-      <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} simulated={query.data?.simulated === true} />
+      <MatchDetailDialog eventId={eventId} matchId={openId} onClose={() => setOpenId(null)} />
     </>
   );
 }

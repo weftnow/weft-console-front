@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import { ApplicationError } from "@/shared/lib/application-error";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { sendJson, toApplicationError } from "@/modules/attendees/mutations/api-error";
@@ -8,7 +9,24 @@ export type MatchListOptions = { status?: MatchStatus | "all"; search?: string; 
 export const eventMatchesKey = (eventId: string, options: MatchListOptions = {}) => ["event-matches", eventId, options] as const;
 export const eventMatchKey = (eventId: string, matchId: string) => ["event-match", eventId, matchId] as const;
 
-export async function fetchEventMatches(eventId: string, fetcher: typeof fetch = fetch, options: MatchListOptions = {}): Promise<MatchListDto> {
+export function eventMatchesQueryOptions(eventId: string, options: MatchListOptions) {
+  return queryOptions({
+    queryKey: eventMatchesKey(eventId, options),
+    queryFn: ({ signal }) => fetchEventMatches(eventId, fetch, options, signal),
+    placeholderData: (previous, previousQuery) => {
+      const previousKey = previousQuery?.queryKey;
+      if (previousKey?.[1] === eventId
+        && previousKey[2].status === options.status
+        && previousKey[2].introductionPath === options.introductionPath) {
+        return previous;
+      }
+    },
+    retry: false,
+    refetchInterval: (current) => (current.state.data?.simulated ? 5_000 : 30_000),
+  });
+}
+
+export async function fetchEventMatches(eventId: string, fetcher: typeof fetch = fetch, options: MatchListOptions = {}, signal?: AbortSignal): Promise<MatchListDto> {
   if (!uuidSchema.safeParse(eventId).success) throw new ApplicationError("VALIDATION_ERROR", "Choose a valid event.");
   const params = new URLSearchParams();
   if (options.status && options.status !== "all") params.set("status", options.status);
@@ -16,7 +34,7 @@ export async function fetchEventMatches(eventId: string, fetcher: typeof fetch =
   if (options.introductionPath && options.introductionPath !== "all") params.set("introductionPath", options.introductionPath);
   if (options.page && options.page !== 1) params.set("page", String(options.page));
   const query = params.size ? `?${params.toString()}` : "";
-  const { response, json } = await sendJson(fetcher, `/api/events/${eventId}/matches${query}`, { method: "GET", cache: "no-store" }, "Could not reach the server. Try again.");
+  const { response, json } = await sendJson(fetcher, `/api/events/${eventId}/matches${query}`, { method: "GET", cache: "no-store", signal }, "Could not reach the server. Try again.");
   if (!response.ok) throw toApplicationError(json, "The server could not load the matches. Try again.");
   const result = matchListResponseSchema.safeParse(json);
   if (!result.success) throw new ApplicationError("INTERNAL_ERROR", "The server returned invalid matches. Try again.");

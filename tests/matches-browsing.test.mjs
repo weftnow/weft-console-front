@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { QueryClient, QueryObserver } from "@tanstack/react-query";
 import { drizzle } from "drizzle-orm/pg-proxy";
 import { loadTs, stubTs } from "./load-ts.mjs";
 import { stubI18n } from "./i18n-stub.mjs";
@@ -19,7 +20,7 @@ const database = drizzle(async (query, params) => {
 stubTs("src/infrastructure/database/client.ts", { getDatabase: () => database });
 const { listEventMatches } = loadTs("src/modules/network/server/match-repository.ts");
 const { matchListQuerySchema } = loadTs("src/modules/network/matches-schemas.ts");
-const { eventMatchesKey, fetchEventMatches } = loadTs("src/modules/network/queries/matches.ts");
+const { eventMatchesKey, eventMatchesQueryOptions, fetchEventMatches } = loadTs("src/modules/network/queries/matches.ts");
 const { MatchesList } = loadTs("src/modules/network/components/matches-panel.tsx");
 
 const controls = { filter: "active", search: "", introductionPath: "all", onSearch() {}, onFilter() {}, onIntroductionPath() {}, onPage() {}, onOpen() {} };
@@ -59,12 +60,14 @@ test("the repository pages beyond 1000, binds literal search and scopes both att
 
 test("the client sends and caches each search/filter/page combination independently", async () => {
   const options = { status: "active", search: "Mina & Co", introductionPath: "wefter", page: 42 };
+  const { signal } = new AbortController();
   let requested;
   const result = await fetchEventMatches(eventId, async (url, init) => {
     requested = new URL(url, "https://weft.example");
     assert.equal(init.cache, "no-store");
+    assert.equal(init.signal, signal);
     return Response.json({ data: list });
-  }, options);
+  }, options, signal);
   assert.deepEqual(result.pagination, list.pagination);
   assert.equal(requested.searchParams.get("search"), "Mina & Co");
   assert.equal(requested.searchParams.get("page"), "42");
@@ -73,13 +76,66 @@ test("the client sends and caches each search/filter/page combination independen
   assert.notDeepEqual(eventMatchesKey(eventId, options), eventMatchesKey("other-event", options));
 });
 
+test("a pending search keeps the previous page only for the same event and filters", async () => {
+  const client = new QueryClient();
+  const initial = { status: "active", introductionPath: "wefter", page: 2 };
+  const initialKey = eventMatchesKey(eventId, initial);
+  const previous = { ...list, pagination: { page: 2, pageSize: 25, total: 50 } };
+  client.setQueryData(initialKey, previous);
+  const observer = new QueryObserver(client, { ...eventMatchesQueryOptions(eventId, initial), staleTime: Infinity });
+  const stop = observer.subscribe(() => {});
+  const search = { ...initial, page: 1, search: "Ada" };
+  const result = Promise.withResolvers();
+  try {
+    observer.setOptions({ ...eventMatchesQueryOptions(eventId, search), queryFn: () => result.promise });
+    assert.equal(observer.getCurrentResult().isPlaceholderData, true);
+    assert.equal(observer.getCurrentResult().data, previous);
+    result.resolve(list);
+    await observer.refetch();
+    assert.equal(observer.getCurrentResult().isPlaceholderData, false);
+    assert.deepEqual(observer.getCurrentResult().data, list);
+
+    for (const options of [
+      eventMatchesQueryOptions("other-event", search),
+      eventMatchesQueryOptions(eventId, { ...search, status: "revoked" }),
+      eventMatchesQueryOptions(eventId, { ...search, introductionPath: "all" }),
+    ]) {
+      observer.setOptions({ ...options, queryFn: ({ signal }) => {
+        assert.ok(signal);
+        return new Promise(() => {});
+      } });
+      assert.equal(observer.getCurrentResult().data, undefined);
+    }
+  } finally {
+    stop();
+    client.clear();
+  }
+});
+
 test("empty search results preserve controls and show a useful empty state", () => {
   const html = renderToStaticMarkup(React.createElement(MatchesList, { ...controls, list, search: "Nobody" }));
   assert.match(html, /No matches found/);
   assert.match(html, /Search matches by attendee or company/);
   assert.match(html, /value="Nobody"/);
+  assert.match(html, /<th scope="col">Attendee<\/th>/);
   assert.match(html, /0 matches/);
   assert.match(html, /disabled=""[^>]*>Next/);
+});
+
+test("the search field keeps its value when the results fail to load", () => {
+  const html = renderToStaticMarkup(React.createElement(MatchesList, { ...controls, search: "Ada", onRetry() {} }));
+  assert.match(html, /id="match-search"[^>]*value="Ada"/);
+  assert.match(html, /role="alert"[^>]*>Matches couldn’t be loaded/);
+  assert.match(html, />Try again<\/button>/);
+});
+
+test("the first load gives search controls and a decorative table skeleton", () => {
+  const html = renderToStaticMarkup(React.createElement(MatchesList, controls));
+  assert.match(html, /id="match-search"/);
+  assert.match(html, /class="visually-hidden">Loading matches/);
+  assert.match(html, /aria-hidden="true"><div class="match-toolbar"/);
+  assert.equal((html.match(/class="match-row-skeleton"/g) ?? []).length, 3);
+  assert.doesNotMatch(html, /No matches found|View details/);
 });
 
 test("compact rows separate the two attendees, hide redundant active status and retain paging", () => {

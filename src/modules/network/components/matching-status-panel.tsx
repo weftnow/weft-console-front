@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ClockIcon } from "@/shared/ui/icons";
+import { LoadingPlaceholder } from "@/shared/ui/loading";
 import { Surface } from "@/shared/ui/surface";
 import { formatRelativeActivity } from "@/modules/events/event-record";
 import { fetchEventMatchingStatus } from "../queries/matching-status";
@@ -25,7 +26,12 @@ export function MatchingStatusView(props: MatchingStatusViewProps) {
     : props.kind === "result" && props.result.availability === "unavailable" ? text.unavailable[props.result.reason] : null;
   let body;
   if (props.kind === "loading") {
-    body = <p className="matching-status__detail">{text.checking}</p>;
+    body = <LoadingPlaceholder label={text.checking}>
+      <div className="matching-status__skeleton">
+        <span className="loading-skeleton matching-status__skeleton-pill" />
+        <span className="loading-skeleton" />
+      </div>
+    </LoadingPlaceholder>;
   } else if (unavailableMessage !== null) {
     body = (
       <>
@@ -34,10 +40,13 @@ export function MatchingStatusView(props: MatchingStatusViewProps) {
       </>
     );
   } else if (props.kind === "result" && props.result.availability === "available") {
-    const copy = describeMatchingStatus(i18n, props.result.status, (iso) => formatRelativeActivity(i18n, iso));
+    const { status } = props.result;
+    const copy = describeMatchingStatus(i18n, status, (iso) => formatRelativeActivity(i18n, iso));
+    const inProgress = status.state === "running" || (status.state === "waiting" && status.automaticEnabled);
     body = (
       <>
         <span className={`status-pill matching-status__pill matching-status__pill--${copy.tone}`}>{copy.label}</span>
+        {inProgress ? <div aria-hidden="true" className="matching-status__track" data-stage={status.state}><span /></div> : null}
         <p className="matching-status__detail">{copy.detail}</p>
         {copy.source ? <p className="matching-status__source">{copy.source}</p> : null}
       </>

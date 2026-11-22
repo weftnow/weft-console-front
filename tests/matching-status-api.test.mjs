@@ -159,10 +159,18 @@ test("the panel is read-only: no start control, no invented results, retry only 
   const available = view({ kind: "result", result: { availability: "available", status: engineStatus({ state: "running" }) } });
   assert.match(available, /Matching status/);
   assert.match(available, /Matching in progress/);
+  assert.match(available, /matching-status__track" data-stage="running"/);
   assert.match(available, /aria-live="polite"/);
   assert.doesNotMatch(available, /<button|<form|<input|href=/);
   assert.doesNotMatch(available, /pair|introduc|recommend/i);
-  assert.match(view({ kind: "loading" }), /Checking matching status/);
+  const loading = view({ kind: "loading" });
+  assert.match(loading, /class="visually-hidden">Checking matching status/);
+  assert.match(loading, /loading-skeleton matching-status__skeleton-pill/);
+  const waiting = (automaticEnabled) => view({ kind: "result", result: {
+    availability: "available", status: engineStatus({ state: "waiting", automaticEnabled }),
+  } });
+  assert.match(waiting(true), /matching-status__track" data-stage="waiting"/);
+  assert.doesNotMatch(waiting(false), /matching-status__track/);
   const unavailable = view({ kind: "result", result: { availability: "unavailable", reason: "not_configured" } });
   assert.match(unavailable, /isn’t connected in this environment yet/);
   assert.match(unavailable, /Check again/);

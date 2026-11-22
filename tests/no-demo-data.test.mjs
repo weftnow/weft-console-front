@@ -19,7 +19,7 @@ test("public/ ships only the Weft brand mark and the matching-simulation demo CS
   // The CSVs are the fixed uploads for the demo-only matching simulation (docs/changes/2026-10-20-matching-simulation.md).
   assert.deepEqual(shipped.sort(), [
     "public/demo/weft-demo-ai-summit-300.csv", "public/demo/weft-demo-attendees-300.csv", "public/demo/weft-demo-attendees.csv",
-    "public/demo/weft-demo-grand-prix-400.csv", "public/weft-mark.svg",
+    "public/demo/weft-demo-executive-241.csv", "public/demo/weft-demo-grand-prix-400.csv", "public/weft-mark.svg",
   ]);
 });
 
