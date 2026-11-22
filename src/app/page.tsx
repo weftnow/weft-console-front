@@ -10,7 +10,7 @@ export default async function Home() {
   const [events, outcomes] = await Promise.all([
     listEvents({ userId: context.user.id, organizationId: context.organization.id }),
     getOutcomesReport({ userId: context.user.id, organizationId: context.organization.id })
-      .then(({ totals }): OverviewOutcomesState => ({ status: "ready", report: { totals } }))
+      .then(({ events, totals, simulated }): OverviewOutcomesState => ({ status: "ready", report: { events, totals, simulated } }))
       .catch((): OverviewOutcomesState => ({ status: "error" })),
   ]);
   return <OrganizerOverview context={context} events={events} outcomes={outcomes} />;

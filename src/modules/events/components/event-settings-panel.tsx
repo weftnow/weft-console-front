@@ -7,6 +7,7 @@ import { describeSetting, eventFormErrorSchema } from "../event-form";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { LoadingPlaceholder } from "@/shared/ui/loading";
 import { EventField, EventIntervals, EventTimeField } from "./event-form-controls";
 import { CalendarIcon } from "@/shared/ui/icons";
 
@@ -57,7 +58,7 @@ export function EventSettingsPanel({ eventId }: { eventId: string }) {
     setErrors((previous) => ({ ...previous, [field]: "" })); setNotice("");
   }
 
-  if (query.isPending) return <Surface className="panel event-management-panel" depth="raised"><p role="status">{copy.loading}</p></Surface>;
+  if (query.isPending) return <Surface className="panel event-management-panel" depth="raised"><LoadingPlaceholder label={copy.loading} /></Surface>;
   if (!query.data) return <Surface className="panel event-management-panel" depth="raised"><p role="alert">{copy.loadFailed}</p><TactileButton onClick={() => void query.refetch()}>{dict.common.actions.retry}</TactileButton></Surface>;
   const timezone = query.data.timezone;
   return <Surface as="section" className="panel event-management-panel" depth="raised" aria-labelledby="event-settings-heading">
@@ -81,7 +82,7 @@ export function EventSettingsPanel({ eventId }: { eventId: string }) {
       <fieldset disabled={save.isPending} className="event-form-section"><legend>{copy.limitsHeading}</legend><p className="event-section-description">{copy.limitsDescription}</p><div className="event-form-grid">{limitFields.map((field) => <EventField key={field} label={copy.labels[field]} hint={copy.hints[field]} error={errors[field]}>{(id, help) => <input className="event-control" id={id} aria-describedby={help} aria-invalid={!!errors[field]} type="number" inputMode="numeric" min={1} max={field === "softMaxIntroductionsPerGuest" ? 1000 : 1440} step={1} value={current[field] ?? ""} placeholder={copy.notSetPlaceholder} onChange={(e) => setField(field, e.target.value === "" ? null : Number(e.target.value))} />}</EventField>)}</div></fieldset>
       {conflict ? <div className="event-conflict" role="alert"><h3>{copy.conflict.heading}</h3><p>{copy.conflict.description}</p><div className="event-comparison">{[{ title: copy.conflict.saved, settings: conflict.settings }, { title: copy.conflict.yours, settings: current }].map(({ title, settings }) => <div key={title}><h4>{title}</h4><dl>{Object.keys(copy.labels).map((field) => <div key={field}><dt>{copy.labels[field as keyof NetworkingSettings]}</dt><dd>{describeSetting(i18n, field as keyof NetworkingSettings, settings, timezone)}</dd></div>)}</dl></div>)}</div><div className="event-form-actions"><TactileButton onClick={() => { client.setQueryData(key, conflict); setDraft(null); setConflict(null); }}>{copy.conflict.useSaved}</TactileButton><TactileButton onClick={() => { setDraft({ settings: current, revision: conflict.revision }); setConflict(null); }}>{copy.conflict.keepMine}</TactileButton></div></div> : null}
       {notice ? <p className={save.isError ? "event-field__error" : "event-form-notice"} role={save.isError ? "alert" : "status"}>{notice}</p> : null}
-      <div className="event-form-footer"><span>{draft ? copy.unsaved : query.data.updatedAt ? t(copy.savedAt, { date: i18n.dateTime(query.data.updatedAt, timezone) }) : copy.noneSaved}</span><div className="event-form-actions">{draft ? <TactileButton disabled={save.isPending} onClick={() => { setDraft(null); setConflict(null); setErrors({}); setNotice(""); }}>{copy.discard}</TactileButton> : null}<TactileButton variant="primary" disabled={save.isPending || !draft || !!conflict} type="submit">{save.isPending ? copy.saving : copy.save}</TactileButton></div></div>
+      <div className="event-form-footer"><span>{draft ? copy.unsaved : query.data.updatedAt ? t(copy.savedAt, { date: i18n.dateTime(query.data.updatedAt, timezone) }) : copy.noneSaved}</span><div className="event-form-actions">{draft ? <TactileButton disabled={save.isPending} onClick={() => { setDraft(null); setConflict(null); setErrors({}); setNotice(""); }}>{copy.discard}</TactileButton> : null}<TactileButton variant="primary" disabled={!draft || !!conflict} pendingLabel={save.isPending ? copy.saving : undefined} type="submit">{copy.save}</TactileButton></div></div>
     </form>
   </Surface>;
 }

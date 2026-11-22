@@ -39,6 +39,7 @@ The Console saves valid selected pairs from the engine feed as matches and shows
 - [x] **6. Verification.** `pnpm verify`, `pnpm build` passed.
 - [x] **7a. Scratch database run (2026-10-19):** throwaway local Postgres 14 on port 55432, database `weft_f08_scratch`; `pnpm db:migrate` applied all migrations including 0013; `tests/matches-database.test.mjs` passed (1 passed, 0 failed, 0 skipped) after fixing a fixture bug (empty email needs a null normalized email). Post-run counts of matches, cursors, events, users and organizations were all 0.
 - [x] **8. Browse and detail improvements.** Literal attendee/company search, introduction-method filters, stable 25-row pagination with clamped pages, compact pair rows, and a pair-first detail view.
+- [x] **9. Keep Matches search in place.** Typing keeps the field focused and the current table visible while a new search loads. Results update from page one. Clearing the field restores the list, and empty results keep the table headings visible.
 - [ ] **7b. Not yet run:** signed-in browser acceptance against an engine; applying 0013 to the shared development database (needs explicit approval).
 
 ## Decisions and discoveries
@@ -60,6 +61,7 @@ Run on 2026-10-19 (no database, provider or engine contacted):
 - Database suite: see step 7a. **Not run:** applying 0013 to any shared database, signed-in browser acceptance (desktop/narrow, keyboard, reduced motion), end-to-end with a real engine.
 - Run on the original simulation branch on 2026-10-24 after browse/detail improvements: `pnpm verify` passed (379 tests: 351 passed, 0 failed, 28 database-gated skipped); `pnpm build` passed. Focused match browsing, F08, simulation, and matching-status suites passed. Signed-in browser acceptance remains pending.
 - UI-only extraction on 2026-10-24: `pnpm verify` passed (365 tests: 337 passed, 0 failed, 28 database-gated skipped), including browsing, F08, matching-status, and authorization tests. `pnpm build` passed with development configuration preloaded and `WEFT_LOCAL_PLUGIN_THREADS=1`. An initial conflict-resolution script truncated three files; lint/build caught it, the files were restored from the source commit with only simulation dependencies removed, and both checks then passed. No live database suites or signed-in browser acceptance were run for the extraction.
+- Search fix on 2026-11-20. `pnpm verify` passed (426 tests, 396 passed and 30 database-gated skips). `pnpm build` passed with development configuration preloaded and `WEFT_LOCAL_PLUGIN_THREADS=1`. Headless Chrome at 1280 px and 500 px (with reduced motion) exercised the real Matches panel with synthetic API responses. Focus and the table persisted through continuous typing and a delayed response. Search reset paging, swapped rows in place, preserved headers at zero results, canceled a superseded fetch, and recovered from an error and from clearing the field. Signed-in browser and live database checks were skipped.
 
 ## Handoff or outcome
 

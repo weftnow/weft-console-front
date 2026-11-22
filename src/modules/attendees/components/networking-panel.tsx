@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { localizeErrorCode, localizeFieldMessage } from "@/shared/i18n/field-messages";
 import { CheckIcon, ChevronDownIcon, CloseIcon, SearchIcon, TrashIcon } from "@/shared/ui/icons";
+import { LoadingSpinner } from "@/shared/ui/loading";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { ApplicationError } from "@/shared/lib/application-error";
@@ -14,6 +15,8 @@ import { EXCLUSION_REASONS } from "../networking-schemas";
 import type { ExclusionReason, MatchBlockDto, ParticipationDto } from "../networking-schemas";
 
 const MAX_SUGGESTIONS = 6;
+
+type NetworkingAction = { kind: "participation" } | { kind: "add" | "remove"; id: string };
 
 type Props = {
   eventId: string;
@@ -35,7 +38,8 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
     ? t(copy.excludedReason, { reason: dict.attendees.exclusionReasons[state.reason] })
     : state.status === "excluded" ? copy.excluded : copy.included;
   const [reason, setReason] = useState<ExclusionReason | "">("");
-  const [pending, setPending] = useState(false);
+  const [pendingAction, setPendingAction] = useState<NetworkingAction | null>(null);
+  const pending = pendingAction !== null;
   useEffect(() => { onBusyChange?.(pending); }, [pending, onBusyChange]);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -52,9 +56,9 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
     : [];
   const excluded = guest.networking.status === "excluded";
 
-  async function run(operation: () => Promise<string>) {
+  async function run(action: NetworkingAction, operation: () => Promise<string>) {
     if (pending) return;
-    setPending(true);
+    setPendingAction(action);
     setError("");
     setNotice("");
     setLatest(null);
@@ -71,11 +75,11 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
         setError(failure.fields ? localizeFieldMessage(i18n, Object.values(failure.fields)[0] ?? "") || localizeErrorCode(dict, failure.code) : localizeErrorCode(dict, failure.code));
       } else setError(copy.failed);
     } finally {
-      setPending(false);
+      setPendingAction(null);
     }
   }
 
-  const changeParticipation = () => run(async () => {
+  const changeParticipation = () => run({ kind: "participation" }, async () => {
     const next = excluded
       ? { status: "included" as const, expectedVersion: guest.networking.version }
       : { status: "excluded" as const, reason: reason as ExclusionReason, expectedVersion: guest.networking.version };
@@ -98,7 +102,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
         <strong>{copy.participation}</strong>
         <p>{describeState(guest.networking)}</p>
         {excluded ? (
-          <TactileButton disabled={pending} onClick={() => void changeParticipation()}>{pending ? copy.saving : copy.restore}</TactileButton>
+          <TactileButton disabled={pending} onClick={() => void changeParticipation()} pendingLabel={pendingAction?.kind === "participation" ? copy.saving : undefined}>{copy.restore}</TactileButton>
         ) : (
           <div className="networking-panel__row">
             <label className="roster-filter">
@@ -108,7 +112,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
                 {EXCLUSION_REASONS.map((value) => <option key={value} value={value}>{dict.attendees.exclusionReasons[value]}</option>)}
               </select><ChevronDownIcon className="roster-filter__chevron" />
             </label>
-            <TactileButton disabled={pending || !reason} onClick={() => void changeParticipation()}>{pending ? copy.saving : copy.exclude}</TactileButton>
+            <TactileButton disabled={pending || !reason} onClick={() => void changeParticipation()} pendingLabel={pendingAction?.kind === "participation" ? copy.saving : undefined}>{copy.exclude}</TactileButton>
           </div>
         )}
       </div>
@@ -120,11 +124,12 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
             {guestBlocks.map((block) => {
               const otherId = block.guestIds.find((id) => id !== guest.id) ?? block.guestIds[0];
               const other = byId.get(otherId);
+              const removing = pendingAction?.kind === "remove" && pendingAction.id === block.id;
               return (
                 <li key={block.id}>
                   <span>{other ? guestName(other) : copy.unknownGuest}{other?.company ? ` · ${other.company}` : ""}</span>
-                  <button aria-label={t(copy.removeFor, { name: other ? guestName(other) : copy.guestFallback })} disabled={pending} onClick={() => void run(async () => { await deleteMatchBlock(eventId, block.id); return copy.removed; })} type="button">
-                    <TrashIcon height="14" width="14" />
+                  <button aria-busy={removing} aria-label={t(copy.removeFor, { name: other ? guestName(other) : copy.guestFallback })} disabled={pending} onClick={() => void run({ kind: "remove", id: block.id }, async () => { await deleteMatchBlock(eventId, block.id); return copy.removed; })} type="button">
+                    {removing ? <LoadingSpinner /> : <TrashIcon height="14" width="14" />}
                   </button>
                 </li>
               );
@@ -140,7 +145,7 @@ export function NetworkingPanel({ eventId, guest, guests, blocks, onClose, onCha
             {suggestions.map((entry) => (
               <li key={entry.id}>
                 <span>{guestName(entry)}{entry.company ? ` · ${entry.company}` : ""}</span>
-                <TactileButton disabled={pending} onClick={() => void run(async () => {
+                <TactileButton disabled={pending} pendingLabel={pendingAction?.kind === "add" && pendingAction.id === entry.id ? copy.saving : undefined} onClick={() => void run({ kind: "add", id: entry.id }, async () => {
                   await submitMatchBlock(eventId, { guestIds: [guest.id, entry.id] });
                   setSearch("");
                   return t(copy.wontMatch, { other: guestName(entry), guest: guestName(guest) });

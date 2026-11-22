@@ -156,6 +156,27 @@ test("large wells and compact details scale the shared inset lighting", () => {
   );
   assert.match(
     css,
+    /\.event-table tbody\s*\{[^}]*border-radius:\s*var\(--weft-radius-sm\)/s,
+  );
+  assert.match(
+    css,
+    /\.event-table tbody\s*\{[^}]*background:\s*color-mix\(in srgb,\s*var\(--weft-surface-inset\),\s*var\(--weft-surface\)\)/s,
+  );
+  assert.doesNotMatch(css, /\.roster-table tbody\s*\{\s*background:\s*color-mix/);
+  assert.match(
+    css,
+    /\.roster-table tbody\s*\{[^}]*border-radius:\s*0;\s*background:\s*transparent;\s*box-shadow:\s*none/s,
+  );
+  assert.match(
+    css,
+    /\.match-table tbody\s*\{[^}]*border-radius:\s*0;\s*background:\s*transparent;\s*box-shadow:\s*none/s,
+  );
+  assert.match(
+    css,
+    /\.outcomes-table tbody\s*\{[^}]*border-radius:\s*0;\s*background:\s*transparent;\s*box-shadow:\s*none/s,
+  );
+  assert.match(
+    css,
     /\.metric__icon\s*\{[^}]*box-shadow:\s*var\(--weft-shadow-inset-compact\)/s,
   );
   assert.match(

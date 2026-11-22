@@ -269,6 +269,7 @@ export const events = {
     failed: "Could not save the language. Try again.",
   },
   create: {
+    loading: "Loading the event form",
     title: "Create event", subtitle: "Set up a new event.", back: "Events", summaryLabel: "Live event summary",
     basics: { heading: "Event basics", description: "The essentials guests and staff will see." },
     context: { heading: "Event context", description: "Give Weft enough signal to understand the room." },

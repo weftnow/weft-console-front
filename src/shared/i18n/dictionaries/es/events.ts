@@ -271,6 +271,7 @@ export const events = {
     failed: "No se pudo guardar el idioma. Inténtalo de nuevo.",
   },
   create: {
+    loading: "Cargando el formulario del evento",
     title: "Crear evento", subtitle: "Configura un evento nuevo.", back: "Eventos", summaryLabel: "Resumen del evento en vivo",
     basics: { heading: "Datos básicos del evento", description: "Lo esencial que verán los invitados y el personal." },
     context: { heading: "Contexto del evento", description: "Danos suficientes señales para que Weft entienda a quién reunirás." },

@@ -9,6 +9,7 @@ import { describeIntervals, eventFormErrorSchema } from "../event-form";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { LoadingPlaceholder } from "@/shared/ui/loading";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { StaffIcon } from "@/shared/ui/icons";
 import { EventField, EventIntervals } from "./event-form-controls";
@@ -71,7 +72,7 @@ function StaffMember({ eventId, member, schedule, timezone, refresh }: {
       </fieldset>
       {latest ? <div className="event-conflict" role="alert"><h4>{copy.conflict.heading}</h4><p>{copy.conflict.description}</p><div className="event-comparison">{[{ title: copy.conflict.saved, value: latest }, { title: copy.conflict.yours, value: current }].map(({ title, value }) => <div key={title}><h4>{title}</h4><p>{accessLabel(value.accessMode)}</p>{value.accessMode === "wefter" ? <p>{describeIntervals(i18n, value.windows, timezone)}</p> : null}</div>)}</div><div className="event-form-actions"><TactileButton onClick={() => { setDraft(null); setLatest(null); }}>{copy.conflict.useSaved}</TactileButton><TactileButton onClick={() => { setDraft({ ...current, revision: latest.revision }); setLatest(null); }}>{copy.conflict.keepMine}</TactileButton></div></div> : null}
       {error ? <p className="event-field__error" role="alert">{error}</p> : null}{notice ? <p className="event-form-notice" role="status">{notice}</p> : null}
-      {draft ? <div className="event-form-footer"><span>{copy.unsaved}</span><div className="event-form-actions"><TactileButton disabled={save.isPending} onClick={() => { setDraft(null); setLatest(null); setError(""); }}>{copy.discard}</TactileButton><TactileButton disabled={save.isPending || !!latest} type="submit" variant="graphite">{save.isPending ? copy.saving : copy.save}</TactileButton></div></div> : null}
+      {draft ? <div className="event-form-footer"><span>{copy.unsaved}</span><div className="event-form-actions"><TactileButton disabled={save.isPending} onClick={() => { setDraft(null); setLatest(null); setError(""); }}>{copy.discard}</TactileButton><TactileButton disabled={!!latest} pendingLabel={save.isPending ? copy.saving : undefined} type="submit" variant="graphite">{copy.save}</TactileButton></div></div> : null}
     </form>
   </li>;
 }
@@ -94,6 +95,6 @@ export function EventWeftersPanel({ eventId, onSaved }: { eventId: string; onSav
   return <Surface as="section" className="panel event-management-panel" depth="raised" aria-labelledby="event-staff-heading">
     <div className="event-management-heading"><span className="event-management-icon surface-inset"><StaffIcon height="20" width="20" /></span><div><h2 id="event-staff-heading">{copy.heading}</h2><p>{copy.description}</p></div>{canInvite ? <Link className="event-text-action" href="/settings/team">{copy.manageTeam}</Link> : null}</div>
     {query.isError && query.data ? <p className="event-field__error" role="status">{copy.refreshFailedInline} <button className="event-text-action" onClick={() => void query.refetch()} type="button">{dict.common.actions.retry}</button></p> : null}
-    {query.isPending ? <p className="event-form-notice" role="status">{copy.loading}</p> : !query.data ? <div className="event-form-section"><p role="alert">{copy.panelLoadFailed}</p><TactileButton onClick={() => void query.refetch()}>{dict.common.actions.retry}</TactileButton></div> : !query.data.candidates.length ? <EmptyState size="panel" icon={StaffIcon} title={copy.emptyTitle} description={canInvite ? copy.emptyOwner : copy.emptyOther} action={canInvite ? <Link className="tactile-button event-form-button" href="/settings/team">{copy.invite}</Link> : undefined} /> : <ul className="event-staff-list">{query.data.candidates.map((member) => <StaffMember key={member.membershipId} eventId={eventId} member={member} schedule={query.data.wefters.find((item) => item.membershipId === member.membershipId)} timezone={query.data.timezone} refresh={refresh} />)}</ul>}
+    {query.isPending ? <LoadingPlaceholder label={copy.loading} /> : !query.data ? <div className="event-form-section"><p role="alert">{copy.panelLoadFailed}</p><TactileButton onClick={() => void query.refetch()}>{dict.common.actions.retry}</TactileButton></div> : !query.data.candidates.length ? <EmptyState size="panel" icon={StaffIcon} title={copy.emptyTitle} description={canInvite ? copy.emptyOwner : copy.emptyOther} action={canInvite ? <Link className="tactile-button event-form-button" href="/settings/team">{copy.invite}</Link> : undefined} /> : <ul className="event-staff-list">{query.data.candidates.map((member) => <StaffMember key={member.membershipId} eventId={eventId} member={member} schedule={query.data.wefters.find((item) => item.membershipId === member.membershipId)} timezone={query.data.timezone} refresh={refresh} />)}</ul>}
   </Surface>;
 }

@@ -1005,9 +1005,10 @@ export function CreateEventPage({ context, selectedOrganizationId }: { context: 
                 </div>
 
                 <div className="summary-actions">
-                  <TactileButton className="create-event-action" disabled={actionState !== "idle"} onClick={() => (queryElement(".create-event-form") as HTMLFormElement | null)?.requestSubmit()} variant="graphite">
-                    {actionState === "creating" ? copy.actions.creating : copy.actions.create}
-                    {actionState !== "creating" ? <ArrowRightIcon height="15" width="15" /> : null}
+                  <span className="visually-hidden" role="status">{actionState === "creating" ? copy.actions.creating : ""}</span>
+                  <TactileButton className="create-event-action" pendingLabel={actionState === "creating" ? copy.actions.creating : undefined} onClick={() => (queryElement(".create-event-form") as HTMLFormElement | null)?.requestSubmit()} variant="graphite">
+                    {copy.actions.create}
+                    <ArrowRightIcon height="15" width="15" />
                   </TactileButton>
                   <TactileButton className="save-draft-action" disabled={actionState !== "idle"} onClick={saveDraft}>
                     {copy.actions.keepDraft}

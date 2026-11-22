@@ -198,8 +198,8 @@ export function AttendeeImportPanel({ eventId, existingGuests, hasActiveFilters,
         ) : null}
         <div className="attendee-import-panel__actions">
           <TactileButton disabled={pending} onClick={onCancel}>{copy.cancel}</TactileButton>
-          <TactileButton disabled={pending || !file || !preview || !csvText} type="submit" variant="primary">
-            {pending ? copy.importing : copy.importCsv}
+          <TactileButton disabled={!file || !preview || !csvText} pendingLabel={pending ? copy.importing : undefined} type="submit" variant="primary">
+            {copy.importCsv}
           </TactileButton>
         </div>
       </form>

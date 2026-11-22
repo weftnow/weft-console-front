@@ -40,7 +40,7 @@ export function EventLanguagePanel({ eventId, language, onSaved }: {
       </select>}</EventField>
       {notice ? <p className={notice.error ? "event-field__error" : "event-form-notice"} role={notice.error ? "alert" : "status"}>{notice.text}</p> : null}
       <div className="event-form-footer"><span /><div className="event-form-actions">
-        <TactileButton variant="primary" disabled={save.isPending || value === language} type="submit">{save.isPending ? copy.saving : copy.save}</TactileButton>
+        <TactileButton variant="primary" disabled={value === language} pendingLabel={save.isPending ? copy.saving : undefined} type="submit">{copy.save}</TactileButton>
       </div></div>
     </form>
   </Surface>;

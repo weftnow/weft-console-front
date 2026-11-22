@@ -893,9 +893,13 @@ Avoid:
 
 A table may live inside a flatter or inset region within a raised panel.
 
+The event list, Overview event table, attendee roster, Matches table, and Outcomes table use the shared small radius, inset shadow, and a warm neutral fill halfway between the inset and raised fills on the table body. At phone widths, the roster, Matches, and Outcomes switch to stacked rows and drop the inset treatment.
+
 ---
 
 ### Implementation note: Matches tab (F08)
+
+The Matches search field keeps focus as the query changes. Search waits 250 ms after typing, then keeps the current rows visible until the filtered page arrives. Empty search results keep the table headings visible. A failed request leaves the search field available and offers a retry.
 
 The Matches panel reuses the roster's language rather than adding primitives: a raised `Surface` panel, `event-table` with an inset `table-body-well`, `status-pill` (`match-pill--active` green, `match-pill--revoked` muted, never a failure red because a revoked match is information, not an error), `event-text-action` for "View details", and `ConsoleDialog` for detail. Search, introduction-method selection, and status pills reset paging; the server returns 25 rows and clamps pages after the result count changes. Status counts stay event-wide. Pair rows separate the two attendee names and hide redundant active status until the all-status filter is selected. Below 620px the table collapses to stacked rows with `data-label` captions, as the roster does. The detail dialog leads with the attendee pair and their benefits, then keeps evidence, profiles, and related matches in native disclosures. Copy never implies acceptance or a meeting; a stale-engine note uses the soft orange tint. Styles are `match-*` in `globals.css`.
 
@@ -928,6 +932,8 @@ Placement and motion should create continuity with the trigger.
 ## 27. Loading and state changes
 
 Prefer stable layouts.
+
+Event creation and the first Matches load use skeletons in the destination's content area. Local submissions keep their button footprint and show a centered spinner. Match searches and page changes keep the current rows visible and signal the request beside the status filters. The matching status card pairs the queued or running label with an activity track. The track has no percentage because the engine reports a phase rather than a completion estimate. Skeletons and spinners use localized accessible labels, and reduced-motion settings show static indicators.
 
 Use:
 

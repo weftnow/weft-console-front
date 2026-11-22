@@ -6,6 +6,7 @@ import { localizeErrorCode, localizeFieldMessage } from "@/shared/i18n/field-mes
 import { CheckIcon, CloseIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
+import { LoadingPlaceholder } from "@/shared/ui/loading";
 import { ApplicationError } from "@/shared/lib/application-error";
 import type { SavedEventGuestRecord } from "@/modules/events/event-record";
 import { StaleProfileError, submitGuestProfile } from "../mutations/update-profile";
@@ -149,7 +150,7 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
       </div>
 
       {loadError ? <p className="upload-error" role="alert">{loadError}</p> : null}
-      {!draft && !loadError ? <p aria-live="polite">{copy.loading}</p> : null}
+      {!draft && !loadError ? <LoadingPlaceholder label={copy.loading} /> : null}
 
       {draft && saved && completeness && preview ? (
         <>
@@ -218,7 +219,7 @@ export function ProfilePanel({ eventId, guest, onClose, onChanged, onBusyChange 
           </div>
 
           <div className="networking-panel__row">
-            <TactileButton disabled={pending || !dirty} onClick={() => void save()} variant="primary">{pending ? copy.saving : copy.save}</TactileButton>
+            <TactileButton disabled={!dirty} onClick={() => void save()} pendingLabel={pending ? copy.saving : undefined} variant="primary">{copy.save}</TactileButton>
             <TactileButton disabled={pending || !dirty} onClick={() => { setDraft(toDraft(saved)); setError(""); setNotice(""); setLatest(null); }}>{copy.discard}</TactileButton>
           </div>
         </>

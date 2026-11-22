@@ -12,6 +12,10 @@ F08 saves valid engine-selected pairs automatically and lists them for Owners an
 
 **Outcomes** reports organizer-confirmed meetings for the selected organization. Owners and Organizers start tracking an event, confirm a meeting from its Matches tab, and correct confirmations recorded in error. Overview shows the organization total, and Outcomes shows completed introductions and distinct people introduced per tracked event. The report identifies events without tracking. Guest acceptance, meeting scheduling, staff dispatch and assignment, follow-ups, sponsor outcomes, and cross-event people reporting are future capabilities. See [Outcomes reporting](backend/outcomes.md) and [shared access contracts](access-contracts.md).
 
+The matching demo also shows read-only Outcomes derived from the fictional pairs. Its results are confined to the demo mode. See [demo Outcomes](backend/outcomes.md#demo-mode).
+
+Overview shows coverage and links to event reports through completed-introduction bars. The Outcomes page compares events by completed introductions or unique people introduced and charts daily recorded confirmations for the selected scope.
+
 ## Weft
 
 Weft is the networking layer for business events.
