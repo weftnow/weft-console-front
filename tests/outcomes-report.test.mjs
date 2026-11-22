@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -18,13 +19,14 @@ stubTs("@/shared/i18n/I18nProvider", {
 const EVENT_A = "11111111-1111-4111-8111-111111111111";
 const EVENT_B = "22222222-2222-4222-8222-222222222222";
 const noopAction = async () => {};
+const require = createRequire(import.meta.url);
 
 const renderReport = (report, startTrackingAction = noopAction) => {
   const { OutcomesReportPage } = loadTs("src/modules/insights/components/outcomes-report-page.tsx");
   return renderToStaticMarkup(
     React.createElement(OutcomesReportPage, {
       organizationName: "Analytical Engines",
-      report,
+      report: { recordedByDay: [], ...report },
       startTrackingAction,
     }),
   );
@@ -131,6 +133,9 @@ test("all-events partial coverage shows aggregate completed introductions, per-e
   const summarySection = html.match(/<section aria-label="Outcomes summary"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.doesNotMatch(summarySection, /People introduced/);
   assert.match(html, /<th class="cell-number" scope="col">People introduced<\/th>/);
+  assert.match(html, /aria-label="Event comparison metric"/);
+  assert.match(html, /aria-pressed="true">Completed introductions<\/button>/);
+  assert.match(html, /aria-pressed="false">People introduced<\/button>/);
   assert.match(html, /data-label="People introduced" role="cell">11<\/td>/);
   assert.match(html, /data-label="People introduced" role="cell"><span aria-label="Not tracked" class="table-empty">—<\/span><\/td>/);
   assert.doesNotMatch(html, /Start tracking/);
@@ -210,6 +215,37 @@ test("single-event tracked zero report shows 0 introductions, 0 unique people, t
   assert.doesNotMatch(html, /Start tracking/);
 });
 
+test("demo reports direct untracked events to Matches and never show the tracking action", () => {
+  const html = renderReport({
+    simulated: true,
+    eventOptions: [{ eventId: EVENT_A, eventName: "Davos Summit" }],
+    events: [{ eventId: EVENT_A, eventName: "Davos Summit", startsAt: "2026-01-20T09:00:00.000Z", timezone: "Europe/Zurich",
+      trackingStartedAt: null, completedIntroductions: 0, peopleIntroduced: 0 }],
+    totals: { completedIntroductions: 0, trackedEvents: 0, totalEvents: 1 },
+    selectedEventId: EVENT_A,
+  });
+  assert.match(html, /data-simulated="true"/);
+  assert.match(html, new RegExp(`href="/events/${EVENT_A}\\?tab=matches"[^>]*>\\s*Open Matches`));
+  assert.doesNotMatch(html, /name="eventId" type="hidden"|Start tracking/);
+});
+
+test("demo match outcomes show read-only completion without recording controls", () => {
+  const { QueryClient, QueryClientProvider } = require("@tanstack/react-query");
+  const { MatchCompletionPanel } = loadTs("src/modules/insights/components/match-completion-panel.tsx");
+  const client = new QueryClient();
+  const key = ["match-completion", EVENT_A, EVENT_B];
+  const render = (completedAt) => {
+    client.setQueryData(key, { trackingStartedAt: "2026-01-20T09:00:00.000Z", completedAt, revision: 0, simulated: true });
+    return renderToStaticMarkup(React.createElement(QueryClientProvider, { client },
+      React.createElement(MatchCompletionPanel, { eventId: EVENT_A, matchId: EVENT_B, canConfirm: true })));
+  };
+  const completed = render("2026-01-20T09:00:00.000Z");
+  const pending = render(null);
+  assert.match(completed, /data-simulated="true".*Meeting completed\./);
+  assert.match(pending, /No meeting has been recorded/);
+  assert.doesNotMatch(completed + pending, /button|Correct outcome|Confirm a meeting/);
+});
+
 test("single-event tracked report with outcomes shows event totals and links to Event Detail", () => {
   const html = renderReport({
     eventOptions: [{ eventId: EVENT_A, eventName: "Davos Summit" }],
@@ -225,11 +261,17 @@ test("single-event tracked report with outcomes shows event totals and links to 
       },
     ],
     totals: { completedIntroductions: 18, trackedEvents: 1, totalEvents: 1 },
+    recordedByDay: [{ date: "2026-01-19", count: 8 }, { date: "2026-01-21", count: 10 }],
     selectedEventId: EVENT_A,
   });
   assert.match(html, /<div class="metric__value">18<\/div><div class="metric__label">Completed introductions<\/div>/);
   assert.match(html, /<div class="metric__value">15<\/div><div class="metric__label">People introduced<\/div>/);
   assert.match(html, new RegExp(`href="/events/${EVENT_A}"`));
+  assert.match(html, /Introductions recorded over time/);
+  assert.match(html, /Daily counts by confirmation date \(UTC\)/);
+  assert.match(html, /View daily counts/);
+  assert.match(html, /January 19, 2026<\/th><td>8<\/td>/);
+  assert.match(html, /January 21, 2026<\/th><td>10<\/td>/);
   assert.doesNotMatch(html, /Start tracking|No completed introductions yet/);
 });
 

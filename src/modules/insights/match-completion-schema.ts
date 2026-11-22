@@ -10,5 +10,6 @@ export const matchCompletionResponseSchema = z.object({
     trackingStartedAt: z.iso.datetime().nullable(),
     completedAt: z.iso.datetime().nullable(),
     revision: z.number().int().nonnegative(),
+    simulated: z.literal(true).optional(),
   }) }),
 });

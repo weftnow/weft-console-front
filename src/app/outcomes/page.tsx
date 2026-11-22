@@ -7,7 +7,6 @@ import { OutcomesReportPage } from "@/modules/insights/components/outcomes-repor
 import { parseOutcomesEventId } from "@/modules/insights/outcomes-navigation";
 import type { OutcomesReport } from "@/modules/insights/outcomes-report";
 import { getOutcomesReport } from "@/modules/insights/server/outcomes-service";
-import { matchingEngineMode } from "@/modules/network/server/engine-mode";
 import { getI18n } from "@/shared/i18n/get-locale";
 import { ApplicationError } from "@/shared/lib/application-error";
 
@@ -33,6 +32,7 @@ export default async function OutcomesRoute({
     report = await getOutcomesReport({
       userId: context.user.id,
       organizationId: context.organization.id,
+      includeTimeline: true,
       ...(parsed.kind === "event" ? { eventId: parsed.eventId } : {}),
     });
   } catch (error) {
@@ -50,7 +50,7 @@ export default async function OutcomesRoute({
     <OutcomesReportPage
       organizationName={context.organization.name}
       report={report}
-      startTrackingAction={matchingEngineMode() === "engine" ? startOutcomesTrackingAction : undefined}
+      startTrackingAction={report.simulated ? undefined : startOutcomesTrackingAction}
     />
   );
 }

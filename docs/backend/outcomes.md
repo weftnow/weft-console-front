@@ -14,10 +14,17 @@ The timestamp records when the organizer confirmed the meeting. Historical event
 
 ## Interface and permissions
 
-Active local Owners and Organizers can read the selected organization’s Outcomes and Overview summaries and manage outcomes for its events. Staff grants, Wefter access, and sponsor roles do not grant reporting access. Reporting reads aggregate data. Simulation mode disables outcome writes. Real confirmations remain readable, and matches persisted by the simulator are excluded from recording by their deterministic recommendation IDs.
+Active local Owners and Organizers can read the selected organization’s Outcomes and Overview summaries and manage outcomes for its events. Staff grants, Wefter access, and sponsor roles do not grant reporting access. Reporting reads aggregate data. Matches persisted by the simulator cannot be used to record real completions.
 
 - `/outcomes` shows the organization report. `/outcomes?eventId=<eventId>` narrows the same report to an event in the selected organization.
+- Overview links to event reports from the completed-introduction bars and shows tracking coverage. The organization report switches its event comparison between completed introductions and people introduced. The line chart in both report scopes counts current confirmations by recorded date in UTC. A correction removes the corresponding count. The chart begins at the first recorded day and ends at the last. The daily counts can also be read as a table.
 - `GET /api/events/:eventId/matches/:matchId/outcome` returns `{ data: { completion: { trackingStartedAt, completedAt, revision } } }` for an authorized saved match. Timestamps are UTC ISO 8601 or `null`. Revision `0` means that no confirmation or correction has been recorded.
 - `PUT` at the same path requires a same-origin JSON body `{ completed, expectedRevision }` and returns the resulting completion. Starting tracking and resending an unchanged confirmation cannot create duplicate results. A stale conflicting write returns `409 CONFLICT`. The UI reloads the outcome before another decision. Both routes send `Cache-Control: private, no-store`.
 
 The migration runs through the [explicit migration workflow](vercel-deployment.md). The integration suite requires the disposable local database described in [verification](../VERIFICATION.md).
+
+## Demo mode
+
+`WEFT_ENGINE_MODE=simulation` selects the same fictional matches for Outcomes that the matching demo saves. Once the normal matching flow has generated pairs, two of every three fixture positions show a completed meeting when the match is active and the two guests are distinct people. Overview, the event report, and Match Detail use the same read-only projection. Events without saved demo pairs remain untracked. A later revocation removes that pair from the demo totals. Demo reads use the matching tables and work before migration 0017. No fictional outcomes are stored, all outcome writes are disabled in demo mode, and Vercel production always reads the real report. See [matching simulation](../changes/2026-10-20-matching-simulation.md).
+
+Demo confirmation dates are spread deterministically across seven UTC days ending on the first saved demo match’s date. They illustrate the daily chart for any fixture without storing dates or changing real confirmations.

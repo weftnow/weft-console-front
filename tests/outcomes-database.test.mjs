@@ -90,6 +90,8 @@ test("Outcomes tracking, attestations, and audit history stay scoped and replay 
       hasError("CONFLICT", "STALE_VERSION")(error) && error.details.current.completedAt === completed.completedAt);
 
     await setMatchCompletion({ ...second, completed: true, expectedRevision: 0 });
+    const secondRecordedAt = new Date(Date.parse(completed.completedAt) - 2 * 86_400_000).toISOString();
+    await pool.query("update event_match_completions set completed_at = $2 where match_id = $1", [second.matchId, secondRecordedAt]);
     await pool.query("update event_guests set person_id = $2 where id = $1", [c.id, a.personId]);
     await startOutcomesTracking(foreign);
     await setMatchCompletion({ ...foreign, matchId: foreignMatchId, completed: true, expectedRevision: 0 });
@@ -97,10 +99,15 @@ test("Outcomes tracking, attestations, and audit history stay scoped and replay 
     assert.deepEqual(report, {
       eventOptions: before.eventOptions,
       selectedEventId: eventId,
+      recordedByDay: [],
       totals: { completedIntroductions: 2, trackedEvents: 1, totalEvents: 1 },
       events: [{ eventId, eventName: "Tracked event", startsAt: "2026-11-18T01:00:00.000Z", timezone: "Asia/Singapore",
         trackingStartedAt: start.trackingStartedAt, completedIntroductions: 2, peopleIntroduced: 3 }],
     });
+    const recorded = [{ date: secondRecordedAt.slice(0, 10), count: 1 }, { date: completed.completedAt.slice(0, 10), count: 1 }];
+    assert.deepEqual((await getOutcomesReport({ ...localEvent, includeTimeline: true })).recordedByDay, recorded);
+    assert.deepEqual((await getOutcomesReport({ ...organization, includeTimeline: true })).recordedByDay, recorded);
+    assert.deepEqual((await getOutcomesReport({ ...localEvent, eventId: untrackedId, includeTimeline: true })).recordedByDay, []);
 
     await pool.query("update event_matches set status = 'revoked', revoked_at = now(), revocation_reason = 'pair_blocked' where id = $1",
       [primary.matchId]);
@@ -110,9 +117,10 @@ test("Outcomes tracking, attestations, and audit history stay scoped and replay 
     assert.deepEqual(await setMatchCompletion(corrected), undone);
     await assert.rejects(setMatchCompletion(confirm), hasError("CONFLICT", "STALE_VERSION"));
     await assert.rejects(setMatchCompletion({ ...confirm, expectedRevision: 2 }), hasError("CONFLICT", "MATCH_REVOKED"));
-    const after = await getOutcomesReport(localEvent);
+    const after = await getOutcomesReport({ ...localEvent, includeTimeline: true });
     assert.equal(after.totals.completedIntroductions, 1);
     assert.equal(after.events[0].peopleIntroduced, 2);
+    assert.deepEqual(after.recordedByDay, recorded.slice(0, 1));
     const history = (await pool.query(
       "select revision, completed, changed_by, changed_at from event_match_completion_changes where event_id = $1 and match_id = $2 order by revision",
       [eventId, primary.matchId],
@@ -129,28 +137,67 @@ test("Outcomes tracking, attestations, and audit history stay scoped and replay 
     await assert.rejects(setMatchCompletion(corrected), hasError("FORBIDDEN"));
   });
 
-test("Outcomes excludes persisted simulated matches and keeps real reporting readable in simulation",
+test("simulation projects only fixture matches and leaves real completions untouched",
   { skip: !outcomesDatabaseEnabled }, async (t) => {
-    const { userIds, organizationId, eventId, untrackedId, addGuest, addMatch } = await createOutcomesFixture(t);
+    const { pool, userIds, organizationId, eventId, untrackedId, foreignEventId, addGuest, addMatch } = await createOutcomesFixture(t);
     const localEvent = { userId: userIds.owner, organizationId, eventId };
-    const [a, b, c] = await Promise.all([0, 1, 2].map((position) => addGuest(eventId, position)));
+    const [a, b, c, d] = await Promise.all([0, 1, 2, 3].map((position) => addGuest(eventId, position)));
     const { deterministicUuid } = loadTs("src/modules/network/server/simulated-engine.ts");
     const { DEMO_FIXTURES } = loadTs("src/modules/network/simulation/demo-matches.ts");
-    const fixturePair = DEMO_FIXTURES[0][0];
-    const demoId = deterministicUuid("recommendation", eventId, fixturePair.a, fixturePair.b);
-    const demo = { ...localEvent, matchId: await addMatch(eventId, a, b, demoId) };
-    const real = { ...localEvent, matchId: await addMatch(eventId, a, c) };
+    const demoMatches = [];
+    for (const [index, guest] of [b, c, d].entries()) {
+      const pair = DEMO_FIXTURES[0][index];
+      const demoId = deterministicUuid("recommendation", eventId, pair.a, pair.b);
+      demoMatches.push({ ...localEvent, matchId: await addMatch(eventId, a, guest, demoId) });
+    }
+    const [demo, second, pending] = demoMatches;
+    const real = { ...localEvent, matchId: await addMatch(eventId, b, c) };
 
     await startOutcomesTracking(localEvent);
     const completion = await setMatchCompletion({ ...real, completed: true, expectedRevision: 0 });
-    const before = await getOutcomesReport(localEvent);
+    const actual = await getOutcomesReport(localEvent);
+    assert.equal(actual.totals.completedIntroductions, 1);
+    assert.equal(actual.simulated, undefined);
     await assert.rejects(getMatchCompletion(demo), hasError("NOT_FOUND"));
     await assert.rejects(setMatchCompletion({ ...demo, completed: true, expectedRevision: 0 }), hasError("NOT_FOUND"));
 
     process.env.WEFT_ENGINE_MODE = "simulation";
     await assert.rejects(startOutcomesTracking({ ...localEvent, eventId: untrackedId }), hasError("CONFLICT", "SIMULATION_ACTIVE"));
-    await assert.rejects(setMatchCompletion({ ...real, completed: false, expectedRevision: 1 }), hasError("CONFLICT", "SIMULATION_ACTIVE"));
+    await assert.rejects(setMatchCompletion({ ...demo, completed: false, expectedRevision: 0 }), hasError("CONFLICT", "SIMULATION_ACTIVE"));
+    await assert.rejects(getMatchCompletion(real), hasError("NOT_FOUND"));
+    await assert.rejects(getMatchCompletion({ ...demo, eventId: untrackedId }), hasError("NOT_FOUND"));
+    await assert.rejects(getMatchCompletion({ ...demo, userId: userIds.staff }), hasError("FORBIDDEN"));
+    await assert.rejects(getOutcomesReport({ ...localEvent, eventId: foreignEventId }), hasError("NOT_FOUND"));
+    await assert.rejects(getOutcomesReport({ ...localEvent, userId: userIds.sponsor }), hasError("FORBIDDEN"));
+
+    const report = await getOutcomesReport({ userId: userIds.organizer, organizationId, includeTimeline: true });
+    assert.equal(report.simulated, true);
+    assert.deepEqual(report.totals, { completedIntroductions: 2, trackedEvents: 1, totalEvents: 2 });
+    const tracked = report.events.find((event) => event.eventId === eventId);
+    assert.equal(tracked.peopleIntroduced, 3);
+    assert.deepEqual(report.events.find((event) => event.eventId === untrackedId).trackingStartedAt, null);
+    assert.deepEqual(await getOutcomesReport({ ...localEvent, includeTimeline: true }), {
+      ...report, selectedEventId: eventId, events: [tracked], totals: { ...report.totals, totalEvents: 1 },
+    });
+
+    const simulatedCompletion = await getMatchCompletion(demo);
+    assert.equal(simulatedCompletion.simulated, true);
+    assert.equal(simulatedCompletion.trackingStartedAt, tracked.trackingStartedAt);
+    assert.ok(simulatedCompletion.completedAt);
+    const secondCompletion = await getMatchCompletion(second);
+    assert.deepEqual(report.recordedByDay, [simulatedCompletion, secondCompletion].map(({ completedAt }) => ({ date: completedAt.slice(0, 10), count: 1 })));
+    assert.equal((await getMatchCompletion(pending)).completedAt, null);
+
+    await pool.query("update event_guests set person_id = $2 where id = $1", [c.id, b.personId]);
+    assert.equal((await getOutcomesReport(localEvent)).events[0].peopleIntroduced, 2);
+    await pool.query("update event_matches set status = 'revoked', revoked_at = now(), revocation_reason = 'pair_blocked' where id = $1", [demo.matchId]);
+    assert.equal((await getMatchCompletion(demo)).completedAt, null);
+    assert.equal((await getOutcomesReport(localEvent)).totals.completedIntroductions, 1);
+    assert.equal((await pool.query("select count(*)::int as count from event_match_completions where event_id=$1", [eventId])).rows[0].count, 1);
+
+    await pool.query("update event_guests set person_id = $2 where id = $1", [c.id, c.personId]);
+    process.env.VERCEL_ENV = "production";
     await assert.rejects(getMatchCompletion(demo), hasError("NOT_FOUND"));
     assert.deepEqual(await getMatchCompletion(real), completion);
-    assert.deepEqual(await getOutcomesReport(localEvent), before);
+    assert.deepEqual(await getOutcomesReport(localEvent), actual);
   });

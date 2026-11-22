@@ -21,6 +21,8 @@ import {
 import { Surface } from "@/shared/ui/surface";
 import { TactileButton } from "@/shared/ui/tactile-button";
 import { OutcomesEventFilter } from "./outcomes-event-filter";
+import { OutcomesByEvent } from "./outcomes-by-event";
+import { OutcomesTimeline } from "./outcomes-timeline";
 
 function formatEventTimestamp(i18n: I18n, iso: string, timezone: string): string {
   const options: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" };
@@ -62,7 +64,7 @@ export function OutcomesReportPage({
   const isAllTrackedZero = !isFiltered && report.totals.trackedEvents > 0 && report.totals.completedIntroductions === 0;
 
   return (
-    <main className="dashboard-main outcomes-main">
+    <main className="dashboard-main outcomes-main" data-simulated={report.simulated ? "true" : undefined}>
       <header className="events-header outcomes-header">
         <div className="events-header__copy">
           <p className="section-kicker outcomes-header__kicker">{copy.kicker}</p>
@@ -125,14 +127,18 @@ export function OutcomesReportPage({
                 <Surface as="section" aria-label={copy.metricsLabel} className="panel outcomes-untracked-panel" depth="raised">
                   <EmptyState
                     action={
-                      startTrackingAction ? (
+                      report.simulated ? (
+                        <Link className="tactile-button tactile-button--neutral" href={`/events/${selectedEvent.eventId}?tab=matches`}>
+                          {copy.openMatches}
+                        </Link>
+                      ) : startTrackingAction ? (
                         <form action={startTrackingAction} className="outcomes-start-form">
                           <input name="eventId" type="hidden" value={selectedEvent.eventId} />
                           <StartTrackingButton />
                         </form>
                       ) : undefined
                     }
-                    description={startTrackingAction ? i18n.t(copy.untrackedEventDescription, { event: selectedEvent.eventName }) : copy.trackingUnavailable}
+                    description={report.simulated ? copy.awaitingMatches : i18n.t(copy.untrackedEventDescription, { event: selectedEvent.eventName })}
                     icon={ClockIcon}
                     size="panel"
                     title={copy.untrackedEventTitle}
@@ -191,7 +197,7 @@ export function OutcomesReportPage({
             ) : isAllUntracked ? (
               <Surface as="section" aria-label={copy.metricsLabel} className="panel" depth="raised">
                 <EmptyState
-                  description={copy.untrackedAllDescription}
+                  description={report.simulated ? copy.awaitingMatches : copy.untrackedAllDescription}
                   icon={OutcomesIcon}
                   size="panel"
                   title={copy.untrackedAllTitle}
@@ -238,6 +244,11 @@ export function OutcomesReportPage({
             )}
 
             <p className="outcomes-methodology">{copy.methodology}</p>
+
+            <OutcomesTimeline days={report.recordedByDay} />
+            {!isFiltered && report.totals.trackedEvents > 0 ? <Surface className="panel" depth="raised">
+              <OutcomesByEvent events={report.events} compare />
+            </Surface> : null}
 
             <Surface as="section" aria-labelledby="outcomes-events-heading" className="panel table-panel outcomes-table-panel" depth="raised">
               <div className="panel-heading">

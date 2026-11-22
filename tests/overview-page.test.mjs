@@ -80,6 +80,10 @@ test("tracked outcomes with partial coverage show aggregate completed introducti
   assert.match(html, /Completed introductions/);
   assert.match(html, /1 of 2/);
   assert.match(html, /Partial coverage/);
+  assert.match(html, /Completed introductions by event/);
+  assert.match(html, /class="outcomes-coverage"[^>]*data-segmented="true"/);
+  assert.match(html, /outcomes-bar-untracked">Not tracked/);
+  assert.match(html, /href="\/outcomes\?eventId=11111111-1111-4111-8111-111111111111"/);
   assert.match(html, /View outcomes report/);
   assert.doesNotMatch(html, /People introduced/);
 });
@@ -98,6 +102,7 @@ test("tracked zero outcomes show 0 completed introductions and active tracking n
   });
   assert.match(html, /<strong class="outcomes-overview-stat__value">0<\/strong>/);
   assert.match(html, /Tracking is active/);
+  assert.match(html, /outcomes-bar-value">0<\/span>/);
 });
 
 test("outcomes load failure renders an unavailable outcomes panel while keeping the event overview intact", () => {

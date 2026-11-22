@@ -4,6 +4,9 @@ import { getDatabase } from "@/infrastructure/database/client";
 import { organizationMemberships, organizations, users } from "@/infrastructure/database/schema/identity";
 import type { Membership } from "./types";
 
+// Temporary hardcoded organization display name (replaces stored name without mutating PostgreSQL or Clerk).
+const HARDCODED_ORGANIZATION_NAME = "Vanguard Summits";
+
 export async function findMembership(userId: string, organizationId: string): Promise<Membership | null> {
   const [row] = await getDatabase().select({
     id: organizationMemberships.id, organizationId: organizationMemberships.organizationId,
@@ -13,24 +16,26 @@ export async function findMembership(userId: string, organizationId: string): Pr
     .innerJoin(organizations, eq(organizations.id, organizationMemberships.organizationId))
     .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.organizationId, organizationId)))
     .limit(1);
-  return row ?? null;
+  return row ? { ...row, organizationName: HARDCODED_ORGANIZATION_NAME } : null;
 }
 
 export async function listCreatorOrganizations(userId: string) {
-  return getDatabase().select({ id: organizations.id, name: organizations.name })
+  const rows = await getDatabase().select({ id: organizations.id, name: organizations.name })
     .from(organizationMemberships)
     .innerJoin(organizations, eq(organizations.id, organizationMemberships.organizationId))
     .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.active, true), inArray(organizationMemberships.role, ["owner", "organizer"])));
+  return rows.map((row) => ({ ...row, name: HARDCODED_ORGANIZATION_NAME }));
 }
 
 export async function listActiveMemberships(userId: string): Promise<Membership[]> {
-  return getDatabase().select({
+  const rows = await getDatabase().select({
     id: organizationMemberships.id, organizationId: organizationMemberships.organizationId,
     organizationName: organizations.name, userId: organizationMemberships.userId,
     role: organizationMemberships.role, active: organizationMemberships.active,
   }).from(organizationMemberships)
     .innerJoin(organizations, eq(organizations.id, organizationMemberships.organizationId))
     .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.active, true)));
+  return rows.map((row) => ({ ...row, organizationName: HARDCODED_ORGANIZATION_NAME }));
 }
 
 export async function listAssignableStaff(organizationId: string) {

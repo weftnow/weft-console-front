@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ComponentType, SVGProps } from "react";
+import type { ComponentType, CSSProperties, SVGProps } from "react";
 
 import type { EventSummaryDto } from "@/modules/events/event-dto";
 import { eventArt, formatCountdown, groupEvents } from "@/modules/events/event-list";
@@ -14,11 +14,12 @@ import { ConsoleSidebar } from "@/shared/ui/console-sidebar";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { ArrowRightIcon, CalendarIcon, CheckIcon, ChevronRightIcon, LocationIcon, OutcomesIcon, PeopleIcon } from "@/shared/ui/icons";
 import { Surface } from "@/shared/ui/surface";
+import { OutcomesByEvent } from "./outcomes-by-event";
 
 type Glyph = ComponentType<SVGProps<SVGSVGElement>>;
 
 export type OverviewOutcomesState =
-  | { status: "ready"; report: Pick<OutcomesReport, "totals"> }
+  | { status: "ready"; report: Pick<OutcomesReport, "events" | "totals" | "simulated"> }
   | { status: "error" };
 
 function Hero({ events }: { events: EventSummaryDto[] }) {
@@ -72,12 +73,13 @@ function OverviewOutcomesPanel({ outcomes }: { outcomes?: OverviewOutcomesState 
   }
 
   const report = outcomes?.report;
+  const simulated = report?.simulated ? "true" : undefined;
   if (!report || report.totals.trackedEvents === 0) {
     return (
-      <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-label={copy.outcomesLabel}>
+      <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-label={copy.outcomesLabel} data-simulated={simulated}>
         <EmptyState
           action={<Link className="tactile-button tactile-button--neutral" href="/outcomes">{overviewCopy.openOutcomes}</Link>}
-          description={overviewCopy.untrackedDescription}
+          description={simulated ? copy.outcomes.awaitingMatches : overviewCopy.untrackedDescription}
           icon={OutcomesIcon}
           size="panel"
           title={overviewCopy.untrackedTitle}
@@ -90,7 +92,7 @@ function OverviewOutcomesPanel({ outcomes }: { outcomes?: OverviewOutcomesState 
   const isZero = report.totals.completedIntroductions === 0;
 
   return (
-    <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-labelledby="overview-outcomes-title">
+    <Surface as="section" className="panel outcomes-overview-panel" depth="raised" aria-labelledby="overview-outcomes-title" data-simulated={simulated}>
       <div className="panel-heading">
         <div>
           <h2 className="panel-title" id="overview-outcomes-title">{overviewCopy.heading}</h2>
@@ -118,11 +120,17 @@ function OverviewOutcomesPanel({ outcomes }: { outcomes?: OverviewOutcomesState 
               })}
             </strong>
             <span className="outcomes-overview-stat__label">{copy.outcomes.metrics.trackedEvents}</span>
+            <span className="outcomes-coverage" aria-hidden="true"
+              data-segmented={report.totals.totalEvents <= 10 ? "true" : undefined}
+              style={{ "--event-count": report.totals.totalEvents } as CSSProperties}>
+              <span style={{ width: `${report.totals.trackedEvents / report.totals.totalEvents * 100}%` }} />
+            </span>
           </div>
         </Surface>
       </div>
       {isPartial ? <p className="outcomes-overview-note">{overviewCopy.partialCoverageNote}</p> : null}
       {isZero ? <p className="outcomes-overview-note">{overviewCopy.trackedZeroNote}</p> : null}
+      <OutcomesByEvent events={report.events} />
     </Surface>
   );
 }

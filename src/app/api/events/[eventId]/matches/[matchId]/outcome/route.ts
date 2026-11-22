@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { requireOrganizerApiScope } from "@/infrastructure/auth/console-page-context";
+import { engineModeHeaders } from "@/infrastructure/http/engine-mode-headers";
 import { errorResponse } from "@/infrastructure/http/errors";
 import { readBoundedJson } from "@/infrastructure/http/request-body";
 import { uuidSchema } from "@/modules/events/event-schemas";
@@ -25,7 +26,7 @@ const privateHeaders = { "Cache-Control": "private, no-store" };
 export async function GET(_request: Request, context: OutcomeRoute) {
   try {
     const completion = await getMatchCompletion(await requireMatchScope(context));
-    return Response.json({ data: { completion } }, { headers: privateHeaders });
+    return Response.json({ data: { completion } }, { headers: { ...privateHeaders, ...engineModeHeaders() } });
   } catch (error) {
     return errorResponse(error, "read_match_outcome", "Could not load the introduction outcome.");
   }

@@ -7,6 +7,8 @@ import { sendJson, toApplicationError } from "@/modules/attendees/mutations/api-
 import { formatRelativeActivity } from "@/modules/events/event-record";
 import { eventMatchKey } from "@/modules/network/queries/matches";
 import { useI18n } from "@/shared/i18n/I18nProvider";
+import { LoadingPlaceholder } from "@/shared/ui/loading";
+import { TactileButton } from "@/shared/ui/tactile-button";
 import { ApplicationError } from "@/shared/lib/application-error";
 import { matchCompletionResponseSchema } from "../match-completion-schema";
 import type { MatchCompletion } from "../outcomes-report";
@@ -63,13 +65,15 @@ export function MatchCompletionPanel({ eventId, matchId, canConfirm }: { eventId
   const draftStale = draft !== null && draft.expectedRevision !== completion?.revision;
   let body;
   if (query.isFetching && (saveDenied || stale)) {
-    body = <p role="status">{copy.loading}</p>;
+    body = <LoadingPlaceholder label={copy.loading} />;
   } else if (query.error instanceof ApplicationError && query.error.code === "NOT_FOUND") {
     body = <p>{copy.unavailable}</p>;
   } else if (query.isError || saveDenied) {
     body = <p role="alert">{copy.loadFailed} <button className="event-text-action" type="button" onClick={() => void retry()}>{copy.reload}</button></p>;
   } else if (!completion) {
-    body = <p role="status">{copy.loading}</p>;
+    body = <LoadingPlaceholder label={copy.loading} />;
+  } else if (completion.simulated) {
+    body = <p>{completion.completedAt ? copy.completed : copy.unrecorded}</p>;
   } else if (!completion.trackingStartedAt) {
     body = <p>{copy.untracked} <Link className="text-link" href={`/outcomes?eventId=${eventId}`}>{copy.openOutcomes}</Link></p>;
   } else if (!recorded && !canConfirm) {
@@ -82,20 +86,21 @@ export function MatchCompletionPanel({ eventId, matchId, canConfirm }: { eventId
       </p> : null}
       {draft && !draftStale ? <p>{draft.completed ? copy.confirmPrompt : copy.removePrompt}</p> : null}
       {mutation.isError || draftStale ? null : <div className="match-completion__actions">
-        <button className={`tactile-button tactile-button--${draft ? "primary" : "neutral"}`} type="button"
-          disabled={mutation.isPending || query.isFetching}
+        <TactileButton variant={draft ? "primary" : "neutral"}
+          disabled={query.isFetching}
+          pendingLabel={mutation.isPending ? copy.saving : undefined}
           onClick={() => {
             if (draft) mutation.mutate(draft);
             else setDraft({ completed: !recorded, expectedRevision: completion.revision });
           }}>
-          {mutation.isPending ? copy.saving : draft ? (draft.completed ? copy.record : copy.remove) : (recorded ? copy.correct : copy.confirm)}
-        </button>
-        {draft ? <button className="tactile-button tactile-button--neutral" type="button" disabled={mutation.isPending} onClick={() => setDraft(null)}>{copy.cancel}</button> : null}
+          {draft ? (draft.completed ? copy.record : copy.remove) : (recorded ? copy.correct : copy.confirm)}
+        </TactileButton>
+        {draft ? <TactileButton disabled={mutation.isPending} onClick={() => setDraft(null)}>{copy.cancel}</TactileButton> : null}
       </div>}
     </>;
   }
 
-  return <section className="match-completion" aria-labelledby={headingId}>
+  return <section className="match-completion" aria-labelledby={headingId} data-simulated={completion?.simulated ? "true" : undefined}>
     <h3 id={headingId}>{copy.heading}</h3>
     {body}
   </section>;
