@@ -100,14 +100,42 @@ export function MatchDetailView({ match }: { match: MatchDetailDto }) {
       <span className="match-identity-pair__link" aria-hidden="true"><LinkIcon height="20" width="20" /></span>
     </div>
 
-      <section className="match-benefits" aria-labelledby="match-benefits-title">
+    <section className="match-benefits" aria-labelledby="match-benefits-title">
       <h3 className="match-section-title" id="match-benefits-title"><TargetIcon height="18" width="18" />{copy.whyTitle}</h3>
-      <div className="match-benefits__columns">
+      {match.discussion ? <>
+        <p className="match-discussion__reason">{match.discussion.why}</p>
+        {match.discussion.topics.every((topic) => topic.heading && topic.problem && topic.whyMatch) ? (
+          <div className="match-discussion__steps">
+            {match.discussion.topics.map((topic, index) => {
+              const recipient = match.guests.find((guest) => guest.id === topic.guestId);
+              const helper = match.guests.find((guest) => guest.id !== topic.guestId);
+              const recipientName = recipient?.name || copy.thisAttendee;
+              const helperName = helper?.name || copy.thisAttendee;
+              return <div className="match-discussion__step" key={topic.guestId}>
+                <h4>{t(copy.howHelpsHeading, { index: index + 1, helper: helperName, recipient: recipientName, topic: topic.heading ?? "" })}</h4>
+                <ul className="match-discussion__points">
+                  <li><strong>{t(copy.problemLabel, { name: recipientName })}</strong> {topic.problem}</li>
+                  <li><strong>{t(copy.whyMatchLabel, { name: helperName })}</strong> {topic.whyMatch}</li>
+                </ul>
+              </div>;
+            })}
+          </div>
+        ) : null}
+        <div className="match-benefits__columns">
+          {match.discussion.topics.map((topic) => <div className="match-discussion__person" key={topic.guestId}>
+            <h4>{t(copy.forGuest, { name: match.guests.find((guest) => guest.id === topic.guestId)?.name || copy.thisAttendee })}</h4>
+            <ul className="match-discussion__topics">
+              <li><strong>{copy.discussionBusiness}</strong><p>{topic.business}</p></li>
+              <li><strong>{copy.discussionLife}</strong><p>{topic.life}</p></li>
+            </ul>
+          </div>)}
+        </div>
+      </> : <div className="match-benefits__columns">
         {match.guests.map((guest) => <div className="match-benefit" key={guest.id}>
           <h4>{t(copy.forGuest, { name: guest.name || copy.thisAttendee })}</h4>
           <p>{guest.benefit || <span className="match-muted">{copy.noBenefit}</span>}</p>
         </div>)}
-      </div>
+      </div>}
     </section>
 
     {context || hasMissingInformation ? <section className="match-context" aria-labelledby="match-context-title">

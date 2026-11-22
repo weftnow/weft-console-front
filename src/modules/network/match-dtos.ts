@@ -1,4 +1,5 @@
 import type { MatchDetailDto, MatchSummaryDto } from "./matches-schemas";
+import { readMatchDiscussion } from "./match-discussion";
 
 type MatchRowLike = {
   id: string; status: "active" | "revoked"; introductionPath: "sms_coordination" | "wefter"; pairScore: number;
@@ -62,7 +63,8 @@ export function toMatchDetail(input: {
       side(low, row.profileVersionLow, row.scoreLow, input.profiles.low),
       side(high, row.profileVersionHigh, row.scoreHigh, input.profiles.high),
     ],
-    uncertainty: row.uncertainty, sourceRunId: row.sourceRunId, evidence: row.evidence,
+    uncertainty: row.uncertainty, sourceRunId: row.sourceRunId,
+    ...readMatchDiscussion(row.evidence, low.id, high.id),
     restrictions: input.restrictions.map((r) => ({ guestId: r.guestId, otherGuestName: r.otherGuest ? guestName(r.otherGuest) : "Unknown guest", reason: r.reason })),
     earlierIntroductions: input.earlier.map((e) => ({
       matchId: e.row.id, guestId: e.guestId, otherGuestName: e.otherGuest ? guestName(e.otherGuest) : "Unknown guest",

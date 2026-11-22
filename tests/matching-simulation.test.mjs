@@ -16,10 +16,13 @@ const { matchingEngineMode, selectStatusReader, selectFeedReader } = loadTs("src
 const { readEngineMatchingStatus } = loadTs("src/modules/network/server/matching-engine-client.ts");
 const { readEngineMatchingFeed } = loadTs("src/modules/network/server/matching-feed-client.ts");
 const { readSimulatedMatchingStatus, readSimulatedMatchingFeed, deterministicUuid, WAITING_MS, FINISH_MS } = loadTs("src/modules/network/server/simulated-engine.ts");
-const { DEMO_MATCHES, DEMO_FIXTURES, MAX_DEMO_MATCHES } = loadTs("src/modules/network/simulation/demo-matches.ts");
+const { DEMO_MATCHES, DEMO_FIXTURES, EXECUTIVE_DEMO_MATCHES, MAX_DEMO_MATCHES } = loadTs("src/modules/network/simulation/demo-matches.ts");
 const { engineMatchingStatusSchema, matchingStatusResultSchema } = loadTs("src/modules/network/matching-status-schemas.ts");
 const { engineMatchingFeedSchema } = loadTs("src/modules/network/matching-feed-schemas.ts");
 const { introductionPathFor } = loadTs("src/modules/network/match-rules.ts");
+const { toMatchDetail } = loadTs("src/modules/network/match-dtos.ts");
+const { matchDetailSchema } = loadTs("src/modules/network/matches-schemas.ts");
+const { MatchDetailView } = loadTs("src/modules/network/components/match-detail-view.tsx");
 const { MatchesPanelView } = loadTs("src/modules/network/components/matches-panel.tsx");
 const { MatchingStatusView } = loadTs("src/modules/network/components/matching-status-panel.tsx");
 const { handleGetMatchingStatus } = loadTs("src/infrastructure/http/matching-status-handler.ts");
@@ -260,8 +263,9 @@ const themedRosters = [
 ].map(([file, size]) => ({ file, size, guests: parseGuestCsvServer(readFileSync(file, "utf8")).guests }));
 
 test("each themed demo roster parses and has its own consistent fixture", () => {
-  assert.equal(DEMO_FIXTURES.length, 1 + themedRosters.length);
+  assert.equal(DEMO_FIXTURES.length, 1 + themedRosters.length + 1);
   assert.equal(DEMO_FIXTURES[0], DEMO_MATCHES);
+  assert.equal(DEMO_FIXTURES.at(-1), EXECUTIVE_DEMO_MATCHES);
   themedRosters.forEach(({ file, size, guests }, index) => {
     assert.equal(guests.length, size, file);
     const type = new Map(guests.map((guest) => [guest.email, guest.guestType]));
@@ -363,4 +367,155 @@ test("a Spanish event gets Spanish demo reasons with the same scores and verbati
     assert.ok(reasons(entry).every((reason) => reason && reason.length > 0));
   });
   assert.match(reasons(spanish.feed.entries[0]).join(" "), /invierte|podría/);
+});
+
+test("the curated executive 241-guest roster parses cleanly and has 42 bidirectional matches with discussion topics", () => {
+  const executiveCsv = readFileSync("public/demo/weft-demo-executive-241.csv", "utf8");
+  const parsed = parseGuestCsvServer(executiveCsv);
+  assert.equal(parsed.rows, 241);
+  assert.equal(parsed.skipped, 0);
+  assert.equal(parsed.guests.length, 241);
+  assert.equal(parsed.vips, 11);
+  assert.equal(parsed.sponsors, 2);
+
+  const type = new Map(parsed.guests.map((guest) => [guest.email, guest.guestType]));
+  assert.equal(type.size, 241, "executive CSV emails are unique");
+  assert.equal(new Set(parsed.guests.map((guest) => guest.phone)).size, 241, "executive CSV phones are unique");
+  assert.equal(parsed.guests.every((guest) => guest.profileType === ""), true, "Profile Type is omitted");
+
+  assert.equal(EXECUTIVE_DEMO_MATCHES.length, 42);
+  assert.equal(EXECUTIVE_DEMO_MATCHES.some((pair) => pair.a === "jennifer.prichard@vistage.com" || pair.b === "jennifer.prichard@vistage.com"), true);
+  assert.ok(EXECUTIVE_DEMO_MATCHES.length <= MAX_DEMO_MATCHES);
+  const seen = new Set();
+  const perGuest = new Map();
+  const paths = new Set();
+  for (const pair of EXECUTIVE_DEMO_MATCHES) {
+    assert.ok(type.has(pair.a) && type.has(pair.b), `${pair.a} / ${pair.b} are in weft-demo-executive-241.csv`);
+    assert.notEqual(pair.a, pair.b);
+    const key = [pair.a, pair.b].sort().join();
+    assert.equal(seen.has(key), false, `duplicate pair ${key}`);
+    seen.add(key);
+    paths.add(introductionPathFor(type.get(pair.a), type.get(pair.b)));
+    assert.ok(pair.pairScore >= 0 && pair.pairScore <= 100 && pair.uncertainty.trim().length > 0);
+    assert.equal(pair.evidence.some((item) => item.who === "a"), true);
+    assert.equal(pair.evidence.some((item) => item.who === "b"), true);
+    assert.ok(pair.discussion?.why.trim() && pair.discussion.forA.heading?.trim() && pair.discussion.forA.problem?.trim() && pair.discussion.forA.whyMatch?.trim() && pair.discussion.forA.business.trim() && pair.discussion.forA.life.trim() && pair.discussion.forB.heading?.trim() && pair.discussion.forB.problem?.trim() && pair.discussion.forB.whyMatch?.trim() && pair.discussion.forB.business.trim() && pair.discussion.forB.life.trim());
+    assert.ok(pair.es.discussion?.why.trim() && pair.es.discussion.forA.heading?.trim() && pair.es.discussion.forA.problem?.trim() && pair.es.discussion.forA.whyMatch?.trim() && pair.es.discussion.forA.business.trim() && pair.es.discussion.forA.life.trim() && pair.es.discussion.forB.heading?.trim() && pair.es.discussion.forB.problem?.trim() && pair.es.discussion.forB.whyMatch?.trim() && pair.es.discussion.forB.business.trim() && pair.es.discussion.forB.life.trim());
+    for (const side of [pair.forA, pair.forB]) assert.ok(side.benefit.length > 20 && side.score >= 0 && side.score <= 100 && side.shareableReason);
+    for (const side of [pair.es.forA, pair.es.forB]) assert.ok(side.benefit.length > 20 && side.shareableReason);
+    for (const email of [pair.a, pair.b]) perGuest.set(email, (perGuest.get(email) ?? 0) + 1);
+  }
+  assert.ok(Math.max(...perGuest.values()) <= 5, "no guest has more than 5 matches");
+  assert.deepEqual([...paths].sort(), ["sms_coordination", "wefter"], "both introduction paths are demonstrated");
+});
+
+test("finished simulation for the 241-guest executive roster emits bilingual discussion topics and MatchDetailView renders them with legacy fallback", async () => {
+  const parsed = parseGuestCsvServer(readFileSync("public/demo/weft-demo-executive-241.csv", "utf8"));
+  const guestRecords = parsed.guests.map((guest, index) => ({
+    ...guest,
+    id: guestId(index),
+    jobPosition: guest.position,
+    normalizedEmail: guest.email,
+    profileVersion: 1,
+    networkingStatus: "included",
+  }));
+  const byId = new Map(guestRecords.map((guest) => [guest.id, guest]));
+
+  const english = await feedAfter(0, { guests: guestRecords, language: "en" });
+  const spanish = await feedAfter(0, { guests: guestRecords, language: "es" });
+  assert.equal(engineMatchingFeedSchema.safeParse(english.feed).success, true);
+  assert.equal(engineMatchingFeedSchema.safeParse(spanish.feed).success, true);
+  assert.equal(english.feed.entries.length, EXECUTIVE_DEMO_MATCHES.length);
+  assert.equal(spanish.feed.entries.length, EXECUTIVE_DEMO_MATCHES.length);
+
+  const toRow = (entry) => {
+    const rec = entry.recommendation;
+    const low = byId.get(rec.guestLowId);
+    const high = byId.get(rec.guestHighId);
+    return {
+      low,
+      high,
+      row: {
+        id: rec.recommendationId,
+        status: "active",
+        introductionPath: introductionPathFor(low.guestType, high.guestType),
+        pairScore: rec.pairScore,
+        guestLowId: low.id,
+        guestHighId: high.id,
+        sourceRunId: entry.runId,
+        profileVersionLow: rec.profileVersions[low.id],
+        profileVersionHigh: rec.profileVersions[high.id],
+        scoreLow: rec.directionalScores[low.id],
+        scoreHigh: rec.directionalScores[high.id],
+        benefits: rec.benefits,
+        shareableReasons: rec.shareableReasons,
+        missingInformation: rec.missingInformation,
+        evidence: rec.evidence,
+        uncertainty: rec.uncertainty,
+        createdAt: anchor,
+        revokedAt: null,
+        revocationReason: null,
+      },
+    };
+  };
+
+  const enPair = toRow(english.feed.entries[0]);
+  const esPair = toRow(spanish.feed.entries[0]);
+  const enDetail = toMatchDetail({ ...enPair, profiles: { low: null, high: null }, restrictions: [], earlier: [] });
+  const esDetail = toMatchDetail({ ...esPair, profiles: { low: null, high: null }, restrictions: [], earlier: [] });
+
+  assert.equal(matchDetailSchema.safeParse(enDetail).success, true);
+  assert.equal(matchDetailSchema.safeParse(esDetail).success, true);
+  assert.equal(enDetail.discussion?.why, EXECUTIVE_DEMO_MATCHES[0].discussion.why);
+  assert.equal(esDetail.discussion?.why, EXECUTIVE_DEMO_MATCHES[0].es.discussion.why);
+  assert.notEqual(enDetail.discussion?.why, esDetail.discussion?.why);
+  assert.equal(enDetail.evidence.length, EXECUTIVE_DEMO_MATCHES[0].evidence.length, "discussion records are extracted out of detail.evidence");
+  assert.equal(enDetail.evidence.some((item) => item.kind?.startsWith("simulation_")), false);
+
+  const unescapeHtml = (markup) => markup.replaceAll("&#x27;", "'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+  const html = unescapeHtml(renderToStaticMarkup(React.createElement(MatchDetailView, { match: enDetail })));
+  assert.ok(html.includes(enDetail.discussion.why));
+  assert.match(html, /1\. How /);
+  assert.match(html, /2\. How /);
+  assert.match(html, /’s problem:/);
+  assert.match(html, /Why .* is the match:/);
+  assert.match(html, /Business/);
+  assert.match(html, /Leadership and work life/);
+  for (const topic of enDetail.discussion.topics) {
+    assert.ok(topic.heading && html.includes(topic.heading));
+    assert.ok(topic.problem && html.includes(topic.problem));
+    assert.ok(topic.whyMatch && html.includes(topic.whyMatch));
+    assert.ok(html.includes(topic.business));
+    assert.ok(html.includes(topic.life));
+  }
+  assert.doesNotMatch(html, /simulation_pair_reason|simulation_guest_topics/);
+
+  const preRewriteEvidence = enPair.row.evidence.map((item) => (
+    item.kind === "simulation_guest_topics"
+      ? { kind: item.kind, guestId: item.guestId, business: "Old business", life: "Old life" }
+      : item.kind === "simulation_pair_reason"
+        ? { kind: item.kind, text: "Old paragraph with both people." }
+        : item
+  ));
+  const upgradedDetail = toMatchDetail({
+    ...enPair,
+    row: { ...enPair.row, evidence: preRewriteEvidence },
+    profiles: { low: null, high: null },
+    restrictions: [],
+    earlier: [],
+  });
+  assert.equal(upgradedDetail.discussion?.topics[0].heading, enDetail.discussion?.topics[0].heading);
+  assert.equal(upgradedDetail.discussion?.topics[1].whyMatch, enDetail.discussion?.topics[1].whyMatch);
+
+  const legacyDetail = toMatchDetail({
+    ...enPair,
+    row: { ...enPair.row, evidence: enDetail.evidence },
+    profiles: { low: null, high: null },
+    restrictions: [],
+    earlier: [],
+  });
+  assert.equal(legacyDetail.discussion, undefined);
+  const legacyHtml = unescapeHtml(renderToStaticMarkup(React.createElement(MatchDetailView, { match: legacyDetail })));
+  assert.ok(legacyHtml.includes(legacyDetail.guests[0].benefit));
+  assert.ok(legacyHtml.includes(legacyDetail.guests[1].benefit));
 });

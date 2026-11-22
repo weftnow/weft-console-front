@@ -1,19 +1,23 @@
 import { DEMO_EVENT_FIXTURES } from "./demo-event-matches-generated";
 import { GENERATED_DEMO_MATCHES } from "./demo-matches-generated";
+import { EXECUTIVE_GROWTH_MATCHES } from "./executive-growth-matches";
+import { EXECUTIVE_OPERATIONS_MATCHES } from "./executive-operations-matches";
+import type { MatchDiscussion } from "../match-discussion";
 
 /**
  * Demo-only pairs for the matching simulation. Every email is a fictional guest in `public/demo/weft-demo-attendees-300.csv`;
  * the first 24 rows of that file are `public/demo/weft-demo-attendees.csv`. The 12 pairs below are written by hand and the rest
  * are templated by `scripts/generate-demo-roster.mjs`. Evidence quotes only repeat CSV fields.
  * Order matters: a pair's `seq` in the simulated feed is its index + 1, so append new pairs and keep at most 99.
- * Themed rosters (`public/demo/weft-demo-ai-summit-300.csv`, `weft-demo-grand-prix-400.csv`) have their own fixtures, see `DEMO_FIXTURES`.
+ * Themed rosters (`public/demo/weft-demo-ai-summit-300.csv`, `weft-demo-grand-prix-400.csv`) and the curated
+ * executive roster (`public/demo/weft-demo-executive-241.csv`) have their own fixtures, see `DEMO_FIXTURES`.
  */
 export const MAX_DEMO_MATCHES = 99;
 
 type SideText = { benefit: string; shareableReason: string | null; missingInformation: string[] };
 type Side = SideText & { score: number };
 /** Text shown when the event language is Spanish; quotes and guest data stay as written in the roster. */
-export type SpanishText = { uncertainty: string; forA: SideText; forB: SideText };
+export type SpanishText = { uncertainty: string; forA: SideText; forB: SideText; discussion?: MatchDiscussion };
 export type DemoMatch = {
   a: string;
   b: string;
@@ -23,6 +27,7 @@ export type DemoMatch = {
   evidence: { who: "a" | "b"; field: string; quote: string }[];
   forA: Side;
   forB: Side;
+  discussion?: MatchDiscussion;
   es: SpanishText;
 };
 
@@ -222,5 +227,14 @@ const withSpanish = (match: Omit<DemoMatch, "es">): DemoMatch => {
 
 export const DEMO_MATCHES: readonly DemoMatch[] = [...HAND_WRITTEN_MATCHES.map(withSpanish), ...GENERATED_DEMO_MATCHES];
 
+export const EXECUTIVE_DEMO_MATCHES: readonly DemoMatch[] = [
+  ...EXECUTIVE_GROWTH_MATCHES,
+  ...EXECUTIVE_OPERATIONS_MATCHES,
+];
+
 /** One fixture per demo roster. Rosters share no emails, so the simulator uses the fixture whose guests are in the event. */
-export const DEMO_FIXTURES: readonly (readonly DemoMatch[])[] = [DEMO_MATCHES, ...Object.values(DEMO_EVENT_FIXTURES)];
+export const DEMO_FIXTURES: readonly (readonly DemoMatch[])[] = [
+  DEMO_MATCHES,
+  ...Object.values(DEMO_EVENT_FIXTURES),
+  EXECUTIVE_DEMO_MATCHES,
+];

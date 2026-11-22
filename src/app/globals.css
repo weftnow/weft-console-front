@@ -2107,6 +2107,17 @@ fieldset.event-form-grid, .event-staff-member fieldset { min-width: 0; margin: 0
 .match-benefits__columns, .match-detail-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .match-benefit { min-width: 0; }
 .match-benefit h4 { margin-top: 12px; }
+.match-discussion__reason { margin: 12px 0 16px; max-width: 72ch; color: var(--weft-text-soft); }
+.match-discussion__steps { display: grid; gap: 14px; margin: 0 0 18px; }
+.match-discussion__step { padding: 14px 16px; border: 1px solid var(--weft-border); border-radius: var(--weft-radius-sm); background: var(--weft-surface); }
+.match-discussion__step h4 { margin: 0 0 8px; overflow-wrap: anywhere; }
+.match-discussion__points { display: grid; gap: 6px; margin: 0; padding-inline-start: 18px; list-style: disc; color: var(--weft-text-soft); }
+.match-discussion__points strong { color: var(--weft-text); }
+.match-discussion__person { min-width: 0; padding: 14px; border: 1px solid var(--weft-border); border-radius: var(--weft-radius-sm); background: var(--weft-surface); }
+.match-discussion__person h4 { margin: 0 0 10px; overflow-wrap: anywhere; }
+.match-discussion__topics { display: grid; gap: 10px; margin: 0; padding-inline-start: 18px; list-style: disc; }
+.match-discussion__topics strong { display: block; color: var(--weft-text-soft); }
+.match-discussion__topics p { overflow-wrap: anywhere; }
 .match-context { display: flex; align-items: flex-start; gap: 12px; border-radius: var(--weft-radius-sm); padding: 14px; background: var(--weft-surface-inset); color: var(--weft-text-soft); }
 .match-context--revoked { background: rgba(87,78,67,.08); }
 .match-context > svg { flex: none; margin-top: 2px; }

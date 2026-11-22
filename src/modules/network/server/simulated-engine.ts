@@ -4,6 +4,7 @@ import type { Locale } from "@/shared/i18n/locales";
 import { uuidSchema } from "@/modules/events/event-schemas";
 import { engineMatchingFeedSchema, type MatchingFeedEntry, type MatchingFeedResult } from "../matching-feed-schemas";
 import { engineMatchingStatusSchema, type MatchingStatusResult } from "../matching-status-schemas";
+import { discussionRecords } from "../match-discussion";
 import { DEMO_FIXTURES, MAX_DEMO_MATCHES, type DemoMatch } from "../simulation/demo-matches";
 import { FEED_PAGE_LIMIT } from "./matching-feed-client";
 import * as repository from "./simulation-repository";
@@ -79,6 +80,9 @@ function recommendationFor(eventId: string, source: DemoMatch, a: Guest, b: Gues
   const [low, lowSide, high, highSide] = a.id < b.id ? [a, pair.forA, b, pair.forB] as const : [b, pair.forB, a, pair.forA] as const;
   const idOf = (who: "a" | "b") => (who === "a" ? a.id : b.id);
   const both = <T>(lowValue: T, highValue: T): Record<string, T> => ({ [low.id]: lowValue, [high.id]: highValue });
+  const discussion = language === "es" ? source.es.discussion : source.discussion;
+  const evidence: Record<string, string>[] = pair.evidence.map((item) => ({ guestId: idOf(item.who), field: item.field, quote: item.quote }));
+  if (discussion) evidence.push(...discussionRecords(discussion, a.id, b.id));
   return {
     recommendationId: deterministicUuid("recommendation", eventId, pair.a, pair.b),
     guestLowId: low.id, guestHighId: high.id,
@@ -86,7 +90,7 @@ function recommendationFor(eventId: string, source: DemoMatch, a: Guest, b: Gues
     directionalScores: both(lowSide.score, highSide.score),
     pairScore: pair.pairScore,
     benefits: both<string | null>(lowSide.benefit, highSide.benefit),
-    evidence: pair.evidence.map((item) => ({ guestId: idOf(item.who), field: item.field, quote: item.quote })),
+    evidence,
     missingInformation: both(lowSide.missingInformation, highSide.missingInformation),
     uncertainty: pair.uncertainty,
     shareableReasons: both<string | null>(lowSide.shareableReason, highSide.shareableReason),

@@ -44,9 +44,20 @@ F07/F08 wired the Console to the real matching engine: the status poll and the f
 - **2026-10-21:** added a 300-guest roster (`scripts/generate-demo-roster.mjs`, seeded) with 87 templated pairs beside the 12 hand-written ones, reaching the 99-pair cap. Also fixed event creation to record `attendees_imported` for an initial roster; without it the simulator stayed idle.
 - **2026-10-20:** the feed returns nothing until the simulated run is finished, so a list read during waiting/running cannot reveal matches early. `nextCursor` stays at `after` then.
 
+### Curated executive networking demo (2026-11-20)
+
+- Import all 241 source rows from the new public roster in one event. Split names, preserve source identity and work details, provide placeholder contact fields, omit Profile Type, and map guest types to supported CSV values. Every row is available in this demo. Source intake and consent statuses stay in the source file. The fixture is for simulated pair review.
+- Hand-curate matches against both sides of the source profiles. Each pair explains the concrete exchange in both directions, names a practical business discussion, and gives each member a grounded leadership or work-life conversation topic. Respect source restrictions when writing reasons or suggested introductions.
+- Review the concise match list and the detailed explanation pattern used in [Swapcard](https://release.swapcard.com/explanation-of-peoples-recommendations-3kKj16), [Brella](https://help-attendees.brella.io/en/articles/180561-change-your-interests), and [Grip](https://support.grip.events/what-is-the-recommended-for-you-page). Put the reciprocal reason next to the pair in the detail view and show each person's discussion topics there. Keep shareable text distinct from organizer evidence.
+- Work order: roster conversion and content curation can proceed independently because they share the source email keys. Integrate the curated fixtures after curation, then verify persisted match presentation and have a separate reviewer check the integrated version. Existing simulation rosters and Owner/Organizer event authorization remain covered by regression tests.
+- Acceptance: the real attendee CSV parser accepts all 241 rows, a finished simulation for that imported roster emits the curated pairs in both languages, the normal match sync preserves the reciprocal reason and each guest's topics, and the detail view renders them with legacy fallback. Run focused tests, `pnpm verify`, and `pnpm build`, and record signed-in acceptance or its prerequisites.
+
 ## Verification
 
 Planned: unit tests (mode guard, timeline boundaries, schema conformance, unknown emails, pagination, revocation seq, fixture integrity against the CSV); `pnpm verify`; `pnpm build`; local browser check with `WEFT_ENGINE_MODE=simulation pnpm dev --hostname localhost --port 3000` covering Owner flow, exclusion/block/edit replays, denied roles, and the unchanged "not connected" path without the flag.
+
+Results (2026-11-20 — curated executive demo):
+- `tests/matching-simulation.test.mjs`: 19 tests passed, including full CSV parsing and schema/UI verification for `public/demo/weft-demo-executive-241.csv` (241 guests: 228 Attendees, 11 VIPs, 2 Sponsors; no Profile Type; zero on-hold rows) and `EXECUTIVE_DEMO_MATCHES` (42 hand-curated bidirectional pairs across 81 distinct guests in plain English and Spanish, including Jennifer Prichard, carried into `MatchDetailDto.discussion` and rendered in `MatchDetailView` with the numbered `1. How ... helps ...` / `2. How ... helps ...` structure and legacy `benefit` fallback).
 
 Results (2026-10-21):
 - `tests/matching-simulation.test.mjs`: 14 tests passed (mode guard, readers, timeline boundaries, run-id restart, empty-until-finished feed, schema conformance, unknown/missing guests, paging, exclusion/block revocation seq, fixture vs CSV, server CSV parser, `simulated` flag and denial-before-simulator, demo label).
